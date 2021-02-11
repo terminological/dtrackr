@@ -62,7 +62,6 @@ of `dplyr::filter`, called `exclude_all`, and `include_any`.
 cutOff = 3
 
 # the pipeline
-browser()
 dataset = iris %>% 
   track() %>%
   status() %>%

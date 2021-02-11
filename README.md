@@ -66,8 +66,6 @@ such as `comment` and `status`, and an enhanced implementation of
 cutOff = 3
 
 # the pipeline
-browser()
-#> Called from: eval(expr, envir, enclos)
 dataset = iris %>% 
   track() %>%
   status() %>%
