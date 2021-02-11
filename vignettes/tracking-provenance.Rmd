@@ -1,0 +1,172 @@
+---
+title: "Trackr - Basic operations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Trackr - Basic operations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Tracking data provenance
+
+When wrangling raw data into a form suitable for analysis there may be many steps where explicit or implicit assumptions are made about the nature of the data, which determine the nature of the resulting analysis dataset. Checking that these assumptions have the expected results as the analysis is proceeding can be time consuming. If a data pipeline is broken up over a number of parameterised functions, following the data flow through the code is time consuming and getting an overview difficult. This is where tracking data provenance can help, by monitoring the steps the data goes through and summarizing the outcomes of the steps as they occur we can generate a flow chart of the data history.
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(warn=1)
+```
+
+```{r setup}
+library(tidyverse)
+library(trackr)
+
+```
+
+# Basic operation - comments and stratification
+
+The main documentation for data pipelines is provided by the `comment` function. This (and all other functions) uses a `glue` package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables sucj as `filename` in this example. Secondly the `.count` variable is the number of rows in the current group. Thirdly the `.strata` variable is defined to be a description of the group we are currently in, but in grouped data the grouping variables (in this case `Species`) can be used. Finally the `.total` variable returns the whole size of the ungrouped dataset.
+
+Comments can either be a single `.headline` or a list of `.messages`. Setting either of these to "" disables them for a given comment. As in the example, thanks to `glue`, any expression can be evaluated in the messages but be warned, debugging them is hard.
+
+
+```{r}
+
+filename = "~/tmp/iris.csv"
+# this is just a pretend example
+# iris = read.csv(filename)
+
+
+iris %>%
+  track() %>%
+  comment(
+    .headline = "Iris data:",
+    .messages = c(
+      "loaded from \"{filename}\"",
+      "starts with {.count} items")) %>%
+  group_by(Species) %>%
+  comment(
+    .headline = "{.strata}",
+    .messages = c(
+    "In {Species}",
+    "there are {.count} items",
+    "that is {sprintf('%1.0f',.count/.total*100)}% of the total")) %>%
+  ungroup() %>%
+  comment("Final data has {.total} items") %>%
+  flowchart()
+
+```
+
+# Status - Further analysis in the workflow
+
+In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts. `comment` has a more sophisticated counterpart `status`. `status` is essentially a `dplyr` summarisation step which is connected to a `glue` specification output, that is recorded in the data frame history. In plain English this means you can do an arbitrary summarisation and put the result into the flowchart.
+
+```{r}
+
+iris %>%
+  track() %>%
+  comment("starts with {.count} items") %>%
+  group_by(Species) %>%
+  status(
+    petalMean = sprintf("%1.1f", mean(Petal.Width)),
+    petalSd = sprintf("%1.1f", sd(Petal.Width)),
+    .messages = c(
+    "In {Species} the petals are",
+    "on average {petalMean} \u00B1 {petalSd} cms wide")) %>%
+  ungroup() %>%
+  comment("ends with {.total} items") %>%
+  flowchart()
+
+```
+
+# Filtering, exclusions and inclusions
+
+Documenting the data set is only useful if you can also manipulate it, and one part of this is including and excluding things we don't want. The standard `dplyr::filter` approach works for this, and we can use the before and after `.count.in` and `.count.out` to find out what the result was. 
+
+In this example we exclude items that are >1 SD above the mean. The default message (`.messages = "excluded {.count.in-.count.out} items"`) has been left as is which simply returns how many things have been excluded. With no customisation the goal is for the pipeline to look as much as possible like a dplyr pipeline.
+
+```{r}
+
+iris %>%
+  track() %>%
+  group_by(Species) %>%
+  filter(
+    Petal.Width < mean(Petal.Width)+sd(Petal.Width)
+  ) %>%
+  ungroup() %>%
+  flowchart()
+
+```
+
+
+This is useful but the reason for exclusion is not as clear as we would like, and this does not scale particularly well to multiple criteria, typical of filters needed to massage real life data. For this we have written `exclude_all` which takes multiple criteria and applies them in a step-wise manner, summarising at each step. Rather than a logical expression expected by `dplyr::filter` we provide matching criteria as a formula relating the criteria to the glue specification (a trick inspired by case_when's syntax). 
+
+It should be noted that the logic of `exlude_all` is reversed compared to base `filter` for which a TRUE value is INCLUDED. In this example there are no missing values, however the behaviour of the filter when filter expressions cannot be evaluated and NAs are generated, is controlled by `na.rm`. This defaults to FALSE which means that values that cannot be evaluated are __NOT__ excluded. You can also explicitly check for missingness in the filter expression. 
+Exclusions produced like this are additive and the items may be counted in more than one exclusion category, and so won't add up to an exclusion total.
+
+```{r}
+
+dataset1 = iris %>%
+  track() %>%
+  comment("starts with {.count} items") %>%
+  exclude_all(
+    Species=="versicolor" ~ "removing {.excluded} versicolor"
+  ) %>%
+  group_by(Species) %>%
+  comment("{Species} has {.count} items") %>%
+  exclude_all(
+    Petal.Width > mean(Petal.Width)+sd(Petal.Width) ~ "{.excluded} with petals > 1 SD wider than the mean",
+    Petal.Length > mean(Petal.Length)+sd(Petal.Length) ~ "{.excluded} with petals > 1 SD longer than the mean",
+    Sepal.Width > mean(Sepal.Width)+sd(Sepal.Width) ~ "{.excluded} with sepals > 1 SD wider than the mean",
+    Sepal.Length > mean(Sepal.Length)+sd(Sepal.Length) ~ "{.excluded} with sepals > 1 SD longer than the mean"
+  ) %>%
+  comment("{Species} now has {.count} items") %>%
+  ungroup() %>%
+  comment("ends with {.total} items")
+
+dataset1 %>% flowchart()
+
+```
+
+Sometimes inclusion criteria are more important. For this we use `include_any` which works in a similar manner but including items which match any of the supplied criteria, essentially combining with a logical OR operation, and in this case resulting in very different result from our previous example.
+
+```{r}
+
+dataset2 = iris %>%
+  track() %>%
+  comment("starts with {.count} items") %>%
+  include_any(
+    Species=="versicolor" ~ "{.included} versicolor",
+    Species=="setosa" ~ "{.included} setosa"
+  ) %>%
+  #mutate(Species = forcats::fct_drop(Species)) %>%
+  group_by(Species) %>%
+  comment("{Species} has {.count} items") %>%
+  include_any(
+    Petal.Width < mean(Petal.Width)+sd(Petal.Width) ~ "{.included} with petals <= 1 SD wider than the mean",
+    Petal.Length < mean(Petal.Length)+sd(Petal.Length) ~ "{.included} with petals <= 1 SD longer than the mean",
+    Sepal.Width < mean(Sepal.Width)+sd(Sepal.Width) ~ "{.included} with sepals <= 1 SD wider than the mean",
+    Sepal.Length < mean(Sepal.Length)+sd(Sepal.Length) ~ "{.included} with sepals <= 1 SD longer than the mean"
+  ) %>%
+  comment("{Species} now has {.count} items") %>%
+  ungroup() %>%
+  comment("ends with {.total} items")
+  
+dataset2 %>% flowchart()
+
+```
+
+# Displaying combined data flows
+
+It is possible to merge data flows into the same flow diagram. This might make sense if you want to try and document a branching data pipeline. This is not obviously essential but is possible.
+
+```{r}
+
+p_flowchart(list(dataset1,dataset2))
+
+```
+
