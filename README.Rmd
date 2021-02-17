@@ -19,7 +19,11 @@ library(trackr)
 # trackr
 
 <!-- badges: start -->
+[![Travis build status](https://travis-ci.org/terminological/trackr.svg?branch=master)](https://travis-ci.org/terminological/trackr)
+[![Lifecycle:experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- [![CRAN Status](https://www.r-pkg.org/badges/version/trackr)](https://cran.r-project.org/package=trackr) -->
 <!-- badges: end -->
+
 
 I have been known to execute parts of my data pipeline more than once. 
 Sometimes part of my pipeline is designed to change depending on a specific parameter, for example an age cutoff, which I tweak and re-run. 
