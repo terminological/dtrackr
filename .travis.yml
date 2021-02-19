@@ -7,6 +7,7 @@ sudo: required
 
 apt_packages:
   - r-cran-rjava
+  - libmagick++-dev
 
 before_install:
   - sudo $(which R) CMD javareconf
