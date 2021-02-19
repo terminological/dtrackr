@@ -6,9 +6,9 @@
 <!-- badges: start -->
 
 [![Travis build
-status](https://travis-ci.org/terminological/trackr.svg?branch=master)](https://travis-ci.org/terminological/trackr)
+status](https://travis-ci.org/terminological/dtrackr.svg?branch=master)](https://travis-ci.org/terminological/dtrackr)
 [![Lifecycle:experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-<!-- [![CRAN Status](https://www.r-pkg.org/badges/version/trackr)](https://cran.r-project.org/package=trackr) -->
+<!-- [![CRAN Status](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr) -->
 <!-- badges: end -->
 
 I have been known to execute parts of my data pipeline more than once.
