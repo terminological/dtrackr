@@ -13,7 +13,5 @@ before_install:
 
 matrix:
   include:
-    - r: oldrel
     - r: release
-    - r: devel
     - os: osx
