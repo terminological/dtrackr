@@ -137,7 +137,7 @@
   return("trackr_df" %in% class(.data))
 }
 
-#' Strart tracking the trackr history graph
+#' Strart tracking the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
 #'
@@ -148,11 +148,11 @@
 #' iris %>% p_track()
 p_track = function(.data) {
   if ("trackr_df" %in% class(.data)) return(.data)
-  if (!"data.frame" %in% class(.data)) stop("trackr can only track data frames. Sorry.")
+  if (!"data.frame" %in% class(.data)) stop("dtrackr can only track data frames. Sorry.")
   return(.data %>% p_set((.data %>% p_get())))
 }
 
-#' Get the trackr history graph
+#' Get the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
 #'
@@ -167,7 +167,7 @@ p_get = function(.data) {
   return(out)
 }
 
-#' Set the trackr history graph
+#' Set the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .graph - a history graph list (consisting of nodes, edges, and head) see examples
@@ -187,7 +187,7 @@ p_set = function(.data, .graph) {
   return(.data)
 }
 
-#' Clear the trackr history graph
+#' Clear the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
 #'
@@ -200,10 +200,10 @@ p_clear = function(.data) {
   return(.data %>% p_set(NULL))
 }
 
-#' Copy the trackr history graph from one df to another
+#' Copy the dtrackr history graph from one df to another
 #'
 #' @param .data - a dataframe which may be grouped
-#' @param from - the datafram to copy the history graph from
+#' @param from - the dataframe to copy the history graph from
 #'
 #' @return the .data with the history graph of "from"
 #' @export
@@ -233,7 +233,7 @@ p_count_if = function(...) {
   return(sum(ifelse(...,1,0)))
 }
 
-#' Add a generic comment to the trackr history graph
+#' Add a generic comment to the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, or the {.count} variable which is nrow(.data)
@@ -283,7 +283,7 @@ p_comment = function(.data, .messages=NULL, .headline=NULL, .type="info", .asOff
 
 
 
-#' Add a summary to the trackr history graph
+#' Add a summary to the dtrackr history graph
 #'
 #' Because of the ... summary specification parameters MUST BE NAMED.
 #'
@@ -337,7 +337,7 @@ p_status = function(.data, ..., .messages = NULL, .headline = NULL, .type="info"
 
 #' Exclude all items matching a criteria
 #'
-#' Apply a set of filters and dplyr::summarise the actions of the filter to the trackr history graph
+#' Apply a set of filters and dplyr::summarise the actions of the filter to the dtrackr history graph
 #' Because of the ... filter specification, all parameters MUST BE NAMED.
 #' The filters work in an additive manner, i.e. the results excluding all things that match any of the criteria.
 #' If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria.
@@ -404,7 +404,7 @@ p_exclude_all = function(.data, ..., .headline="{.strata}", na.rm=FALSE, .type="
 
 #' Include any items matching a criteria
 #'
-#' Apply a set of inclusion criteria and dplyr::summarise the actions of the filter to the trackr history graph
+#' Apply a set of inclusion criteria and dplyr::summarise the actions of the filter to the dtrackr history graph
 #' Because of the ... filter specification, all parameters MUST BE NAMED.
 #' The criteria work in an alternative manner, i.e. the results include anything that match any of the criteria.
 #' If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria - that may be true.
@@ -1030,7 +1030,7 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
 
       fmt <- rmarkdown::default_output_format(knitr::current_input())$name
       if (fmt %>% stringr::str_detect("html") || fmt=="article") {
-        # message("html output for trackr")
+        # message("html output for dtrackr")
         return(htmltools::HTML(dot2svg(outgraph)))
       } else {
 
@@ -1047,7 +1047,7 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
 
 #' DOT output
 #'
-#' Outputs a trackr history graph as a DOT string for rendering with graphviz
+#' Outputs a dtrackr history graph as a DOT string for rendering with graphviz
 #'
 #' @param .data - the tracked dataframe
 #' @param fill - the default node fill colour

@@ -47,7 +47,7 @@ trackr is in early development. It is not yet available on CRAN.
 
 <!-- ``` -->
 
-The development version is available from [GitHub](https://github.com/)
+The development version is available from [GitHub](https://github.com/terminological/trackr)
 with:
 
 ``` r

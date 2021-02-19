@@ -1,8 +1,8 @@
 ---
-title: "Trackr - Basic operations"
+title: "Dtrackr - Basic operations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Trackr - Basic operations}
+  %\VignetteIndexEntry{Dtrackr - Basic operations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,7 +23,7 @@ options(warn=1)
 
 ```{r setup}
 library(tidyverse)
-library(trackr)
+library(dtrackr)
 
 ```
 

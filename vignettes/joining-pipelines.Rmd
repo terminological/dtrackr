@@ -1,8 +1,8 @@
 ---
-title: "Trackr - Joining data pipelines"
+title: "Dtrackr - Joining data pipelines"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Trackr - Joining data pipelines}
+  %\VignetteIndexEntry{Dtrackr - Joining data pipelines}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,7 +10,7 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(trackr)
+library(dtrackr)
 ```
 
 # Joins across data sets

@@ -22,7 +22,7 @@ dot2svg <- function(dot) {
   scriptDOT <- gsub("'", "\"", scriptDOT)
   dot <- paste("'", scriptDOT, "'", sep="")
 
-  JS <- system.file("lib/viz.js", package = "trackr")
+  JS <- system.file("lib/viz.js", package = "dtrackr")
   # this is an old vis.js
   # newer versions are here https://github.com/aduh95/viz.js but use npm and assume node.
 
