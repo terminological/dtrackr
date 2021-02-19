@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# trackr
+# dtrackr
 
 <!-- badges: start -->
 
@@ -25,7 +25,7 @@ PowerPoint becomes quickly tedious. In the past I’ve based such flow
 charts on what I think my code is doing rather than actually what it
 did, which can lead to potential embarrassment.
 
-The goal of `trackr` is to take away this pain by instrumenting and
+The goal of `dtrackr` is to take away this pain by instrumenting and
 monitoring a dataframe through a `dplyr` pipeline, creating a
 step-by-step summary of the important parts of the wrangling that
 actually happened to the dataframe, right into dataframe metadata
@@ -37,22 +37,22 @@ kids/dog/playstation. What’s not to like?
 
 ## Installation
 
-trackr is in early development. It is not yet available on CRAN.
+dtrackr is in early development. It is not yet available on CRAN.
 
-<!-- You can install the released version of trackr from [CRAN](https://CRAN.R-project.org) with: -->
+<!-- You can install the released version of dtrackr from [CRAN](https://CRAN.R-project.org) with: -->
 
 <!-- ``` r -->
 
-<!-- install.packages("trackr") -->
+<!-- install.packages("dtrackr") -->
 
 <!-- ``` -->
 
-The development version is available from [GitHub](https://github.com/terminological/trackr)
+The development version is available from [GitHub](https://github.com/)
 with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("terminological/trackr")
+devtools::install_github("terminological/dtrackr")
 ```
 
 ## Example
@@ -60,10 +60,10 @@ devtools::install_github("terminological/trackr")
 Suppose we are constructing a data set with out initial input being the
 `iris` data. Our analysis depends on some `cutOff` parameter and we want
 to prepare a stratified data set that excludes flowers with narrow
-petals, and those with the biggest petals of each Species. With `trackr`
-we can mix regular `dplyr` commands with additional `trackr` commands
-such as `comment` and `status`, and an enhanced implementation of
-`dplyr::filter`, called `exclude_all`, and `include_any`.
+petals, and those with the biggest petals of each Species. With
+`dtrackr` we can mix regular `dplyr` commands with additional `dtrackr`
+commands such as `comment` and `status`, and an enhanced implementation
+of `dplyr::filter`, called `exclude_all`, and `include_any`.
 
 ``` r
 # a pipeline parameter
@@ -95,7 +95,7 @@ prepare it for submission.
 
 It is usually at this point someone says, “Did you exclude XYZ?” or “How
 many of WXY did you find in each group?” or something similar. Before
-trackr you would have muttered something about having to look at the
+dtrackr you would have muttered something about having to look at the
 code to see what you did (and hope it does the same thing next time),
 but now all you do is this:
 
