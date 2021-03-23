@@ -97,7 +97,7 @@ dataset %>% flowchart("man/figures/demo")
 
 ```
 
-And your publication ready data pipeline, with any assumptions you care to document, is creates in a format of your choice (as long as that choice is one of pdf, png, svg or ps), ready for submission to Nature. 
+And your publication ready data pipeline, with any assumptions you care to document, is created in a format of your choice (as long as that choice is one of pdf, png, svg or ps), ready for submission to Nature. 
 
 This is a trivial example, but the more complex the pipeline, the bigger benefit you will get. 
 
