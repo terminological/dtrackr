@@ -733,6 +733,7 @@ p_pivot_longer = function(data,
 #' @examples
 #' iris %>% p_group_by(Species, .messages="stratify by {.cols}") %>% p_comment("{.strata}") %>% p_get()
 p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL) {
+  if(!.add) .data = .data %>% ungroup()
   .data = .data %>% .untrack()
   col = dplyr::ensyms(...)
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(sep=", ")
