@@ -133,6 +133,12 @@
   return(.data)
 }
 
+.retrack = function(.data) {
+  tmp = unique(c("trackr_df",class(.data)))
+  class(.data) = tmp
+  return(.data)
+}
+
 .isTracked = function(.data) {
   return("trackr_df" %in% class(.data))
 }
@@ -180,9 +186,9 @@ p_get = function(.data) {
 p_set = function(.data, .graph) {
   attr(.data,"prov") = .graph
   if (identical(.graph,NULL)) {
-    class(.data) = class(.data)[class(.data)!="trackr_df"]
+    .untrack(.data)
   } else {
-    class(.data) = unique(c("trackr_df",class(.data)))
+    .retrack(.data)
   }
   return(.data)
 }
@@ -247,8 +253,8 @@ p_count_if = function(...) {
 #' @examples
 #' iris %>% p_comment("hello {.total} rows")
 p_comment = function(.data, .messages=NULL, .headline=NULL, .type="info", .asOffshoot = FALSE) {
-  .data = .data %>% .untrack()
   if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
+  .data = .data %>% .untrack()
   if (identical(.headline,NULL)) .headline = "{.strata}"
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
@@ -259,7 +265,7 @@ p_comment = function(.data, .messages=NULL, .headline=NULL, .type="info", .asOff
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = .type, .env=default_env)))
   .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot)
 
-  return(.data)
+  return(.data %>% .retrack())
 }
 
 # p_generate = function(.data, messageFn, type="info") {
@@ -316,7 +322,7 @@ p_status = function(.data, ..., .messages = NULL, .headline = NULL, .type="info"
   } else {
     if(identical(.messages,NULL) & identical(.headline,NULL)) {
       warning("p_status is missing both .messages and .headline specification. Did you forget to name them?")
-      return(.data)
+      return(.data %>% .retrack())
     }
     if(identical(.headline,NULL)) .headline = "{.strata}"
   }
@@ -332,7 +338,7 @@ p_status = function(.data, ..., .messages = NULL, .headline = NULL, .type="info"
   # .messages is a load of glue specs
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = .type, .env=default_env)))
   .data = .writeMessagesToNode(.data, dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot)
-  return(.data)
+  return(.data %>% .retrack())
 }
 
 #' Exclude all items matching a criteria
@@ -367,7 +373,7 @@ p_exclude_all = function(.data, ..., .headline="{.strata}", na.rm=FALSE, .type="
   filters = rlang::list2(...)
   if (length(filters)==0) {
     warning("No exclusions defined on p_exclude_all.")
-    return(.data)
+    return(.data %>% .retrack())
   }
   default_env$.total = nrow(.data)
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type=.type, .env=default_env)
@@ -387,7 +393,7 @@ p_exclude_all = function(.data, ..., .headline="{.strata}", na.rm=FALSE, .type="
     tmp = out %>%
       dplyr::summarise(
         .count = dplyr::n(),
-        .excluded = p_count_if(.excl), #sum(ifelse(.excl.na,1,0)),
+        .excluded = p_count_if(.excl.na), #sum(ifelse(.excl.na,1,0)),
         .missing = p_count_if(is.na(.excl)&.excl.na), #sum(ifelse(is.na(.excl)&.excl.na,1,0)),
         .matched = p_count_if(!is.na(.excl)&.excl.na), #sum(ifelse(!is.na(.excl)&.excl.na,1,0))
         .groups="keep"
@@ -399,7 +405,7 @@ p_exclude_all = function(.data, ..., .headline="{.strata}", na.rm=FALSE, .type="
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
   out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' Include any items matching a criteria
@@ -434,7 +440,7 @@ p_include_any = function(.data, ..., .headline="{.strata}", na.rm=TRUE, .type="i
   filters = rlang::list2(...)
   if (length(filters)==0) {
     warning("No inclusions defined on p_include_any.")
-    return(.data)
+    return(.data %>% .retrack())
   }
   default_env$.total = nrow(.data)
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type=.type, .env=default_env)
@@ -465,7 +471,7 @@ p_include_any = function(.data, ..., .headline="{.strata}", na.rm=TRUE, .type="i
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
   out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.incl, -.incl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' Remove a stratification from a data set
@@ -497,7 +503,7 @@ p_ungroup = function(x, ..., .messages = "total {.count} items", .headline=NULL)
   dots = dplyr::enexprs(...)
   if(length(dots)==0) dots = list(.count=rlang::expr(dplyr::n()))
   out = .data %>% dplyr::ungroup() %>% p_copy(.data) %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' Summarise a data set
@@ -533,7 +539,7 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = NULL, .headline="{.
   # .messages is a load of glue specs
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = "summarise", .env=default_env)))
   out = out %>% dplyr::group_by(!!!newGrps) %>% p_copy(.data) %>% .writeMessagesToNode(.df=dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' Standard dplyr modifying operations
@@ -558,7 +564,7 @@ p_mutate = function(.data, ..., .messages = "", .headline = "") {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::mutate(...)
   out = out %>% p_copy(.data) %>% p_comment(.messages=.messages, .headline = .headline, .type="mutate")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -567,7 +573,7 @@ p_add_count = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messag
   .data = .data %>% .untrack()
   out = .data %>% dplyr::add_count(..., wt, sort, name)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="add_count")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -576,7 +582,7 @@ p_add_tally = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messag
   .data = .data %>% .untrack()
   out = .data %>% dplyr::add_tally(..., wt, sort, name)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="add_tally")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -585,7 +591,7 @@ p_transmute = function(.data, ..., .messages = "", .headline = "") {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::transmute(...)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="transmute")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -594,7 +600,7 @@ p_select = function(.data, ..., .messages = "", .headline = "") {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::select(...)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="select")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -603,7 +609,7 @@ p_relocate = function(.data, ..., .before = NULL, .after = NULL, .messages = "",
   .data = .data %>% .untrack()
   out = .data %>% dplyr::relocate(..., .before = .before, .after = .after)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="relocate")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -612,7 +618,7 @@ p_rename = function(.data, ..., .messages = "", .headline = "") {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::rename(...)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="rename")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -621,7 +627,7 @@ p_rename_with = function(.data, ..., .messages = "", .headline = "") {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::rename_with(...)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="rename_with")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
@@ -630,7 +636,7 @@ p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline =
   .data = .data %>% .untrack()
   out = .data %>% dplyr::arrange(..., .by_group = .by_group)
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="arrange")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' Reshaping data using tidyr - pivot_wider
@@ -663,7 +669,7 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = "name", names_prefix
     ...
   )
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_wider")
-  return(out)
+  return(out %>% .retrack())
 }
 
 #' Reshaping data using tidyr - pivot_longer
@@ -707,7 +713,7 @@ p_pivot_longer = function(data,
     ...
   )
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_wider")
-  return(out)
+  return(out %>% .retrack())
 }
 
 
@@ -732,7 +738,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(sep=", ")
   tmp = .data %>% p_comment(.messages, .headline = .headline, .type="stratify")
   tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
-  return(tmp2)
+  return(tmp2 %>% .retrack())
 }
 
 
@@ -782,7 +788,7 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = "modify", .env=default_env)))
 
   out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
-  return(out)
+  return(out %>% .retrack())
 }
 
 
@@ -818,7 +824,7 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.count.i
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .env=default_env)))
 
   out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot)
-  return(out)
+  return(out %>% .retrack())
 }
 
 
@@ -862,7 +868,7 @@ p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headli
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .env=default_env)))
 
   out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
-  return(out)
+  return(out %>% .retrack())
 }
 
 ## Two DF operations ----
@@ -893,7 +899,7 @@ p_bind_rows = function(..., .id = NULL, .messages="{.count.out} in union", .head
   out = dplyr::bind_rows(..., .id=.id)
   .count.out = nrow(out)
   out = out %>% p_set(mergedGraph) %>% p_comment(.messages, .headline = .headline, .type="combine")
-  return(out)
+  return(out %>% .retrack())
   # tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .env=default_env)
   # tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = .type, .env=default_env)))
   # .data = .writeMessagesToNode(.data, dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot)
@@ -910,7 +916,7 @@ p_bind_rows = function(..., .id = NULL, .messages="{.count.out} in union", .head
   out = joinFunction(x, y, by=by, copy=copy, suffix=suffix, ...)
   .count.out = nrow(out)
   out = out %>% p_set(mergedGraph) %>% p_comment(.messages, .headline = .headline, .type="combine")
-  return(out)
+  return(out %>% .retrack())
   # tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .env=default_env)
   # tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = .type, .env=default_env)))
   # .data = .writeMessagesToNode(.data, dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot)
