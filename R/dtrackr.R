@@ -649,23 +649,24 @@ p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline =
 #'
 #' @return the result of the pivot_wider but with a history graph.
 #' @export
-p_pivot_wider = function(data, id_cols = NULL, names_from = "name", names_prefix = "",
+p_pivot_wider = function(data, id_cols = NULL, names_from = name, names_prefix = "",
                          names_sep = "_",names_glue = NULL,names_sort = FALSE,names_repair = "check_unique",
-                         values_from = "value",values_fill = NULL, values_fn = NULL, ..., .messages = "", .headline = "") {
-  names_from = rlang::ensym(names_from)
-  values_from = rlang::ensym(values_from)
+                         values_from = value,values_fill = NULL, values_fn = NULL, ..., .messages = "", .headline = "") {
+  names_from <- enquo(names_from)
+  values_from <- enquo(values_from)
   .data = data %>% .untrack()
   out = .data %>% tidyr::pivot_wider(
-    id_cols,
-    !!names_from,
-    names_prefix,
-    names_sep,
-    names_glue,
-    names_sort,
-    names_repair,
-    !!values_from,
-    values_fill,
-    values_fn,
+    id_cols = {{id_cols}},
+    # id_expand = FALSE,
+    names_from = !!names_from,
+    names_prefix = names_prefix,
+    names_sep = names_sep,
+    names_glue = names_glue,
+    names_sort = names_sort,
+    names_repair = names_repair,
+    values_from = !!values_from,
+    values_fill = values_fill,
+    values_fn = values_fn,
     ...
   )
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_wider")
@@ -698,18 +699,18 @@ p_pivot_longer = function(data,
                           ..., .messages = "", .headline = "") {
   .data = data %>% .untrack()
   out = .data %>% tidyr::pivot_longer(
-    cols,
-    names_to,
-    names_prefix,
-    names_sep,
-    names_pattern,
-    names_ptypes,
-    names_transform,
-    names_repair,
-    values_to,
-    values_drop_na,
-    values_ptypes,
-    values_transform,
+    cols = cols,
+    names_to = names_to,
+    names_prefix = names_prefix,
+    names_sep = names_sep,
+    names_pattern = names_pattern,
+    names_ptypes = names_ptypes,
+    names_transform = names_transform,
+    names_repair = names_repair,
+    values_to = values_to,
+    values_drop_na = values_drop_na,
+    values_ptypes = values_ptypes,
+    values_transform = values_transform,
     ...
   )
   out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_wider")
@@ -736,8 +737,8 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
   if(!.add) .data = .data %>% ungroup()
   .data = .data %>% .untrack()
   col = dplyr::ensyms(...)
-  .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(sep=", ")
-  tmp = .data %>% p_comment(.messages, .headline = .headline, .type="stratify")
+  .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
+  tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify")
   tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
   return(tmp2 %>% .retrack())
 }
