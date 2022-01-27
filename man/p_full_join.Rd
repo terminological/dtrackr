@@ -56,8 +56,7 @@ Should be a character vector of length 2.}
 \item{...}{Other parameters passed onto methods.}
 
 \item{keep}{Should the join keys from both \code{x} and \code{y} be preserved in the
-output? Only applies to \code{nest_join()}, \code{left_join()}, \code{right_join()}, and
-\code{full_join()}.}
+output?}
 
 \item{.messages}{- a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively}
 

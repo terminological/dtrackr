@@ -37,12 +37,12 @@ tmp1 %>% inner_join(tmp2, by="name") %>% comment("joined {.total}") %>% flowchar
 tmp = people %>% comment("start")
 
 tmp1 = tmp %>% include_any(
-  species == "Human" ~ "{.count} humans",
-  species == "Droid" ~ "{.count} droids"
+  species == "Human" ~ "{.included} humans",
+  species == "Droid" ~ "{.included} droids"
   )
 
 tmp2 = tmp %>% include_any(
-  species == "Gungan" ~ "{.count} gungans"
+  species == "Gungan" ~ "{.included} gungans"
 ) %>% comment("{.count} gungans")
 
 tmp3 = bind_rows(tmp1,tmp2) %>% comment("{.count} human,droids and gungans") 

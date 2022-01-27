@@ -1004,6 +1004,10 @@ p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.coun
 
 ## Output operations ====
 
+is_running_in_chunk = function() {
+   isTRUE(try(rstudioapi::getActiveDocumentContext()$id != "#console"))
+}
+
 #' Flowchart output
 #'
 #' Create a flowchart of the history of the dataframe
@@ -1036,8 +1040,8 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
   } else {
     if( isTRUE(getOption("knitr.in.progress")) ) {
 
-      fmt <- rmarkdown::default_output_format(knitr::current_input())$name
-      if (fmt %>% stringr::str_detect("html") || fmt=="article") {
+      #fmt <- rmarkdown::default_output_format(knitr::current_input())$name
+      if (knitr::is_html_output()) { #|| fmt %>% stringr::str_detect("html") || fmt=="article") {
         # message("html output for dtrackr")
         return(htmltools::HTML(dot2svg(outgraph)))
       } else {
@@ -1048,7 +1052,12 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
       }
 
     } else {
-      return(htmltools::HTML(dot2svg(outgraph)))
+
+      if(is_running_in_chunk()) {
+        return(htmltools::HTML(dot2svg(outgraph)))
+      } else {
+        return(htmltools::HTML(dot2svg(outgraph)) %>% htmltools::html_print())
+      }
     }
   }
 }

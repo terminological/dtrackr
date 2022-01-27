@@ -4,7 +4,9 @@
 \name{std_size}
 \alias{std_size}
 \title{Standard paper sizes}
-\format{An object of class \code{list} of length 8.}
+\format{
+An object of class \code{list} of length 8.
+}
 \usage{
 std_size
 }
