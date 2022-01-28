@@ -1,0 +1,64 @@
+---
+title: "Dtrackr - Consort statement example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dtrackr - Consort statement example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: dtrackr.bib
+csl: dtrackr.csl
+---
+
+# Consort statement
+
+TODO: some background as to why.
+Cite data sets [@ramanaCriticalComparativeStudy; @ramanaCriticalStudySelected2011; @Dua:2019]
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(warn=1)
+```
+
+```{r setup}
+library(tidyverse)
+library(dtrackr)
+
+```
+
+```{r}
+ilpd = dtrackr::ILPD %>% 
+  track() %>%
+  include_any(
+    Gender == "Female" & Total_Bilirubin >= 0.7 ~ "{.included} women with bili>0.7",
+    Gender == "Male" & Total_Bilirubin >= 0.8 ~ "{.included} men with bili>0.8"
+  ) %>%
+  group_by(Case_or_Control, .messages="cases versus controls", .add=TRUE) %>%
+  comment(.headline = "{Case_or_Control}", .messages = "{.count}") %>%
+  exclude_all(
+    Age<18 ~ "{.excluded} subjects under 18",
+    Age>80 ~ "{.excluded} subjects over 80",
+    .headline = NULL
+  ) %>%
+  comment(.headline = "{Case_or_Control}", .messages = "{.count} after exclusions") %>%
+  status(
+    mean_bili = sprintf("%1.2f \u00B1 %1.2f",mean(Total_Bilirubin),sd(Total_Protein)),
+    mean_alb = sprintf("%1.2f \u00B1 %1.2f",mean(Albumin),sd(Albumin)),
+    .headline = "{Case_or_Control}",
+    .messages = c(
+      "bilirubin: {mean_bili}",
+      "albumin: {mean_alb}"
+    )                    
+  ) %>%
+  ungroup(.messages = "{.count} in final data set")
+
+ilpd %>% flowchart()
+
+```
+
+# References
+
+<div id="refs"></div>

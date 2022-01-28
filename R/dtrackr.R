@@ -156,19 +156,30 @@
   return("trackr_df" %in% class(.data))
 }
 
-#' Strart tracking the dtrackr history graph
+.isHistoryEmpty = function(.data) {
+  return(
+    nrow((.data %>% p_get())$nodes)==0
+  )
+}
+
+#' Start tracking the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
+#' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, or the {.count} variable which is nrow(.data)
+#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data)
 #'
-#' @return the hisotry graph
+#' @return the history graph
 #' @export
 #'
 #' @examples
 #' iris %>% p_track()
-p_track = function(.data) {
+p_track = function(.data, .messages="{.count} items", .headline="{.strata}") {
   if ("trackr_df" %in% class(.data)) return(.data)
   if (!"data.frame" %in% class(.data)) stop("dtrackr can only track data frames. Sorry.")
-  return(.data %>% p_set((.data %>% p_get())))
+  old = .data %>% p_get()
+  out = .data %>% p_set(old)
+  out = out %>% p_comment(.messages = .messages, .headline = .headline, .type="info", .asOffshoot = FALSE)
+  return(out)
 }
 
 #' Get the dtrackr history graph
@@ -748,7 +759,7 @@ p_pivot_longer = function(data,
 #' @examples
 #' iris %>% p_group_by(Species, .messages="stratify by {.cols}") %>% p_comment("{.strata}") %>% p_get()
 p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL) {
-  if(!.add) .data = .data %>% ungroup()
+  if(!.add & is.grouped_df(.data)) .data = .data %>% ungroup()
   .data = .data %>% .untrack()
   col = dplyr::ensyms(...)
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
@@ -827,7 +838,7 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #'
 #' @examples
 #' iris %>% p_group_by(Species) %>% p_filter(Petal.Length > 5) %>% p_get()
-p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.count.in-.count.out} items", .headline="{.strata}", .type = "exclusion", .asOffshoot=(.type=="exclusion")) {
+p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline="{.strata}", .type = "exclusion", .asOffshoot=(.type=="exclusion")) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
@@ -837,6 +848,7 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.count.i
 
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .env=default_env)
   tmp = .beforeAfterGroupwiseCounts(.data,out)
+  tmp = tmp %>% mutate(.excluded = .count.in-.count.out)
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .env=default_env)))
 
   out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot)
@@ -891,7 +903,7 @@ p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headli
 
 #' Union of two or more data sets
 #'
-#' This merges the history of 2 dataframes and binds the rows. It calculates the total number fo resulting rows as {.count.out}
+#' This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as {.count.out}
 #'
 #' @param ... the data frames to bind
 #' @param .messages - a set of glue specs. The glue code can use any global variable, or {.count.out}

@@ -29,7 +29,7 @@ library(dtrackr)
 
 # Basic operation - comments and stratification
 
-The main documentation for data pipelines is provided by the `comment` function. This (and all other functions) uses a `glue` package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables sucj as `filename` in this example. Secondly the `.count` variable is the number of rows in the current group. Thirdly the `.strata` variable is defined to be a description of the group we are currently in, but in grouped data the grouping variables (in this case `Species`) can be used. Finally the `.total` variable returns the whole size of the ungrouped dataset.
+The main documentation for data pipelines is provided by the `comment` function. This (and all other functions) uses a `glue` package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables such as `filename` in this example. Secondly the `.count` variable is the number of rows in the current group. Thirdly the `.strata` variable is defined to be a description of the group(s) we are currently in, but in grouped data the grouping variables (in this case `Species`) can also be used. Finally the `.total` variable returns the whole size of the ungrouped dataset.
 
 Comments can either be a single `.headline` or a list of `.messages`. Setting either of these to "" disables them for a given comment. As in the example, thanks to `glue`, any expression can be evaluated in the messages but be warned, debugging them is hard.
 
@@ -85,9 +85,9 @@ iris %>%
 
 # Filtering, exclusions and inclusions
 
-Documenting the data set is only useful if you can also manipulate it, and one part of this is including and excluding things we don't want. The standard `dplyr::filter` approach works for this, and we can use the before and after `.count.in` and `.count.out` to find out what the result was. 
+Documenting the data set is only useful if you can also manipulate it, and one part of this is including and excluding things we don't want. The standard `dplyr::filter` approach works for this, and we can use the before and after `.count.in` and `.count.out`, and the difference between the two `.excluded` to document what the result was.
 
-In this example we exclude items that are >1 SD above the mean. The default message (`.messages = "excluded {.count.in-.count.out} items"`) has been left as is which simply returns how many things have been excluded. With no customisation the goal is for the pipeline to look as much as possible like a dplyr pipeline.
+In this example we exclude items that are >1 SD above the mean. The default message (`.messages = "excluded {.excluded} items"`) has been left as is which simply returns how many things have been excluded. With no customization the goal is for the pipeline to look as much as possible like a dplyr pipeline.
 
 ```{r}
 
@@ -103,9 +103,10 @@ iris %>%
 ```
 
 
-This is useful but the reason for exclusion is not as clear as we would like, and this does not scale particularly well to multiple criteria, typical of filters needed to massage real life data. For this we have written `exclude_all` which takes multiple criteria and applies them in a step-wise manner, summarising at each step. Rather than a logical expression expected by `dplyr::filter` we provide matching criteria as a formula relating the criteria to the glue specification (a trick inspired by case_when's syntax). 
+This is useful but the reason for exclusion is not as clear as we would like, and this does not scale particularly well to multiple criteria, which are typical of the filters needed to massage real life data. For this we have written `exclude_all` which takes multiple criteria and applies them in a step-wise manner, summarising at each step. Rather than a logical expression expected by `dplyr::filter` we provide matching criteria as a formula relating the criteria to the glue specification (a trick inspired by case_when's syntax). This is very much slower than `filter` but gives fine control over the output.
 
 It should be noted that the logic of `exlude_all` is reversed compared to base `filter` for which a TRUE value is INCLUDED. In this example there are no missing values, however the behaviour of the filter when filter expressions cannot be evaluated and NAs are generated, is controlled by `na.rm`. This defaults to FALSE which means that values that cannot be evaluated are __NOT__ excluded. You can also explicitly check for missingness in the filter expression. 
+
 Exclusions produced like this are additive and the items may be counted in more than one exclusion category, and so won't add up to an exclusion total.
 
 ```{r}
@@ -170,3 +171,6 @@ p_flowchart(list(dataset1,dataset2))
 
 ```
 
+# Writing glue specs and errors
+
+TODO:

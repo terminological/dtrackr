@@ -6,3 +6,4 @@ cran-comments.md
 ^docs$
 ^pkgdown$
 .travis.yml
+^data-raw$
