@@ -9,13 +9,26 @@
   return(.summaryToNodesDf(g, .glue, .isHeader, .type, .env))
 }
 
+.doGlue = function(g,.glue,.env) {
+  tryCatch(
+    glue::glue_data(g,.glue,.envir=.env),
+    error = function(e) {
+      pframe = parent.frame()
+      glueEnv = pframe$parentenv
+      definedVars = setdiff(ls(glueEnv,all.names = TRUE), c("g",lsf.str(glueEnv,all.names = TRUE)))
+      definedVars = c(colnames(g),definedVars)
+      stop("Error: ",e$message,", variables available for use in .message are: ", paste0(definedVars, collapse = ", "))
+    })
+}
+
 # function to process glue text in context of a dplyr::summarised dataframe to produce a dataframe of messages.
 .summaryToNodesDf = function(.summary, .glue, .isHeader, .type, .env) {
   .message = .strata = NULL
   grps = .summary %>% dplyr::groups()
   if (identical(.glue,NULL)) return(.summary %>% dplyr::select(!!!grps) %>% utils::head(0) %>% dplyr::mutate(.message = character(),.isHeader = logical(),.type = character()))
   g = .summary %>% .createStrataCol()
-  g$.message = glue::glue_data(g,.glue,.envir=.env)
+  # TODO: catch errors and report environment contents at this stage.
+  g$.message = .doGlue(g,.glue,.env)
   g$.isHeader = .isHeader
   g$.type = .type
   return(g %>% dplyr::ungroup() %>% dplyr::select(!!!grps,.message,.strata,.isHeader,.type))
@@ -401,7 +414,7 @@ p_exclude_all = function(.data, ..., .headline="{.strata}", na.rm=FALSE, .type="
       dplyr::ungroup() %>%
       tidyr::complete(tidyr::nesting(!!!grps),fill=list(.count=0,.missing=0)) %>%
       dplyr::group_by(!!!grps) %>% .createStrataCol()
-    tmp$.message = rlang::eval_tidy(glue::glue_data(tmp,glueSpec,.envir = default_env), data=tmp, env = default_env)
+    tmp$.message = rlang::eval_tidy(.doGlue(tmp,glueSpec,default_env), data=tmp, env = default_env)
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
   out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
@@ -467,7 +480,8 @@ p_include_any = function(.data, ..., .headline="{.strata}", na.rm=TRUE, .type="i
       dplyr::ungroup() %>%
       tidyr::complete(tidyr::nesting(!!!grps),fill=list(.count=0)) %>%
       dplyr::group_by(!!!grps) %>% .createStrataCol()
-    tmp$.message = rlang::eval_tidy(glue::glue_data(tmp,glueSpec,.envir = default_env), data=tmp, env = default_env)
+    # tmp$.message = rlang::eval_tidy(glue::glue_data(tmp,glueSpec,.envir = default_env), data=tmp, env = default_env)
+    tmp$.message = rlang::eval_tidy(.doGlue(tmp,glueSpec,default_env), data=tmp, env = default_env)
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
   out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.incl, -.incl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
@@ -1109,7 +1123,6 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
 
   outEdge = edgesDf %>%
     dplyr::arrange(dplyr::desc(.id)) %>%
-    #dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',headport='{.headport}',weight='{.weight}']")) %>%
     dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']")) %>%
     dplyr::pull(edgeSpec) %>%
     paste0(collapse="\n")
