@@ -27,7 +27,7 @@
   grps = .summary %>% dplyr::groups()
   if (identical(.glue,NULL)) return(.summary %>% dplyr::select(!!!grps) %>% utils::head(0) %>% dplyr::mutate(.message = character(),.isHeader = logical(),.type = character()))
   g = .summary %>% .createStrataCol()
-  # TODO: catch errors and report environment contents at this stage.
+  # catch errors and report environment contents at this stage.
   g$.message = .doGlue(g,.glue,.env)
   g$.isHeader = .isHeader
   g$.type = .type
@@ -173,13 +173,20 @@
 #'
 #' @examples
 #' iris %>% p_track()
-p_track = function(.data, .messages="{.count} items", .headline="{.strata}") {
+p_track = function(.data, .messages="{.total} items", .headline="{.strata}") {
   if ("trackr_df" %in% class(.data)) return(.data)
   if (!"data.frame" %in% class(.data)) stop("dtrackr can only track data frames. Sorry.")
   old = .data %>% p_get()
-  out = .data %>% p_set(old)
-  out = out %>% p_comment(.messages = .messages, .headline = .headline, .type="info", .asOffshoot = FALSE)
-  return(out)
+  .data = .data %>% p_set(old)
+  default_env = rlang::caller_env()
+  default_env$.total = nrow(.data)
+  # .headline is a single glue spec
+  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = "info", .env=default_env)
+  # .messages is a load of glue specs
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = "info", .env=default_env)))
+  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
+
+  return(.data)
 }
 
 #' Get the dtrackr history graph
@@ -700,7 +707,7 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = name, names_prefix =
 
 #' Reshaping data using tidyr - pivot_longer
 #'
-#' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph
+#' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
 #'
 #' @inheritParams  tidyr::pivot_longer
 #' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.
@@ -1060,7 +1067,7 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
   outgraph = mergedGraph %>% .graph2dot(...)
 
   if (!identical(filename,NULL)) {
-    filename = filename %>% stringr::str_remove("\\..*$")
+
     return(outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight,rot=rot,formats = formats))
 
   } else {

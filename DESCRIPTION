@@ -23,7 +23,8 @@ Imports:
     tibble,
     tidyr,
     utils,
-    V8
+    V8,
+    fs
 Suggests: 
     knitr,
     magick,

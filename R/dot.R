@@ -121,10 +121,11 @@ save_dot = function(dot,filename,size = std_size$half, maxWidth = size$width, ma
 
   # warning("params: ",maxWidth,"x",maxHeight,"; rot: ",rot)
 
-  fname = function(extn) normalizePath(paste0(filename,".",extn),mustWork = FALSE)
+  tmp = filename %>% fs::path_ext()
+  if(tmp %in% c("dot","png","pdf","svg","ps")) formats=tmp
+  filename = filename %>% fs::path_ext_remove()
 
-
-
+  fname = function(extn) normalizePath(filename %>% fs::path_ext_set(extn),mustWork = FALSE)
 
   if ("dot" %in% formats) {
     # message("saving dot to: ",fname("dot"))
