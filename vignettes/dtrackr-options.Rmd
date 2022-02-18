@@ -1,0 +1,32 @@
+---
+title: "Dtrackr configuration"
+author: "Rob Challen"
+date: "17/02/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Naming conventions for groups
+
+Default values:
+
+```{r cars}
+
+options(dtrackr.strata_glue="{.group}:{.value}")
+options(dtrackr.strata_sep="; ")
+
+```
+
+Compare with:
+
+```{r pressure, echo=FALSE}
+
+options(dtrackr.strata_glue="{.value}")
+options(dtrackr.strata_sep=", ")
+
+```
+
+
