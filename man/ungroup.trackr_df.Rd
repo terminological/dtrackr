@@ -4,7 +4,7 @@
 \alias{ungroup.trackr_df}
 \title{Remove a stratification from a data set}
 \usage{
-\method{ungroup}{trackr_df}(x, ..., .messages = "total {.count} items", .headline = NULL)
+\method{ungroup}{trackr_df}(x, ..., .messages = .defaultMessage(), .headline = .defaultHeadline())
 }
 \arguments{
 \item{x}{- a dataframe which may be grouped (why not .data?)}

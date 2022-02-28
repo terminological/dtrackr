@@ -8,10 +8,11 @@ p_filter(
   .data,
   ...,
   .preserve = FALSE,
-  .messages = "excluded {.count.in-.count.out} items",
-  .headline = "{.strata}",
+  .messages = "excluded {.excluded} items",
+  .headline = .defaultHeadline(),
   .type = "exclusion",
-  .asOffshoot = (.type == "exclusion")
+  .asOffshoot = (.type == "exclusion"),
+  .stage = ""
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
 \item{.type}{- the format type of the action - typically an exclusion}
 
 \item{.asOffshoot}{- if the type is exclusion, asOffshoot places the information box outside of the main flow, as an exclusion.}
+
+\item{.stage}{- a name for this step in the pathway}
 }
 \value{
 the transformed .data.

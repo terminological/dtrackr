@@ -31,7 +31,7 @@ used instead.}
 the union data frame
 }
 \description{
-This merges the history of 2 dataframes and binds the rows. It calculates the total number fo resulting rows as {.count.out}
+This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as {.count.out}
 }
 \examples{
 p_bind_rows( iris \%>\% p_comment("one"), iris \%>\% p_comment("two") ) \%>\% p_get()

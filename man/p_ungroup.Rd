@@ -4,7 +4,12 @@
 \alias{p_ungroup}
 \title{Remove a stratification from a data set}
 \usage{
-p_ungroup(x, ..., .messages = "total {.count} items", .headline = NULL)
+p_ungroup(
+  x,
+  ...,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline()
+)
 }
 \arguments{
 \item{x}{- a dataframe which may be grouped (why not .data?)}

@@ -65,30 +65,41 @@ ilpd %>% flowchart()
 devtools::load_all()
 library(dtrackr)
 
-excl = exclusions_collector("default stage description: invocation {index}")
-
-excl$reset()
-
-iris %>%
+tmp = iris %>%
   track() %>% 
+  capture_exclusions() %>%
   exclude_all(
     Petal.Length > 5.8 ~ "{.excluded} long ones",
     Petal.Length < 1.3 ~ "{.excluded} short ones",
-    .exclusionHandler = excl$accumulate("overridden stage description: invocation {index}")
+    .stage = "petal length exclusion"
+  ) %>%
+  comment("leaving {.count}") %>%
+  group_by(Species) %>%
+  filter(
+    Sepal.Length >= quantile(Sepal.Length, 0.05),
+    .messages="removing {.count.in-.count.out} with sepals < q 0.05",
+    .asOffshoot = FALSE,
+    .stage = "sepal length exclusion"
   ) %>%
   comment("leaving {.count}") %>%
   exclude_all(
     Petal.Width < 0.2 ~ "{.excluded} narrow ones",
-    Petal.Width > 2.1 ~ "{.excluded} wide ones",
-    .exclusionHandler = excl$accumulate()
-  ) %>% 
-  comment("leaving {.count}") %>%
+    Petal.Width > 2.1 ~ "{.excluded} wide ones"
+  ) %>%
+  comment("leaving {.count}")
+
+tmp2 = tmp %>% p_get()
+```
+
+```{r}
+tmp %>%
   flowchart()
 
 ```
 
 ```{r}
-excl$collect()
+tmp %>% p_excluded() %>% glimpse()
 ```
+
 
 <div id="refs"></div>

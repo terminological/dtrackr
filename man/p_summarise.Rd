@@ -4,13 +4,7 @@
 \alias{p_summarise}
 \title{Summarise a data set}
 \usage{
-p_summarise(
-  .data,
-  ...,
-  .groups = NULL,
-  .messages = NULL,
-  .headline = "{.strata}"
-)
+p_summarise(.data, ..., .groups = NULL, .messages = "", .headline = "")
 }
 \arguments{
 \item{.data}{- a dataframe which may be grouped}

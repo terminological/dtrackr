@@ -49,8 +49,11 @@
 }
 
 # assumes a properly constructed node df and puts it into the graph this function does not need to check .data versus .df. .df will have a .message and a .strata column
-.writeMessagesToNode = function(.data, .df, .asOffshoot) {
+# .stage lets us give a stage a name: TODO, expose this in the API.
+.writeMessagesToNode = function(.data, .df, .asOffshoot, .excluded = NULL, .stage="") {
+  # this must be to prevent some kind of scoping issue
   .message = .strata = .isHeader = .type = .id = .strata.prev = NULL
+  stage=.stage
   # now we need to assemble the messages into a single formatted label per strata.
   # THIS IS WHERE THE LABEL FORMATTING OCCURS
   tmp = .df %>% dplyr::ungroup() %>% dplyr::select(.strata,.message,.isHeader,.type)
@@ -65,6 +68,7 @@
                              paste0(.message,"<BR ALIGN='LEFT'/>"))) %>%
     dplyr::group_by(.strata,.type) %>%
     dplyr::summarise(.label = paste0(.message, collapse = ""), .groups="drop") %>%
+    dplyr::mutate(.stage = stage) %>%
     dplyr::ungroup()
 
   # add the message to the .data@prov attribute which is a graph structure of nodes, edges and a head
@@ -73,7 +77,10 @@
   currentRank = max(current$nodes$.rank,0)
   currentMaxId = max(current$nodes$.id,0)
   nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
-  new = list()
+  new = list(
+    excluded = current$excluded,
+    capture = current$capture
+  )
   new$nodes = current$nodes %>% dplyr::bind_rows(nodes)
   #TODO: if the new node is terminal put in an invisible extra node for the branch point.
   newEdges = current$head %>%
@@ -84,10 +91,17 @@
   # somehow we would like to detect case where a .strata is missing from this newEdges set
   new$edges = current$edges %>% dplyr::bind_rows(newEdges)
 
+  leading = nodes %>% dplyr::select(.from = .id, .strata)
+
+  if(!is.null(.excluded)) {
+    towrite = .excluded %>% p_clear() %>% .untrack() %>% dplyr::left_join(leading, by=".strata") #columns will be .from, .strata, .message, .filter, .data
+    new$excluded = dplyr::bind_rows(current$excluded,towrite)
+  }
+
   if (!.asOffshoot) {
     # TODO this is where we would need to try and identify .strata that do not have messages on this rank and
     # persist them into the new$head
-    new$head = nodes %>% dplyr::select(.from = .id, .strata)
+    new$head = leading
 
   } else {
     # this rank is a terminal part of the flowchart (i.e. an exclusion)
@@ -97,6 +111,8 @@
 
   return(.data)
 }
+
+
 
 # takes two data history graphs and merges them
 .mergeGraphs = function(.graph1, .graph2) {
@@ -119,6 +135,12 @@
   .graph2$head = .graph2$head %>% dplyr::mutate(
     .from = ifelse(.from %in% idsToChange, .from+idOffset, .from)
   )
+  # change id of any exclusions
+  if(!is.null(.graph2$excluded)) {
+    .graph2$excluded = .graph2$excluded %>% dplyr::mutate(
+      .from = ifelse(.from %in% idsToChange, .from+idOffset, .from)
+    )
+  }
   # ranks.
   # potentially complex. If two graphs are different streams of same process then we want to preserve rank
   # if two processes are totally separate trying to rank them together is potentially bad.
@@ -130,17 +152,28 @@
     edges = dplyr::bind_rows(.graph1$edges,.graph2$edges),
     head = dplyr::bind_rows(.graph1$head,.graph2$head)
   )
+  # merge exclusions if any exist
+  if(!is.null(.graph1$excluded) | !is.null(.graph2$excluded)) {
+    out$excluded = dplyr::bind_rows(.graph1$excluded,.graph2$excluded)
+    out$capture = isTRUE(.graph1$capture) && isTRUE(.graph2$capture)
+  }
   return(out)
 }
 
 ## Basic operations ----
 
-.emptyGraph = function() {
+.emptyGraph = function(exclusions = FALSE,...) {
   nodes=tibble::tibble(.id=integer(),.rank=integer(),.strata=character(),.label=character(),.type=character())
   edges=tibble::tibble(.to=integer(),.from=integer(),.rel=character(), .strata=character()) # empty edges
   head=tibble::tibble(.from=integer(), .strata=character())
-  excluded=tibble::tibble(.stage=character(), .message = character(), .excl = logical(), .excl.na = logical(), .filter=character(), .data = list())
-  out = list(nodes=nodes,edges=edges,head=head)
+  return(
+    list(
+      nodes=nodes,
+      edges=edges,
+      head=head,
+      capture=FALSE
+      # excluded and capture are set in p_capture_exclusions and will not be present all the time
+  ))
 }
 
 .untrack = function(.data) {
@@ -160,6 +193,26 @@
   return("trackr_df" %in% class(.data))
 }
 
+.trackingExclusions = function(.data) {
+  old = .data %>% p_get()
+  return(
+    isTRUE(old$capture)
+  )
+}
+
+.anyExclusionsTracked = function(.data) {
+  old = .data %>% p_get()
+  return(
+    !is.null(old$excluded)
+  )
+}
+
+.isExclusionsEmpty  = function(.data) {
+  return(
+    nrow((.data %>% p_get())$exclusions)==0
+  )
+}
+
 .isHistoryEmpty = function(.data) {
   return(
     nrow((.data %>% p_get())$nodes)==0
@@ -174,8 +227,8 @@
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} variable which is the count of all rows,
-#' the {.count} variable which is the count of rows in the current group and the {.strata} which describes the current group.
-#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group
+#' the {.count} variable which is the count of rows in the current group and the {.strata} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").
+#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").
 #'
 #' @return the history graph
 #' @export
@@ -183,7 +236,7 @@
 #' @examples
 #' iris %>% p_track()
 p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline()) {
-  if ("trackr_df" %in% class(.data)) return(.data)
+  if (.isTracked(.data)) return(.data)
   if (!"data.frame" %in% class(.data)) stop("dtrackr can only track data frames. Sorry.")
   old = .data %>% p_get()
   .data = .data %>% p_set(old)
@@ -194,7 +247,34 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
   # .messages is a load of glue specs
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = "info", .env=default_env)))
   .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
+  .data = .retrack(.data)
+  if(.defaultExclusions()) {
+    message("dtrackr is capturing exclusions [getOption('dtrackr.exclusions') is TRUE]")
+    .data = .data %>% p_capture_exclusions()
+  }
+  return(.data)
+}
 
+
+#' Start capturing exclusions on a tracked dataframe.
+#'
+#' @param .data - a tracked dataframe
+#' @param .capture - Should we capture exclusions (things removed from the data set). This is useful for debugging data issues but comes at a significant cost. Defaults to the value of getOption("dtrackr.exclusions") or FALSE.
+#'
+#' @return the .data dataframe with the exclusions flag set or cleared.
+#' @export
+#'
+#' @examples
+#' iris %>% track() %>% capture_exclusions()
+p_capture_exclusions = function(.data, .capture=TRUE) {
+  if (!.isTracked(.data)) stop("dtrackr can only capture exclusions in tracked data frames. Did you forget to do a data %>% dtrackr::track()")
+  old = .data %>% p_get() # N.B. this allow the exclusions flag to be set in the tracker graph. It can never be reset though
+  old$capture = .capture
+  # if there is no exclusions table in the tracking graph initialise it now.
+  if (.capture & is.null(old$excluded)) {
+    old$excluded = tibble::tibble(.strata=character(), .message = character(), .excluded=list(), .filter=character(), .from = integer())
+  }
+  .data = .data %>% p_set(old)
   return(.data)
 }
 
@@ -211,6 +291,35 @@ p_get = function(.data) {
   out = attr(.data,"prov")
   if (identical(out,NULL)) out = .emptyGraph()
   return(out)
+}
+
+#' Get the dtrackr excluded data record
+#'
+#' @param .data - a dataframe which may be grouped
+#' @param simplify - return a single summary dataframe of all exclusions.
+#'
+#' @return a dataframe of the excluded data. This has a nested structure containing records excluded at each part of the pipeline.
+#' @export
+#'
+#' @examples
+#' iris %>% p_excluded()
+p_excluded = function(.data, simplify = TRUE) {
+  if (!.anyExclusionsTracked(.data)) stop("Exclusions were not tracked for this data frame. Did you forget to call '.data %>% capture_exclusions()'?")
+  out = .data %>% p_get()
+  tmp = out$excluded %>%
+      dplyr::left_join(out$nodes %>% select(.id,.rank,.stage), by=c(".from"=".id")) %>%
+      dplyr::mutate(.rank = dense_rank(.rank)) %>%
+      dplyr::mutate(.stage = ifelse(.stage=="",paste0("stage ",.rank), .stage)) %>%
+      dplyr::select(-.from) %>%
+      dplyr::select(.stage, .strata, .message, .excluded, .filter, .rank)
+  if (simplify) {
+    return(
+      tmp %>%
+        mutate(.excluded = purrr::map(.excluded, ~ mutate(.x, across(.cols = everything(), .fns = as.character)))) %>%
+        unnest(.excluded) %>%
+        select(-.rank)
+    )
+  }
 }
 
 #' Set the dtrackr history graph
@@ -388,7 +497,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #' @param na.rm - (default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)
 #' @param .type - default "exclusion": used to define formatting
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = TRUE).
-#' @param .exclusionHandler - an optional function or purrr style lambda that takes a dataframe as the single argument. Any excluded cases (plus a column with the reason for exclusion) are passed to this function, which for example could write them to as file (default = NULL).
+#' @param .stage - a name for this step in the pathway
 #'
 #' @return the filtered .data dataframe with the history graph updated
 #' @export
@@ -400,7 +509,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #'       Petal.Length < 2 ~ "{.excluded} short ones"
 #'    ) %>%
 #'    p_get()
-p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, .type="exclusion", .asOffshoot = TRUE, .exclusionHandler = NULL) { #.exclusions = .defaultExclusions()
+p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, .type="exclusion", .asOffshoot = TRUE, .stage="") {
   .excl = .excl.na = .retain = NULL
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
@@ -416,15 +525,12 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
   grps = .data %>% dplyr::groups()
   grpLabels = grps %>% lapply(as_label) %>% unlist() %>% as.character()
   out = .data %>% dplyr::mutate(.retain = TRUE)
-  exclusionDetails = !is.null(.exclusionHandler)
-  if (exclusionDetails) {
-    .exclusionHandler = try({purrr::as_mapper(.exclusionHandler)})
-  }
-  excluded = tibble::tibble()
+  excluded = NULL
 
   for(filter in filters) {
     glueSpec = rlang::f_rhs(filter)
     filt = rlang::f_lhs(filter)
+    filtStr = paste0(sapply(deparse(filt),trimws),collapse=" ")
     out = out %>% dplyr::group_modify(function(d,g,...) {
       d %>%
         dplyr::mutate(.excl = rlang::eval_tidy(filt,data = d, env=default_env)) %>%
@@ -441,20 +547,28 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
       ) %>%
       dplyr::ungroup() %>%
       tidyr::complete(tidyr::nesting(!!!grps),fill=list(.count=0,.missing=0)) %>%
-      dplyr::group_by(!!!grps) %>% .createStrataCol()
+      dplyr::group_by(!!!grps) %>%
+      .createStrataCol()
     tmp$.message = rlang::eval_tidy(.doGlue(tmp,glueSpec,default_env), data=tmp, env = default_env)
-    if(exclusionDetails) {
-      exclusions = out %>% filter(.excl.na) %>% mutate(
-        .filter = paste0(sapply(deparse(filt),trimws),collapse=" ") # get a readable string for the filter expression
-      ) %>% inner_join(tmp %>% select(!!!grps,.message), by=grpLabels)
-      excluded = excluded %>% bind_rows(exclusions)
+    if(.trackingExclusions(.data)) {
+      # browser()
+      exclusions = out %>%
+        dplyr::filter(.excl.na) %>%
+        dplyr::select(-.retain,-.excl.na,-.excl) %>%
+        dplyr::group_by(!!!grps) %>%
+        .createStrataCol() %>%
+        dplyr::inner_join(
+          tmp %>% dplyr::select(.strata, .message), by=".strata"
+        ) %>%
+        dplyr::group_by() %>%
+        tidyr::nest(.excluded = !c(.strata,.message)) %>%
+        dplyr::mutate(.filter = filtStr) %>%
+        dplyr::select(.strata,.message,.excluded,.filter)
+      excluded = dplyr::bind_rows(excluded,exclusions)
     }
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
-  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
-  if(exclusionDetails) {
-    try(.exclusionHandler(excluded %>% select(-.retain,.excl.na) %>% select(.message,.excl,everything(),.filter)))
-  }
+  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot, .excluded=excluded, .stage = .stage)
   return(out %>% .retrack())
 }
 
@@ -483,7 +597,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 #'       Petal.Length < 2 ~ "{.included} short ones"
 #'    ) %>%
 #'    p_get()
-p_include_any = function(.data, ..., .headline="{.strata}", na.rm=TRUE, .type="inclusion", .asOffshoot = FALSE) {
+p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .type="inclusion", .asOffshoot = FALSE) {
   .incl = .incl.na = .retain = NULL
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
@@ -549,7 +663,7 @@ p_include_any = function(.data, ..., .headline="{.strata}", na.rm=TRUE, .type="i
 #'       .messages="{count} items with {avg} petal length"
 #'    ) %>%
 #'    p_get()
-p_ungroup = function(x, ..., .messages = "total {.count} items", .headline=NULL) {
+p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline()) {
   .data = x %>% .untrack()
   dots = dplyr::enexprs(...)
   if(length(dots)==0) dots = list(.count=rlang::expr(dplyr::n()))
@@ -577,7 +691,7 @@ p_ungroup = function(x, ..., .messages = "total {.count} items", .headline=NULL)
 #'    p_group_by(Species) %>%
 #'    p_summarise(avg = mean(Petal.Length), .messages="{avg} length") %>%
 #'    p_get()
-p_summarise = function(.data, ..., .groups=NULL, .messages = NULL, .headline="{.strata}") {
+p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="") {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   grps = .data %>% dplyr::groups()
@@ -828,7 +942,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 #' @examples
 #' p_bind_rows(iris, iris %>% p_filter(Petal.Length > 5)) %>%
 #'    p_group_by(Species) %>% p_distinct() %>% p_get()
-p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count.in-.count.out} duplicates", .headline="{.strata}") {
+p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count.in-.count.out} duplicates", .headline=.defaultHeadline()) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
@@ -857,6 +971,7 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #' @param .headline - a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}
 #' @param .type - the format type of the action - typically an exclusion
 #' @param .asOffshoot - if the type is exclusion, asOffshoot places the information box outside of the main flow, as an exclusion.
+#' @param .stage - a name for this step in the pathway
 #' @inheritParams dplyr::filter
 #'
 #' @return the transformed .data.
@@ -864,21 +979,35 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #'
 #' @examples
 #' iris %>% p_group_by(Species) %>% p_filter(Petal.Length > 5) %>% p_get()
-p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline="{.strata}", .type = "exclusion", .asOffshoot=(.type=="exclusion")) {
+p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline=.defaultHeadline(), .type = "exclusion", .asOffshoot=(.type=="exclusion"), .stage="") {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
+  filterExprs = enexprs(...)
 
   out = .data %>% dplyr::filter(..., .preserve = .preserve)
 
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .env=default_env)
   tmp = .beforeAfterGroupwiseCounts(.data,out)
-  tmp = tmp %>% mutate(.excluded = .count.in-.count.out)
+  tmp = tmp %>% dplyr::mutate(.excluded = .count.in-.count.out)
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .env=default_env)))
 
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot)
+  excluded = NULL
+  if(.trackingExclusions(.data)) {
+    excluded = .data %>%
+      dplyr::anti_join(out, by=colnames(.data)) %>%
+      dplyr::group_by(!!!grps) %>%
+      .createStrataCol() %>%
+      dplyr::inner_join(tmpBody %>% select(.strata,.message), by=".strata") %>%
+      dplyr::ungroup() %>%
+      tidyr::nest(.excluded = !c(.strata,.message)) %>%
+      dplyr::mutate(.filter = paste0(sapply(sapply(filterExprs,deparse),trimws), collapse=", "))
+  }
+
+  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot, .excluded=excluded, .stage = .stage)
   return(out %>% .retrack())
+
 }
 
 
@@ -909,7 +1038,7 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
 #'       .messages="{.count.in} in, {.count.out} out"
 #'    ) %>%
 #'    p_get()
-p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headline="{.strata}", .type = "modify") {
+p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headline=.defaultHeadline(), .type = "modify") {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
@@ -1055,92 +1184,6 @@ p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.coun
 }
 
 ## Output operations ====
-
-#' Exclusions to CSV writer
-#'
-#' Saves exclusions at each invocation of exclude_all into separate csv files in (by default) the current working directory
-#' TODO: needs an example of use
-#'
-#' @param filename - a path to a file to save the exclusion
-#'
-#' @export
-#'
-#' @examples
-#' iris %>%
-#'    p_exclude_all(
-#'       Petal.Length > 5 ~ "{.excluded} long ones",
-#'       Petal.Length < 2 ~ "{.excluded} short ones",
-#'       .exclusionHandler = exclusions_to_csv("iris_exclusions.csv")
-#'    ) %>%
-#'    p_get()
-exclusions_to_csv = function(filename = tempfile(pattern = "exclusion_",fileext = ".csv",tmpdir = getwd())) {
-  return(function(dataframe) {
-    message("writing excluded rows to ",filename)
-    readr::write_csv(dataframe, file=filename)
-  })
-}
-
-# TODO: split this out to allow auto column size code to be used elsewhere
-#' Exclusions to dataframe collector
-#'
-#' This collector allows exclusions to be collected in parallel to a dtrackr pipeline into a single dataframe, for later retrieval.
-#'
-#' @param stageName - a glue specification for the name of the stages. This can use {index} to count the invocation of exclude_all in the context of the pipeline..
-#'
-#' @return a collector object that defines a function "accumulate(stageName)" that can be used as an .exclusionHandler in exclude_all calls
-#' @export
-#'
-#' @examples
-#' excl = exclusions_collector("default stage description: invocation {index}")
-#'
-#' iris %>%
-#'    p_exclude_all(
-#'       Petal.Length > 5 ~ "{.excluded} long ones",
-#'       Petal.Length < 2 ~ "{.excluded} short ones",
-#'       .exclusionHandler = excl$accumulate("overridden stage description: invocation {index}")
-#'    ) %>%
-#'    p_exclude_all(
-#'       Petal.Width < 0.3 ~ "{.excluded} narrow ones",
-#'       Petal.Width > 2.1 ~ "{.excluded} wide ones",
-#'       .exclusionHandler = excl$accumulate()
-#'    ) %>%
-#'    p_get()
-#'
-#' excl$collect()
-exclusions_collector = function(stageName = "stage {index} exclusion") {
-  e1 = new.env(parent = environment())
-  with(e1, {
-
-    .index = 1
-    .exclusions = tibble()
-    .stageName = stageName
-
-    reset = function() {
-      .exclusions <<- tibble()
-      .index <<- 1
-    }
-
-    accumulate = function(stageName = .stageName) {
-      index = .index
-      stageName = glue::glue(stageName)
-      return(function(ex) {
-        # this is the function that will be called when a list of exclusions is determined by the exclude_all
-        # convert everything to character in case the data changes nature in between exclusion steps (e.g. factors get dropped)
-        ex = ex %>% mutate(.stage = stageName) %>% select(.stage,everything()) %>% mutate(across(everything(), as.character))
-        .exclusions <<- .exclusions %>% bind_rows(ex)
-        .index <<- .index+1
-      })
-    }
-
-    collect = function() {
-      return(.exclusions)
-    }
-
-  })
-  class(e1) = "dtrackr_collector"
-  return(e1)
-}
-
 
 is_running_in_chunk = function() {
    isTRUE(try(rstudioapi::getActiveDocumentContext()$id != "#console"))
@@ -1290,6 +1333,15 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
 #' @inherit p_track
 #' @export
 track <- p_track
+
+
+#' @inherit p_capture_exclusions
+#' @export
+capture_exclusions <- p_capture_exclusions
+
+#' @inherit p_excluded
+#' @export
+excluded <- p_excluded
 
 #' @inherit p_exclude_all
 #' @export

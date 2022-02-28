@@ -10,7 +10,7 @@ p_distinct(
   ...,
   .keep = FALSE,
   .messages = "removing {.count.in-.count.out} duplicates",
-  .headline = "{.strata}"
+  .headline = .defaultHeadline()
 )
 }
 \arguments{

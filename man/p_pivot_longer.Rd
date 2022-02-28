@@ -29,16 +29,23 @@ p_pivot_longer(
 \item{cols}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> Columns to pivot into
 longer format.}
 
-\item{names_to}{A string specifying the name of the column to create
-from the data stored in the column names of \code{data}.
-
-Can be a character vector, creating multiple columns, if \code{names_sep}
-or \code{names_pattern} is provided. In this case, there are two special
+\item{names_to}{A character vector specifying the new column or columns to
+create from the information stored in the column names of \code{data} specified
+by \code{cols}.
+\itemize{
+\item If length 0, or if \code{NULL} is supplied, no columns will be created.
+\item If length 1, a single column will be created which will contain the
+column names specified by \code{cols}.
+\item If length >1, multiple columns will be created. In this case, one of
+\code{names_sep} or \code{names_pattern} must be supplied to specify how the
+column names should be split. There are also two additional character
 values you can take advantage of:
 \itemize{
-\item \code{NA} will discard that component of the name.
-\item \code{.value} indicates that component of the name defines the name of the
-column containing the cell values, overriding \code{values_to}.
+\item \code{NA} will discard the corresponding component of the column name.
+\item \code{".value"} indicates that the corresponding component of the column
+name defines the name of the output column containing the cell values,
+overriding \code{values_to} entirely.
+}
 }}
 
 \item{names_prefix}{A regular expression used to remove matching text
@@ -72,20 +79,28 @@ If these arguments do not give you enough control, use
 \code{pivot_longer_spec()} to create a spec object and process manually as
 needed.}
 
-\item{names_ptypes}{A list of column name-prototype pairs.
-A prototype (or ptype for short) is a zero-length vector (like \code{integer()}
-or \code{numeric()}) that defines the type, class, and attributes of a vector.
-Use these arguments to confirm that the created columns are the types that
-you expect.
+\item{names_ptypes}{Optionally, a list of column name-prototype
+pairs. Alternatively, a single empty prototype can be supplied, which will
+be applied to all columns. A prototype (or ptype for short) is a
+zero-length vector (like \code{integer()} or \code{numeric()}) that defines the type,
+class, and attributes of a vector. Use these arguments if you want to
+confirm that the created columns are the types that you expect. Note that
+if you want to change (instead of confirm) the types of specific columns,
+you should use \code{names_transform} or \code{values_transform} instead.
+
+For backwards compatibility reasons, supplying \code{list()} is interpreted as
+being identical to \code{NULL} rather than as using a list prototype on all
+columns. Expect this to change in the future.}
+
+\item{names_transform}{Optionally, a list of column
+name-function pairs. Alternatively, a single function can be supplied,
+which will be applied to all columns. Use these arguments if you need to
+change the types of specific columns. For example, \code{names_transform = list(week = as.integer)} would convert a character variable called \code{week}
+to an integer.
 
 If not specified, the type of the columns generated from \code{names_to} will
 be character, and the type of the variables generated from \code{values_to}
 will be the common type of the input columns used to generate them.}
-
-\item{names_transform}{A list of column name-function pairs.
-Use these arguments if you need to change the type of specific columns.
-For example, \code{names_transform = list(week = as.integer)} would convert
-a character week variable to an integer.}
 
 \item{names_repair}{What happens if the output has invalid column names?
 The default, \code{"check_unique"} is to error if the columns are duplicated.
@@ -104,20 +119,28 @@ in the \code{value_to} column. This effectively converts explicit missing values
 to implicit missing values, and should generally be used only when missing
 values in \code{data} were created by its structure.}
 
-\item{values_ptypes}{A list of column name-prototype pairs.
-A prototype (or ptype for short) is a zero-length vector (like \code{integer()}
-or \code{numeric()}) that defines the type, class, and attributes of a vector.
-Use these arguments to confirm that the created columns are the types that
-you expect.
+\item{values_ptypes}{Optionally, a list of column name-prototype
+pairs. Alternatively, a single empty prototype can be supplied, which will
+be applied to all columns. A prototype (or ptype for short) is a
+zero-length vector (like \code{integer()} or \code{numeric()}) that defines the type,
+class, and attributes of a vector. Use these arguments if you want to
+confirm that the created columns are the types that you expect. Note that
+if you want to change (instead of confirm) the types of specific columns,
+you should use \code{names_transform} or \code{values_transform} instead.
+
+For backwards compatibility reasons, supplying \code{list()} is interpreted as
+being identical to \code{NULL} rather than as using a list prototype on all
+columns. Expect this to change in the future.}
+
+\item{values_transform}{Optionally, a list of column
+name-function pairs. Alternatively, a single function can be supplied,
+which will be applied to all columns. Use these arguments if you need to
+change the types of specific columns. For example, \code{names_transform = list(week = as.integer)} would convert a character variable called \code{week}
+to an integer.
 
 If not specified, the type of the columns generated from \code{names_to} will
 be character, and the type of the variables generated from \code{values_to}
 will be the common type of the input columns used to generate them.}
-
-\item{values_transform}{A list of column name-function pairs.
-Use these arguments if you need to change the type of specific columns.
-For example, \code{names_transform = list(week = as.integer)} would convert
-a character week variable to an integer.}
 
 \item{...}{Additional arguments passed on to methods.}
 
@@ -129,5 +152,5 @@ a character week variable to an integer.}
 the result of the pivot_wider but with a history graph.
 }
 \description{
-A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph
+A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
 }

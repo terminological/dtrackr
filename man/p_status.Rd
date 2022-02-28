@@ -7,8 +7,8 @@
 p_status(
   .data,
   ...,
-  .messages = NULL,
-  .headline = NULL,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline(),
   .type = "info",
   .asOffshoot = FALSE
 )

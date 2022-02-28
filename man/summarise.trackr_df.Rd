@@ -4,13 +4,7 @@
 \alias{summarise.trackr_df}
 \title{Summarise a data set}
 \usage{
-\method{summarise}{trackr_df}(
-  .data,
-  ...,
-  .groups = NULL,
-  .messages = NULL,
-  .headline = "{.strata}"
-)
+\method{summarise}{trackr_df}(.data, ..., .groups = NULL, .messages = "", .headline = "")
 }
 \arguments{
 \item{.data}{- a dataframe which may be grouped}

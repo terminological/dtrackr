@@ -7,7 +7,7 @@
 include_any(
   .data,
   ...,
-  .headline = "{.strata}",
+  .headline = .defaultHeadline(),
   na.rm = TRUE,
   .type = "inclusion",
   .asOffshoot = FALSE

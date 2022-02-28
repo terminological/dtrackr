@@ -10,7 +10,7 @@ p_group_modify(
   ...,
   .keep = FALSE,
   .messages = NULL,
-  .headline = "{.strata}",
+  .headline = .defaultHeadline(),
   .type = "modify"
 )
 }

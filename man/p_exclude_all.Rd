@@ -7,10 +7,11 @@
 p_exclude_all(
   .data,
   ...,
-  .headline = "{.strata}",
+  .headline = .defaultHeadline(),
   na.rm = FALSE,
   .type = "exclusion",
-  .asOffshoot = TRUE
+  .asOffshoot = TRUE,
+  .stage = ""
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ variables from the environment and {.excluded} and {.matched} or {.missing} (exc
 \item{.type}{- default "exclusion": used to define formatting}
 
 \item{.asOffshoot}{- do you want this comment to be an offshoot of the main flow (default = TRUE).}
+
+\item{.stage}{- a name for this step in the pathway}
 }
 \value{
 the filtered .data dataframe with the history graph updated
