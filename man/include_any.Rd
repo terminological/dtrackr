@@ -17,7 +17,7 @@ include_any(
 \item{.data}{- a dataframe which may be grouped}
 
 \item{...}{- a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables,
-variables from the environment and {.included} and {.matched} or {.missing} (included = matched+missing), {.count} and {.total} - group and overall counts respectively, e.g. "excluding {.matched} items and {.missing} with missing values".}
+variables from the environment and \{.included\} and \{.matched\} or \{.missing\} (included = matched+missing), \{.count\} and \{.total\} - group and overall counts respectively, e.g. "excluding \{.matched\} items and \{.missing\} with missing values".}
 
 \item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment}
 

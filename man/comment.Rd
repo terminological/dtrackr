@@ -15,9 +15,10 @@ comment(
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
 
-\item{.messages}{- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} of all rows, the {.count} variable which is the count in each group and {.strata} a description of the group}
+\item{.messages}{- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} of all rows,
+the \{.count\} variable which is the count in each group and \{.strata\} a description of the group}
 
-\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data)and {.strata}}
+\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data)and \{.strata\}}
 
 \item{.type}{- one of "info","...,"exclusion": used to define formatting}
 

@@ -33,9 +33,9 @@ Can be \code{NULL} or a variable:
 If omitted, it will default to \code{n}. If there's already a column called \code{n},
 it will error, and require you to specify the name.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 }
 \value{
 the .data but dplyr::ungrouped.

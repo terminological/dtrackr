@@ -30,9 +30,9 @@ our naming conventions.}
 data? The default is \code{TRUE} except when \code{.data} has been previously
 grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{group_by_drop_default()}} for details.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or {.cols} which is the columns that are being grouped by.}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.cols\} which is the columns that are being grouped by.}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, or {.cols}.}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.cols\}.}
 }
 \value{
 the .data but grouped.

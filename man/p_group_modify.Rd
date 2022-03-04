@@ -23,9 +23,9 @@ p_group_modify(
 
 \item{.keep}{- are the grouping variables kept in d, or split out to g (the default)}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
 \item{.type}{- default "modify": used to define formatting}
 }
@@ -35,9 +35,9 @@ the transformed .data.
 \description{
 Group modifying a data set acts in the normal way. The internal mechanics of the modify function are opaque to the history.
 This means these can be used to wrap any unsupported operation.
-Prior to the operation the size of the group is calculated {.count.in} and
-after the operation the output size {.count.out}
-The group {.strata} is also available (if grouped) for reporting
+Prior to the operation the size of the group is calculated \{.count.in\} and
+after the operation the output size \{.count.out\}
+The group \{.strata\} is also available (if grouped) for reporting
 }
 \examples{
 iris \%>\%

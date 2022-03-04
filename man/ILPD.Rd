@@ -11,7 +11,7 @@ A data frame with 583 rows and 11 variables:
   \item{Gender}{}
   \item{Total_Bilirubin}{}
   \item{Direct_Bilirubin}{}
-  \item{Alkaline_Phosphotase}{}
+  \item{Alkaline_Phosphatase}{}
   \item{Alamine_Aminotransferase}{}
   \item{Aspartate_Aminotransferase}{}
   \item{Total_Protein}{}

@@ -15,8 +15,9 @@
     error = function(e) {
       pframe = parent.frame()
       glueEnv = pframe$parentenv
-      definedVars = setdiff(ls(glueEnv,all.names = TRUE), c("g",lsf.str(glueEnv,all.names = TRUE)))
+      definedVars = setdiff(ls(glueEnv,all.names = TRUE), c("g",utils::lsf.str(glueEnv,all.names = TRUE)))
       definedVars = c(colnames(g),definedVars)
+      definedVars = definedVars[!(definedVars %in% c(".glue",".env"))]
       stop("Error: ",e$message,", variables available for use in .message are: ", paste0(definedVars, collapse = ", "))
     })
 }
@@ -37,8 +38,8 @@
 # .data might be a full data set or a dplyr::summarised data set but this takes the grouping and makes it into a single column with the names and values of the group
 # .data = tibble(a=c(1,1,2,2),b=c(2,2,1,1),c=c("A","B","C","D")) %>% group_by(a,b)
 .createStrataCol = function(.data) {
-  .glue = getOption("dtrackr.strata_glue", default = "{.group}:{.value}")
-  .sep = getOption("dtrackr.strata_sep",default = "; ")
+  .glue = .defaultStrataGlue()
+  .sep = .defaultStrataSep()
   if (".strata" %in% colnames(.data)) return(.data)
   strataCols = .data %>% dplyr::group_vars()
   if (length(strataCols)==0) return(.data %>% dplyr::mutate(.strata = ""))
@@ -150,12 +151,13 @@
   out = list(
     nodes = dplyr::bind_rows(.graph1$nodes,.graph2$nodes),
     edges = dplyr::bind_rows(.graph1$edges,.graph2$edges),
-    head = dplyr::bind_rows(.graph1$head,.graph2$head)
+    head = dplyr::bind_rows(.graph1$head,.graph2$head),
+    capture = isTRUE(.graph1$capture) | isTRUE(.graph2$capture)
   )
   # merge exclusions if any exist
   if(!is.null(.graph1$excluded) | !is.null(.graph2$excluded)) {
     out$excluded = dplyr::bind_rows(.graph1$excluded,.graph2$excluded)
-    out$capture = isTRUE(.graph1$capture) && isTRUE(.graph2$capture)
+
   }
   return(out)
 }
@@ -219,16 +221,41 @@
   )
 }
 
-.defaultExclusions = function() getOption("dtrackr.exclusions",default = FALSE)
-.defaultMessage = function() getOption("dtrackr.default_message",default = "{.count} items")
-.defaultHeadline = function() getOption("dtrackr.default_headline",default = "{.strata}")
+## Defaults ----
+
+.defaultExclusions = function() {
+  getOption("dtrackr.exclusions",default = FALSE)
+}
+
+.defaultMessage = function() {
+  getOption("dtrackr.default_message",default = "{.count} items")
+}
+
+.defaultHeadline = function() {
+  getOption("dtrackr.default_headline",default = "{.strata}")
+}
+
+.defaultStrataGlue = function() {
+  getOption("dtrackr.strata_glue", default = "{.group}:{.value}")
+}
+
+.defaultStrataSep = function() {
+  getOption("dtrackr.strata_sep",default = "; ")
+}
+
+.defaultShowZeroExclusions = function() {
+  getOption("dtrackr.show_zero_exclusions",default = TRUE)
+}
+
+
+## Tracking ----
 
 #' Start tracking the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
-#' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} variable which is the count of all rows,
-#' the {.count} variable which is the count of rows in the current group and the {.strata} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").
-#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").
+#' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} variable which is the count of all rows,
+#' the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").
+#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").
 #'
 #' @return the history graph
 #' @export
@@ -302,22 +329,30 @@ p_get = function(.data) {
 #' @export
 #'
 #' @examples
-#' iris %>% p_excluded()
+#' iris %>%
+#'  p_track() %>%
+#'  p_capture_exclusions() %>%
+#'  p_exclude_all(
+#'    Petal.Length > 5.8 ~ "{.excluded} long ones",
+#'    Petal.Length < 1.3 ~ "{.excluded} short ones",
+#'    .stage = "petal length exclusion"
+#'  ) %>% p_excluded()
 p_excluded = function(.data, simplify = TRUE) {
+  .id = .rank = .stage = .from = .strata = .message = .excluded = .filter = NULL
   if (!.anyExclusionsTracked(.data)) stop("Exclusions were not tracked for this data frame. Did you forget to call '.data %>% capture_exclusions()'?")
   out = .data %>% p_get()
   tmp = out$excluded %>%
       dplyr::left_join(out$nodes %>% select(.id,.rank,.stage), by=c(".from"=".id")) %>%
-      dplyr::mutate(.rank = dense_rank(.rank)) %>%
+      dplyr::mutate(.rank = dplyr::dense_rank(.rank)) %>%
       dplyr::mutate(.stage = ifelse(.stage=="",paste0("stage ",.rank), .stage)) %>%
       dplyr::select(-.from) %>%
       dplyr::select(.stage, .strata, .message, .excluded, .filter, .rank)
   if (simplify) {
     return(
       tmp %>%
-        mutate(.excluded = purrr::map(.excluded, ~ mutate(.x, across(.cols = everything(), .fns = as.character)))) %>%
-        unnest(.excluded) %>%
-        select(-.rank)
+        dplyr::mutate(.excluded = purrr::map(.excluded, ~ dplyr::mutate(.x, dplyr::across(.cols = dplyr::everything(), .fns = as.character)))) %>%
+        tidyr::unnest(.excluded) %>%
+        dplyr::select(-.rank)
     )
   }
 }
@@ -391,8 +426,9 @@ p_count_if = function(...) {
 #' Add a generic comment to the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
-#' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} of all rows, the {.count} variable which is the count in each group and {.strata} a description of the group
-#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data)and {.strata}
+#' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} of all rows,
+#' the \{.count\} variable which is the count in each group and \{.strata\} a description of the group
+#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data)and \{.strata\}
 #' @param .type - one of "info","...,"exclusion": used to define formatting
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
 #'
@@ -443,7 +479,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... - any normal dplyr::summarise specification, e.g. count=n() or av = mean(x) etc.
-#' @param .messages - a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the .strata, or any variables defined in the calling environment
+#' @param .messages - a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the \{.strata\}, or any variables defined in the calling environment
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
 #' @param .type - one of "info","exclusion": used to define formatting
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
@@ -462,7 +498,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
   dots = rlang::enquos(...)
   .data = .data %>% .untrack()
   if(identical(.messages,NULL) & identical(.headline,NULL)) {
-    warning("p_status is missing both .messages and .headline specification. Did you forget to name them?")
+    warning("p_status is missing both .messages and .headline specification. Did you forget to explicitly name them?")
     return(.data %>% .retrack())
   }
   if(length(dots)==0) {
@@ -492,7 +528,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... - a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables
-#' variables from the environment and {.excluded} and {.matched} or {.missing} (excluded = matched+missing), {.count} and {.total} - group and overall counts respectively, e.g. "excluding {.matched} items and {.missing} with missing values".
+#' variables from the environment and \{.excluded\} and \{.matched\} or \{.missing\} (excluded = matched+missing), \{.count\} and \{.total\} - group and overall counts respectively, e.g. "excluding \{.matched\} items and \{.missing\} with missing values".
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
 #' @param na.rm - (default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)
 #' @param .type - default "exclusion": used to define formatting
@@ -510,7 +546,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #'    ) %>%
 #'    p_get()
 p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, .type="exclusion", .asOffshoot = TRUE, .stage="") {
-  .excl = .excl.na = .retain = NULL
+  .excl = .excl.na = .retain = .strata = .message = .excluded = .filter = NULL
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   filters = rlang::list2(...)
@@ -521,9 +557,9 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
   default_env$.total = nrow(.data)
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type=.type, .env=default_env)
   #TODO: can we get rid of this?:
-  messages = .dataToNodesDf(.data,.glue = "exclusions:",.isHeader=FALSE,.type=.type,.env = default_env)
+  messages = .dataToNodesDf(.data,.glue = "no exclusions",.isHeader=FALSE,.type=.type,.env = default_env) %>% mutate(.excluded = -1)
   grps = .data %>% dplyr::groups()
-  grpLabels = grps %>% lapply(as_label) %>% unlist() %>% as.character()
+  grpLabels = grps %>% lapply(rlang::as_label) %>% unlist() %>% as.character()
   out = .data %>% dplyr::mutate(.retain = TRUE)
   excluded = NULL
 
@@ -560,7 +596,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
         dplyr::inner_join(
           tmp %>% dplyr::select(.strata, .message), by=".strata"
         ) %>%
-        dplyr::group_by() %>%
+        dplyr::group_by() %>% # ?is this supposed to be here
         tidyr::nest(.excluded = !c(.strata,.message)) %>%
         dplyr::mutate(.filter = filtStr) %>%
         dplyr::select(.strata,.message,.excluded,.filter)
@@ -568,6 +604,8 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
     }
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
+  if(!.defaultShowZeroExclusions()) messages = messages %>% filter(.excluded != 0)
+  messages = messages %>% group_by(!!!grps) %>% filter(!(.message=="no exclusions" & n() > 1))
   out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot, .excluded=excluded, .stage = .stage)
   return(out %>% .retrack())
 }
@@ -581,7 +619,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... - a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables,
-#' variables from the environment and {.included} and {.matched} or {.missing} (included = matched+missing), {.count} and {.total} - group and overall counts respectively, e.g. "excluding {.matched} items and {.missing} with missing values".
+#' variables from the environment and \{.included\} and \{.matched\} or \{.missing\} (included = matched+missing), \{.count\} and \{.total\} - group and overall counts respectively, e.g. "excluding \{.matched\} items and \{.missing\} with missing values".
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
 #' @param na.rm - (default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)
 #' @param .type - default "exclusion": used to define formatting
@@ -647,8 +685,8 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #'
 #' @param x - a dataframe which may be grouped (why not .data?)
 #' @param ... a set of dplyr summary expressions. If left blank a default of ".count=n()" will be filled in
-#' @param .messages - a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or {.count}. the default is "total {.count} items"
-#' @param .headline - a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or {.count}.
+#' @param .messages - a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.count\}. the default is "total {.count} items"
+#' @param .headline - a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or \{.count\}.
 #'
 #' @return the .data but dplyr::ungrouped.
 #' @export
@@ -658,9 +696,9 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #'    p_group_by(Species) %>%
 #'    p_comment("A test") %>%
 #'    p_ungroup(
-#'       avg = mean(Petal.Length),
-#'       count = dplyr::n(),
-#'       .messages="{count} items with {avg} petal length"
+#'       my_avg = mean(Petal.Length),
+#'       my_count = dplyr::n(),
+#'       .messages="{my_count} items with {my_avg} petal length"
 #'    ) %>%
 #'    p_get()
 p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline()) {
@@ -679,8 +717,8 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr summary expressions.
-#' @param .messages - a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or {.strata}
-#' @param .headline - a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or {.strata}
+#' @param .messages - a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
+#' @param .headline - a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
 #' @param .groups	- Experimental lifecycle Grouping structure of the result.
 #'
 #' @return the .data but ungrouped.
@@ -715,8 +753,8 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="") {
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr summary espressions.
-#' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.
-#' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.
+#' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #'
 #' @return the .data but dplyr::ungrouped.
 #' @export
@@ -806,19 +844,19 @@ p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline =
 
 #' Reshaping data using tidyr - pivot_wider
 #'
-#' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph
+#' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
 #'
 #' @inheritParams  tidyr::pivot_wider
-#' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.
-#' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.
+#' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #'
 #' @return the result of the pivot_wider but with a history graph.
 #' @export
-p_pivot_wider = function(data, id_cols = NULL, names_from = name, names_prefix = "",
+p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), names_prefix = "",
                          names_sep = "_",names_glue = NULL,names_sort = FALSE,names_repair = "check_unique",
-                         values_from = value,values_fill = NULL, values_fn = NULL, ..., .messages = "", .headline = "") {
-  names_from <- enquo(names_from)
-  values_from <- enquo(values_from)
+                         values_from = as.symbol("value"),values_fill = NULL, values_fn = NULL, ..., .messages = "", .headline = "") {
+  names_from <- rlang::enquo(names_from)
+  values_from <- rlang::enquo(values_from)
   .data = data %>% .untrack()
   out = .data %>% tidyr::pivot_wider(
     id_cols = {{id_cols}},
@@ -843,8 +881,8 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = name, names_prefix =
 #' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
 #'
 #' @inheritParams  tidyr::pivot_longer
-#' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.
-#' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.
+#' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #'
 #' @return the result of the pivot_wider but with a history graph.
 #' @export
@@ -889,8 +927,8 @@ p_pivot_longer = function(data,
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr column expressions.
-#' @param .messages - a set of glue specs. The glue code can use any global variable, or {.cols} which is the columns that are being grouped by.
-#' @param .headline - a headline glue spec. The glue code can use any global variable, or {.cols}.
+#' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.cols\} which is the columns that are being grouped by.
+#' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.cols\}.
 #' @inheritParams dplyr::group_by
 #'
 #' @return the .data but grouped.
@@ -899,7 +937,8 @@ p_pivot_longer = function(data,
 #' @examples
 #' iris %>% p_group_by(Species, .messages="stratify by {.cols}") %>% p_comment("{.strata}") %>% p_get()
 p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL) {
-  if(!.add & is.grouped_df(.data)) .data = .data %>% ungroup()
+  # explicitly dtrackr::ungroup is .add is false to generate an un-grouped node in the graph. otherwise we get an n x m crossover.
+  if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup()
   .data = .data %>% .untrack()
   col = dplyr::ensyms(...)
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
@@ -925,16 +964,16 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 
 #' Distinct values of data
 #'
-#' Distinct acts in the same way as DPLYR. Prior to the operation the size of the group is calculated {.count.in} and
-#' after the operation the output size {.count.out}
-#' The group {.strata} is also available (if grouped) for reporting
+#' Distinct acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
+#' after the operation the output size \{.count.out\}
+#' The group \{.strata\} is also available (if grouped) for reporting
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .f a function as expected by dplyr::group_modify e.g. function(d,g,...) { ...do something with d and return a dataframe... }
 #' @param ... additional parameters for .f.
 #' @param .keep - are the grouping variables kept in d, or split out to g (the default)
-#' @param .messages - a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}
-#' @param .headline - a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}
+#' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+#' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
 #'
 #' @return the transformed .data.
 #' @export
@@ -961,14 +1000,14 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 
 #' Filtering data
 #'
-#' Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated {.count.in} and
-#' after the operation the output size {.count.out}
-#' The group {.strata} is also available (if grouped) for reporting
+#' Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
+#' after the operation the output size \{.count.out\}
+#' The group \{.strata\} is also available (if grouped) for reporting
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... the filter criteria
-#' @param .messages - a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}
-#' @param .headline - a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}
+#' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+#' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
 #' @param .type - the format type of the action - typically an exclusion
 #' @param .asOffshoot - if the type is exclusion, asOffshoot places the information box outside of the main flow, as an exclusion.
 #' @param .stage - a name for this step in the pathway
@@ -980,11 +1019,12 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #' @examples
 #' iris %>% p_group_by(Species) %>% p_filter(Petal.Length > 5) %>% p_get()
 p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline=.defaultHeadline(), .type = "exclusion", .asOffshoot=(.type=="exclusion"), .stage="") {
+  .count.in = .count.out = .strata = .message = NULL
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
-  filterExprs = enexprs(...)
+  filterExprs = rlang::enexprs(...)
 
   out = .data %>% dplyr::filter(..., .preserve = .preserve)
 
@@ -1014,17 +1054,17 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
 #' Group-wise modification of data and complex operations
 #'
 #' Group modifying a data set acts in the normal way. The internal mechanics of the modify function are opaque to the history.
-#' This means these can be used to wrap any unsupported operation.
-#' Prior to the operation the size of the group is calculated {.count.in} and
-#' after the operation the output size {.count.out}
-#' The group {.strata} is also available (if grouped) for reporting
+#' This means these can be used to wrap any unsupported operation without losing the history (e.g. `df %>% track() %>% group_modify(function(d,...) { d %>% unsupported_operation() })` )
+#' Prior to the operation the size of the group is calculated \{.count.in\} and
+#' after the operation the output size \{.count.out\}
+#' The group \{.strata\} is also available (if grouped) for reporting
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .f a function as expected by dplyr::group_modify e.g. function(d,g,...) { ...do something with d and return a dataframe... }
 #' @param ... additional parameters for .f.
 #' @param .keep - are the grouping variables kept in d, or split out to g (the default)
-#' @param .messages - a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}
-#' @param .headline - a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}
+#' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+#' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
 #' @param .type - default "modify": used to define formatting
 #'
 #' @return the transformed .data.
@@ -1032,6 +1072,7 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
 #'
 #' @examples
 #' iris %>%
+#'    p_track() %>%
 #'    p_group_by(Species) %>%
 #'    p_group_modify(
 #'       function(d,g,...) { return(tibble::tibble(x=runif(10))) },
@@ -1061,8 +1102,8 @@ p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headli
 #' This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as {.count.out}
 #'
 #' @param ... the data frames to bind
-#' @param .messages - a set of glue specs. The glue code can use any global variable, or {.count.out}
-#' @param .headline - a glue spec. The glue code can use any global variable, or {.count.out}
+#' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.count.out\}
+#' @param .headline - a glue spec. The glue code can use any global variable, or \{.count.out\}
 #' @inheritParams dplyr::bind_rows
 #'
 #' @return the union data frame
@@ -1105,13 +1146,25 @@ p_bind_rows = function(..., .id = NULL, .messages="{.count.out} in union", .head
   # .data = .writeMessagesToNode(.data, dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot)
 }
 
+# TODO:
+# should items excluded during joins be captured? Arguably yes but should this be LHS only or both sides?
+# behaviour during inner_join will be items on LHS & RHS being excluded.
+# behaviour during left_join will be only items on RHS being excluded.
+# behaviour during right_join will be only items on LHS being excluded.
+# anti_join is like an exclude_all - i.e. a deliberate exclusion and makes sense only to capture excluded LHS.
+# semi_join is like an include_any (which are currently not captured)
+# to get excluded on lhs it is a lhs %>% anti_join(rhs, by=by) unless the operation is an anti_join itself when it is lhs %>% semi_join(rhs, by=by)
+# to get excluded on rhs it is rhs %>% anti_join(lhs, by = inversion_of_by).
+# where inversion_of_by is a named vector with names and values swapped round.
+
+
 #' Inner joins
 #'
 #' Mutating joins behave as dplyr joins
 #'
 #' @inheritParams dplyr::inner_join
-#' @param .messages - a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
-#' @param .headline - a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
+#' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #'
 #' @export
 p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Inner join by {.keys}") {
@@ -1123,8 +1176,8 @@ p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ...,
 #' Mutating joins behave as dplyr joins
 #'
 #' @inheritParams dplyr::left_join
-#' @param .messages - a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
-#' @param .headline - a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
+#' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #'
 #' @export
 p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Left join by {.keys}") {
@@ -1136,8 +1189,8 @@ p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , 
 #' Mutating joins behave as dplyr joins
 #'
 #' @inheritParams dplyr::right_join
-#' @param .messages - a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
-#' @param .headline - a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
+#' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #'
 #' @export
 p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Right join by {.keys}") {
@@ -1149,8 +1202,8 @@ p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ...,
 #' Mutating joins behave as dplyr joins
 #'
 #' @inheritParams dplyr::full_join
-#' @param .messages - a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
-#' @param .headline - a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
+#' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #'
 #' @export
 p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Full join by {.keys}") {
@@ -1162,8 +1215,8 @@ p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., 
 #' Mutating joins behave as dplyr joins
 #'
 #' @inheritParams dplyr::semi_join
-#' @param .messages - a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
-#' @param .headline - a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
+#' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #'
 #' @export
 p_semi_join = function(x, y,  by = NULL, copy=FALSE, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in intersection"), .headline="Semi join by {.keys}") {
@@ -1175,8 +1228,8 @@ p_semi_join = function(x, y,  by = NULL, copy=FALSE, ..., .messages = c("{.count
 #' Mutating joins behave as dplyr joins
 #'
 #' @inheritParams dplyr::anti_join
-#' @param .messages - a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
-#' @param .headline - a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively
+#' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #'
 #' @export
 p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} not matched"), .headline="Semi join by {.keys}") {
@@ -1198,7 +1251,7 @@ is_running_in_chunk = function() {
 #' @param filename - a filename (without extension) which will be where the formatted flowcharts are saved
 #' @inheritParams save_dot
 #'
-#' @return the output depends on the context in which the function is called. Some form of browseable output if in an interactive session or a PNG/PDG link if in knitr
+#' @return the output depends on the context in which the function is called. Some form of browse-able output if in an interactive session or a PNG/PDG link if in knitr
 #' @export
 p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, rot=size$rot, formats=c("dot","png","pdf","svg"),...) {
 
@@ -1470,70 +1523,12 @@ semi_join.trackr_df <- p_semi_join
 #' @importFrom dplyr anti_join
 anti_join.trackr_df <- p_anti_join
 
-## Rexport dplyr generics
+# re-exports:
 
-#' @export
-dplyr::ungroup
-
-#' @export
-dplyr::summarise
-
-#' @export
-dplyr::mutate
-
-#' @export
-dplyr::transmute
-
-#' @export
-dplyr::select
-
-#' @export
-dplyr::relocate
-
-#' @export
-dplyr::rename
-
-#' @export
-dplyr::rename_with
-
-#' @export
-dplyr::arrange
-
-#' @export
-tidyr::pivot_wider
-
-#' @export
-tidyr::pivot_longer
-
-#' @export
-dplyr::group_by
-
-#' @export
-dplyr::distinct
-
+# TODO: Not really sure why I need this to make the R CMD check work but it does seem to be important.
+#' @importFrom dplyr filter
 #' @export
 dplyr::filter
-
-#' @export
-dplyr::group_modify
-
-#' @export
-dplyr::inner_join
-
-#' @export
-dplyr::left_join
-
-#' @export
-dplyr::right_join
-
-#' @export
-dplyr::full_join
-
-#' @export
-dplyr::semi_join
-
-#' @export
-dplyr::anti_join
 
 # complete override:
 

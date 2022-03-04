@@ -18,5 +18,12 @@ a dataframe of the excluded data. This has a nested structure containing records
 Get the dtrackr excluded data record
 }
 \examples{
-iris \%>\% p_excluded()
+iris \%>\%
+ p_track() \%>\%
+ p_capture_exclusions() \%>\%
+ p_exclude_all(
+   Petal.Length > 5.8 ~ "{.excluded} long ones",
+   Petal.Length < 1.3 ~ "{.excluded} short ones",
+   .stage = "petal length exclusion"
+ ) \%>\% p_excluded()
 }

@@ -49,9 +49,9 @@ it is a potentially expensive operation so you must opt into it.}
 
 \item{...}{Other parameters passed onto methods.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively}
 
-\item{.headline}{- a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively}
+\item{.headline}{- a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively}
 }
 \description{
 Mutating joins behave as dplyr joins

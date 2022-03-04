@@ -9,10 +9,10 @@ p_track(.data, .messages = .defaultMessage(), .headline = .defaultHeadline())
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
 
-\item{.messages}{- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} variable which is the count of all rows,
-the {.count} variable which is the count of rows in the current group and the {.strata} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").}
+\item{.messages}{- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} variable which is the count of all rows,
+the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").}
 
-\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").}
+\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").}
 }
 \value{
 the history graph

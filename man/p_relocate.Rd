@@ -26,9 +26,9 @@ left-hand side; specifying both is an error.}
 columns selected by \code{...}. Supplying neither will move columns to the
 left-hand side; specifying both is an error.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 }
 \value{
 the .data but dplyr::ungrouped.

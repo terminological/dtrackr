@@ -14,9 +14,9 @@
 \item{.by_group}{If \code{TRUE}, will sort first by grouping variable. Applies to
 grouped data frames only.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 }
 \value{
 the .data but dplyr::ungrouped.

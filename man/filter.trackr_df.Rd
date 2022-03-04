@@ -24,9 +24,9 @@
 If \code{.preserve = FALSE} (the default), the grouping structure
 is recalculated based on the resulting data, otherwise the grouping is kept as is.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
 \item{.type}{- the format type of the action - typically an exclusion}
 
@@ -38,9 +38,9 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
 the transformed .data.
 }
 \description{
-Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated {.count.in} and
-after the operation the output size {.count.out}
-The group {.strata} is also available (if grouped) for reporting
+Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
+after the operation the output size \{.count.out\}
+The group \{.strata\} is also available (if grouped) for reporting
 }
 \examples{
 iris \%>\% p_group_by(Species) \%>\% p_filter(Petal.Length > 5) \%>\% p_get()

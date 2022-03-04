@@ -144,9 +144,9 @@ will be the common type of the input columns used to generate them.}
 
 \item{...}{Additional arguments passed on to methods.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 }
 \value{
 the result of the pivot_wider but with a history graph.

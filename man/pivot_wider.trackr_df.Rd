@@ -7,13 +7,13 @@
 \method{pivot_wider}{trackr_df}(
   data,
   id_cols = NULL,
-  names_from = name,
+  names_from = as.symbol("name"),
   names_prefix = "",
   names_sep = "_",
   names_glue = NULL,
   names_sort = FALSE,
   names_repair = "check_unique",
-  values_from = value,
+  values_from = as.symbol("value"),
   values_fill = NULL,
   values_fn = NULL,
   ...,
@@ -83,13 +83,13 @@ to different \code{values_from} columns.}
 
 \item{...}{Additional arguments passed on to methods.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 }
 \value{
 the result of the pivot_wider but with a history graph.
 }
 \description{
-A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph
+A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
 }

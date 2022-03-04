@@ -22,17 +22,17 @@ p_distinct(
 
 \item{.keep}{- are the grouping variables kept in d, or split out to g (the default)}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}}
+\item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 }
 \value{
 the transformed .data.
 }
 \description{
-Distinct acts in the same way as DPLYR. Prior to the operation the size of the group is calculated {.count.in} and
-after the operation the output size {.count.out}
-The group {.strata} is also available (if grouped) for reporting
+Distinct acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
+after the operation the output size \{.count.out\}
+The group \{.strata\} is also available (if grouped) for reporting
 }
 \examples{
 p_bind_rows(iris, iris \%>\% p_filter(Petal.Length > 5)) \%>\%

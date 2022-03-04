@@ -13,9 +13,9 @@
 
 \item{.groups}{- Experimental lifecycle Grouping structure of the result.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or {.strata}}
+\item{.messages}{- a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or {.strata}}
+\item{.headline}{- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}}
 }
 \value{
 the .data but ungrouped.

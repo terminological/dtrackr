@@ -23,9 +23,9 @@ list of data frames is supplied, the labels are taken from the
 names of the list. If no names are found a numeric sequence is
 used instead.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or {.count.out}}
+\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.count.out\}}
 
-\item{.headline}{- a glue spec. The glue code can use any global variable, or {.count.out}}
+\item{.headline}{- a glue spec. The glue code can use any global variable, or \{.count.out\}}
 }
 \value{
 the union data frame

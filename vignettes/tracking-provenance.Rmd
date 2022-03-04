@@ -31,7 +31,7 @@ library(dtrackr)
 
 The main documentation for data pipelines is provided by the `comment` function. This (and all other functions) uses a `glue` package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables such as `filename` in this example. Secondly the `.count` variable is the number of rows in the current group. Thirdly the `.strata` variable is defined to be a description of the group(s) we are currently in, but in grouped data the grouping variables (in this case `Species`) can also be used. Finally the `.total` variable returns the whole size of the ungrouped dataset.
 
-Comments can either be a single `.headline` or a list of `.messages`. Setting either of these to "" disables them for a given comment. As in the example, thanks to `glue`, any expression can be evaluated in the messages but be warned, debugging them is hard.
+Comments can either be a single `.headline` or a list of `.messages`. Setting either of these to "" disables them for a given comment. As in the example, thanks to `glue`, any expression can be evaluated in the messages but be warned, debugging them is hard. If an error in the glue spec is present `dtrackr` will try and tell you what is the problem was and what variables should have been available for the glue spec. (N.B. A common mistake is to use `.message` rather than `.messages` when providing a glue spec.)
 
 
 ```{r}
@@ -171,6 +171,66 @@ p_flowchart(list(dataset1,dataset2))
 
 ```
 
-# Writing glue specs and errors
 
-TODO:
+
+# Excluded data
+
+When considering a data pipeline it is sometimes important to know what has been excluded and at what stage. This can help for debugging or for addressing data quality issues. Dtrackr can collect exclusions at the same time as the history graph. This is enabled by the `capture_exclusions()` flag. 
+
+```{r}
+
+tmp = iris %>%
+  track() %>% 
+  capture_exclusions() %>%
+  exclude_all(
+    Petal.Length > 5.8 ~ "{.excluded} long ones",
+    Petal.Length < 1.3 ~ "{.excluded} short ones",
+    .stage = "petal length exclusion"
+  ) %>%
+  comment("leaving {.count}") %>%
+  group_by(Species) %>%
+  filter(
+    Sepal.Length >= quantile(Sepal.Length, 0.05),
+    .messages="removing {.count.in-.count.out} with sepals < q 0.05",
+    .asOffshoot = FALSE,
+    .stage = "sepal length exclusion"
+  ) %>%
+  comment("leaving {.count}") %>%
+  exclude_all(
+    Petal.Width < 0.2 ~ "{.excluded} narrow ones",
+    Petal.Width > 2.1 ~ "{.excluded} wide ones"
+  ) %>%
+  comment("leaving {.count}")
+
+
+tmp %>%
+  flowchart()
+
+```
+
+```{r}
+tmp %>%
+  exclusions()
+
+```
+
+# Advanced handling of the history graph.
+
+* TODO: default values for message and headine that capture all operations
+* capturing the operation name in the history graph in a way that makes it easy to put into the glue spec.
+
+```{r}
+tmp2 = tmp %>% p_get()
+```
+
+# Future work:
+
+* should items excluded during joins be captured? Arguably yes but should this be LHS only or both sides?
+* behaviour during inner_join will be items on LHS & RHS being excluded.
+* behaviour during left_join will be only items on RHS being excluded.
+* behaviour during right_join will be only items on LHS being excluded.
+* anti_join is like an exclude_all - i.e. a deliberate exclusion and makes sense only to capture excluded LHS.
+* semi_join is like an include_any (which are currently not captured)
+* to get excluded on lhs it is a lhs %>% anti_join(rhs, by=by) unless the operation is an anti_join itself when it is lhs %>% semi_join(rhs, by=by)
+* to get excluded on rhs it is rhs %>% anti_join(lhs, by = inversion_of_by). 
+* where inversion_of_by is a named vector with names and values swapped round.
