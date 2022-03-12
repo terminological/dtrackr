@@ -63,7 +63,7 @@
   if(nrow(tmp)==0) return(.data)
 
   tmp = tmp %>%
-    dplyr::mutate(.message = htmltools::htmlEscape(.message)) %>%
+    dplyr::mutate(.message = htmltools::htmlEscape(.message) %>% stringr::str_replace_all("\n","<BR ALIGN='LEFT'/>")) %>%
     dplyr::mutate(.message = ifelse(.isHeader,
                              paste0("<B>",.message,"</B><BR ALIGN='LEFT'/>"),
                              paste0(.message,"<BR ALIGN='LEFT'/>"))) %>%
@@ -77,13 +77,18 @@
 
   currentRank = max(current$nodes$.rank,0)
   currentMaxId = max(current$nodes$.id,0)
-  nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
+  if(.asOffshoot) {
+    #TODO: supposed to put exclusions on same rank
+    nodes=tmp %>% dplyr::mutate(.rank=currentRank, .id=dplyr::row_number()+currentMaxId)
+  } else {
+    nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
+  }
   new = list(
     excluded = current$excluded,
     capture = current$capture
   )
   new$nodes = current$nodes %>% dplyr::bind_rows(nodes)
-  #TODO: if the new node is terminal put in an invisible extra node for the branch point.
+  #TODO: investigate .rel here. I think it should be more to do with .asOffshoot than defined by .type
   newEdges = current$head %>%
     dplyr::left_join(
       nodes %>% dplyr::select(.to = .id, .rel = .type, .strata), by=character(),suffix=c(".prev","")
@@ -282,6 +287,17 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
   return(.data)
 }
 
+#' Title
+#'
+#' @param .data - a tracked dataframe
+#'
+#' @return the dataframe with no history
+#' @export
+p_untrack = function(.data) {
+  .data = .data %>% p_clear()
+  .data = .data %>% .untrack()
+  return(.data)
+}
 
 #' Start capturing exclusions on a tracked dataframe.
 #'
@@ -354,6 +370,8 @@ p_excluded = function(.data, simplify = TRUE) {
         tidyr::unnest(.excluded) %>%
         dplyr::select(-.rank)
     )
+  } else {
+    return(tmp)
   }
 }
 
@@ -437,7 +455,7 @@ p_count_if = function(...) {
 #'
 #' @examples
 #' iris %>% p_comment("hello {.total} rows")
-p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE) {
+p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = (.type=="exclusion")) {
   if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
@@ -501,14 +519,11 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
     warning("p_status is missing both .messages and .headline specification. Did you forget to explicitly name them?")
     return(.data %>% .retrack())
   }
-  if(length(dots)==0) {
-    dots = list(.count = rlang::expr(dplyr::n()))
-  }
 
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
-  out = .data %>% dplyr::summarise(!!!dots, .groups="keep") %>% dplyr::group_by(!!!grps)
+  out = .data %>% dplyr::summarise(!!!dots, .count=dplyr::n(), .groups="keep") %>% dplyr::group_by(!!!grps)
 
   # .headline is a single glue spec
   tmpHead = .summaryToNodesDf(out,.headline,.isHeader=TRUE, .type = .type, .env=default_env)
@@ -939,6 +954,8 @@ p_pivot_longer = function(data,
 p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL) {
   # explicitly dtrackr::ungroup is .add is false to generate an un-grouped node in the graph. otherwise we get an n x m crossover.
   if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup()
+  # TODO: putting in a special hidden node type
+  if(is.null(.messages) & is.null(.headline)) stop("group_by .messages cannot be NULL, or else there is nothing to attach the other nodes to.")
   .data = .data %>% .untrack()
   col = dplyr::ensyms(...)
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
@@ -1318,17 +1335,24 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
   # THIS IS WHERE FORMATTING IS DEFINED
   nodesDf = graph$nodes %>% dplyr::mutate(
     .fillcolor= dplyr::case_when(.type=="summary"~"grey90",.type=="exclusion"~"grey80",TRUE~"white")
+  ) %>% mutate(
+    .hasOffshoot = .id %in% (graph$edges %>% filter(.rel=="exclusion") %>% pull(.from))
   )
   edgesDf = graph$edges %>% dplyr::mutate(
-    #.headport="n", #ifelse(rel=="exclusion","w","n"),
+    .headport=ifelse(.rel=="exclusion","w","n"), #"n",
     .weight=ifelse(.rel=="exclusion","1","100"),
-    .tailport="s",
+    .tailport= ifelse(.rel=="exclusion","e","s"), #"s",
     .colour="black",
     .id = dplyr::row_number()
   )
 
   outNode = nodesDf %>% dplyr::group_by(dplyr::desc(.id)) %>% dplyr::mutate(
-    nodeSpec = glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
+    # TODO: this maybe not going to work completely
+    # nodeSpec = glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
+    nodeSpec = ifelse(.hasOffshoot,
+      glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];\n'{.id}_e' [width='0', shape='point', style='invis'];"),
+      glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
+    )
   ) %>%
     dplyr::group_by(.rank) %>%
     dplyr::summarise(rankSpec = paste0(nodeSpec,collapse = "\n"), .groups="drop") %>%
@@ -1343,7 +1367,16 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
 
   outEdge = edgesDf %>%
     dplyr::arrange(dplyr::desc(.id)) %>%
+    # TODO: there is a problem with Ortho layout and ports.
+    # https://stackoverflow.com/questions/27504703/in-graphviz-how-do-i-align-an-edge-to-the-top-center-of-a-node
     dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']")) %>%
+    dplyr::mutate(edgeSpec = ifelse(.rel=="exclusion",
+        # add in another invisible node on the same rank
+        glue::glue("'{.from}' -> '{.from}_e' [weight='{.weight}', dir='none']\n'{.from}_e' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']",),
+        glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']"))
+    ) %>%
+    # dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [headport='{.headport}', tailport='{.tailport}',weight='{.weight}']")) %>% # Loses heads of arrows
+    # dplyr::mutate(edgeSpec = glue::glue("'{.from}':'{.tailport}' -> '{.to}':'{.headport}' [weight='{.weight}']")) %>% # Loses heads of arrows
     dplyr::pull(edgeSpec) %>%
     paste0(collapse="\n")
 
@@ -1387,6 +1420,9 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
 #' @export
 track <- p_track
 
+#' @inherit p_untrack
+#' @export
+untrack <- p_untrack
 
 #' @inherit p_capture_exclusions
 #' @export
