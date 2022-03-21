@@ -34,13 +34,14 @@ the transformed .data.
 }
 \description{
 Group modifying a data set acts in the normal way. The internal mechanics of the modify function are opaque to the history.
-This means these can be used to wrap any unsupported operation.
+This means these can be used to wrap any unsupported operation without losing the history (e.g. `df %>% track() %>% group_modify(function(d,...) { d %>% unsupported_operation() })` )
 Prior to the operation the size of the group is calculated \{.count.in\} and
 after the operation the output size \{.count.out\}
 The group \{.strata\} is also available (if grouped) for reporting
 }
 \examples{
 iris \%>\%
+   p_track() \%>\%
    p_group_by(Species) \%>\%
    p_group_modify(
       function(d,g,...) { return(tibble::tibble(x=runif(10))) },

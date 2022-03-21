@@ -9,7 +9,7 @@ comment(
   .messages = .defaultMessage(),
   .headline = .defaultHeadline(),
   .type = "info",
-  .asOffshoot = FALSE
+  .asOffshoot = (.type == "exclusion")
 )
 }
 \arguments{

@@ -22,6 +22,7 @@ options(warn=1)
 ```
 
 ```{r setup}
+# devtools::load_all()
 library(tidyverse)
 library(dtrackr)
 
@@ -192,7 +193,7 @@ tmp = iris %>%
   filter(
     Sepal.Length >= quantile(Sepal.Length, 0.05),
     .messages="removing {.count.in-.count.out} with sepals < q 0.05",
-    .asOffshoot = FALSE,
+    .type = "comment",
     .stage = "sepal length exclusion"
   ) %>%
   comment("leaving {.count}") %>%
@@ -203,20 +204,18 @@ tmp = iris %>%
   comment("leaving {.count}")
 
 
-tmp %>%
-  flowchart()
+tmp %>% flowchart()
 
 ```
 
 ```{r}
-tmp %>%
-  exclusions()
+tmp %>% excluded()
 
 ```
 
 # Advanced handling of the history graph.
 
-* TODO: default values for message and headine that capture all operations
+* TODO: default values for message and headline that capture all operations
 * capturing the operation name in the history graph in a way that makes it easy to put into the glue spec.
 
 ```{r}

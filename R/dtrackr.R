@@ -52,6 +52,8 @@
 # assumes a properly constructed node df and puts it into the graph this function does not need to check .data versus .df. .df will have a .message and a .strata column
 # .stage lets us give a stage a name: TODO, expose this in the API.
 .writeMessagesToNode = function(.data, .df, .asOffshoot, .excluded = NULL, .stage="") {
+
+  if (.isPaused(.data)) return(.data)
   # this must be to prevent some kind of scoping issue
   .message = .strata = .isHeader = .type = .id = .strata.prev = NULL
   stage=.stage
@@ -178,8 +180,9 @@
       nodes=nodes,
       edges=edges,
       head=head,
-      capture=FALSE
-      # excluded and capture are set in p_capture_exclusions and will not be present all the time
+      capture=FALSE,
+      paused = FALSE
+      # excluded is set in p_capture_exclusions and will not be present all the time
   ))
 }
 
@@ -198,6 +201,10 @@
 
 .isTracked = function(.data) {
   return("trackr_df" %in% class(.data))
+}
+
+.isPaused = function(.data) {
+  return(isTRUE(p_get(.data)[["paused"]]))
 }
 
 .trackingExclusions = function(.data) {
@@ -252,6 +259,9 @@
   getOption("dtrackr.show_zero_exclusions",default = TRUE)
 }
 
+.defaultMaxSupportedGroupings = function() {
+  getOption("dtrackr.max_supported_groupings",default = 16)
+}
 
 ## Tracking ----
 
@@ -287,7 +297,7 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
   return(.data)
 }
 
-#' Title
+#' Remove tracking from the dataframe
 #'
 #' @param .data - a tracked dataframe
 #'
@@ -296,6 +306,42 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
 p_untrack = function(.data) {
   .data = .data %>% p_clear()
   .data = .data %>% .untrack()
+  return(.data)
+}
+
+#' Pause tracking the dataframe
+#'
+#' @param .data - a tracked dataframe
+#'
+#' @return the dataframe paused
+#' @export
+p_pause = function(.data) {
+  old = .data %>% p_get()
+  old$paused = TRUE
+  .data = .data %>% p_set(old)
+  return(.data)
+}
+
+#' Resume tracking the dataframe. This may reset the grouping of the tracked data
+#'
+#' @param .data - a tracked dataframe
+#'
+#' @return the dataframe resumed
+#' @export
+p_resume = function(.data) {
+  .strata = NULL
+  old = .data %>% p_get()
+
+  # check that head is going to line up with old grouping.
+  tmp = .createStrataCol(.data) %>% dplyr::pull(.strata) %>% unique()
+  if (!all(tmp %in% old$head$.strata)) {
+    grps = .data %>% dplyr::groups()
+    .data = .data %>% p_ungroup() %>% p_group_by(!!!grps)
+    old = .data %>% p_get()
+  }
+
+  old$paused = FALSE
+  .data = .data %>% p_set(old)
   return(.data)
 }
 
@@ -457,6 +503,7 @@ p_count_if = function(...) {
 #' iris %>% p_comment("hello {.total} rows")
 p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = (.type=="exclusion")) {
   if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
+
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
@@ -513,6 +560,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #'       .messages="{Species}: {long} long ones & {short} short ones"
 #'    ) %>% p_get()
 p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE) {
+  if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
   dots = rlang::enquos(...)
   .data = .data %>% .untrack()
   if(identical(.messages,NULL) & identical(.headline,NULL)) {
@@ -620,8 +668,10 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
   if(!.defaultShowZeroExclusions()) messages = messages %>% filter(.excluded != 0)
-  messages = messages %>% group_by(!!!grps) %>% filter(!(.message=="no exclusions" & n() > 1))
-  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot, .excluded=excluded, .stage = .stage)
+
+  messages = messages %>% group_by(!!!grps) %>% filter(!(.message=="no exclusions" & dplyr::n() > 1))
+  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>%
+    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot, .excluded=excluded, .stage = .stage)
   return(out %>% .retrack())
 }
 
@@ -688,7 +738,8 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
     tmp$.message = rlang::eval_tidy(.doGlue(tmp,glueSpec,default_env), data=tmp, env = default_env)
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
-  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.incl, -.incl.na) %>% p_copy(.data) %>% .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
+  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.incl, -.incl.na) %>% p_copy(.data) %>%
+    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
   return(out %>% .retrack())
 }
 
@@ -956,12 +1007,25 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
   if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup()
   # TODO: putting in a special hidden node type
   if(is.null(.messages) & is.null(.headline)) stop("group_by .messages cannot be NULL, or else there is nothing to attach the other nodes to.")
+
   .data = .data %>% .untrack()
-  col = dplyr::ensyms(...)
-  .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
-  tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify")
-  tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
-  return(tmp2 %>% .retrack())
+  tryCatch({
+    col = rlang::ensyms(...)
+    .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
+    tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify")
+    tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
+    if (dplyr::n_groups(tmp2) > .defaultMaxSupportedGroupings() ) {
+      warning("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe.")
+      message("To change this limit set the option 'dtrackr.max_supported_groupings'. To continue tracking use ungroup then dtrackr::resume once groupings have become a bit more manageable")
+      tmp2 = tmp2 %>% p_pause()
+    }
+    return(tmp2 %>% .retrack())
+  }, error= function(e) {
+    # TODO: Support across syntax
+    stop("dtrackr does not yet support grouping by things that are not column names (i.e. across() syntax). You should untrack the dataframe before trying this.")
+    # tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
+    # return(tmp2)
+  })
 }
 
 
@@ -1041,7 +1105,12 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
-  filterExprs = rlang::enexprs(...)
+  tryCatch({
+    filterExprs = rlang::enexprs(...)
+  }, error= function(e) {
+    # TODO: Support accross syntax
+    stop("dtrackr does not yet support filtering by things that are not a set of simple expressions (e.g. across() syntax). You should untrack the dataframe before trying this.")
+  })
 
   out = .data %>% dplyr::filter(..., .preserve = .preserve)
 
@@ -1331,12 +1400,12 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
 }
 
 .graph2dot = function(graph, fill="lightgrey", fontsize="8", colour="black", ...) {
-  .rel = .id = .rank = nodeSpec = rankSpec = edgeSpec = NULL
+  .rel = .id = .rank = .from = .hasOffshoot = nodeSpec = rankSpec = edgeSpec = NULL
   # THIS IS WHERE FORMATTING IS DEFINED
   nodesDf = graph$nodes %>% dplyr::mutate(
     .fillcolor= dplyr::case_when(.type=="summary"~"grey90",.type=="exclusion"~"grey80",TRUE~"white")
   ) %>% mutate(
-    .hasOffshoot = .id %in% (graph$edges %>% filter(.rel=="exclusion") %>% pull(.from))
+    .hasOffshoot = .id %in% (graph$edges %>% dplyr::filter(.rel=="exclusion") %>% dplyr::pull(.from))
   )
   edgesDf = graph$edges %>% dplyr::mutate(
     .headport=ifelse(.rel=="exclusion","w","n"), #"n",
@@ -1419,6 +1488,14 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
 #' @inherit p_track
 #' @export
 track <- p_track
+
+#' @inherit p_pause
+#' @export
+pause <- p_pause
+
+#' @inherit p_resume
+#' @export
+resume <- p_resume
 
 #' @inherit p_untrack
 #' @export

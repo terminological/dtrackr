@@ -8,6 +8,8 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
+library(tidyverse)
+library(dtrackr)
 
 knitr::opts_chunk$set(echo = TRUE)
 options(dtrackr.strata_glue=NULL)

@@ -33,7 +33,7 @@ flowchart(
 \item{...}{- other params passed onto p_get_as_dot, notable ones are fill, fontsize, colour, size, maxWidth and maxHeight}
 }
 \value{
-the output depends on the context in which the function is called. Some form of browseable output if in an interactive session or a PNG/PDG link if in knitr
+the output depends on the context in which the function is called. Some form of browse-able output if in an interactive session or a PNG/PDG link if in knitr
 }
 \description{
 Create a flowchart of the history of the dataframe

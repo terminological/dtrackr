@@ -33,9 +33,9 @@ iris \%>\%
    p_group_by(Species) \%>\%
    p_comment("A test") \%>\%
    p_ungroup(
-      avg = mean(Petal.Length),
-      count = dplyr::n(),
-      .messages="{count} items with {avg} petal length"
+      my_avg = mean(Petal.Length),
+      my_count = dplyr::n(),
+      .messages="{my_count} items with {my_avg} petal length"
    ) \%>\%
    p_get()
 }
