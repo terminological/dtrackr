@@ -1418,10 +1418,10 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
   outNode = nodesDf %>% dplyr::group_by(dplyr::desc(.id)) %>% dplyr::mutate(
     # TODO: this maybe not going to work completely
     # nodeSpec = glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
-    nodeSpec = ifelse(.hasOffshoot,
-      glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];\n'{.id}_e' [width='0', shape='point', style='invis'];"),
+    nodeSpec = # ifelse(.hasOffshoot,
+      # glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];\n'{.id}_e' [width='0', shape='point', style='invis'];"),
       glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
-    )
+    #)
   ) %>%
     dplyr::group_by(.rank) %>%
     dplyr::summarise(rankSpec = paste0(nodeSpec,collapse = "\n"), .groups="drop") %>%
@@ -1439,10 +1439,10 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
     # TODO: there is a problem with Ortho layout and ports.
     # https://stackoverflow.com/questions/27504703/in-graphviz-how-do-i-align-an-edge-to-the-top-center-of-a-node
     dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']")) %>%
-    dplyr::mutate(edgeSpec = ifelse(.rel=="exclusion",
+    dplyr::mutate(edgeSpec = # ifelse(.rel=="exclusion",
         # add in another invisible node on the same rank
-        glue::glue("'{.from}' -> '{.from}_e' [weight='{.weight}', dir='none']\n'{.from}_e' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']",),
-        glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']"))
+        # glue::glue("'{.from}' -> '{.from}_e' [weight='{.weight}', dir='none']\n'{.from}_e' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']",),
+        glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']") #)
     ) %>%
     # dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [headport='{.headport}', tailport='{.tailport}',weight='{.weight}']")) %>% # Loses heads of arrows
     # dplyr::mutate(edgeSpec = glue::glue("'{.from}':'{.tailport}' -> '{.to}':'{.headport}' [weight='{.weight}']")) %>% # Loses heads of arrows
