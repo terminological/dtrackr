@@ -630,12 +630,13 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
     glueSpec = rlang::f_rhs(filter)
     filt = rlang::f_lhs(filter)
     filtStr = paste0(sapply(deparse(filt),trimws),collapse=" ")
-    out = out %>% dplyr::group_modify(function(d,g,...) {
-      d %>%
-        dplyr::mutate(.excl = rlang::eval_tidy(filt,data = d, env=default_env)) %>%
+    out = out %>% #dplyr::group_modify(function(d,g,...) {
+      #d %>%
+       # dplyr::mutate(.excl = rlang::eval_tidy(filt,data = d, env=default_env)) %>%
+        dplyr::mutate(.excl = rlang::eval_tidy(filt, data = dplyr::cur_data_all(), env=default_env)) %>%
         dplyr::mutate(.excl.na = ifelse(is.na(.excl),na.rm,.excl)) %>%
         dplyr::mutate(.retain = .retain & !.excl.na)
-    })
+    #})
     tmp = out %>%
       dplyr::summarise(
         .count = dplyr::n(),
