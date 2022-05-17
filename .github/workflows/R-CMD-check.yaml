@@ -25,9 +25,9 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update -y && sudo apt-get install -y libxmlsec1-dev pkg-config
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          cache-version: 2
+          cache-version: 3
           extra-packages: any::rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v2
