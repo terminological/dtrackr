@@ -40,9 +40,9 @@
 
 
 <meta property="og:title" content="Filtering data — filter.trackr_df" />
-<meta property="og:description" content="Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated .count.in and
-after the operation the output size .count.out
-The group .strata is also available (if grouped) for reporting" />
+<meta property="og:description" content="Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated {.count.in} and
+after the operation the output size {.count.out}
+The group {.strata} is also available (if grouped) for reporting" />
 
 
 
@@ -74,7 +74,7 @@ The group .strata is also available (if grouped) for reporting" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -87,6 +87,9 @@ The group .strata is also available (if grouped) for reporting" />
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -97,10 +100,13 @@ The group .strata is also available (if grouped) for reporting" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -129,9 +135,9 @@ The group .strata is also available (if grouped) for reporting" />
     </div>
 
     <div class="ref-description">
-    <p>Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated .count.in and
-after the operation the output size .count.out
-The group .strata is also available (if grouped) for reporting</p>
+    <p>Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated {.count.in} and
+after the operation the output size {.count.out}
+The group {.strata} is also available (if grouped) for reporting</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for trackr_df</span>
@@ -139,10 +145,11 @@ The group .strata is also available (if grouped) for reporting</p>
   <span class='va'>.data</span>,
   <span class='va'>...</span>,
   .preserve <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  .messages <span class='op'>=</span> <span class='st'>"excluded {.count.in-.count.out} items"</span>,
-  .headline <span class='op'>=</span> <span class='st'>"{.strata}"</span>,
+  .messages <span class='op'>=</span> <span class='st'>"excluded {.excluded} items"</span>,
+  .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>,
   .type <span class='op'>=</span> <span class='st'>"exclusion"</span>,
-  .asOffshoot <span class='op'>=</span> <span class='op'>(</span><span class='va'>.type</span> <span class='op'>==</span> <span class='st'>"exclusion"</span><span class='op'>)</span>
+  .asOffshoot <span class='op'>=</span> <span class='op'>(</span><span class='va'>.type</span> <span class='op'>==</span> <span class='st'>"exclusion"</span><span class='op'>)</span>,
+  .stage <span class='op'>=</span> <span class='st'>""</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -164,11 +171,11 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a set of glue specs. The glue code can use any global variable, or .strata,.count.in,and .count.out</p></td>
+      <td><p>- a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a headline glue spec. The glue code can use any global variable, or .strata,.count.in,and .count.out</p></td>
+      <td><p>- a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}</p></td>
     </tr>
     <tr>
       <th>.type</th>
@@ -178,6 +185,10 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
       <th>.asOffshoot</th>
       <td><p>- if the type is exclusion, asOffshoot places the information box outside of the main flow, as an exclusion.</p></td>
     </tr>
+    <tr>
+      <th>.stage</th>
+      <td><p>- a name for this step in the pathway</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -186,17 +197,23 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_group_by.html'>p_group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_filter.html'>p_filter</a></span><span class='op'>(</span><span class='va'>Petal.Length</span> <span class='op'>&gt;</span> <span class='fl'>5</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $nodes
-#&gt; <span style='color: #949494;'># A tibble: 4 x 5</span><span>
-#&gt;     .id .rank .strata        .label                                      .type  
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>             stratify by Species&lt;BR ALIGN='LEFT'/&gt;       strati…
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     2 </span><span style='color: #949494;'>"</span><span>Species:seto… &lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;exc… exclus…
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     2 </span><span style='color: #949494;'>"</span><span>Species:vers… &lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/… exclus…
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4     2 </span><span style='color: #949494;'>"</span><span>Species:virg… &lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;… exclus…
+</div><div class='output co'>#&gt; $excluded
+#&gt; NULL
+#&gt; 
+#&gt; $capture
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $nodes
+#&gt; <span style='color: #949494;'># A tibble: 4 × 6</span><span>
+#&gt;     .id .rank .strata              .label                           .type .stage
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                            </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>                   stratify by Species&lt;BR ALIGN='L… stra… </span><span style='color: #949494;'>""</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     1 </span><span style='color: #949494;'>"</span><span>Species:setosa</span><span style='color: #949494;'>"</span><span>     &lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN=… excl… </span><span style='color: #949494;'>""</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     1 </span><span style='color: #949494;'>"</span><span>Species:versicolor</span><span style='color: #949494;'>"</span><span> &lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR AL… excl… </span><span style='color: #949494;'>""</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4     1 </span><span style='color: #949494;'>"</span><span>Species:virginica</span><span style='color: #949494;'>"</span><span>  &lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALI… excl… </span><span style='color: #949494;'>""</span><span>    
 #&gt; 
 #&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 3 x 5</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 3 × 5</span><span>
 #&gt;     .to .from .rel      .strata            .strata.prev
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2     1 exclusion Species:setosa     </span><span style='color: #949494;'>""</span><span>          
@@ -204,7 +221,7 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
 #&gt; </span><span style='color: #BCBCBC;'>3</span><span>     4     1 exclusion Species:virginica  </span><span style='color: #949494;'>""</span><span>          
 #&gt; 
 #&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 1 x 2</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 1 × 2</span><span>
 #&gt;   .from .strata
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1 </span><span style='color: #949494;'>""</span><span>     

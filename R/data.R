@@ -23,8 +23,6 @@
 #'   \item{Albumin_Globulin_Ratio}{}
 #'   \item{Case_or_Control}{Selector field used to split the data into two sets (labeled by the experts)}
 #' }
-#' @source \url{
-#' http://archive.ics.uci.edu/ml/datasets/ILPD+%28Indian+Liver+Patient+Dataset%29
-#' }
-#'
+#' @source
+#' \url{https://bit.ly/3NjtlSe}
 "ILPD"

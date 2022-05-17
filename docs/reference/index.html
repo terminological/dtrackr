@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -84,6 +84,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -94,10 +97,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -146,6 +152,12 @@
       <tr>
         
         <td>
+          <p><code><a href="ILPD.html">ILPD</a></code> </p>
+        </td>
+        <td><p>Indian Liver Patient Dataset</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="add_count.html">add_count()</a></code> </p>
         </td>
         <td><p>Standard dplyr modifying operations</p></td>
@@ -176,6 +188,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="capture_exclusions.html">capture_exclusions()</a></code> </p>
+        </td>
+        <td><p>Start capturing exclusions on a tracked dataframe.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="comment.html">comment()</a></code> </p>
         </td>
         <td><p>Add a generic comment to the dtrackr history graph</p></td>
@@ -197,6 +215,12 @@
           <p><code><a href="exclude_all.html">exclude_all()</a></code> </p>
         </td>
         <td><p>Exclude all items matching a criteria</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="excluded.html">excluded()</a></code> </p>
+        </td>
+        <td><p>Get the dtrackr excluded data record</p></td>
       </tr><tr>
         
         <td>
@@ -290,6 +314,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="p_capture_exclusions.html">p_capture_exclusions()</a></code> </p>
+        </td>
+        <td><p>Start capturing exclusions on a tracked dataframe.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="p_clear.html">p_clear()</a></code> </p>
         </td>
         <td><p>Clear the dtrackr history graph</p></td>
@@ -323,6 +353,12 @@
           <p><code><a href="p_exclude_all.html">p_exclude_all()</a></code> </p>
         </td>
         <td><p>Exclude all items matching a criteria</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="p_excluded.html">p_excluded()</a></code> </p>
+        </td>
+        <td><p>Get the dtrackr excluded data record</p></td>
       </tr><tr>
         
         <td>
@@ -392,6 +428,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="p_pause.html">p_pause()</a></code> </p>
+        </td>
+        <td><p>Pause tracking the dataframe</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="p_pivot_longer.html">p_pivot_longer()</a></code> </p>
         </td>
         <td><p>Reshaping data using tidyr - pivot_longer</p></td>
@@ -419,6 +461,12 @@
           <p><code><a href="p_rename_with.html">p_rename_with()</a></code> </p>
         </td>
         <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="p_resume.html">p_resume()</a></code> </p>
+        </td>
+        <td><p>Resume tracking the dataframe. This may reset the grouping of the tracked data</p></td>
       </tr><tr>
         
         <td>
@@ -460,7 +508,7 @@
         <td>
           <p><code><a href="p_track.html">p_track()</a></code> </p>
         </td>
-        <td><p>Strart tracking the dtrackr history graph</p></td>
+        <td><p>Start tracking the dtrackr history graph</p></td>
       </tr><tr>
         
         <td>
@@ -473,6 +521,18 @@
           <p><code><a href="p_ungroup.html">p_ungroup()</a></code> </p>
         </td>
         <td><p>Remove a stratification from a data set</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="p_untrack.html">p_untrack()</a></code> </p>
+        </td>
+        <td><p>Remove tracking from the dataframe</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pause.html">pause()</a></code> </p>
+        </td>
+        <td><p>Pause tracking the dataframe</p></td>
       </tr><tr>
         
         <td>
@@ -503,6 +563,12 @@
           <p><code><a href="rename_with.trackr_df.html">rename_with(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
         <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="resume.html">resume()</a></code> </p>
+        </td>
+        <td><p>Resume tracking the dataframe. This may reset the grouping of the tracked data</p></td>
       </tr><tr>
         
         <td>
@@ -550,7 +616,7 @@
         <td>
           <p><code><a href="track.html">track()</a></code> </p>
         </td>
-        <td><p>Strart tracking the dtrackr history graph</p></td>
+        <td><p>Start tracking the dtrackr history graph</p></td>
       </tr><tr>
         
         <td>
@@ -563,6 +629,12 @@
           <p><code><a href="ungroup.trackr_df.html">ungroup(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
         <td><p>Remove a stratification from a data set</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="untrack.html">untrack()</a></code> </p>
+        </td>
+        <td><p>Remove tracking from the dataframe</p></td>
       </tr>
     </tbody>
     </table>

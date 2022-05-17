@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -84,6 +84,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -94,10 +97,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -136,6 +142,11 @@
 <li>merge histories of joining data frames</li>
 <li>export history as dot graphviz graph</li>
 <li>render history graph to SVG, PNG, PDF, DOT or PS formats</li>
+<li>track excluded items with debugging info</li>
+<li>allow across syntax in most situations (except group_by)</li>
+<li>support pausing and unpausing of the dataframe tracking</li>
+<li>preventing massive group_by groups if large numbers of very small groups are selected (e.g. part of a group_by() %&gt;% mutate())</li>
+<li>switch warnings to rlang::warn etc.</li>
 </ul>
 </div>
   </div>

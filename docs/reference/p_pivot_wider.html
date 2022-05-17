@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Reshaping data using tidyr - pivot_wider — p_pivot_wider" />
-<meta property="og:description" content="A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph" />
+<meta property="og:description" content="A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -85,6 +85,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -95,10 +98,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -127,19 +133,19 @@
     </div>
 
     <div class="ref-description">
-    <p>A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph</p>
+    <p>A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_pivot_wider</span><span class='op'>(</span>
   <span class='va'>data</span>,
   id_cols <span class='op'>=</span> <span class='cn'>NULL</span>,
-  names_from <span class='op'>=</span> <span class='va'>name</span>,
+  names_from <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/name.html'>as.symbol</a></span><span class='op'>(</span><span class='st'>"name"</span><span class='op'>)</span>,
   names_prefix <span class='op'>=</span> <span class='st'>""</span>,
   names_sep <span class='op'>=</span> <span class='st'>"_"</span>,
   names_glue <span class='op'>=</span> <span class='cn'>NULL</span>,
   names_sort <span class='op'>=</span> <span class='cn'>FALSE</span>,
   names_repair <span class='op'>=</span> <span class='st'>"check_unique"</span>,
-  values_from <span class='op'>=</span> <span class='va'>value</span>,
+  values_from <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/name.html'>as.symbol</a></span><span class='op'>(</span><span class='st'>"value"</span><span class='op'>)</span>,
   values_fill <span class='op'>=</span> <span class='cn'>NULL</span>,
   values_fn <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>,
@@ -215,16 +221,17 @@ front of the output column.</p></td>
       <th>values_fill</th>
       <td><p>Optionally, a (scalar) value that specifies what each
 <code>value</code> should be filled in with when missing.</p>
-<p>This can be a named list if you want to apply different aggregations
-to different value columns.</p></td>
+<p>This can be a named list if you want to apply different fill values to
+different value columns.</p></td>
     </tr>
     <tr>
       <th>values_fn</th>
-      <td><p>Optionally, a function applied to the <code>value</code> in each cell
+      <td><p>Optionally, a function applied to the value in each cell
 in the output. You will typically use this when the combination of
-<code>id_cols</code> and <code>value</code> column does not uniquely identify an observation.</p>
+<code>id_cols</code> and <code>names_from</code> columns does not uniquely identify an
+observation.</p>
 <p>This can be a named list if you want to apply different aggregations
-to different value columns.</p></td>
+to different <code>values_from</code> columns.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -232,11 +239,11 @@ to different value columns.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a set of glue specs. The glue code can use any global variable, grouping variable, or .strata. Defaults to nothing.</p></td>
+      <td><p>- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a headline glue spec. The glue code can use any global variable, grouping variable, or .strata. Defaults to nothing.</p></td>
+      <td><p>- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
     </tr>
     </table>
 

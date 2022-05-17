@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Reshaping data using tidyr - pivot_longer — pivot_longer.trackr_df" />
-<meta property="og:description" content="A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph" />
+<meta property="og:description" content="A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -85,6 +85,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -95,10 +98,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -127,11 +133,11 @@
     </div>
 
     <div class="ref-description">
-    <p>A drop in replacement for tidyr::pivot_longer which optionally takes a message and headlien to store in the history graph</p>
+    <p>A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for trackr_df</span>
-<span class='fu'><a href='https://tidyr.tidyverse.org/reference/pivot_longer.html'>pivot_longer</a></span><span class='op'>(</span>
+<span class='fu'>pivot_longer</span><span class='op'>(</span>
   <span class='va'>data</span>,
   <span class='va'>cols</span>,
   names_to <span class='op'>=</span> <span class='st'>"name"</span>,
@@ -164,14 +170,21 @@ longer format.</p></td>
     </tr>
     <tr>
       <th>names_to</th>
-      <td><p>A string specifying the name of the column to create
-from the data stored in the column names of <code>data</code>.</p>
-<p>Can be a character vector, creating multiple columns, if <code>names_sep</code>
-or <code>names_pattern</code> is provided. In this case, there are two special
+      <td><p>A character vector specifying the new column or columns to
+create from the information stored in the column names of <code>data</code> specified
+by <code>cols</code>.</p><ul>
+<li><p>If length 0, or if <code>NULL</code> is supplied, no columns will be created.</p></li>
+<li><p>If length 1, a single column will be created which will contain the
+column names specified by <code>cols</code>.</p></li>
+<li><p>If length &gt;1, multiple columns will be created. In this case, one of
+<code>names_sep</code> or <code>names_pattern</code> must be supplied to specify how the
+column names should be split. There are also two additional character
 values you can take advantage of:</p><ul>
-<li><p><code>NA</code> will discard that component of the name.</p></li>
-<li><p><code>.value</code> indicates that component of the name defines the name of the
-column containing the cell values, overriding <code>values_to</code>.</p></li>
+<li><p><code>NA</code> will discard the corresponding component of the column name.</p></li>
+<li><p><code>".value"</code> indicates that the corresponding component of the column
+name defines the name of the output column containing the cell values,
+overriding <code>values_to</code> entirely.</p></li>
+</ul></li>
 </ul></td>
     </tr>
     <tr>
@@ -207,21 +220,28 @@ needed.</p></td>
     </tr>
     <tr>
       <th>names_ptypes</th>
-      <td><p>A list of column name-prototype pairs.
-A prototype (or ptype for short) is a zero-length vector (like <code><a href='https://rdrr.io/r/base/integer.html'>integer()</a></code>
-or <code><a href='https://rdrr.io/r/base/numeric.html'>numeric()</a></code>) that defines the type, class, and attributes of a vector.
-Use these arguments to confirm that the created columns are the types that
-you expect.</p>
-<p>If not specified, the type of the columns generated from <code>names_to</code> will
-be character, and the type of the variables generated from <code>values_to</code>
-will be the common type of the input columns used to generate them.</p></td>
+      <td><p>Optionally, a list of column name-prototype
+pairs. Alternatively, a single empty prototype can be supplied, which will
+be applied to all columns. A prototype (or ptype for short) is a
+zero-length vector (like <code><a href='https://rdrr.io/r/base/integer.html'>integer()</a></code> or <code><a href='https://rdrr.io/r/base/numeric.html'>numeric()</a></code>) that defines the type,
+class, and attributes of a vector. Use these arguments if you want to
+confirm that the created columns are the types that you expect. Note that
+if you want to change (instead of confirm) the types of specific columns,
+you should use <code>names_transform</code> or <code>values_transform</code> instead.</p>
+<p>For backwards compatibility reasons, supplying <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> is interpreted as
+being identical to <code>NULL</code> rather than as using a list prototype on all
+columns. Expect this to change in the future.</p></td>
     </tr>
     <tr>
       <th>names_transform</th>
-      <td><p>A list of column name-function pairs.
-Use these arguments if you need to change the type of specific columns.
-For example, <code>names_transform = list(week = as.integer)</code> would convert
-a character week variable to an integer.</p></td>
+      <td><p>Optionally, a list of column
+name-function pairs. Alternatively, a single function can be supplied,
+which will be applied to all columns. Use these arguments if you need to
+change the types of specific columns. For example, <code>names_transform = list(week = as.integer)</code> would convert a character variable called <code>week</code>
+to an integer.</p>
+<p>If not specified, the type of the columns generated from <code>names_to</code> will
+be character, and the type of the variables generated from <code>values_to</code>
+will be the common type of the input columns used to generate them.</p></td>
     </tr>
     <tr>
       <th>names_repair</th>
@@ -248,21 +268,28 @@ values in <code>data</code> were created by its structure.</p></td>
     </tr>
     <tr>
       <th>values_ptypes</th>
-      <td><p>A list of column name-prototype pairs.
-A prototype (or ptype for short) is a zero-length vector (like <code><a href='https://rdrr.io/r/base/integer.html'>integer()</a></code>
-or <code><a href='https://rdrr.io/r/base/numeric.html'>numeric()</a></code>) that defines the type, class, and attributes of a vector.
-Use these arguments to confirm that the created columns are the types that
-you expect.</p>
-<p>If not specified, the type of the columns generated from <code>names_to</code> will
-be character, and the type of the variables generated from <code>values_to</code>
-will be the common type of the input columns used to generate them.</p></td>
+      <td><p>Optionally, a list of column name-prototype
+pairs. Alternatively, a single empty prototype can be supplied, which will
+be applied to all columns. A prototype (or ptype for short) is a
+zero-length vector (like <code><a href='https://rdrr.io/r/base/integer.html'>integer()</a></code> or <code><a href='https://rdrr.io/r/base/numeric.html'>numeric()</a></code>) that defines the type,
+class, and attributes of a vector. Use these arguments if you want to
+confirm that the created columns are the types that you expect. Note that
+if you want to change (instead of confirm) the types of specific columns,
+you should use <code>names_transform</code> or <code>values_transform</code> instead.</p>
+<p>For backwards compatibility reasons, supplying <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> is interpreted as
+being identical to <code>NULL</code> rather than as using a list prototype on all
+columns. Expect this to change in the future.</p></td>
     </tr>
     <tr>
       <th>values_transform</th>
-      <td><p>A list of column name-function pairs.
-Use these arguments if you need to change the type of specific columns.
-For example, <code>names_transform = list(week = as.integer)</code> would convert
-a character week variable to an integer.</p></td>
+      <td><p>Optionally, a list of column
+name-function pairs. Alternatively, a single function can be supplied,
+which will be applied to all columns. Use these arguments if you need to
+change the types of specific columns. For example, <code>names_transform = list(week = as.integer)</code> would convert a character variable called <code>week</code>
+to an integer.</p>
+<p>If not specified, the type of the columns generated from <code>names_to</code> will
+be character, and the type of the variables generated from <code>values_to</code>
+will be the common type of the input columns used to generate them.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -270,11 +297,11 @@ a character week variable to an integer.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a set of glue specs. The glue code can use any global variable, grouping variable, or .strata. Defaults to nothing.</p></td>
+      <td><p>- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a headline glue spec. The glue code can use any global variable, grouping variable, or .strata. Defaults to nothing.</p></td>
+      <td><p>- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
     </tr>
     </table>
 

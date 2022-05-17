@@ -21,9 +21,7 @@ A data frame with 583 rows and 11 variables:
 }
 }
 \source{
-\url{
-http://archive.ics.uci.edu/ml/datasets/ILPD+%28Indian+Liver+Patient+Dataset%29
-}
+\url{https://bit.ly/3NjtlSe}
 }
 \usage{
 ILPD

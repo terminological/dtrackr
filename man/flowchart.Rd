@@ -24,7 +24,7 @@ flowchart(
 
 \item{maxWidth}{- a width in inches is size is not defined}
 
-\item{maxHeight}{- a heught in inches if size is not defined}
+\item{maxHeight}{- a height in inches if size is not defined}
 
 \item{rot}{- an angle of rotation for the saved file if size is not defined}
 

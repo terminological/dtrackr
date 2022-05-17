@@ -15,6 +15,11 @@ transmute, ungroup
 * merge histories of joining data frames
 * export history as dot graphviz graph
 * render history graph to SVG, PNG, PDF, DOT or PS formats
+* track excluded items with debugging info
+* allow across syntax in most situations (except group_by)
+* support pausing and unpausing of the dataframe tracking
+* preventing massive group_by groups if large numbers of very small groups are selected (e.g. part of a group_by() %>% mutate())
+* switch warnings to rlang::warn etc.
 
 # Future developments
 

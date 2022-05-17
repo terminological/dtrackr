@@ -11,8 +11,8 @@ csl: dtrackr.csl
 
 # Consort statement
 
-TODO: some background as to why.
-Cite data sets [@ramanaCriticalComparativeStudy; @ramanaCriticalStudySelected2011; @Dua:2019]
+Consort diagrams are part of some clinical trial or observational study check lists. They clarify how the data was handled, what stratification was done. This vignette is incomplete. 
+Cite data sets [@ramanaCriticalComparativeStudy; @ramanaCriticalStudySelected2011; @Dua2019]
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -28,6 +28,13 @@ library(tidyverse)
 library(dtrackr)
 
 ```
+
+In this example we look at the Indian liver patients data set. This has some clinical data on patients and we pretend we are conducting an observational study on liver disease patients.
+
+* They must match the criteria for entry which in this example is having a total bilirubin >= 0.7 for women or >= 0.8 for men.
+* They must be adults aged between the ages of 18 and 80 inclusive.
+
+This can be coded into the `dplyr` pipeline and a flowchart stratified by case or control status generated:
 
 ```{r}
 options(dtrackr.strata_glue="{tolower(.value)}")
@@ -63,14 +70,21 @@ ilpd %>% flowchart()
 
 ```
 
+With a bit of experimentation the flowchart needed for a Consort statement can be generated. One option to output the flowchart is SVG which can then be manually formatted as required.
+
 # Excluded data
+
+During this pipeline, we may be keen to understand why certain data items are being rejected. This would enable us to examine the source data, and potentially correct it during the data collection process. We've used it to allow continuous quality checks on the data to feed back to the data curators, as we regularly conduct analyses. By tracking the exclusions, not only do we track the data flow through the pipeline we also retain all excluded items, with the reason for exclusion. Thus we can reassure ourselves that the exclusions are as expected. We enabled this by calling `capture_exclusions()` in the pipeline above. Having tracked the exclusions we can retrieve them by calling `excluded()` which gives a data frame with the excluded records and the reasons. If the exclusions happened over multiple stages as the dataframe format change in between then this will be held as a nested dataframe (i.e. see `?tidyr::nest`):
 
 ```{r}
 
-ilpd %>% excluded()
+# here we filter out the majority of the actual content of the excluded data to focus on the 
+# metadata recovered during the exclusion.
+ilpd %>% excluded() %>% select(.stage,.message,.filter,Age, Gender)
 
 
 ```
 
+This list may have multiple entries for a single data item, if for example something is excluded in any one step for many reasons.
 
 <div id="refs"></div>

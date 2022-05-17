@@ -291,7 +291,7 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
   .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
   .data = .retrack(.data)
   if(.defaultExclusions()) {
-    message("dtrackr is capturing exclusions [getOption('dtrackr.exclusions') is TRUE]")
+    rlang::inform("dtrackr is capturing exclusions [getOption('dtrackr.exclusions') is TRUE]",.frequency = "always")
     .data = .data %>% p_capture_exclusions()
   }
   return(.data)
@@ -564,7 +564,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
   dots = rlang::enquos(...)
   .data = .data %>% .untrack()
   if(identical(.messages,NULL) & identical(.headline,NULL)) {
-    warning("p_status is missing both .messages and .headline specification. Did you forget to explicitly name them?")
+    rlang::warn("p_status is missing both .messages and .headline specification. Did you forget to explicitly name them?",.frequency = "always")
     return(.data %>% .retrack())
   }
 
@@ -614,7 +614,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
   default_env = rlang::caller_env()
   filters = rlang::list2(...)
   if (length(filters)==0) {
-    warning("No exclusions defined on p_exclude_all.")
+    rlang::warn("No exclusions defined on p_exclude_all.",.frequency = "always")
     return(.data %>% .retrack())
   }
   default_env$.total = nrow(.data)
@@ -707,7 +707,7 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
   default_env = rlang::caller_env()
   filters = rlang::list2(...)
   if (length(filters)==0) {
-    warning("No inclusions defined on p_include_any.")
+    rlang::warn("No inclusions defined on p_include_any.",.frequency = "always")
     return(.data %>% .retrack())
   }
   default_env$.total = nrow(.data)
@@ -1010,23 +1010,26 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
   if(is.null(.messages) & is.null(.headline)) stop("group_by .messages cannot be NULL, or else there is nothing to attach the other nodes to.")
 
   .data = .data %>% .untrack()
+
   tryCatch({
     col = rlang::ensyms(...)
-    .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
-    tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify")
-    tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
-    if (dplyr::n_groups(tmp2) > .defaultMaxSupportedGroupings() ) {
-      warning("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe.")
-      message("To change this limit set the option 'dtrackr.max_supported_groupings'. To continue tracking use ungroup then dtrackr::resume once groupings have become a bit more manageable")
-      tmp2 = tmp2 %>% p_pause()
-    }
-    return(tmp2 %>% .retrack())
   }, error= function(e) {
     # TODO: Support across syntax
     stop("dtrackr does not yet support grouping by things that are not column names (i.e. across() syntax). You should untrack the dataframe before trying this.")
     # tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
     # return(tmp2)
   })
+
+  .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
+  tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify")
+  tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
+  if (dplyr::n_groups(tmp2) > .defaultMaxSupportedGroupings() ) {
+    rlang::warn(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "regularly",.frequency_id = "maxgrpw")
+    rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'. To continue tracking use ungroup then dtrackr::resume once groupings have become a bit more manageable",.frequency = "once",.frequency_id = "maxgrp")
+    tmp2 = tmp2 %>% p_pause()
+  }
+  return(tmp2 %>% .retrack())
+
 }
 
 
@@ -1106,12 +1109,13 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
-  tryCatch({
-    filterExprs = rlang::enexprs(...)
-  }, error= function(e) {
-    # TODO: Support accross syntax
-    stop("dtrackr does not yet support filtering by things that are not a set of simple expressions (e.g. across() syntax). You should untrack the dataframe before trying this.")
-  })
+
+  #tryCatch({
+  filterExprs = rlang::enexprs(...)
+  # }, error= function(e) {
+  #   # TODO: Support accross syntax
+  #   stop("dtrackr does not yet support filtering by things that are not a set of simple expressions (e.g. across() syntax). You should untrack the dataframe before trying this.")
+  # })
 
   out = .data %>% dplyr::filter(..., .preserve = .preserve)
 
@@ -1348,7 +1352,7 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
     if ("trackr_df" %in% class(item)) {
       mergedGraph = .mergeGraphs(mergedGraph, item %>% p_get())
     } else {
-      warning("Unsupported item in .data")
+      rlang::warn(".data is not a tracked dataframe. Did you forget to call dtrackr::track()?", .frequency = "always")
     }
   }
 
@@ -1363,12 +1367,11 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
 
       #fmt <- rmarkdown::default_output_format(knitr::current_input())$name
       if (knitr::is_html_output()) { #|| fmt %>% stringr::str_detect("html") || fmt=="article") {
-        # message("html output for dtrackr")
+
         return(htmltools::HTML(dot2svg(outgraph)))
       } else {
 
         filename = tempfile()
-        # message("saving to ",filename)
         return(outgraph %>% save_dot(filename= filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight,rot=rot,formats = c("png","pdf")))
       }
 
@@ -1643,6 +1646,10 @@ anti_join.trackr_df <- p_anti_join
 #' @importFrom dplyr filter
 #' @export
 dplyr::filter
+
+#' @importFrom dplyr ungroup
+#' @export
+dplyr::ungroup
 
 # complete override:
 

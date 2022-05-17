@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Strart tracking the dtrackr history graph — p_track • dtrackr</title>
+<title>Start tracking the dtrackr history graph — p_track • dtrackr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Strart tracking the dtrackr history graph — p_track" />
-<meta property="og:description" content="Strart tracking the dtrackr history graph" />
+<meta property="og:title" content="Start tracking the dtrackr history graph — p_track" />
+<meta property="og:description" content="Start tracking the dtrackr history graph" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -85,6 +85,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -95,10 +98,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -121,16 +127,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Strart tracking the dtrackr history graph</h1>
+    <h1>Start tracking the dtrackr history graph</h1>
     
     <div class="hidden name"><code>p_track.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Strart tracking the dtrackr history graph</p>
+    <p>Start tracking the dtrackr history graph</p>
     </div>
 
-    <pre class="usage"><span class='fu'>p_track</span><span class='op'>(</span><span class='va'>.data</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>p_track</span><span class='op'>(</span><span class='va'>.data</span>, .messages <span class='op'>=</span> <span class='fu'>.defaultMessage</span><span class='op'>(</span><span class='op'>)</span>, .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -139,11 +145,20 @@
       <th>.data</th>
       <td><p>- a dataframe which may be grouped</p></td>
     </tr>
+    <tr>
+      <th>.messages</th>
+      <td><p>- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} variable which is the count of all rows,
+the {.count} variable which is the count of rows in the current group and the {.strata} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").</p></td>
+    </tr>
+    <tr>
+      <th>.headline</th>
+      <td><p>- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the hisotry graph</p>
+    <p>the history graph</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'>p_track</span><span class='op'>(</span><span class='op'>)</span>

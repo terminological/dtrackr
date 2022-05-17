@@ -1,5 +1,5 @@
 ---
-title: "Dtrackr configuration"
+title: "Dtrackr - configuration example"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Dtrackr - configuration example}
@@ -112,7 +112,7 @@ dtrackr::ILPD %>%
 # options(dtrackr.default_headline = "{ifelse(.strata != '', glue::glue('subgroup: {.strata}'), '')}")
 ```
 
-## Excluisions
+## Exclusions
 
 Elsewhere we discuss the possibility of capturing excluded items for debugging. This behaviour can be added to any pipeline with the `capture_exclusions()` function. Alternatively it can be globally enabled with the following option. Usual caveats about performance apply.
 

@@ -75,7 +75,7 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -88,6 +88,9 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -98,10 +101,13 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -139,7 +145,7 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
     <pre class="usage"><span class='fu'>include_any</span><span class='op'>(</span>
   <span class='va'>.data</span>,
   <span class='va'>...</span>,
-  .headline <span class='op'>=</span> <span class='st'>"{.strata}"</span>,
+  .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>,
   na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>,
   .type <span class='op'>=</span> <span class='st'>"inclusion"</span>,
   .asOffshoot <span class='op'>=</span> <span class='cn'>FALSE</span>
@@ -155,7 +161,7 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
     <tr>
       <th>...</th>
       <td><p>- a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables,
-variables from the environment and .included and .matched or .missing (included = matched+missing), .count and .total - group and overall counts respectively, e.g. "excluding .matched items and .missing with missing values".</p></td>
+variables from the environment and {.included} and {.matched} or {.missing} (included = matched+missing), {.count} and {.total} - group and overall counts respectively, e.g. "excluding {.matched} items and {.missing} with missing values".</p></td>
     </tr>
     <tr>
       <th>.headline</th>
@@ -186,19 +192,25 @@ variables from the environment and .included and .matched or .missing (included 
       <span class='va'>Petal.Length</span> <span class='op'>&lt;</span> <span class='fl'>2</span> <span class='op'>~</span> <span class='st'>"{.included} short ones"</span>
    <span class='op'>)</span> <span class='op'>%&gt;%</span>
    <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $nodes
-#&gt; <span style='color: #949494;'># A tibble: 1 x 5</span><span>
-#&gt;     .id .rank .strata .label                                             .type  
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>      inclusions:&lt;BR ALIGN='LEFT'/&gt;42 long ones&lt;BR ALIG… inclus…
+</div><div class='output co'>#&gt; $excluded
+#&gt; NULL
+#&gt; 
+#&gt; $capture
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $nodes
+#&gt; <span style='color: #949494;'># A tibble: 1 × 6</span><span>
+#&gt;     .id .rank .strata .label                                        .type .stage
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                         </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>      inclusions:&lt;BR ALIGN='LEFT'/&gt;42 long ones&lt;BR… incl… </span><span style='color: #949494;'>""</span><span>    
 #&gt; 
 #&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 0 x 5</span><span>
-#&gt; </span><span style='color: #949494;'># … with 5 variables: .to </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #949494;'>, .from </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span style='color: #949494;'>, .rel </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span style='color: #949494;'>, .strata </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span style='color: #949494;'>,</span><span>
-#&gt; </span><span style='color: #949494;'>#   .strata.prev </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 0 × 5</span><span>
+#&gt; </span><span style='color: #949494;'># … with 5 variables: .to &lt;dbl&gt;, .from &lt;int&gt;, .rel &lt;chr&gt;, .strata &lt;chr&gt;,</span><span>
+#&gt; </span><span style='color: #949494;'>#   .strata.prev &lt;chr&gt;</span><span>
 #&gt; 
 #&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 1 x 2</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 1 × 2</span><span>
 #&gt;   .from .strata
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1 </span><span style='color: #949494;'>""</span><span>     

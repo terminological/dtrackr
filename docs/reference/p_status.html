@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -85,6 +85,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -95,10 +98,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -133,8 +139,8 @@
     <pre class="usage"><span class='fu'>p_status</span><span class='op'>(</span>
   <span class='va'>.data</span>,
   <span class='va'>...</span>,
-  .messages <span class='op'>=</span> <span class='cn'>NULL</span>,
-  .headline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  .messages <span class='op'>=</span> <span class='fu'>.defaultMessage</span><span class='op'>(</span><span class='op'>)</span>,
+  .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>,
   .type <span class='op'>=</span> <span class='st'>"info"</span>,
   .asOffshoot <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
@@ -152,7 +158,7 @@
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the .strata, or any variables defined in the calling environment</p></td>
+      <td><p>- a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the {.strata}, or any variables defined in the calling environment</p></td>
     </tr>
     <tr>
       <th>.headline</th>
@@ -179,17 +185,23 @@
       short <span class='op'>=</span> <span class='fu'><a href='p_count_if.html'>p_count_if</a></span><span class='op'>(</span><span class='va'>Petal.Length</span><span class='op'>&lt;</span><span class='fl'>2</span><span class='op'>)</span>,
       .messages<span class='op'>=</span><span class='st'>"{Species}: {long} long ones &amp; {short} short ones"</span>
    <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $nodes
-#&gt; <span style='color: #949494;'># A tibble: 4 x 5</span><span>
-#&gt;     .id .rank .strata        .label                                       .type 
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                        </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>             stratify by Species&lt;BR ALIGN='LEFT'/&gt;        strat…
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     2 </span><span style='color: #949494;'>"</span><span>Species:seto… &lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;seto… info  
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     2 </span><span style='color: #949494;'>"</span><span>Species:vers… &lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;… info  
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4     2 </span><span style='color: #949494;'>"</span><span>Species:virg… &lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;v… info  
+</div><div class='output co'>#&gt; $excluded
+#&gt; NULL
+#&gt; 
+#&gt; $capture
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $nodes
+#&gt; <span style='color: #949494;'># A tibble: 4 × 6</span><span>
+#&gt;     .id .rank .strata              .label                           .type .stage
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                            </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>                   stratify by Species&lt;BR ALIGN='L… stra… </span><span style='color: #949494;'>""</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     2 </span><span style='color: #949494;'>"</span><span>Species:setosa</span><span style='color: #949494;'>"</span><span>     &lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN=… info  </span><span style='color: #949494;'>""</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     2 </span><span style='color: #949494;'>"</span><span>Species:versicolor</span><span style='color: #949494;'>"</span><span> &lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR AL… info  </span><span style='color: #949494;'>""</span><span>    
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4     2 </span><span style='color: #949494;'>"</span><span>Species:virginica</span><span style='color: #949494;'>"</span><span>  &lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALI… info  </span><span style='color: #949494;'>""</span><span>    
 #&gt; 
 #&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 3 x 5</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 3 × 5</span><span>
 #&gt;     .to .from .rel  .strata            .strata.prev
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2     1 info  Species:setosa     </span><span style='color: #949494;'>""</span><span>          
@@ -197,7 +209,7 @@
 #&gt; </span><span style='color: #BCBCBC;'>3</span><span>     4     1 info  Species:virginica  </span><span style='color: #949494;'>""</span><span>          
 #&gt; 
 #&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 3 x 2</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 3 × 2</span><span>
 #&gt;   .from .strata           
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2 Species:setosa    

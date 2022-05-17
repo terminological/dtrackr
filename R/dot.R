@@ -71,7 +71,7 @@ landscape = function(size) {return(list(width=size$height, height = size$width, 
   # 1. Check that the pathnames are "compatible".
   if (!identical(relativeTo[1L], pathnameC[1L])) {
     pathname <- paste(pathname, collapse="/")
-    # warning("Cannot infer relative pathname, because the two pathnames are not refering to the same root/device (will use absolute pathname instead): ", paste(relativeTo, collapse="/"), " != ", pathname)
+
     return(pathname)
   }
 
@@ -109,7 +109,7 @@ landscape = function(size) {return(list(width=size$height, height = size$width, 
 #' @param filename - the root of the desired filename (minus extension)
 #' @param size - a list of length and width in inches e.g. a std_size
 #' @param maxWidth - a width in inches is size is not defined
-#' @param maxHeight - a heught in inches if size is not defined
+#' @param maxHeight - a height in inches if size is not defined
 #' @param rot - an angle of rotation for the saved file if size is not defined
 #' @param formats - some of "pdf","dot","svg","png","ps"
 #'
@@ -118,8 +118,6 @@ landscape = function(size) {return(list(width=size$height, height = size$width, 
 #'
 #' @examples dot2svg("digraph {A->B}")
 save_dot = function(dot,filename,size = std_size$half, maxWidth = size$width, maxHeight = size$height, rot=size$rot, formats=c("dot","png","pdf","svg")) {
-
-  # warning("params: ",maxWidth,"x",maxHeight,"; rot: ",rot)
 
   tmp = filename %>% fs::path_ext()
   if(tmp %in% c("dot","png","pdf","svg","ps")) formats=tmp
@@ -136,8 +134,6 @@ save_dot = function(dot,filename,size = std_size$half, maxWidth = size$width, ma
   svg = dot %>% dot2svg()
   defaultWidth = (svg %>% stringr::str_match("width=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
   defaultHeight = (svg %>% stringr::str_match("height=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
-
-  # warning("default size: ",defaultWidth,"x",defaultHeight)
 
   aspectRatio = defaultWidth / defaultHeight
 

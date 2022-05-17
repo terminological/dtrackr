@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -85,6 +85,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/dtrackr.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -95,10 +98,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/tracking-provenance.html">Dtrackr - Basic operations</a>
+      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+    </li>
+    <li>
+      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -132,10 +138,10 @@
 
     <pre class="usage"><span class='fu'>comment</span><span class='op'>(</span>
   <span class='va'>.data</span>,
-  .messages <span class='op'>=</span> <span class='cn'>NULL</span>,
-  .headline <span class='op'>=</span> <span class='cn'>NULL</span>,
+  .messages <span class='op'>=</span> <span class='fu'>.defaultMessage</span><span class='op'>(</span><span class='op'>)</span>,
+  .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>,
   .type <span class='op'>=</span> <span class='st'>"info"</span>,
-  .asOffshoot <span class='op'>=</span> <span class='cn'>FALSE</span>
+  .asOffshoot <span class='op'>=</span> <span class='op'>(</span><span class='va'>.type</span> <span class='op'>==</span> <span class='st'>"exclusion"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -147,11 +153,12 @@
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, or the .count variable which is nrow(.data)</p></td>
+      <td><p>- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} of all rows,
+the {.count} variable which is the count in each group and {.strata} a description of the group</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the .total variable which is nrow(.data)</p></td>
+      <td><p>- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data)and {.strata}</p></td>
     </tr>
     <tr>
       <th>.type</th>
