@@ -15,6 +15,9 @@ transmute, ungroup
 * merge histories of joining data frames
 * export history as dot graphviz graph
 * render history graph to SVG, PNG, PDF, DOT or PS formats
+
+# trackr 0.2.0 - release github version
+
 * track excluded items with debugging info
 * allow across syntax in most situations (except group_by)
 * support pausing and unpausing of the dataframe tracking
