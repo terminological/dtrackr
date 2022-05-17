@@ -23,7 +23,7 @@ jobs:
 
       - name: Install xml deps on Linux
         if: runner.os == 'Linux'
-        run: sudo apt-get update -y && sudo apt-get install -y libxmlsec1-dev pkg-config
+        run: sudo apt-get update -y && sudo apt-get install -y libxmlsec1-dev pkg-config pandoc-citeproc
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
