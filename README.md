@@ -5,9 +5,6 @@
 
 <!-- badges: start -->
 
-[![Travis build
-status](https://travis-ci.com/terminological/dtrackr.svg?branch=main)](https://travis-ci.com/terminological/dtrackr)
-
 [![Lifecycle:experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- [![CRAN Status](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr) -->
 
