@@ -6,9 +6,10 @@
 <!-- badges: start -->
 
 [![Lifecycle:experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-<!-- [![CRAN Status](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr) -->
 
 [![R-CMD-check](https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg)](https://github.com/terminological/dtrackr/actions)
+
+[![DOI](https://zenodo.org/badge/335974323.svg)](https://zenodo.org/badge/latestdoi/335974323)
 <!-- badges: end -->
 
 I have been known to execute parts of my data pipeline more than once.
