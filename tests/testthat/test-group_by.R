@@ -6,7 +6,7 @@ test_that("group by works", {
   iris %>%
     dtrackr::track() %>%
     group_by(Species) %>%
-    summarise(across(ends_with("Width"), mean )) %>%
+    summarise(across(ends_with("Width"), mean), .messages = "sepals: {Sepal.Width}; petals: {Petal.Width}") %>%
     dtrackr::flowchart()
   # })
 
@@ -18,13 +18,13 @@ test_that("group by works", {
       dtrackr::flowchart()
   },regexp = "Must group by variables found in `.data`")
 
-  expect_error({
+  expect_message({
     iris %>%
       dtrackr::track() %>%
-      group_by(across(ends_with("Height"))) %>%
+      group_by(across(ends_with("Length"))) %>%
       summarise(across(ends_with("Width"), mean )) %>%
       dtrackr::flowchart()
-  },regexp = "dtrackr does not yet support grouping by things that are not column names.*")
+  },regexp = "This group_by\\(\\) has created more than the maximum number of supported groupings")
 
 
 })

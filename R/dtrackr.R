@@ -1016,22 +1016,16 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 
   .data = .data %>% .untrack()
 
-  tryCatch({
-    col = rlang::ensyms(...)
-  }, error= function(e) {
-    # TODO: Support across syntax
-    stop("dtrackr does not yet support grouping by things that are not column names (i.e. across() syntax). You should untrack the dataframe before trying this.")
-    # tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
-    # return(tmp2)
-  })
-
+  # figure out final grouping - only for the strata label though
+  col = .data %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% dplyr::groups()
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
+
   tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify")
-  tmp2 = tmp %>% .untrack() %>% dplyr::group_by(!!!col, .add=.add, .drop=.drop) %>% p_copy(tmp)
+  tmp2 = tmp %>% .untrack() %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% p_copy(tmp)
   if (dplyr::n_groups(tmp2) > .defaultMaxSupportedGroupings() ) {
-    rlang::warn(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "regularly",.frequency_id = "maxgrpw")
+    rlang::inform(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "always")
     rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'. To continue tracking use ungroup then dtrackr::resume once groupings have become a bit more manageable",.frequency = "once",.frequency_id = "maxgrp")
-    tmp2 = tmp2 %>% p_pause()
+    tmp2 = .data %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% p_copy(.data) %>% p_pause()
   }
   return(tmp2 %>% .retrack())
 
@@ -1335,7 +1329,11 @@ p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.coun
 ## Output operations ====
 
 is_running_in_chunk = function() {
-   isTRUE(try(rstudioapi::getActiveDocumentContext()$id != "#console"))
+  # message(rstudioapi::getActiveDocumentContext()$id)
+  isTRUE(try(
+    rstudioapi::getActiveDocumentContext()$id != "#console" &
+    rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
+  ))
 }
 
 #' Flowchart output
