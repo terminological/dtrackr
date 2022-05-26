@@ -126,28 +126,33 @@
 .mergeGraphs = function(.graph1, .graph2) {
   .id = .from = .to = NULL
   # first remove overlapping nodes:
+  # these might happen if the pipeline started the same and then split, and is now being rejoined.
   .graph2$nodes = .graph2$nodes %>% dplyr::anti_join(.graph1$nodes, by=c(".id",".strata",".rank",".label",".type"))
   idsToChange = .graph2$nodes %>% dplyr::pull(.id)
-  # exclude edges between the nodes we are removing (but not ones spanning gap)
-  .graph2$edges = .graph2$edges %>% dplyr::filter(.from %in% idsToChange | .to %in% idsToChange)
-  # now modify node ids
-  graph1MaxId = max(.graph1$nodes$.id,0)
-  idOffset = graph1MaxId+1-min(idsToChange)
-  .graph2$nodes = .graph2$nodes %>% dplyr::mutate(.id = .id+idOffset)
-  # change ids of edge ends, but only where they have changed
-  .graph2$edges = .graph2$edges %>% dplyr::mutate(
-    .from = ifelse(.from %in% idsToChange, .from+idOffset, .from),
-    .to = ifelse(.to %in% idsToChange, .to+idOffset, .to)
-  )
-  # change ids of head nodes, but only where they have changed
-  .graph2$head = .graph2$head %>% dplyr::mutate(
-    .from = ifelse(.from %in% idsToChange, .from+idOffset, .from)
-  )
-  # change id of any exclusions
-  if(!is.null(.graph2$excluded)) {
-    .graph2$excluded = .graph2$excluded %>% dplyr::mutate(
+  if (length(idsToChange) > 0) {
+
+    # exclude edges between the nodes we are removing (but not ones spanning gap)
+    .graph2$edges = .graph2$edges %>% dplyr::filter(.from %in% idsToChange | .to %in% idsToChange)
+    # now modify node ids
+    graph1MaxId = max(.graph1$nodes$.id,0)
+    idOffset = graph1MaxId+1-min(idsToChange)
+    .graph2$nodes = .graph2$nodes %>% dplyr::mutate(.id = .id+idOffset)
+    # change ids of edge ends, but only where they have changed
+    .graph2$edges = .graph2$edges %>% dplyr::mutate(
+      .from = ifelse(.from %in% idsToChange, .from+idOffset, .from),
+      .to = ifelse(.to %in% idsToChange, .to+idOffset, .to)
+    )
+    # change ids of head nodes, but only where they have changed
+    .graph2$head = .graph2$head %>% dplyr::mutate(
       .from = ifelse(.from %in% idsToChange, .from+idOffset, .from)
     )
+    # change id of any exclusions
+    if(!is.null(.graph2$excluded)) {
+      .graph2$excluded = .graph2$excluded %>% dplyr::mutate(
+        .from = ifelse(.from %in% idsToChange, .from+idOffset, .from)
+      )
+    }
+
   }
   # ranks.
   # potentially complex. If two graphs are different streams of same process then we want to preserve rank
