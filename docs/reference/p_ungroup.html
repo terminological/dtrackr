@@ -74,7 +74,7 @@ generate some summary statistics about the un-grouped data" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9003</span>
       </span>
     </div>
 
@@ -144,7 +144,8 @@ generate some summary statistics about the un-grouped data</p>
   <span class='va'>x</span>,
   <span class='va'>...</span>,
   .messages <span class='op'>=</span> <span class='fu'>.defaultMessage</span><span class='op'>(</span><span class='op'>)</span>,
-  .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>
+  .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>,
+  .tag <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -165,6 +166,10 @@ generate some summary statistics about the un-grouped data</p>
     <tr>
       <th>.headline</th>
       <td><p>- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or {.count}.</p></td>
+    </tr>
+    <tr>
+      <th>.tag</th>
+      <td><p>- if you want the summary data from this step in the future then give it a name with .tag.</p></td>
     </tr>
     </table>
 
@@ -188,8 +193,12 @@ generate some summary statistics about the un-grouped data</p>
 #&gt; $capture
 #&gt; [1] FALSE
 #&gt; 
+#&gt; $tags
+#&gt; <span style='color: #949494;'># A tibble: 0 × 2</span><span>
+#&gt; </span><span style='color: #949494;'># … with 2 variables: .tag &lt;chr&gt;, .content &lt;list&gt;</span><span>
+#&gt; 
 #&gt; $nodes
-#&gt; <span style='color: #949494;'># A tibble: 5 × 6</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 5 × 6</span><span>
 #&gt;     .id .rank .strata              .label                           .type .stage
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                            </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>                   stratify by Species&lt;BR ALIGN='L… stra… </span><span style='color: #949494;'>""</span><span>    

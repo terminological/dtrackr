@@ -10,7 +10,8 @@
   ...,
   .keep = FALSE,
   .messages = "removing {.count.in-.count.out} duplicates",
-  .headline = .defaultHeadline()
+  .headline = .defaultHeadline(),
+  .tag = NULL
 )
 }
 \arguments{
@@ -25,12 +26,14 @@
 \item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
 \item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the transformed .data.
 }
 \description{
-Distinct acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
+Distinct acts in the same way as in `dplyr`. Prior to the operation the size of the group is calculated \{.count.in\} and
 after the operation the output size \{.count.out\}
 The group \{.strata\} is also available (if grouped) for reporting
 }

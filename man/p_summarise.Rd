@@ -4,7 +4,14 @@
 \alias{p_summarise}
 \title{Summarise a data set}
 \usage{
-p_summarise(.data, ..., .groups = NULL, .messages = "", .headline = "")
+p_summarise(
+  .data,
+  ...,
+  .groups = NULL,
+  .messages = "",
+  .headline = "",
+  .tag = NULL
+)
 }
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
@@ -16,6 +23,8 @@ p_summarise(.data, ..., .groups = NULL, .messages = "", .headline = "")
 \item{.messages}{- a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}}
 
 \item{.headline}{- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the .data but ungrouped.

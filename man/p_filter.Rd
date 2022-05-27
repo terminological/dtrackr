@@ -12,7 +12,8 @@ p_filter(
   .headline = .defaultHeadline(),
   .type = "exclusion",
   .asOffshoot = (.type == "exclusion"),
-  .stage = ""
+  .stage = "",
+  .tag = NULL
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
 \item{.asOffshoot}{- if the type is exclusion, asOffshoot places the information box outside of the main flow, as an exclusion.}
 
 \item{.stage}{- a name for this step in the pathway}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the transformed .data.

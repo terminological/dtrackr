@@ -74,7 +74,7 @@ The group {.strata} is also available (if grouped) for reporting" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9003</span>
       </span>
     </div>
 
@@ -149,7 +149,8 @@ The group {.strata} is also available (if grouped) for reporting</p>
   .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>,
   .type <span class='op'>=</span> <span class='st'>"exclusion"</span>,
   .asOffshoot <span class='op'>=</span> <span class='op'>(</span><span class='va'>.type</span> <span class='op'>==</span> <span class='st'>"exclusion"</span><span class='op'>)</span>,
-  .stage <span class='op'>=</span> <span class='st'>""</span>
+  .stage <span class='op'>=</span> <span class='st'>""</span>,
+  .tag <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -189,6 +190,10 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
       <th>.stage</th>
       <td><p>- a name for this step in the pathway</p></td>
     </tr>
+    <tr>
+      <th>.tag</th>
+      <td><p>- if you want the summary data from this step in the future then give it a name with .tag.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -203,8 +208,12 @@ is recalculated based on the resulting data, otherwise the grouping is kept as i
 #&gt; $capture
 #&gt; [1] FALSE
 #&gt; 
+#&gt; $tags
+#&gt; <span style='color: #949494;'># A tibble: 0 × 2</span><span>
+#&gt; </span><span style='color: #949494;'># … with 2 variables: .tag &lt;chr&gt;, .content &lt;list&gt;</span><span>
+#&gt; 
 #&gt; $nodes
-#&gt; <span style='color: #949494;'># A tibble: 4 × 6</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 4 × 6</span><span>
 #&gt;     .id .rank .strata              .label                           .type .stage
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                            </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
 #&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>                   stratify by Species&lt;BR ALIGN='L… stra… </span><span style='color: #949494;'>""</span><span>    

@@ -10,7 +10,8 @@ p_relocate(
   .before = NULL,
   .after = NULL,
   .messages = "",
-  .headline = ""
+  .headline = "",
+  .tag = NULL
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ left-hand side; specifying both is an error.}
 \item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
 \item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the .data but dplyr::ungrouped.
@@ -36,7 +39,7 @@ the .data but dplyr::ungrouped.
 \description{
 Equivalent Dplyr functions for mutating, selecting and renaming a data set act in the normal way.
 mutates / selects / rename generally don't add anything in documentation so the default behaviour is to miss these out of the history.
-This can be overridden with the .messages, or .headline values
+This can be overridden with the .messages, or .headline values in which case they behave just like a `comment()`
 }
 \examples{
 iris \%>\% p_group_by(Species) \%>\%

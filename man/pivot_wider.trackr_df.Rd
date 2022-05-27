@@ -18,7 +18,8 @@
   values_fn = NULL,
   ...,
   .messages = "",
-  .headline = ""
+  .headline = "",
+  .tag = NULL
 )
 }
 \arguments{
@@ -86,6 +87,8 @@ to different \code{values_from} columns.}
 \item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
 \item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the result of the pivot_wider but with a history graph.

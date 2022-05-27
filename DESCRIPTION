@@ -1,6 +1,6 @@
 Package: dtrackr
 Title: Track your data pipelines
-Version: 0.2.0.9000
+Version: 0.2.0.9003
 Authors@R: 
     person(given = "Robert",
            family = "Challen",

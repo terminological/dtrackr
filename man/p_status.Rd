@@ -10,7 +10,8 @@ p_status(
   .messages = .defaultMessage(),
   .headline = .defaultHeadline(),
   .type = "info",
-  .asOffshoot = FALSE
+  .asOffshoot = FALSE,
+  .tag = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ p_status(
 \item{.type}{- one of "info","exclusion": used to define formatting}
 
 \item{.asOffshoot}{- do you want this comment to be an offshoot of the main flow (default = FALSE).}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the same .data dataframe with the history graph updated

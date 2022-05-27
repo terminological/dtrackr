@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9003</span>
       </span>
     </div>
 
@@ -134,7 +134,7 @@
   <span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"test message"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} of type {Species}"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} together with cutOff {cutOff}"</span><span class="op">)</span> </pre></div>
 <p>Having prepared our dataset we conduct our analysis, fit our models, massage our statistics, and disprove our hypothesis, write it up and prepare it for submission.</p>
 <p>It is usually at this point someone says, “Did you exclude XYZ?” or “How many of WXY did you find in each group?” or something similar. Before dtrackr you would have muttered something about having to look at the code to see what you did (and hope it does the same thing next time), but now all you do is this:</p>

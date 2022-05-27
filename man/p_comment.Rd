@@ -9,7 +9,8 @@ p_comment(
   .messages = .defaultMessage(),
   .headline = .defaultHeadline(),
   .type = "info",
-  .asOffshoot = (.type == "exclusion")
+  .asOffshoot = (.type == "exclusion"),
+  .tag = NULL
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ the \{.count\} variable which is the count in each group and \{.strata\} a descr
 \item{.type}{- one of "info","...,"exclusion": used to define formatting}
 
 \item{.asOffshoot}{- do you want this comment to be an offshoot of the main flow (default = FALSE).}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the same .data dataframe with the history graph updated

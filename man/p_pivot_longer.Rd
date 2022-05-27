@@ -20,7 +20,8 @@ p_pivot_longer(
   values_transform = list(),
   ...,
   .messages = "",
-  .headline = ""
+  .headline = "",
+  .tag = NULL
 )
 }
 \arguments{
@@ -147,6 +148,8 @@ will be the common type of the input columns used to generate them.}
 \item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
 \item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the result of the pivot_wider but with a history graph.

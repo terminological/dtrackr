@@ -9,6 +9,22 @@
   return(.summaryToNodesDf(g, .glue, .isHeader, .type, .env))
 }
 
+.taggedData = function(.data, ...) {
+  .data = .data %>% .untrack()
+  total = nrow(.data %>% dplyr::ungroup())
+  .data %>% dplyr::summarise(..., .count=dplyr::n(), .groups="keep") %>% mutate(.total = total) %>% .createStrataCol()
+}
+
+# write  arbitrary content into the tags list. If the content is not specified then it is calculated from .data as a summarisation step by .taggedData().
+.writeTag = function(.data, .tag, ..., .content = .taggedData(.data, ...)) {
+  if (is.null(.tag)) return(.data)
+  tmp = tibble(.tag = .tag, .content = list(.content))
+  current = .data %>% p_get()
+  current$tags = bind_rows(current$tags,tmp)
+
+  .data %>% p_set(current)
+}
+
 .doGlue = function(g,.glue,.env) {
   tryCatch(
     glue::glue_data(g,.glue,.envir=.env),
@@ -80,14 +96,14 @@
   currentRank = max(current$nodes$.rank,0)
   currentMaxId = max(current$nodes$.id,0)
   if(.asOffshoot) {
-    #TODO: supposed to put exclusions on same rank
     nodes=tmp %>% dplyr::mutate(.rank=currentRank, .id=dplyr::row_number()+currentMaxId)
   } else {
     nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
   }
   new = list(
     excluded = current$excluded,
-    capture = current$capture
+    capture = current$capture,
+    tags = current$tags
   )
   new$nodes = current$nodes %>% dplyr::bind_rows(nodes)
   #TODO: investigate .rel here. I think it should be more to do with .asOffshoot than defined by .type
@@ -164,7 +180,8 @@
     nodes = dplyr::bind_rows(.graph1$nodes,.graph2$nodes),
     edges = dplyr::bind_rows(.graph1$edges,.graph2$edges),
     head = dplyr::bind_rows(.graph1$head,.graph2$head),
-    capture = isTRUE(.graph1$capture) | isTRUE(.graph2$capture)
+    capture = isTRUE(.graph1$capture) | isTRUE(.graph2$capture),
+    tags = dplyr::bind_rows(.graph1$tags,.graph2$tags)
   )
   # merge exclusions if any exist
   if(!is.null(.graph1$excluded) | !is.null(.graph2$excluded)) {
@@ -186,7 +203,8 @@
       edges=edges,
       head=head,
       capture=FALSE,
-      paused = FALSE
+      paused=FALSE,
+      tags=tibble::tibble(.tag=character(), .content=list())
       # excluded is set in p_capture_exclusions and will not be present all the time
   ))
 }
@@ -276,13 +294,14 @@
 #' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} variable which is the count of all rows,
 #' the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the history graph
 #' @export
 #'
 #' @examples
 #' iris %>% p_track()
-p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline()) {
+p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
   if (.isTracked(.data)) return(.data)
   if (!"data.frame" %in% class(.data)) stop("dtrackr can only track data frames. Sorry.")
   old = .data %>% p_get()
@@ -293,7 +312,7 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = "info", .env=default_env)
   # .messages is a load of glue specs
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = "info", .env=default_env)))
-  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
+  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag = .tag)
   .data = .retrack(.data)
   if(.defaultExclusions()) {
     rlang::inform("dtrackr is capturing exclusions [getOption('dtrackr.exclusions') is TRUE]",.frequency = "always")
@@ -426,6 +445,81 @@ p_excluded = function(.data, simplify = TRUE) {
   }
 }
 
+#' Retrieve tagged data in the history graph
+#'
+#' Any counts at the individual stages that was stored with a `.tag` option in a pipeline step can be recovered here. The idea here is to provide a quick way to access a single value
+#' for the counts or other details tagged in a pipeline into a format that can be reported in text of a document. (e.g. for a results section). For more examples the consort statement vignette
+#' has some examples of use.
+#'
+#' @param .data the tracked dataframe.
+#' @param .tag (optional) the tag to retrieve.
+#' @param .strata (optional) filter the tagged data by the strata. set to "" to filter just the top level ungrouped data.
+#' @param .glue (optional) a glue specification which will be applied to the tagged content to generate a `.label` for the tagged content.
+#' @param ... (optional) any other named parameters will be passed to `glue::glue` and can be used to generate a label.
+#'
+#' @return various things depending on what is requested.
+#'
+#' By default a tibble with a `.tag` column and all associated summary values in a nested `.content` column.
+#'
+#' If a `.strata` column is specified the results are filtered to just those that match a given `.strata` grouping (i.e. this will be the grouping label on the flowchart). Ungrouped content will have an empty "" as `.strata`
+#'
+#' If `.tag` is specified the result will be for a single tag and `.content` will be automatically un-nested to give a single un-nested dataframe of the content captured at the `.tag` tagged step.
+#' This could be single or multiple rows depending on whether the original data was grouped at the point of tagging.
+#'
+#' If both the `.tag` and `.glue` is specified a `.label` column will be computed from `.glue` and the tagged content. If the result of this is a single row then just the string value of `.label` is returned.
+#'
+#' If just the `.glue` is specified, an un-nested dataframe with `.tag`,`.strata` and `.label` columns with a label for each tag in each strata.
+#'
+#' If this seems complex then the best thing is to experiment until you get the output you want, leaving any `.glue` options until you think you know what you are doing. It made sense at the time.
+#'
+#' @export
+p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
+  out = .data %>% p_get()
+  tag=.tag
+  strata = .strata
+  tmp = out$tags
+  if (!is.null(.tag)) {
+    # just getting one tag's values
+    tmp = tmp %>% dplyr::filter(.tag == tag) %>% tidyr::unnest(.content)
+    if (!is.null(.strata)) tmp = tmp %>% dplyr::filter(.strata == strata)
+    if (!is.null(.glue)) {
+      # calculate a .label column
+      tmp = tmp %>% dplyr::mutate(.label = glue::glue(.glue,...))
+      if (nrow(tmp) == 1) return(tmp %>% pull(.label))
+    }
+    return(tmp)
+  } else {
+    # we are getting all tags values
+    if (!is.null(.strata)) {
+      # filter strata on all tags and exclude any that result in no content
+      tmp = tmp %>% dplyr::mutate(
+        .content = purrr::map(.content, ~ .x %>% filter(.strata == strata)),
+        .content_rows = purrr::map(.content, ~ nrow(.x))
+      )
+      tmp = tmp %>% dplyr::filter(.content_rows>0) %>% dplyr::select(-.content_rows)
+    }
+    # apply glue spec to all remaining content.
+    if (!is.null(.glue)) {
+      # calculate the glue, and pull out the label and group strata and unnest it.
+      tmp$.content = lapply(tmp$.content, function(.x) .x %>% dplyr::mutate(.label = glue::glue(.glue,...)) %>% dplyr::ungroup() %>% dplyr::select(.strata,.label) )
+      tmp = tmp %>%
+        # dplyr::mutate(
+        # .content = purrr::map(.content, ~ .x %>%
+        #                         dplyr::mutate(.label = glue::glue(.glue,...)) %>%
+        #                         dplyr::ungroup() %>%
+        #                         dplyr::select(.strata, .label)
+        #                       )) %>%
+        tidyr::unnest(.content)
+      # if (nrow(tmp) == 1) return(tmp %>% pull(.label))
+      return(tmp)
+    }
+    if (nrow(tmp)==1) {
+      tmp = tmp %>% tidyr::unnest(.content)
+    }
+    return(tmp)
+  }
+}
+
 #' Set the dtrackr history graph
 #'
 #' @param .data - a dataframe which may be grouped
@@ -500,13 +594,14 @@ p_count_if = function(...) {
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data)and \{.strata\}
 #' @param .type - one of "info","...,"exclusion": used to define formatting
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the same .data dataframe with the history graph updated
 #' @export
 #'
 #' @examples
 #' iris %>% p_comment("hello {.total} rows")
-p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = (.type=="exclusion")) {
+p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL) {
   if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
 
   .data = .data %>% .untrack()
@@ -517,7 +612,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 
   # .messages is a load of glue specs
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = .type, .env=default_env)))
-  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot)
+  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot) %>% .writeTag(.tag = .tag)
 
   return(.data %>% .retrack())
 }
@@ -553,6 +648,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
 #' @param .type - one of "info","exclusion": used to define formatting
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the same .data dataframe with the history graph updated
 #' @export
@@ -564,7 +660,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #'       short = p_count_if(Petal.Length<2),
 #'       .messages="{Species}: {long} long ones & {short} short ones"
 #'    ) %>% p_get()
-p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE) {
+p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL) {
   if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
   dots = rlang::enquos(...)
   .data = .data %>% .untrack()
@@ -583,7 +679,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 
   # .messages is a load of glue specs
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = .type, .env=default_env)))
-  .data = .writeMessagesToNode(.data, dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot)
+  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot) %>% .writeTag(.tag = .tag, ...)
   return(.data %>% .retrack())
 }
 
@@ -759,6 +855,7 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #' @param ... a set of dplyr summary expressions. If left blank a default of ".count=n()" will be filled in
 #' @param .messages - a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.count\}. the default is "total {.count} items"
 #' @param .headline - a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or \{.count\}.
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the .data but dplyr::ungrouped.
 #' @export
@@ -773,11 +870,11 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #'       .messages="{my_count} items with {my_avg} petal length"
 #'    ) %>%
 #'    p_get()
-p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline()) {
+p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
   .data = x %>% .untrack()
   dots = dplyr::enexprs(...)
   if(length(dots)==0) dots = list(.count=rlang::expr(dplyr::n()))
-  out = .data %>% dplyr::ungroup() %>% p_copy(.data) %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise")
+  out = .data %>% dplyr::ungroup() %>% p_copy(.data) %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise", .tag=.tag)
   return(out %>% .retrack())
 }
 
@@ -792,6 +889,7 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #' @param .messages - a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
 #' @param .headline - a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
 #' @param .groups	- Experimental lifecycle Grouping structure of the result.
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the .data but ungrouped.
 #' @export
@@ -801,7 +899,7 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #'    p_group_by(Species) %>%
 #'    p_summarise(avg = mean(Petal.Length), .messages="{avg} length") %>%
 #'    p_get()
-p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="") {
+p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="", .tag=NULL) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   grps = .data %>% dplyr::groups()
@@ -813,7 +911,7 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="") {
 
   # .messages is a load of glue specs
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = "summarise", .env=default_env)))
-  out = out %>% dplyr::group_by(!!!newGrps) %>% p_copy(.data) %>% .writeMessagesToNode(.df=dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
+  out = out %>% dplyr::group_by(!!!newGrps) %>% p_copy(.data) %>% .writeMessagesToNode(.df=dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag, ...)
   return(out %>% .retrack())
 }
 
@@ -821,12 +919,13 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="") {
 #'
 #' Equivalent Dplyr functions for mutating, selecting and renaming a data set act in the normal way.
 #' mutates / selects / rename generally don't add anything in documentation so the default behaviour is to miss these out of the history.
-#' This can be overridden with the .messages, or .headline values
+#' This can be overridden with the .messages, or .headline values in which case they behave just like a `comment()`
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr summary espressions.
 #' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the .data but dplyr::ungrouped.
 #' @export
@@ -835,82 +934,82 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="") {
 #' iris %>% p_group_by(Species) %>%
 #'     p_mutate(Petal.Length = 2*Petal.Length, .messages="doubling length") %>%
 #'     p_get()
-p_mutate = function(.data, ..., .messages = "", .headline = "") {
+p_mutate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::mutate(...)
-  out = out %>% p_copy(.data) %>% p_comment(.messages=.messages, .headline = .headline, .type="mutate")
+  out = out %>% p_copy(.data) %>% p_comment(.messages=.messages, .headline = .headline, .type="mutate", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::add_count
-p_add_count = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messages = "", .headline = "") {
+p_add_count = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::add_count(..., wt, sort, name)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="add_count")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="add_count", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::add_tally
-p_add_tally = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messages = "", .headline = "") {
+p_add_tally = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::add_tally(..., wt, sort, name)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="add_tally")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="add_tally", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::transmute
-p_transmute = function(.data, ..., .messages = "", .headline = "") {
+p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::transmute(...)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="transmute")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="transmute", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::select
-p_select = function(.data, ..., .messages = "", .headline = "") {
+p_select = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::select(...)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="select")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="select", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::relocate
-p_relocate = function(.data, ..., .before = NULL, .after = NULL, .messages = "", .headline = "") {
+p_relocate = function(.data, ..., .before = NULL, .after = NULL, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::relocate(..., .before = .before, .after = .after)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="relocate")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="relocate", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::rename
-p_rename = function(.data, ..., .messages = "", .headline = "") {
+p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::rename(...)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="rename")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="rename", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::rename_with
-p_rename_with = function(.data, ..., .messages = "", .headline = "") {
+p_rename_with = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::rename_with(...)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="rename_with")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="rename_with", .tag=.tag)
   return(out %>% .retrack())
 }
 
 #' @inherit p_mutate
 #' @inheritParams dplyr::arrange
-p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline = "") {
+p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::arrange(..., .by_group = .by_group)
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="arrange")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="arrange", .tag=.tag)
   return(out %>% .retrack())
 }
 
@@ -921,12 +1020,13 @@ p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline =
 #' @inheritParams  tidyr::pivot_wider
 #' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the result of the pivot_wider but with a history graph.
 #' @export
 p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), names_prefix = "",
                          names_sep = "_",names_glue = NULL,names_sort = FALSE,names_repair = "check_unique",
-                         values_from = as.symbol("value"),values_fill = NULL, values_fn = NULL, ..., .messages = "", .headline = "") {
+                         values_from = as.symbol("value"),values_fill = NULL, values_fn = NULL, ..., .messages = "", .headline = "", .tag=NULL) {
   names_from <- rlang::enquo(names_from)
   values_from <- rlang::enquo(values_from)
   .data = data %>% .untrack()
@@ -944,7 +1044,8 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), n
     values_fn = values_fn,
     ...
   )
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_wider")
+  # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_wider", .tag=.tag)
   return(out %>% .retrack())
 }
 
@@ -955,6 +1056,7 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), n
 #' @inheritParams  tidyr::pivot_longer
 #' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the result of the pivot_wider but with a history graph.
 #' @export
@@ -971,7 +1073,7 @@ p_pivot_longer = function(data,
                           values_drop_na = FALSE,
                           values_ptypes = list(),
                           values_transform = list(),
-                          ..., .messages = "", .headline = "") {
+                          ..., .messages = "", .headline = "", .tag=NULL) {
   .data = data %>% .untrack()
   out = .data %>% tidyr::pivot_longer(
     cols = cols,
@@ -988,19 +1090,24 @@ p_pivot_longer = function(data,
     values_transform = values_transform,
     ...
   )
-  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_wider")
+  out = out %>% p_copy(.data) %>% p_comment(.messages, .headline = .headline, .type="pivot_longer", .tag=.tag)
   return(out %>% .retrack())
 }
 
 
 #' Stratifying your analysis
 #'
-#' Grouping a data set acts in the normal way.
+#' Grouping a data set acts in the normal way. When tracking a dataframe sometimes a `group_by()` operation will create a lot of groups.
+#' This happens for example if you are doing a `group_by()`, `summarise()` step that is aggregating data on a fine scale, e.g. by day in a timeseries.
+#' This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. `dtrackr` will detect this issue
+#' and pause tracking the dataframe with a warning. It is up to the user to the `resume()` tracking when the large number of groups have been
+#' resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr column expressions.
 #' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.cols\} which is the columns that are being grouped by.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.cols\}.
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #' @inheritParams dplyr::group_by
 #'
 #' @return the .data but grouped.
@@ -1008,7 +1115,7 @@ p_pivot_longer = function(data,
 #'
 #' @examples
 #' iris %>% p_group_by(Species, .messages="stratify by {.cols}") %>% p_comment("{.strata}") %>% p_get()
-p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL) {
+p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL, .tag=NULL) {
   # explicitly dtrackr::ungroup is .add is false to generate an un-grouped node in the graph. otherwise we get an n x m crossover.
   if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup()
   # TODO: putting in a special hidden node type
@@ -1020,7 +1127,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
   col = .data %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% dplyr::groups()
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
 
-  tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify")
+  tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify", .tag=.tag)
   tmp2 = tmp %>% .untrack() %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% p_copy(tmp)
   if (dplyr::n_groups(tmp2) > .defaultMaxSupportedGroupings() ) {
     rlang::inform(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "always")
@@ -1048,7 +1155,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 
 #' Distinct values of data
 #'
-#' Distinct acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
+#' Distinct acts in the same way as in `dplyr`. Prior to the operation the size of the group is calculated \{.count.in\} and
 #' after the operation the output size \{.count.out\}
 #' The group \{.strata\} is also available (if grouped) for reporting
 #'
@@ -1058,6 +1165,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 #' @param .keep - are the grouping variables kept in d, or split out to g (the default)
 #' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
 #' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the transformed .data.
 #' @export
@@ -1065,7 +1173,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 #' @examples
 #' p_bind_rows(iris, iris %>% p_filter(Petal.Length > 5)) %>%
 #'    p_group_by(Species) %>% p_distinct() %>% p_get()
-p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count.in-.count.out} duplicates", .headline=.defaultHeadline()) {
+p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count.in-.count.out} duplicates", .headline=.defaultHeadline(), .tag=NULL) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
@@ -1077,7 +1185,7 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
   tmp = .beforeAfterGroupwiseCounts(.data,out)
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = "modify", .env=default_env)))
 
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
+  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag, .content = tmp)
   return(out %>% .retrack())
 }
 
@@ -1095,6 +1203,7 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #' @param .type - the format type of the action - typically an exclusion
 #' @param .asOffshoot - if the type is exclusion, asOffshoot places the information box outside of the main flow, as an exclusion.
 #' @param .stage - a name for this step in the pathway
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #' @inheritParams dplyr::filter
 #'
 #' @return the transformed .data.
@@ -1102,7 +1211,7 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #'
 #' @examples
 #' iris %>% p_group_by(Species) %>% p_filter(Petal.Length > 5) %>% p_get()
-p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline=.defaultHeadline(), .type = "exclusion", .asOffshoot=(.type=="exclusion"), .stage="") {
+p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline=.defaultHeadline(), .type = "exclusion", .asOffshoot=(.type=="exclusion"), .stage="", .tag=NULL) {
   .count.in = .count.out = .strata = .message = NULL
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
@@ -1135,7 +1244,7 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
       dplyr::mutate(.filter = paste0(sapply(sapply(filterExprs,deparse),trimws), collapse=", "))
   }
 
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot, .excluded=excluded, .stage = .stage)
+  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot, .excluded=excluded, .stage = .stage) %>% .writeTag(.tag, .content = tmp)
   return(out %>% .retrack())
 
 }
@@ -1156,6 +1265,7 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
 #' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
 #' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
 #' @param .type - default "modify": used to define formatting
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the transformed .data.
 #' @export
@@ -1169,7 +1279,7 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
 #'       .messages="{.count.in} in, {.count.out} out"
 #'    ) %>%
 #'    p_get()
-p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headline=.defaultHeadline(), .type = "modify") {
+p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headline=.defaultHeadline(), .type = "modify", .tag=NULL) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
   default_env$.total = nrow(.data)
@@ -1181,7 +1291,7 @@ p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headli
   tmp = .beforeAfterGroupwiseCounts(.data,out)
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .env=default_env)))
 
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE)
+  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag, .content = tmp)
   return(out %>% .retrack())
 }
 
@@ -1515,6 +1625,10 @@ capture_exclusions <- p_capture_exclusions
 #' @inherit p_excluded
 #' @export
 excluded <- p_excluded
+
+#' @inherit p_tagged
+#' @export
+tagged <- p_tagged
 
 #' @inherit p_exclude_all
 #' @export

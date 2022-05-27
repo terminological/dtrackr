@@ -36,7 +36,7 @@ Comments can either be a single `.headline` or a list of `.messages`. Setting ei
 
 
 ```{r}
-
+# devtools::load_all()
 filename = "~/tmp/iris.csv"
 # this is just a pretend example
 # iris = read.csv(filename)
@@ -55,9 +55,11 @@ iris %>%
     .messages = c(
     "In {Species}",
     "there are {.count} items",
-    "that is {sprintf('%1.0f',.count/.total*100)}% of the total")) %>%
+    "that is {sprintf('%1.0f',.count/.total*100)}% of the total"),
+    .tag = "note1"
+    ) %>%
   ungroup() %>%
-  comment("Final data has {.total} items") %>%
+  comment("Final data has {.total} items", .tag="note2") %>%  
   flowchart()
 
 ```

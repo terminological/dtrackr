@@ -10,7 +10,8 @@ p_group_by(
   .add = FALSE,
   .drop = dplyr::group_by_drop_default(.data),
   .messages = "stratify by {.cols}",
-  .headline = NULL
+  .headline = NULL,
+  .tag = NULL
 )
 }
 \arguments{
@@ -33,12 +34,18 @@ grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{
 \item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.cols\} which is the columns that are being grouped by.}
 
 \item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.cols\}.}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the .data but grouped.
 }
 \description{
-Grouping a data set acts in the normal way.
+Grouping a data set acts in the normal way. When tracking a dataframe sometimes a `group_by()` operation will create a lot of groups.
+This happens for example if you are doing a `group_by()`, `summarise()` step that is aggregating data on a fine scale, e.g. by day in a timeseries.
+This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. `dtrackr` will detect this issue
+and pause tracking the dataframe with a warning. It is up to the user to the `resume()` tracking when the large number of groups have been
+resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.
 }
 \examples{
 iris \%>\% p_group_by(Species, .messages="stratify by {.cols}") \%>\% p_comment("{.strata}") \%>\% p_get()

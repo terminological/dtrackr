@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert page size from portrait to landscape — landscape • dtrackr</title>
+<title>Retrieve tagged data in the history graph — p_tagged • dtrackr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Convert page size from portrait to landscape — landscape" />
-<meta property="og:description" content="Convert page size from portrait to landscape" />
+<meta property="og:title" content="Retrieve tagged data in the history graph — p_tagged" />
+<meta property="og:description" content="Any counts at the individual stages that was stored with a `.tag` option in a pipeline step can be recovered here. The idea here is to provide a quick way to access a single value
+for the counts or other details tagged in a pipeline into a format that can be reported in text of a document. (e.g. for a results section). For more examples the consort statement vignette
+has some examples of use." />
 
 
 
@@ -127,29 +129,54 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert page size from portrait to landscape</h1>
+    <h1>Retrieve tagged data in the history graph</h1>
     
-    <div class="hidden name"><code>landscape.Rd</code></div>
+    <div class="hidden name"><code>p_tagged.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Convert page size from portrait to landscape</p>
+    <p>Any counts at the individual stages that was stored with a `.tag` option in a pipeline step can be recovered here. The idea here is to provide a quick way to access a single value
+for the counts or other details tagged in a pipeline into a format that can be reported in text of a document. (e.g. for a results section). For more examples the consort statement vignette
+has some examples of use.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>landscape</span><span class='op'>(</span><span class='va'>size</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>p_tagged</span><span class='op'>(</span><span class='va'>.data</span>, .tag <span class='op'>=</span> <span class='cn'>NULL</span>, .strata <span class='op'>=</span> <span class='cn'>NULL</span>, .glue <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>size</th>
-      <td><p>- list of width and height in inches, e.g. a std_size</p></td>
+      <th>.data</th>
+      <td><p>the tracked dataframe.</p></td>
+    </tr>
+    <tr>
+      <th>.tag</th>
+      <td><p>(optional) the tag to retrieve.</p></td>
+    </tr>
+    <tr>
+      <th>.strata</th>
+      <td><p>(optional) filter the tagged data by the strata. set to "" to filter just the top level ungrouped data.</p></td>
+    </tr>
+    <tr>
+      <th>.glue</th>
+      <td><p>(optional) a glue specification which will be applied to the tagged content to generate a `.label` for the tagged content.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>(optional) any other named parameters will be passed to `glue::glue` and can be used to generate a label.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a landscape size</p>
+    <p>various things depending on what is requested.</p>
+<p>By default a tibble with a `.tag` column and all associated summary values in a nested `.content` column.</p>
+<p>If a `.strata` column is specified the results are filtered to just those that match a given `.strata` grouping (i.e. this will be the grouping label on the flowchart). Ungrouped content will have an empty "" as `.strata`</p>
+<p>If `.tag` is specified the result will be for a single tag and `.content` will be automatically un-nested to give a single un-nested dataframe of the content captured at the `.tag` tagged step.
+This could be single or multiple rows depending on whether the original data was grouped at the point of tagging.</p>
+<p>If both the `.tag` and `.glue` is specified a `.label` column will be computed from `.glue` and the tagged content. If the result of this is a single row then just the string value of `.label` is returned.</p>
+<p>If just the `.glue` is specified, an un-nested dataframe with `.tag`,`.strata` and `.label` columns with a label for each tag in each strata.</p>
+<p>If this seems complex then the best thing is to experiment until you get the output you want, leaving any `.glue` options until you think you know what you are doing. It made sense at the time.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

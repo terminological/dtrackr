@@ -11,7 +11,8 @@ p_group_modify(
   .keep = FALSE,
   .messages = NULL,
   .headline = .defaultHeadline(),
-  .type = "modify"
+  .type = "modify",
+  .tag = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ p_group_modify(
 \item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
 \item{.type}{- default "modify": used to define formatting}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the transformed .data.

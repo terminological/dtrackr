@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9003</span>
       </span>
     </div>
 
@@ -136,7 +136,12 @@
     <p>Start tracking the dtrackr history graph</p>
     </div>
 
-    <pre class="usage"><span class='fu'>track</span><span class='op'>(</span><span class='va'>.data</span>, .messages <span class='op'>=</span> <span class='fu'>.defaultMessage</span><span class='op'>(</span><span class='op'>)</span>, .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>track</span><span class='op'>(</span>
+  <span class='va'>.data</span>,
+  .messages <span class='op'>=</span> <span class='fu'>.defaultMessage</span><span class='op'>(</span><span class='op'>)</span>,
+  .headline <span class='op'>=</span> <span class='fu'>.defaultHeadline</span><span class='op'>(</span><span class='op'>)</span>,
+  .tag <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,6 +158,10 @@ the {.count} variable which is the count of rows in the current group and the {.
     <tr>
       <th>.headline</th>
       <td><p>- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").</p></td>
+    </tr>
+    <tr>
+      <th>.tag</th>
+      <td><p>- if you want the summary data from this step in the future then give it a name with .tag.</p></td>
     </tr>
     </table>
 

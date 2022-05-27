@@ -8,7 +8,8 @@ p_ungroup(
   x,
   ...,
   .messages = .defaultMessage(),
-  .headline = .defaultHeadline()
+  .headline = .defaultHeadline(),
+  .tag = NULL
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ p_ungroup(
 \item{.messages}{- a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.count\}. the default is "total {.count} items"}
 
 \item{.headline}{- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or \{.count\}.}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the .data but dplyr::ungrouped.

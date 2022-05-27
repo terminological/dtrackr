@@ -4,7 +4,12 @@
 \alias{track}
 \title{Start tracking the dtrackr history graph}
 \usage{
-track(.data, .messages = .defaultMessage(), .headline = .defaultHeadline())
+track(
+  .data,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline(),
+  .tag = NULL
+)
 }
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
@@ -13,6 +18,8 @@ track(.data, .messages = .defaultMessage(), .headline = .defaultHeadline())
 the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").}
 
 \item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the history graph

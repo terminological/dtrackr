@@ -4,7 +4,13 @@
 \alias{ungroup.trackr_df}
 \title{Remove a stratification from a data set}
 \usage{
-\method{ungroup}{trackr_df}(x, ..., .messages = .defaultMessage(), .headline = .defaultHeadline())
+\method{ungroup}{trackr_df}(
+  x,
+  ...,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline(),
+  .tag = NULL
+)
 }
 \arguments{
 \item{x}{- a dataframe which may be grouped (why not .data?)}
@@ -14,6 +20,8 @@
 \item{.messages}{- a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.count\}. the default is "total {.count} items"}
 
 \item{.headline}{- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or \{.count\}.}
+
+\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the .data but dplyr::ungrouped.

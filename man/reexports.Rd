@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{filter}
+\alias{ungroup}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -11,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr]{filter}}}
+  \item{dplyr}{\code{\link[dplyr]{filter}}, \code{\link[dplyr:group_by]{ungroup}}}
 }}
 
