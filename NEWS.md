@@ -16,7 +16,7 @@ transmute, ungroup
 * export history as dot graphviz graph
 * render history graph to SVG, PNG, PDF, DOT or PS formats
 
-# dtrackr 0.2.0 - release github version
+# dtrackr 0.2.0
 
 * track excluded items with debugging info
 * allow across syntax in most situations (except group_by)
@@ -24,19 +24,20 @@ transmute, ungroup
 * preventing massive group_by groups if large numbers of very small groups are selected (e.g. part of a group_by() %>% mutate())
 * switch warnings to rlang::warn etc.
 
-# 0.2.1 - 
+# dtrackr 0.2.1
 
 * minor bug fixes for grouping
-* support for tagging pipeline with a piece of data for later retrieval to support e.g. counts within abstract
-* supoprt for tidyselect syntax in group by
+* support for tagging pipeline with a piece of data for later retrieval to support e.g. for counts within abstract
+* support for tidyselect syntax in group by
 
-# 0.2.2
+# dtrackr 0.2.2
 
 * new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.
+* bug fixes and extended github workflows.
 
-# Future developments
+# dtrackr Future developments
 
-* develop flexible formatting
+* move to tidy_eval use of rlang::.data
 * Track md5 of dataframes and compare history graphs for divergences
 * other dplyr functions
 * test working with dbplyr data frames

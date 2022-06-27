@@ -19,8 +19,6 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -33,12 +31,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../articles/dtrackr.html">Get started</a>
 </li>
@@ -77,7 +81,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="consort-example_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Dtrackr - Consort statement example</h1>
@@ -90,28 +94,22 @@
 
     
     
-<div class="section level1">
-<h1 id="consort-statement">CONSORT statement<a class="anchor" aria-label="anchor" href="#consort-statement"></a>
-</h1>
+<div id="consort-statement" class="section level1">
+<h1 class="hasAnchor">
+<a href="#consort-statement" class="anchor"></a>CONSORT statement</h1>
 <p>CONSORT diagrams are part of the requirements in reporting parallel group clinical trials or case control designs in observational studies. They are described in the updated 2010 CONSORT statement <span class="citation">(1)</span>. They clarify how patients were recruited, selected, randomised and followed up. For observational studies an equivalent requirement is the STROBE statement <span class="citation">(2)</span>. There are other similar requirements for other types of study such as the TRIPOD statement that are applicable for multivariate models <span class="citation">(3)</span>.</p>
 <p>As we don’t have to hand a randomised control trial the following example is more geared to reporting observational studies, and uses the Indian Liver Patients disease dataset <span class="citation">(4–6)</span> as an example.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>
-<span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span>
-<span class="co">#&gt; 'rlang::last_warnings' when loading 'pillar'</span>
-<span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span>
-<span class="co">#&gt; 'rlang::last_warnings' when loading 'tibble'</span>
-<span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span>
-<span class="co">#&gt; 'rlang::last_warnings' when loading 'hms'</span>
-<span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span><span> ─────────────────────────────────────── tidyverse 1.3.1 ──</span></span>
-<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">ggplot2</span><span> 3.3.3     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">purrr  </span><span> 0.3.4</span></span>
-<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">tibble </span><span> 3.1.2     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">dplyr  </span><span> 1.0.6</span></span>
-<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">tidyr  </span><span> 1.1.3     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">stringr</span><span> 1.4.0</span></span>
-<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">readr  </span><span> 1.4.0     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">forcats</span><span> 0.5.1</span></span>
-<span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span><span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span class="co">#&gt; <span style="color: #BB0000;">x</span><span> </span><span style="color: #0000BB;">dplyr</span><span>::</span><span style="color: #00BB00;">filter()</span><span> masks </span><span style="color: #0000BB;">stats</span><span>::filter()</span></span>
-<span class="co">#&gt; <span style="color: #BB0000;">x</span><span> </span><span style="color: #0000BB;">dplyr</span><span>::</span><span style="color: #00BB00;">lag()</span><span>    masks </span><span style="color: #0000BB;">stats</span><span>::lag()</span></span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dtrackr</span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</span>
+<span class="co">#&gt; ✔ ggplot2 3.3.5     ✔ purrr   0.3.4</span>
+<span class="co">#&gt; ✔ tibble  3.1.6     ✔ dplyr   1.0.7</span>
+<span class="co">#&gt; ✔ tidyr   1.2.0     ✔ stringr 1.4.0</span>
+<span class="co">#&gt; ✔ readr   2.0.2     ✔ forcats 0.5.1</span>
+<span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
+<span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span>
+<span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">dtrackr</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'dtrackr'</span>
 <span class="co">#&gt; The following objects are masked from 'package:dplyr':</span>
@@ -122,7 +120,7 @@
 <span class="co">#&gt;     filter</span>
 <span class="co">#&gt; The following object is masked from 'package:base':</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;     comment</span></code></pre></div>
+<span class="co">#&gt;     comment</span></pre></div>
 <p>The Indian liver patients data set has some clinical data on a case control study of patients with and without liver disease. We can use to pretend we are conducting an observational study.</p>
 <p>Our study criteria are as follows:</p>
 <ul>
@@ -130,39 +128,39 @@
 <li>Patients must be adults aged between the ages of 18 and 80 inclusive.</li>
 </ul>
 <p>This can be coded into the <code>dplyr</code> pipeline:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Some useful formatting options</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>dtrackr.strata_glue<span class="op">=</span><span class="st">"{tolower(.value)}"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>dtrackr.strata_sep<span class="op">=</span><span class="st">", "</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>dtrackr.default_message <span class="op">=</span> <span class="st">"{.count} patients"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>dtrackr.default_headline <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co"># Some useful formatting options</span>
+<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.strata_glue<span class="op">=</span><span class="st">"{tolower(.value)}"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.strata_sep<span class="op">=</span><span class="st">", "</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.default_message <span class="op">=</span> <span class="st">"{.count} patients"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.default_headline <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
-<span class="va">ilpd</span> <span class="op">=</span> <span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+<span class="va">ilpd</span> <span class="op">=</span> <span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
     <span class="va">Gender</span> <span class="op">==</span> <span class="st">"Female"</span> <span class="op">&amp;</span> <span class="va">Total_Bilirubin</span> <span class="op">&gt;=</span> <span class="fl">0.7</span> <span class="op">~</span> <span class="st">"{.included} women with bili&gt;0.7"</span>,
     <span class="va">Gender</span> <span class="op">==</span> <span class="st">"Male"</span> <span class="op">&amp;</span> <span class="va">Total_Bilirubin</span> <span class="op">&gt;=</span> <span class="fl">0.8</span> <span class="op">~</span> <span class="st">"{.included} men with bili&gt;0.8"</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Case_or_Control</span>, .messages<span class="op">=</span><span class="st">"cases versus controls"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">Case_or_Control</span>, .messages<span class="op">=</span><span class="st">"cases versus controls"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
     <span class="va">Age</span><span class="op">&lt;</span><span class="fl">18</span> <span class="op">~</span> <span class="st">"{.excluded} subjects under 18"</span>,
     <span class="va">Age</span><span class="op">&gt;</span><span class="fl">80</span> <span class="op">~</span> <span class="st">"{.excluded} subjects over 80"</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} after exclusions"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} after exclusions"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/status.html">status</a></span><span class="op">(</span>
-    mean_bili <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Total_Bilirubin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Total_Protein</span><span class="op">)</span><span class="op">)</span>,
-    mean_alb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span><span class="op">)</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
+    mean_bili <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Total_Bilirubin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Total_Protein</span><span class="op">)</span><span class="op">)</span>,
+    mean_alb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span><span class="op">)</span>,
+    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
       <span class="st">"bilirubin: {mean_bili}"</span>,
       <span class="st">"albumin: {mean_alb}"</span>
     <span class="op">)</span>                    
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} in final data set"</span><span class="op">)</span></code></pre></div>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} in final data set"</span><span class="op">)</span></pre></div>
 <p>With a bit of experimentation the flowchart needed for a STROBE/CONSORT checklist can be generated. One option to output the flowchart is SVG which can then be manually formatted as required.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="353pt" height="336pt" viewbox="0.00 0.00 353.47 335.60" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 331.6)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-331.6 349.4692,-331.6 349.4692,4 -4,4"></polygon><!-- 10&#45;&gt;12 --><g id="edge2" class="edge"><title>10:s-&gt;12</title>
@@ -191,118 +189,118 @@
 <polygon fill="#ffffff" stroke="#000000" points="181.1421,-285.9005 81.9931,-285.9005 81.9931,-243.2995 181.1421,-243.2995 181.1421,-285.9005"></polygon><text text-anchor="start" x="88.7808" y="-271.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">inclusions:</text><text text-anchor="start" x="88.7808" y="-262.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">128 women with bili&gt;0.7</text><text text-anchor="start" x="88.7808" y="-252.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">354 men with bili&gt;0.8</text></g><!-- 1 --><g id="node12" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="160.1444,-327.4033 102.9908,-327.4033 102.9908,-304.1967 160.1444,-304.1967 160.1444,-327.4033"></polygon><text text-anchor="start" x="109.78" y="-313.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 patients</text></g></g></svg>
 </div>
-<div class="section level1">
-<h1 id="excluded-data">Excluded data<a class="anchor" aria-label="anchor" href="#excluded-data"></a>
-</h1>
-<p>During this pipeline, we may be keen to understand why certain data items are being rejected. This would enable us to examine the source data, and potentially correct it during the data collection process. We’ve used it to allow continuous quality checks on the data to feed back to the data curators, as we regularly conduct analyses. By tracking the exclusions, not only do we track the data flow through the pipeline we also retain all excluded items, with the reason for exclusion. Thus we can reassure ourselves that the exclusions are as expected. We enabled this by calling <code><a href="../reference/capture_exclusions.html">capture_exclusions()</a></code> in the pipeline above. Having tracked the exclusions we can retrieve them by calling <code><a href="../reference/excluded.html">excluded()</a></code> which gives a data frame with the excluded records and the reasons. If the exclusions happened over multiple stages as the dataframe format change in between then this will be held as a nested dataframe (i.e. see <code><a href="https://rdrr.io/pkg/tidyr/man/nest.html" class="external-link">?tidyr::nest</a></code>):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
+<div id="excluded-data" class="section level1">
+<h1 class="hasAnchor">
+<a href="#excluded-data" class="anchor"></a>Excluded data</h1>
+<p>During this pipeline, we may be keen to understand why certain data items are being rejected. This would enable us to examine the source data, and potentially correct it during the data collection process. We’ve used it to allow continuous quality checks on the data to feed back to the data curators, as we regularly conduct analyses. By tracking the exclusions, not only do we track the data flow through the pipeline we also retain all excluded items, with the reason for exclusion. Thus we can reassure ourselves that the exclusions are as expected. We enabled this by calling <code><a href="../reference/capture_exclusions.html">capture_exclusions()</a></code> in the pipeline above. Having tracked the exclusions we can retrieve them by calling <code><a href="../reference/excluded.html">excluded()</a></code> which gives a data frame with the excluded records and the reasons. If the exclusions happened over multiple stages as the dataframe format change in between then this will be held as a nested dataframe (i.e. see <code><a href="https://tidyr.tidyverse.org/reference/nest.html">?tidyr::nest</a></code>):</p>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+
 <span class="co"># here we filter out the majority of the actual content of the excluded data to focus on the </span>
 <span class="co"># metadata recovered during the exclusion.</span>
-<span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/excluded.html">excluded</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.stage</span>,<span class="va">.message</span>,<span class="va">.filter</span>,<span class="va">Age</span>, <span class="va">Gender</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 22 x 5</span></span>
+<span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/excluded.html">excluded</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">.stage</span>,<span class="va">.message</span>,<span class="va">.filter</span>,<span class="va">Age</span>, <span class="va">Gender</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 22 × 5</span>
 <span class="co">#&gt;    .stage  .message             .filter  Age   Gender</span>
-<span class="co">#&gt;    <span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>   </span><span style="color: #949494;font-style: italic;">&lt;glue&gt;</span><span>               </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>    </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span> </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span> </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span><span> stage 1 7 subjects under 18  Age &lt; 18 17    Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span><span> stage 1 7 subjects under 18  Age &lt; 18 17    Female</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span><span> stage 1 7 subjects under 18  Age &lt; 18 4     Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span><span> stage 1 7 subjects under 18  Age &lt; 18 4     Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span><span> stage 1 7 subjects under 18  Age &lt; 18 14    Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span><span> stage 1 7 subjects under 18  Age &lt; 18 12    Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span><span> stage 1 7 subjects under 18  Age &lt; 18 17    Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span><span> stage 1 12 subjects under 18 Age &lt; 18 14    Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span><span> stage 1 12 subjects under 18 Age &lt; 18 17    Male  </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span><span> stage 1 12 subjects under 18 Age &lt; 18 15    Male  </span></span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 12 more rows</span></span></code></pre></div>
+<span class="co">#&gt;    &lt;chr&gt;   &lt;glue&gt;               &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; </span>
+<span class="co">#&gt;  1 stage 1 7 subjects under 18  Age &lt; 18 17    Male  </span>
+<span class="co">#&gt;  2 stage 1 7 subjects under 18  Age &lt; 18 17    Female</span>
+<span class="co">#&gt;  3 stage 1 7 subjects under 18  Age &lt; 18 4     Male  </span>
+<span class="co">#&gt;  4 stage 1 7 subjects under 18  Age &lt; 18 4     Male  </span>
+<span class="co">#&gt;  5 stage 1 7 subjects under 18  Age &lt; 18 14    Male  </span>
+<span class="co">#&gt;  6 stage 1 7 subjects under 18  Age &lt; 18 12    Male  </span>
+<span class="co">#&gt;  7 stage 1 7 subjects under 18  Age &lt; 18 17    Male  </span>
+<span class="co">#&gt;  8 stage 1 12 subjects under 18 Age &lt; 18 14    Male  </span>
+<span class="co">#&gt;  9 stage 1 12 subjects under 18 Age &lt; 18 17    Male  </span>
+<span class="co">#&gt; 10 stage 1 12 subjects under 18 Age &lt; 18 15    Male  </span>
+<span class="co">#&gt; # … with 12 more rows</span></pre></div>
 <p>This list may have multiple entries for a single data item, if for example something is excluded in any one step for many reasons.</p>
 </div>
-<div class="section level1">
-<h1 id="tagging-the-pipeline">Tagging the pipeline<a class="anchor" aria-label="anchor" href="#tagging-the-pipeline"></a>
-</h1>
+<div id="tagging-the-pipeline" class="section level1">
+<h1 class="hasAnchor">
+<a href="#tagging-the-pipeline" class="anchor"></a>Tagging the pipeline</h1>
 <p>For reporting results it is useful to have the numbers from the flowchart to embed into the text of the results section of the write up. Here we show the same pipeline as above, but with 4 uses of the <code>.tag</code> system for labeling part of the pipeline. This captures data in a tag-value list during the pipeline, and retains it as metadata for later reuse.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">ilpd</span> <span class="op">=</span> <span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span>.tag<span class="op">=</span><span class="st">"initial cohort"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+
+<span class="va">ilpd</span> <span class="op">=</span> <span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span>.tag<span class="op">=</span><span class="st">"initial cohort"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="co">#     ^^^^^^^^^^^^^^^^^^^^^</span>
-  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
     <span class="va">Gender</span> <span class="op">==</span> <span class="st">"Female"</span> <span class="op">&amp;</span> <span class="va">Total_Bilirubin</span> <span class="op">&gt;=</span> <span class="fl">0.7</span> <span class="op">~</span> <span class="st">"{.included} women with bili&gt;0.7"</span>,
     <span class="va">Gender</span> <span class="op">==</span> <span class="st">"Male"</span> <span class="op">&amp;</span> <span class="va">Total_Bilirubin</span> <span class="op">&gt;=</span> <span class="fl">0.8</span> <span class="op">~</span> <span class="st">"{.included} men with bili&gt;0.8"</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Case_or_Control</span>, .messages<span class="op">=</span><span class="st">"cases versus controls"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>.tag<span class="op">=</span><span class="st">"study cohort"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">Case_or_Control</span>, .messages<span class="op">=</span><span class="st">"cases versus controls"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>.tag<span class="op">=</span><span class="st">"study cohort"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="co">#       ^^^^^^^^^^^^^^^^^^^</span>
   <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
     <span class="va">Age</span><span class="op">&lt;</span><span class="fl">18</span> <span class="op">~</span> <span class="st">"{.excluded} subjects under 18"</span>,
     <span class="va">Age</span><span class="op">&gt;</span><span class="fl">80</span> <span class="op">~</span> <span class="st">"{.excluded} subjects over 80"</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} after exclusions"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} after exclusions"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/status.html">status</a></span><span class="op">(</span>
-    mean_bili <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Total_Bilirubin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Total_Protein</span><span class="op">)</span><span class="op">)</span>,
-    mean_alb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span><span class="op">)</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
+    mean_bili <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Total_Bilirubin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Total_Protein</span><span class="op">)</span><span class="op">)</span>,
+    mean_alb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.2f \u00B1 %1.2f"</span>,<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Albumin</span><span class="op">)</span><span class="op">)</span>,
+    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
       <span class="st">"bilirubin: {mean_bili}"</span>,
       <span class="st">"albumin: {mean_alb}"</span>
     <span class="op">)</span>,
     .tag <span class="op">=</span> <span class="st">"qualifying patients"</span>
   <span class="co"># ^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} in final data set"</span>, .tag<span class="op">=</span><span class="st">"final set"</span><span class="op">)</span>
-  <span class="co">#                                                 ^^^^^^^^^^^^^^^^</span></code></pre></div>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} in final data set"</span>, .tag<span class="op">=</span><span class="st">"final set"</span><span class="op">)</span>
+  <span class="co">#                                                 ^^^^^^^^^^^^^^^^</span></pre></div>
 <p>This metadata can be retrieved as follows, which will give you all metadata for all 4 points in the pipeline:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/nest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">.content</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 7</span></span>
-<span class="co">#&gt;   .tag             .count .total .strata   Case_or_Control mean_bili  mean_alb  </span>
-<span class="co">#&gt;   <span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>             </span><span style="color: #949494;font-style: italic;">&lt;int&gt;</span><span>  </span><span style="color: #949494;font-style: italic;">&lt;int&gt;</span><span> </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>     </span><span style="color: #949494;font-style: italic;">&lt;ord&gt;</span><span>           </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>      </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>     </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span><span> initial cohort      583    583 </span><span style="color: #949494;">""</span><span>        </span><span style="color: #BB0000;">NA</span><span>              </span><span style="color: #BB0000;">NA</span><span>         </span><span style="color: #BB0000;">NA</span><span>        </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span><span> study cohort        357    482 </span><span style="color: #949494;">"</span><span>case</span><span style="color: #949494;">"</span><span>    case            </span><span style="color: #BB0000;">NA</span><span>         </span><span style="color: #BB0000;">NA</span><span>        </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span><span> study cohort        125    482 </span><span style="color: #949494;">"</span><span>control</span><span style="color: #949494;">"</span><span> control         </span><span style="color: #BB0000;">NA</span><span>         </span><span style="color: #BB0000;">NA</span><span>        </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span><span> qualifying pati…    344    460 </span><span style="color: #949494;">"</span><span>case</span><span style="color: #949494;">"</span><span>    case            4.79 ± 1.… 3.03 ± 0.…</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span><span> qualifying pati…    116    460 </span><span style="color: #949494;">"</span><span>control</span><span style="color: #949494;">"</span><span> control         1.35 ± 1.… 3.38 ± 0.…</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">6</span><span> final set           460    460 </span><span style="color: #949494;">""</span><span>        </span><span style="color: #BB0000;">NA</span><span>              </span><span style="color: #BB0000;">NA</span><span>         </span><span style="color: #BB0000;">NA</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">.content</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 × 7</span>
+<span class="co">#&gt;   .tag                .count .total .strata   Case_or_Control mean_bili mean_alb</span>
+<span class="co">#&gt;   &lt;chr&gt;                &lt;int&gt;  &lt;int&gt; &lt;chr&gt;     &lt;ord&gt;           &lt;chr&gt;     &lt;chr&gt;   </span>
+<span class="co">#&gt; 1 initial cohort         583    583 ""        &lt;NA&gt;            &lt;NA&gt;      &lt;NA&gt;    </span>
+<span class="co">#&gt; 2 study cohort           357    482 "case"    case            &lt;NA&gt;      &lt;NA&gt;    </span>
+<span class="co">#&gt; 3 study cohort           125    482 "control" control         &lt;NA&gt;      &lt;NA&gt;    </span>
+<span class="co">#&gt; 4 qualifying patients    344    460 "case"    case            4.79 ± 1… 3.03 ± …</span>
+<span class="co">#&gt; 5 qualifying patients    116    460 "control" control         1.35 ± 1… 3.38 ± …</span>
+<span class="co">#&gt; 6 final set              460    460 ""        &lt;NA&gt;            &lt;NA&gt;      &lt;NA&gt;</span></pre></div>
 <p>More often though you will want to retrieve specific values from specific points for the results text for example:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">initialSet</span> <span class="op">=</span> <span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.tag <span class="op">=</span> <span class="st">"initial cohort"</span>, .glue <span class="op">=</span> <span class="st">"{.count} patients"</span><span class="op">)</span>
-<span class="va">finalSet</span> <span class="op">=</span> <span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.tag <span class="op">=</span> <span class="st">"final set"</span>, .glue <span class="op">=</span> <span class="st">"{.count} patients"</span><span class="op">)</span>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="va">initialSet</span> <span class="op">=</span> <span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.tag <span class="op">=</span> <span class="st">"initial cohort"</span>, .glue <span class="op">=</span> <span class="st">"{.count} patients"</span><span class="op">)</span>
+<span class="va">finalSet</span> <span class="op">=</span> <span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.tag <span class="op">=</span> <span class="st">"final set"</span>, .glue <span class="op">=</span> <span class="st">"{.count} patients"</span><span class="op">)</span>
 
-<span class="co"># there were `r initialSet` in the study, of whom `r finalSet` met the eligibility criteria.</span></code></pre></div>
+<span class="co"># there were `r initialSet` in the study, of whom `r finalSet` met the eligibility criteria.</span></pre></div>
 <p>For example there were 583 patients in the study, of whom 460 patients met the eligibility criteria.</p>
 <p>More complex formatting and calculations are possible including those that happen on a per group basis, and pull in values from elsewhere.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>
     .tag <span class="op">=</span> <span class="st">"qualifying patients"</span>, 
     .glue <span class="op">=</span> <span class="st">"{.strata}: {.count}/{.total} ({sprintf('%1.1f', .count/.total*100)}%) patients on {sysDate}, with a mean bilirubin of {mean_bili}"</span>, 
-    sysDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>
+    sysDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>
     <span class="co"># we could have any number of other parameters here from the global environment</span>
-  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">.label</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">.label</span><span class="op">)</span>
 <span class="co">#&gt; case: 344/460 (74.8%) patients on 2022-06-27, with a mean bilirubin of 4.79 ± 1.07</span>
-<span class="co">#&gt; control: 116/460 (25.2%) patients on 2022-06-27, with a mean bilirubin of 1.35 ± 1.05</span></code></pre></div>
+<span class="co">#&gt; control: 116/460 (25.2%) patients on 2022-06-27, with a mean bilirubin of 1.35 ± 1.05</span></pre></div>
 <p>Sometimes it will be necessary to operate on all tagged content at once. This is possible but be aware that the content available depends somewhat on where the tag was set in the pipeline so not all fields will always be present (although <code>.count</code> and <code>.total</code> will be). The <code>.total</code> is the overall number of cases at that point in the pipeline. <code>.count</code> is the number of cases in each strata.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.glue <span class="op">=</span> <span class="st">"{.count}/{.total} patients"</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 3</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.glue <span class="op">=</span> <span class="st">"{.count}/{.total} patients"</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 × 3</span>
 <span class="co">#&gt;   .tag                .strata   .label          </span>
-<span class="co">#&gt;   <span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>               </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>     </span><span style="color: #949494;font-style: italic;">&lt;glue&gt;</span><span>          </span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span><span> initial cohort      </span><span style="color: #949494;">""</span><span>        583/583 patients</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span><span> study cohort        </span><span style="color: #949494;">"</span><span>case</span><span style="color: #949494;">"</span><span>    357/482 patients</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span><span> study cohort        </span><span style="color: #949494;">"</span><span>control</span><span style="color: #949494;">"</span><span> 125/482 patients</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span><span> qualifying patients </span><span style="color: #949494;">"</span><span>case</span><span style="color: #949494;">"</span><span>    344/460 patients</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span><span> qualifying patients </span><span style="color: #949494;">"</span><span>control</span><span style="color: #949494;">"</span><span> 116/460 patients</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">6</span><span> final set           </span><span style="color: #949494;">""</span><span>        460/460 patients</span></span></code></pre></div>
+<span class="co">#&gt;   &lt;chr&gt;               &lt;chr&gt;     &lt;glue&gt;          </span>
+<span class="co">#&gt; 1 initial cohort      ""        583/583 patients</span>
+<span class="co">#&gt; 2 study cohort        "case"    357/482 patients</span>
+<span class="co">#&gt; 3 study cohort        "control" 125/482 patients</span>
+<span class="co">#&gt; 4 qualifying patients "case"    344/460 patients</span>
+<span class="co">#&gt; 5 qualifying patients "control" 116/460 patients</span>
+<span class="co">#&gt; 6 final set           ""        460/460 patients</span></pre></div>
 <p>For comparing different stages in the pipeline the following example may be useful which compares counts at different stages of the pipeline.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ilpd</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>   <span class="co"># selects only top level content</span>
-  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/nest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">.content</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.tag</span>, <span class="va">.total</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
-  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>values_from<span class="op">=</span><span class="va">.total</span>, names_from<span class="op">=</span><span class="va">.tag</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
-  <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/glue/man/glue.html" class="external-link">glue_data</a></span><span class="op">(</span><span class="st">"Out of {`initial cohort`} patients, {`study cohort`} were eligible for inclusion on the basis of their liver function tests but {`study cohort`-`qualifying patients`} were 
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="va">ilpd</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>   <span class="co"># selects only top level content</span>
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">.content</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">.tag</span>, <span class="va">.total</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>values_from<span class="op">=</span><span class="va">.total</span>, names_from<span class="op">=</span><span class="va">.tag</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue_data</a></span><span class="op">(</span><span class="st">"Out of {`initial cohort`} patients, {`study cohort`} were eligible for inclusion on the basis of their liver function tests but {`study cohort`-`qualifying patients`} were 
                   outside the age limits. This left {`final set`} patients included in the final study (i.e. overall {`initial cohort`-`final set`} were removed)."</span><span class="op">)</span>
 <span class="co">#&gt; Out of 583 patients, 482 were eligible for inclusion on the basis of their liver function tests but 22 were </span>
-<span class="co">#&gt; outside the age limits. This left 460 patients included in the final study (i.e. overall 123 were removed).</span></code></pre></div>
+<span class="co">#&gt; outside the age limits. This left 460 patients included in the final study (i.e. overall 123 were removed).</span></pre></div>
 <div id="refs">
 <div id="ref-schulzCONSORT2010Statement2010">
 <p>1. Schulz KF, Altman DG, Moher D. CONSORT 2010 Statement: Updated guidelines for reporting parallel group randomised trials. BMJ. 2010 Mar 24;340:c332. </p>
@@ -320,7 +318,7 @@
 <p>5. Ramana B, Babu M, Venkateswarlu N. A Critical Study of Selected Classification Algorithms for Liver Disease Diagnosis. 2011; </p>
 </div>
 <div id="ref-Dua2019">
-<p>6. Dua D, Graff C. UCI machine learning repository [Internet]. University of California, Irvine, School of Information and Computer Sciences; 2017. Available from: <a href="http://archive.ics.uci.edu/ml" class="external-link">http://archive.ics.uci.edu/ml</a></p>
+<p>6. Dua D, Graff C. UCI machine learning repository [Internet]. University of California, Irvine, School of Information and Computer Sciences; 2017. Available from: <a href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a></p>
 </div>
 </div>
 </div>
@@ -337,13 +335,11 @@
 
 
       <footer><div class="copyright">
-  <p></p>
-<p>Developed by Robert Challen.</p>
+  <p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -351,8 +347,6 @@
 
   
 
-
-  
 
   </body>
 </html>

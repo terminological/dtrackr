@@ -25,7 +25,7 @@ jobs:
           - {os: macOS-11, r: '4.1.0'}
           - {os: windows-2022, r: '4.1.0'}
           - {os: ubuntu-20.04, r: '3.6.1'}
-          - {os: ubuntu-20.04, r: '4.2.0'}
+          - {os: ubuntu-22.04, r: '4.2.0'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -38,9 +38,11 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install xml deps on Linux
-        if: runner.os == 'Linux'
-        run: sudo apt-get update -y && sudo apt-get install -y libxmlsec1-dev pkg-config pandoc-citeproc
+      # - name: Install xml deps on Linux
+      #   if: runner.os == 'Linux'
+      #   run: sudo apt-get update -y && sudo apt-get install -y libxmlsec1-dev pkg-config pandoc-citeproc
+
+      - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:

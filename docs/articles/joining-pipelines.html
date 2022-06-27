@@ -19,8 +19,6 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -33,12 +31,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../articles/dtrackr.html">Get started</a>
 </li>
@@ -77,7 +81,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="joining-pipelines_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Dtrackr - Joining data pipelines</h1>
@@ -90,19 +94,19 @@
 
     
     
-<div class="section level1">
-<h1 id="joins-across-data-sets">Joins across data sets<a class="anchor" aria-label="anchor" href="#joins-across-data-sets"></a>
-</h1>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">people</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">films</span>, <span class="op">-</span><span class="va">vehicles</span>, <span class="op">-</span><span class="va">starships</span><span class="op">)</span>
-<span class="va">vehicles</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span>,<span class="va">vehicles</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/nest.html" class="external-link">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vehicles</span><span class="op">)</span><span class="op">)</span>
-<span class="va">starships</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span>,<span class="va">starships</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/nest.html" class="external-link">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">starships</span><span class="op">)</span><span class="op">)</span>
-<span class="va">films</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span>,<span class="va">films</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/nest.html" class="external-link">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">films</span><span class="op">)</span><span class="op">)</span>
+<div id="joins-across-data-sets" class="section level1">
+<h1 class="hasAnchor">
+<a href="#joins-across-data-sets" class="anchor"></a>Joins across data sets</h1>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="va">people</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">films</span>, <span class="op">-</span><span class="va">vehicles</span>, <span class="op">-</span><span class="va">starships</span><span class="op">)</span>
+<span class="va">vehicles</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">name</span>,<span class="va">vehicles</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">unnest</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">vehicles</span><span class="op">)</span><span class="op">)</span>
+<span class="va">starships</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">name</span>,<span class="va">starships</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">unnest</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">starships</span><span class="op">)</span><span class="op">)</span>
+<span class="va">films</span> <span class="op">=</span> <span class="va">starwars</span> <span class="op">%&gt;%</span> <span class="fu">select</span><span class="op">(</span><span class="va">name</span>,<span class="va">films</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">unnest</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">films</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">tmp1</span> <span class="op">=</span> <span class="va">people</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"People df {.total}"</span><span class="op">)</span>
-<span class="va">tmp2</span> <span class="op">=</span> <span class="va">films</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"Films df {.total}"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"a test comment"</span><span class="op">)</span>
+<span class="va">tmp1</span> <span class="op">=</span> <span class="va">people</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"People df {.total}"</span><span class="op">)</span>
+<span class="va">tmp2</span> <span class="op">=</span> <span class="va">films</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"Films df {.total}"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"a test comment"</span><span class="op">)</span>
 
-<span class="va">tmp1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">tmp2</span>, by<span class="op">=</span><span class="st">"name"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"joined {.total}"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="va">tmp1</span> <span class="op">%&gt;%</span> <span class="fu">inner_join</span><span class="op">(</span><span class="va">tmp2</span>, by<span class="op">=</span><span class="st">"name"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"joined {.total}"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="138pt" height="220pt" viewbox="0.00 0.00 138.23 220.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 216.4)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-216.4 134.2348,-216.4 134.2348,4 -4,4"></polygon><!-- 6&#45;&gt;7 --><g id="edge1" class="edge"><title>6:s-&gt;7</title>
@@ -120,23 +124,23 @@
 <polygon fill="#ffffff" stroke="#000000" points="123.0066,-212.2033 78.5526,-212.2033 78.5526,-188.9967 123.0066,-188.9967 123.0066,-212.2033"></polygon><text text-anchor="start" x="85.6664" y="-198.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">87 items</text></g><!-- 3 --><g id="node7" class="node"><title>3</title>
 <polygon fill="#ffffff" stroke="#000000" points="52.9543,-212.2033 4.6049,-212.2033 4.6049,-188.9967 52.9543,-188.9967 52.9543,-212.2033"></polygon><text text-anchor="start" x="11.4428" y="-198.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">173 items</text></g></g></svg>
 </div>
-<div class="section level1">
-<h1 id="unions">Unions<a class="anchor" aria-label="anchor" href="#unions"></a>
-</h1>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmp</span> <span class="op">=</span> <span class="va">people</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"start"</span><span class="op">)</span>
+<div id="unions" class="section level1">
+<h1 class="hasAnchor">
+<a href="#unions" class="anchor"></a>Unions</h1>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="va">tmp</span> <span class="op">=</span> <span class="va">people</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"start"</span><span class="op">)</span>
 
-<span class="va">tmp1</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
+<span class="va">tmp1</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
   <span class="va">species</span> <span class="op">==</span> <span class="st">"Human"</span> <span class="op">~</span> <span class="st">"{.included} humans"</span>,
   <span class="va">species</span> <span class="op">==</span> <span class="st">"Droid"</span> <span class="op">~</span> <span class="st">"{.included} droids"</span>
   <span class="op">)</span>
 
-<span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
+<span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
   <span class="va">species</span> <span class="op">==</span> <span class="st">"Gungan"</span> <span class="op">~</span> <span class="st">"{.included} gungans"</span>
-<span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{.count} gungans"</span><span class="op">)</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{.count} gungans"</span><span class="op">)</span>
 
-<span class="va">tmp3</span> <span class="op">=</span> <span class="fu"><a href="../reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">tmp1</span>,<span class="va">tmp2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{.count} human,droids and gungans"</span><span class="op">)</span> 
-<span class="va">tmp3</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/p_flowchart.html">p_flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="va">tmp3</span> <span class="op">=</span> <span class="fu"><a href="../reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">tmp1</span>,<span class="va">tmp2</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{.count} human,droids and gungans"</span><span class="op">)</span> 
+<span class="va">tmp3</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/p_flowchart.html">p_flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="131pt" height="224pt" viewbox="0.00 0.00 130.81 223.60" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 219.6)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-219.6 126.8068,-219.6 126.8068,4 -4,4"></polygon><!-- 5&#45;&gt;6 --><g id="edge1" class="edge"><title>5:s-&gt;6</title>
@@ -166,13 +170,11 @@
 
 
       <footer><div class="copyright">
-  <p></p>
-<p>Developed by Robert Challen.</p>
+  <p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -180,8 +182,6 @@
 
   
 
-
-  
 
   </body>
 </html>
