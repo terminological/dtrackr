@@ -2,6 +2,11 @@
 
 ## Low level functions ----
 
+.is.discrete = function(.data, .cutoff=10) {
+  .data <- na.omit(.data)
+  return(length(unique(.data)) <= .cutoff | is.factor(.data))
+}
+
 # function to process glue text in context of grouped input dataframe to produce a dataframe of messages.
 .dataToNodesDf = function(.data, .glue, .isHeader, .type, .env) {
   .data = .data %>% .untrack()
@@ -264,6 +269,10 @@
 
 .defaultMessage = function() {
   getOption("dtrackr.default_message",default = "{.count} items")
+}
+
+.defaultCountSubgroup = function() {
+  getOption("dtrackr.default_count_subgroup",default = "{.name}: {.count} items")
 }
 
 .defaultHeadline = function() {
@@ -682,6 +691,65 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
   .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot) %>% .writeTag(.tag = .tag, ...)
   return(.data %>% .retrack())
 }
+
+#' Add a subgroup count to the dtrackr history graph
+#'
+#' Because of the ... summary specification parameters MUST BE NAMED.
+#'
+#' @param .data - a dataframe which may be grouped
+#' @param .subgroup - a column with a small number of levels (e.g.)
+#' @param ... - additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.
+#' @param .messages - a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for teh subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count
+#' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
+#' @param .type - one of "info","exclusion": used to define formatting
+#' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
+#' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
+#' @param .maxsubgroups - the maximum number of discrete values allowed is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.
+#'
+#' @return the same .data dataframe with the history graph updated
+#' @export
+#'
+#' @examples
+#' ILPD %>% p_group_by(Case_or_Control) %>%
+#'    p_count_subgroup(
+#'       .subgroup = Gender,
+#'       .messages="{.name}: {.count}/{.subtotal}",
+#'       .headline="{Case_or_Control}: {.subtotal}/{.total}"
+#'    ) %>% p_get()
+p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgroup(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL, .maxsubgroups=.defaultMaxSupportedGroupings()) {
+  .subgroup = ensym(.subgroup)
+  if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
+  if (length(.messages) > 1) stop("count_subgroup() only supports a single message format (i.e. .messages must be of length 1). This is repeated for each subgroup level.")
+  type = .data %>% pull(!!.subgroup)
+  if ( ! .is.discrete(type, .maxsubgroups) ) stop("the subgroup column must be discrete with fewer than ",.maxsubgroups," values. You will need to cut the data in an appropriate way, or increase the .maxsubgroups parameter.")
+  dots = rlang::enquos(...)
+  .data = .data %>% .untrack()
+  if(identical(.messages,NULL) & identical(.headline,NULL)) {
+    rlang::warn("p_count_subgroup is missing both .messages and .headline specification. Did you forget to explicitly name them?",.frequency = "always")
+    return(.data %>% .retrack())
+  }
+
+  default_env = rlang::caller_env()
+  default_env$.total = nrow(.data)
+  grps = .data %>% dplyr::groups()
+  tmp = .data %>% mutate(.name = factor(!!.subgroup, ...)) %>%
+    dplyr::group_by(!!!grps, .name, !!.subgroup) %>%
+    dplyr::summarise(.count=dplyr::n(), .groups="keep") %>%
+    dplyr::group_by(!!!grps) %>%
+    dplyr::mutate(.subtotal=sum(.count))
+
+  # .headline is a single glue spec
+  tmpHead = .summaryToNodesDf(
+    # we need to make tmp unique here (on a per group basis)
+    tmp %>% select(-c(.name, .count, .subgroup)) %>% distinct(),
+    .headline,.isHeader=TRUE, .type = .type, .env=default_env)
+
+  # .messages is a load of glue specs
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .env=default_env)))
+  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot) %>% .writeTag(.tag = .tag, ...)
+  return(.data %>% .retrack())
+}
+
 
 #' Exclude all items matching a criteria
 #'
@@ -1108,6 +1176,7 @@ p_pivot_longer = function(data,
 #' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.cols\} which is the columns that are being grouped by.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.cols\}.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
+#' @param .maxgroups - the maximum number of subgroups allowed before the tracking is paused.
 #' @inheritParams dplyr::group_by
 #'
 #' @return the .data but grouped.
@@ -1115,7 +1184,7 @@ p_pivot_longer = function(data,
 #'
 #' @examples
 #' iris %>% p_group_by(Species, .messages="stratify by {.cols}") %>% p_comment("{.strata}") %>% p_get()
-p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL, .tag=NULL) {
+p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL, .tag=NULL, .maxgroups = .defaultMaxSupportedGroupings()) {
   # explicitly dtrackr::ungroup is .add is false to generate an un-grouped node in the graph. otherwise we get an n x m crossover.
   if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup()
   # TODO: putting in a special hidden node type
@@ -1129,7 +1198,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 
   tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify", .tag=.tag)
   tmp2 = tmp %>% .untrack() %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% p_copy(tmp)
-  if (dplyr::n_groups(tmp2) > .defaultMaxSupportedGroupings() ) {
+  if (dplyr::n_groups(tmp2) > .maxgroups ) {
     rlang::inform(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "always")
     rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'. To continue tracking use ungroup then dtrackr::resume once groupings have become a bit more manageable",.frequency = "once",.frequency_id = "maxgrp")
     tmp2 = .data %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% p_copy(.data) %>% p_pause()
@@ -1330,13 +1399,17 @@ p_bind_rows = function(..., .id = NULL, .messages="{.count.out} in union", .head
 }
 
 .doJoin = function(joinFunction, x, y, by, copy, suffix, ..., .messages, .headline) {
+
+  mergedGraph = .mergeGraphs(x %>% p_get(), y %>% p_get())
   x = x %>% .untrack()
   y = y %>% .untrack()
   #default_env = environment()
-  .keys = paste(by,sep=", ")
+  .keys = paste0(
+    ifelse(names(by) != "", paste(names(by),by,sep="="),by),
+    collapse=","
+  )
   .count.lhs = nrow(x)
   .count.rhs = nrow(y)
-  mergedGraph = .mergeGraphs(x %>% p_get(), y %>% p_get())
   out = joinFunction(x, y, by=by, copy=copy, suffix=suffix, ...)
   .count.out = nrow(out)
   out = out %>% p_set(mergedGraph) %>% p_comment(.messages, .headline = .headline, .type="combine")
@@ -1645,6 +1718,10 @@ flowchart <- p_flowchart
 #' @inherit p_status
 #' @export
 status <- p_status
+
+#' @inherit p_count_subgroup
+#' @export
+count_subgroup <- p_count_subgroup
 
 #' @inherit p_comment
 #' @export

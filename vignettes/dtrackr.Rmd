@@ -71,8 +71,7 @@ In the middle of a pipeline you may wish to document something about the data th
 ```{r}
 
 iris %>%
-  track() %>%
-  comment("starts with {.count} items") %>%
+  track("starts with {.count} items") %>%
   group_by(Species) %>%
   status(
     petalMean = sprintf("%1.1f", mean(Petal.Width)),
@@ -80,10 +79,23 @@ iris %>%
     .messages = c(
     "In {Species} the petals are",
     "on average {petalMean} \u00B1 {petalSd} cms wide")) %>%
-  ungroup() %>%
-  comment("ends with {.total} items") %>%
+  ungroup(.messages = "ends with {.total} items") %>%
   flowchart()
 
+```
+
+A frequent use case for more detailed description is to have a subgroup count within a flowchart. This is different enough to have its own function `count_subgroup()`. This works best for factor subgroup columns but other data will be converted to a factor automatically. As this uses glue specifications a modified formatted output is also possible as in this example, where the subgroup percentages are calculated to 1dp.
+
+```{r}
+diamonds %>%
+  track() %>%
+  group_by(cut) %>%
+  count_subgroup(
+    color,
+    .messages = "colour {.name}: {sprintf('%1.1f%%', {.count}/{.subtotal}*100)}"
+  ) %>%
+  ungroup() %>%
+  flowchart()
 ```
 
 # Filtering, exclusions and inclusions

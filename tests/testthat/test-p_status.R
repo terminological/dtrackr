@@ -44,3 +44,21 @@ test_that("more complex status works", {
   )
 
 })
+
+test_that("subgroup counts work", {
+  g = ILPD %>%
+    p_comment() %>%
+    p_group_by(Case_or_Control) %>%
+    p_comment() %>%
+    p_count_subgroup(
+        .subgroup = Gender,
+        .messages="{.name}: {.count}/{.subtotal}",
+        .headline="{Case_or_Control}: {.subtotal}/{.total}"
+    ) %>%
+    p_comment() %>%
+    p_get()
+  testthat::expect_true(
+    g %>% graphContains("Female: 92/416") &
+    g %>% graphContains("control: 167/583")
+  )
+})
