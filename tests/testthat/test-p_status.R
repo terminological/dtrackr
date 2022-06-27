@@ -1,6 +1,6 @@
 library(tidyverse)
 graphContains = function(g, .strata, .message) {
-  return(g$nodes %>% filter(.strata==.strata,.label %>% str_detect(paste0("(^|>)",fixed(.message),"<"))) %>% nrow() > 0)
+  return(g$nodes %>% filter(.strata==.strata,.label %>% stringr::str_detect(paste0("(^|>)",stringr::fixed(.message),"<"))) %>% nrow() > 0)
 }
 
 test_that("basic status works", {
@@ -58,7 +58,7 @@ test_that("subgroup counts work", {
     p_comment() %>%
     p_get()
   testthat::expect_true(
-    g %>% graphContains("Female: 92/416") &
-    g %>% graphContains("control: 167/583")
+    g %>% graphContains("case: 416/583","Female: 92/416") &
+    g %>% graphContains("control: 167/583","Male: 117/167")
   )
 })

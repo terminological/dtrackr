@@ -3,7 +3,7 @@
 ## Low level functions ----
 
 .is.discrete = function(.data, .cutoff=10) {
-  .data <- na.omit(.data)
+  .data <- stats::na.omit(.data)
   return(length(unique(.data)) <= .cutoff | is.factor(.data))
 }
 
@@ -23,7 +23,7 @@
 # write  arbitrary content into the tags list. If the content is not specified then it is calculated from .data as a summarisation step by .taggedData().
 .writeTag = function(.data, .tag, ..., .content = .taggedData(.data, ...)) {
   if (is.null(.tag)) return(.data)
-  tmp = tibble(.tag = .tag, .content = list(.content))
+  tmp = tibble::tibble(.tag = .tag, .content = list(.content))
   current = .data %>% p_get()
   current$tags = bind_rows(current$tags,tmp)
 
@@ -483,6 +483,7 @@ p_excluded = function(.data, simplify = TRUE) {
 #'
 #' @export
 p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
+  .content = .label = .content_rows = NULL
   out = .data %>% p_get()
   tag=.tag
   strata = .strata
@@ -494,7 +495,7 @@ p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
     if (!is.null(.glue)) {
       # calculate a .label column
       tmp = tmp %>% dplyr::mutate(.label = glue::glue(.glue,...))
-      if (nrow(tmp) == 1) return(tmp %>% pull(.label))
+      if (nrow(tmp) == 1) return(tmp %>% dplyr::pull(.label))
     }
     return(tmp)
   } else {
@@ -717,10 +718,11 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #'       .headline="{Case_or_Control}: {.subtotal}/{.total}"
 #'    ) %>% p_get()
 p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgroup(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL, .maxsubgroups=.defaultMaxSupportedGroupings()) {
-  .subgroup = ensym(.subgroup)
+  .count = .name = NULL
+  .subgroup = rlang::ensym(.subgroup)
   if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
   if (length(.messages) > 1) stop("count_subgroup() only supports a single message format (i.e. .messages must be of length 1). This is repeated for each subgroup level.")
-  type = .data %>% pull(!!.subgroup)
+  type = .data %>% dplyr::pull(!!.subgroup)
   if ( ! .is.discrete(type, .maxsubgroups) ) stop("the subgroup column must be discrete with fewer than ",.maxsubgroups," values. You will need to cut the data in an appropriate way, or increase the .maxsubgroups parameter.")
   dots = rlang::enquos(...)
   .data = .data %>% .untrack()

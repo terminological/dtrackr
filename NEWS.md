@@ -1,6 +1,6 @@
 # NEWS
 
-# trackr 0.1.0.9000 - pre-release github version
+# dtrackr 0.1.0.9000 - pre-release github version
 
 * Initial package features complete
 * Dplyr like for like functionality supporting - 
@@ -16,13 +16,23 @@ transmute, ungroup
 * export history as dot graphviz graph
 * render history graph to SVG, PNG, PDF, DOT or PS formats
 
-# trackr 0.2.0 - release github version
+# dtrackr 0.2.0 - release github version
 
 * track excluded items with debugging info
 * allow across syntax in most situations (except group_by)
 * support pausing and unpausing of the dataframe tracking
 * preventing massive group_by groups if large numbers of very small groups are selected (e.g. part of a group_by() %>% mutate())
 * switch warnings to rlang::warn etc.
+
+# 0.2.1 - 
+
+* minor bug fixes for grouping
+* support for tagging pipeline with a piece of data for later retrieval to support e.g. counts within abstract
+* supoprt for tidyselect syntax in group by
+
+# 0.2.2
+
+* new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.
 
 # Future developments
 

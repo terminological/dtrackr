@@ -10,10 +10,27 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-latest
+
+    runs-on: ${{ matrix.config.os }}
+
+    continue-on-error: false
+
+    name: ${{ matrix.config.os }} R:(${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-20.04, r: '4.1.0'}
+          - {os: macOS-11, r: '4.1.0'}
+          - {os: windows-2022, r: '4.1.0'}
+          - {os: ubuntu-20.04, r: '3.6.1'}
+          - {os: ubuntu-20.04, r: '4.2.0'}
+
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+
     steps:
       - uses: actions/checkout@v2
 
@@ -31,6 +48,8 @@ jobs:
           extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--no-multiarch", "--as-cran")'
 
       - name: Show testthat output
         if: always()
