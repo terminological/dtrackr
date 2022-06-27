@@ -4,8 +4,7 @@
 \name{ILPD}
 \alias{ILPD}
 \title{Indian Liver Patient Dataset}
-\format{
-A data frame with 583 rows and 11 variables:
+\format{A data frame with 583 rows and 11 variables:
 \describe{
   \item{Age}{}
   \item{Gender}{}
@@ -18,8 +17,7 @@ A data frame with 583 rows and 11 variables:
   \item{Albumin}{}
   \item{Albumin_Globulin_Ratio}{}
   \item{Case_or_Control}{Selector field used to split the data into two sets (labeled by the experts)}
-}
-}
+}}
 \source{
 \url{https://bit.ly/3NjtlSe}
 }

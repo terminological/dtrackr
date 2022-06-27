@@ -22,6 +22,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,18 +36,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/dtrackr.html">Get started</a>
 </li>
@@ -86,62 +82,62 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="dtrackr" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#dtrackr" class="anchor"></a>dtrackr</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="dtrackr">dtrackr<a class="anchor" aria-label="anchor" href="#dtrackr"></a>
+</h1></div>
 <!-- badges: start -->
 
-<p><a href="https://github.com/terminological/dtrackr/actions"><img src="https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></p>
-<p><a href="https://zenodo.org/badge/latestdoi/335974323"><img src="https://zenodo.org/badge/335974323.svg" alt="DOI"></a> <!-- badges: end --></p>
+<p><a href="https://github.com/terminological/dtrackr/actions" class="external-link"><img src="https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></p>
+<p><a href="https://zenodo.org/badge/latestdoi/335974323" class="external-link"><img src="https://zenodo.org/badge/335974323.svg" alt="DOI"></a> <!-- badges: end --></p>
 <p>I have been known to execute parts of my data pipeline more than once. Sometimes part of my pipeline is designed to change depending on a specific parameter, for example an age cutoff, which I tweak and re-run. With interactive data analysis, and particularly using RMarkdown, this sometimes happens in a non-linear fashion, leading to, at best, confusion and at worst erroneous analysis.</p>
 <p>Accurate documentation of a data pipeline is a first step to reproducibility, but in parameterised analysis that relies on data that is frequently updated, copying and pasting row counts into flowcharts in PowerPoint becomes quickly tedious. In the past I’ve based such flow charts on what I think my code is doing rather than actually what it did, which can lead to potential embarrassment.</p>
 <p>The goal of <code>dtrackr</code> is to take away this pain by instrumenting and monitoring a dataframe through a <code>dplyr</code> pipeline, creating a step-by-step summary of the important parts of the wrangling that actually happened to the dataframe, right into dataframe metadata itself.</p>
 <p>This way the pipeline documents itself, errors are easier to spot, there is less risk of error, and we have more time to spend with our kids/dog/playstation. What’s not to like?</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>dtrackr is in early development. It is not yet available on CRAN.</p>
 <!-- You can install the released version of dtrackr from [CRAN](https://CRAN.R-project.org) with: -->
 <!-- ``` r -->
 <!-- install.packages("dtrackr") -->
 <!-- ``` -->
-<p>The development version is available from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"terminological/dtrackr"</span><span class="op">)</span></pre></div>
+<p>The development version is available from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"terminological/dtrackr"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>Suppose we are constructing a data set with out initial input being the <code>iris</code> data. Our analysis depends on some <code>cutOff</code> parameter and we want to prepare a stratified data set that excludes flowers with narrow petals, and those with the biggest petals of each Species. With <code>dtrackr</code> we can mix regular <code>dplyr</code> commands with additional <code>dtrackr</code> commands such as <code>comment</code> and <code>status</code>, and an enhanced implementation of <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter</a></code>, called <code>exclude_all</code>, and <code>include_any</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># a pipeline parameter</span>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>Suppose we are constructing a data set with out initial input being the <code>iris</code> data. Our analysis depends on some <code>cutOff</code> parameter and we want to prepare a stratified data set that excludes flowers with narrow petals, and those with the biggest petals of each Species. With <code>dtrackr</code> we can mix regular <code>dplyr</code> commands with additional <code>dtrackr</code> commands such as <code>comment</code> and <code>status</code>, and an enhanced implementation of <code><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">dplyr::filter</a></code>, called <code>exclude_all</code>, and <code>include_any</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># a pipeline parameter</span>
 <span class="va">cutOff</span> <span class="op">=</span> <span class="fl">3</span>
 
 <span class="co"># the pipeline</span>
-<span class="va">dataset</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">dataset</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>
     short <span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&lt;</span><span class="va">cutOff</span><span class="op">)</span>, 
     long<span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&gt;=</span><span class="va">cutOff</span><span class="op">)</span>, 
-    .messages<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"consisting of {short} short sepal &lt;{cutOff}"</span>,<span class="st">"and {long} long sepal &gt;={cutOff}"</span><span class="op">)</span>
-  <span class="op">)</span>  <span class="op">%&gt;%</span>
+    .messages<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"consisting of {short} short sepal &lt;{cutOff}"</span>,<span class="st">"and {long} long sepal &gt;={cutOff}"</span><span class="op">)</span>
+  <span class="op">)</span>  <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
     <span class="va">Petal.Width</span><span class="op">&lt;</span><span class="fl">0.3</span> <span class="op">~</span> <span class="st">"excluding {.excluded} with narrow petals"</span>,
-    <span class="va">Petal.Width</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"and {.excluded} outlier"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"test message"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} of type {Species}"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} together with cutOff {cutOff}"</span><span class="op">)</span> </pre></div>
+    <span class="va">Petal.Width</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"and {.excluded} outlier"</span>
+  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"test message"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} of type {Species}"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} together with cutOff {cutOff}"</span><span class="op">)</span> </code></pre></div>
 <p>Having prepared our dataset we conduct our analysis, fit our models, massage our statistics, and disprove our hypothesis, write it up and prepare it for submission.</p>
 <p>It is usually at this point someone says, “Did you exclude XYZ?” or “How many of WXY did you find in each group?” or something similar. Before dtrackr you would have muttered something about having to look at the code to see what you did (and hope it does the same thing next time), but now all you do is this:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># man/figures path needed here to ensure this works for pkgdown and for github</span>
-<span class="va">dataset</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="st">"man/figures/demo"</span><span class="op">)</span></pre></div>
+<span class="va">dataset</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="st">"man/figures/demo"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/demo.png" width="100%"></p>
 <p>And your publication ready data pipeline, with any assumptions you care to document, is creates in a format of your choice (as long as that choice is one of pdf, png, svg or ps), ready for submission to Nature.</p>
 <p>This is a trivial example, but the more complex the pipeline, the bigger benefit you will get.</p>
@@ -151,36 +147,48 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Robert Challen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5504-7768" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html#citation">Citing dtrackr</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle:experimental"></a></li>
+<li>Robert Challen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5504-7768" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle:experimental"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Robert Challen.</p>
+  <p></p>
+<p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -188,6 +196,8 @@
 
   
 
+
+  
 
   </body>
 </html>

@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/dtrackr.html">Get started</a>
 </li>
@@ -81,7 +77,7 @@
 
       
 
-      </header><script src="dtrackr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Dtrackr - Basic operations</h1>
@@ -94,22 +90,28 @@
 
     
     
-<div id="tracking-data-provenance" class="section level1">
-<h1 class="hasAnchor">
-<a href="#tracking-data-provenance" class="anchor"></a>Tracking data provenance</h1>
+<div class="section level1">
+<h1 id="tracking-data-provenance">Tracking data provenance<a class="anchor" aria-label="anchor" href="#tracking-data-provenance"></a>
+</h1>
 <p>When wrangling raw data into a form suitable for analysis there may be many steps where explicit or implicit assumptions are made about the nature of the data, which determine the nature of the resulting analysis dataset. Checking that these assumptions have the expected results as the analysis is proceeding can be time consuming. If a data pipeline is broken up over a number of parameterised functions, following the data flow through the code is time consuming and getting an overview difficult. This is where tracking data provenance can help, by monitoring the steps the data goes through and summarizing the outcomes of the steps as they occur we can generate a flow chart of the data history.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># devtools::load_all()</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</span>
-<span class="co">#&gt; ✓ ggplot2 3.3.5     ✓ purrr   0.3.4</span>
-<span class="co">#&gt; ✓ tibble  3.1.6     ✓ dplyr   1.0.7</span>
-<span class="co">#&gt; ✓ tidyr   1.2.0     ✓ stringr 1.4.0</span>
-<span class="co">#&gt; ✓ readr   2.0.2     ✓ forcats 0.5.1</span>
-<span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
-<span class="co">#&gt; x dplyr::filter() masks stats::filter()</span>
-<span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">dtrackr</span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># devtools::load_all()</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>
+<span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span>
+<span class="co">#&gt; 'rlang::last_warnings' when loading 'pillar'</span>
+<span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span>
+<span class="co">#&gt; 'rlang::last_warnings' when loading 'tibble'</span>
+<span class="co">#&gt; Warning: replacing previous import 'lifecycle::last_warnings' by</span>
+<span class="co">#&gt; 'rlang::last_warnings' when loading 'hms'</span>
+<span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span><span> ─────────────────────────────────────── tidyverse 1.3.1 ──</span></span>
+<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">ggplot2</span><span> 3.3.3     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">purrr  </span><span> 0.3.4</span></span>
+<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">tibble </span><span> 3.1.2     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">dplyr  </span><span> 1.0.6</span></span>
+<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">tidyr  </span><span> 1.1.3     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">stringr</span><span> 1.4.0</span></span>
+<span class="co">#&gt; <span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">readr  </span><span> 1.4.0     </span><span style="color: #00BB00;">✓</span><span> </span><span style="color: #0000BB;">forcats</span><span> 0.5.1</span></span>
+<span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span><span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span class="co">#&gt; <span style="color: #BB0000;">x</span><span> </span><span style="color: #0000BB;">dplyr</span><span>::</span><span style="color: #00BB00;">filter()</span><span> masks </span><span style="color: #0000BB;">stats</span><span>::filter()</span></span>
+<span class="co">#&gt; <span style="color: #BB0000;">x</span><span> </span><span style="color: #0000BB;">dplyr</span><span>::</span><span style="color: #00BB00;">lag()</span><span>    masks </span><span style="color: #0000BB;">stats</span><span>::lag()</span></span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dtrackr</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'dtrackr'</span>
 <span class="co">#&gt; The following objects are masked from 'package:dplyr':</span>
@@ -120,39 +122,39 @@
 <span class="co">#&gt;     filter</span>
 <span class="co">#&gt; The following object is masked from 'package:base':</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;     comment</span></pre></div>
+<span class="co">#&gt;     comment</span></code></pre></div>
 </div>
-<div id="basic-operation---comments-and-stratification" class="section level1">
-<h1 class="hasAnchor">
-<a href="#basic-operation---comments-and-stratification" class="anchor"></a>Basic operation - comments and stratification</h1>
+<div class="section level1">
+<h1 id="basic-operation---comments-and-stratification">Basic operation - comments and stratification<a class="anchor" aria-label="anchor" href="#basic-operation---comments-and-stratification"></a>
+</h1>
 <p>The main documentation for data pipelines is provided by the <code>comment</code> function. This (and all other functions) uses a <code>glue</code> package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables such as <code>filename</code> in this example. Secondly the <code>.count</code> variable is the number of rows in the current group. Thirdly the <code>.strata</code> variable is defined to be a description of the group(s) we are currently in, but in grouped data the grouping variables (in this case <code>Species</code>) can also be used. Finally the <code>.total</code> variable returns the whole size of the ungrouped dataset.</p>
 <p>Comments can either be a single <code>.headline</code> or a list of <code>.messages</code>. Setting either of these to "" disables them for a given comment. As in the example, thanks to <code>glue</code>, any expression can be evaluated in the messages but be warned, debugging them is hard. If an error in the glue spec is present <code>dtrackr</code> will try and tell you what is the problem was and what variables should have been available for the glue spec. (N.B. A common mistake is to use <code>.message</code> rather than <code>.messages</code> when providing a glue spec.)</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># devtools::load_all()</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># devtools::load_all()</span>
 <span class="va">filename</span> <span class="op">=</span> <span class="st">"~/tmp/iris.csv"</span>
 <span class="co"># this is just a pretend example</span>
 <span class="co"># iris = read.csv(filename)</span>
 
 
-<span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>
     .headline <span class="op">=</span> <span class="st">"Iris data:"</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
       <span class="st">"loaded from \"{filename}\""</span>,
-      <span class="st">"starts with {.count} items"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
+      <span class="st">"starts with {.count} items"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>
     .headline <span class="op">=</span> <span class="st">"{.strata}"</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
     <span class="st">"In {Species}"</span>,
     <span class="st">"there are {.count} items"</span>,
     <span class="st">"that is {sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span>,
     .tag <span class="op">=</span> <span class="st">"note1"</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"Final data has {.total} items"</span>, .tag<span class="op">=</span><span class="st">"note2"</span><span class="op">)</span> <span class="op">%&gt;%</span>  
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"Final data has {.total} items"</span>, .tag<span class="op">=</span><span class="st">"note2"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>  
+  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="315pt" height="276pt" viewbox="0.00 0.00 315.14 276.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 272.4)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-272.4 311.1416,-272.4 311.1416,4 -4,4"></polygon><!-- 7&#45;&gt;8 --><g id="edge1" class="edge"><title>7:s-&gt;8</title>
@@ -174,61 +176,87 @@
 <polygon fill="#ffffff" stroke="#000000" points="209.0916,-226.8 98.05,-226.8 98.05,-188.8 209.0916,-188.8 209.0916,-226.8"></polygon><text text-anchor="start" x="105.0604" y="-213.6" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Iris data:</text><text text-anchor="start" x="105.0604" y="-205.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">loaded from "~/tmp/iris.csv"</text><text text-anchor="start" x="105.0604" y="-197.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g><!-- 1 --><g id="node8" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="177.7455,-268.2033 129.3961,-268.2033 129.3961,-244.9967 177.7455,-244.9967 177.7455,-268.2033"></polygon><text text-anchor="start" x="136.234" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg>
 </div>
-<div id="status---further-analysis-in-the-workflow" class="section level1">
-<h1 class="hasAnchor">
-<a href="#status---further-analysis-in-the-workflow" class="anchor"></a>Status - Further analysis in the workflow</h1>
+<div class="section level1">
+<h1 id="status---further-analysis-in-the-workflow">Status - Further analysis in the workflow<a class="anchor" aria-label="anchor" href="#status---further-analysis-in-the-workflow"></a>
+</h1>
 <p>In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts. <code>comment</code> has a more sophisticated counterpart <code>status</code>. <code>status</code> is essentially a <code>dplyr</code> summarisation step which is connected to a <code>glue</code> specification output, that is recorded in the data frame history. In plain English this means you can do an arbitrary summarisation and put the result into the flowchart.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-
-<span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/status.html">status</a></span><span class="op">(</span>
-    petalMean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,
-    petalSd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+    petalMean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,
+    petalSd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,
+    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
     <span class="st">"In {Species} the petals are"</span>,
-    <span class="st">"on average {petalMean} \u00B1 {petalSd} cms wide"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"ends with {.total} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+    <span class="st">"on average {petalMean} \u00B1 {petalSd} cms wide"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"ends with {.total} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
- --><!-- Title: %0 Pages: 1 --><svg width="414pt" height="254pt" viewbox="0.00 0.00 413.59 254.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 250)"><title>%0</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-250 409.5864,-250 409.5864,4 -4,4"></polygon><!-- 7&#45;&gt;8 --><g id="edge1" class="edge"><title>7:s-&gt;8</title>
-<path fill="none" stroke="#000000" d="M202.7932,-41.4C202.7932,-41.4 202.7932,-28.4987 202.7932,-28.4987"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-28.4987 202.7932,-23.4987 201.0433,-28.4987 204.5433,-28.4987"></polygon></g><!-- 4&#45;&gt;7 --><g id="edge4" class="edge"><title>4:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M62.7932,-83.2C62.7932,-83.2 62.7932,-53 62.7932,-53 62.7932,-53 173.4071,-53 173.4071,-53"></path><polygon fill="#000000" stroke="#000000" points="173.4071,-54.7501 178.4071,-53 173.407,-51.2501 173.4071,-54.7501"></polygon></g><!-- 5&#45;&gt;7 --><g id="edge3" class="edge"><title>5:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M202.7932,-83.2C202.7932,-83.2 202.7932,-70.1777 202.7932,-70.1777"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-70.1777 202.7932,-65.1777 201.0433,-70.1778 204.5433,-70.1777"></polygon></g><!-- 6&#45;&gt;7 --><g id="edge2" class="edge"><title>6:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M342.7932,-83.2C342.7932,-83.2 342.7932,-53 342.7932,-53 342.7932,-53 232.1793,-53 232.1793,-53"></path><polygon fill="#000000" stroke="#000000" points="232.1794,-51.2501 227.1793,-53 232.1793,-54.7501 232.1794,-51.2501"></polygon></g><!-- 3&#45;&gt;4 --><g id="edge7" class="edge"><title>3:s-&gt;4</title>
-<path fill="none" stroke="#000000" d="M202.7932,-151C202.7932,-151 62.7932,-151 62.7932,-151 62.7932,-151 62.7932,-126.2071 62.7932,-126.2071"></path><polygon fill="#000000" stroke="#000000" points="64.5433,-126.2071 62.7932,-121.2071 61.0433,-126.2071 64.5433,-126.2071"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge6" class="edge"><title>3:s-&gt;5</title>
-<path fill="none" stroke="#000000" d="M202.7932,-139C202.7932,-139 202.7932,-126.4622 202.7932,-126.4622"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-126.4622 202.7932,-121.4622 201.0433,-126.4623 204.5433,-126.4622"></polygon></g><!-- 3&#45;&gt;6 --><g id="edge5" class="edge"><title>3:s-&gt;6</title>
-<path fill="none" stroke="#000000" d="M202.7932,-151C202.7932,-151 342.7932,-151 342.7932,-151 342.7932,-151 342.7932,-126.2071 342.7932,-126.2071"></path><polygon fill="#000000" stroke="#000000" points="344.5433,-126.2071 342.7932,-121.2071 341.0433,-126.2071 344.5433,-126.2071"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge8" class="edge"><title>2:s-&gt;3</title>
-<path fill="none" stroke="#000000" d="M202.7932,-180.6C202.7932,-180.6 202.7932,-167.6987 202.7932,-167.6987"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-167.6987 202.7932,-162.6987 201.0433,-167.6987 204.5433,-167.6987"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge9" class="edge"><title>1:s-&gt;2</title>
-<path fill="none" stroke="#000000" d="M202.7932,-222.2C202.7932,-222.2 202.7932,-209.2987 202.7932,-209.2987"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-209.2987 202.7932,-204.2987 201.0433,-209.2987 204.5433,-209.2987"></polygon></g><!-- 8 --><g id="node1" class="node"><title>8</title>
-<polygon fill="#ffffff" stroke="#000000" points="244.9762,-23.4033 160.6102,-23.4033 160.6102,-.1967 244.9762,-.1967 244.9762,-23.4033"></polygon><text text-anchor="start" x="167.452" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">ends with 150 items</text></g><!-- 7 --><g id="node2" class="node"><title>7</title>
-<polygon fill="#ffffff" stroke="#000000" points="226.9679,-65.0033 178.6185,-65.0033 178.6185,-41.7967 226.9679,-41.7967 226.9679,-65.0033"></polygon><text text-anchor="start" x="185.4564" y="-51" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g><!-- 4 --><g id="node3" class="node"><title>4</title>
-<polygon fill="#ffffff" stroke="#000000" points="125.3803,-121.2 .2061,-121.2 .2061,-83.2 125.3803,-83.2 125.3803,-121.2"></polygon><text text-anchor="start" x="7" y="-108" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:setosa</text><text text-anchor="start" x="7" y="-100" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In setosa the petals are</text><text text-anchor="start" x="7" y="-92" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 0.2 ± 0.1 cms wide</text></g><!-- 5 --><g id="node4" class="node"><title>5</title>
-<polygon fill="#ffffff" stroke="#000000" points="265.3803,-121.2 140.2061,-121.2 140.2061,-83.2 265.3803,-83.2 265.3803,-121.2"></polygon><text text-anchor="start" x="147" y="-108" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:versicolor</text><text text-anchor="start" x="147" y="-100" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In versicolor the petals are</text><text text-anchor="start" x="147" y="-92" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 1.3 ± 0.2 cms wide</text></g><!-- 6 --><g id="node5" class="node"><title>6</title>
-<polygon fill="#ffffff" stroke="#000000" points="405.3803,-121.2 280.2061,-121.2 280.2061,-83.2 405.3803,-83.2 405.3803,-121.2"></polygon><text text-anchor="start" x="287" y="-108" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:virginica</text><text text-anchor="start" x="287" y="-100" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In virginica the petals are</text><text text-anchor="start" x="287" y="-92" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 2.0 ± 0.3 cms wide</text></g><!-- 3 --><g id="node6" class="node"><title>3</title>
-<polygon fill="#ffffff" stroke="#000000" points="242.1941,-162.6033 163.3923,-162.6033 163.3923,-139.3967 242.1941,-139.3967 242.1941,-162.6033"></polygon><text text-anchor="start" x="170.3428" y="-148.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 2 --><g id="node7" class="node"><title>2</title>
-<polygon fill="#ffffff" stroke="#000000" points="246.1909,-204.2033 159.3955,-204.2033 159.3955,-180.9967 246.1909,-180.9967 246.1909,-204.2033"></polygon><text text-anchor="start" x="166.3444" y="-190.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g><!-- 1 --><g id="node8" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="226.9679,-245.8033 178.6185,-245.8033 178.6185,-222.5967 226.9679,-222.5967 226.9679,-245.8033"></polygon><text text-anchor="start" x="185.4564" y="-231.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg>
+ --><!-- Title: %0 Pages: 1 --><svg width="414pt" height="171pt" viewbox="0.00 0.00 413.59 170.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 166.8)"><title>%0</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-166.8 409.5864,-166.8 409.5864,4 -4,4"></polygon><!-- 3&#45;&gt;6 --><g id="edge3" class="edge"><title>3:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M62.7932,-41.6C62.7932,-41.6 62.7932,-11 62.7932,-11 62.7932,-11 155.4087,-11 155.4087,-11"></path><polygon fill="#000000" stroke="#000000" points="155.4087,-12.7501 160.4087,-11 155.4086,-9.2501 155.4087,-12.7501"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge2" class="edge"><title>4:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M202.7932,-41.6C202.7932,-41.6 202.7932,-28.5777 202.7932,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-28.5777 202.7932,-23.5777 201.0433,-28.5778 204.5433,-28.5777"></polygon></g><!-- 5&#45;&gt;6 --><g id="edge1" class="edge"><title>5:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M342.7932,-41.6C342.7932,-41.6 342.7932,-11 342.7932,-11 342.7932,-11 250.1777,-11 250.1777,-11"></path><polygon fill="#000000" stroke="#000000" points="250.1778,-9.2501 245.1777,-11 250.1777,-12.7501 250.1778,-9.2501"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge6" class="edge"><title>2:s-&gt;3</title>
+<path fill="none" stroke="#000000" d="M202.7932,-109C202.7932,-109 62.7932,-109 62.7932,-109 62.7932,-109 62.7932,-84.729 62.7932,-84.729"></path><polygon fill="#000000" stroke="#000000" points="64.5433,-84.7289 62.7932,-79.729 61.0433,-84.729 64.5433,-84.7289"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge5" class="edge"><title>2:s-&gt;4</title>
+<path fill="none" stroke="#000000" d="M202.7932,-97.4C202.7932,-97.4 202.7932,-84.8622 202.7932,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-84.8622 202.7932,-79.8622 201.0433,-84.8623 204.5433,-84.8622"></polygon></g><!-- 2&#45;&gt;5 --><g id="edge4" class="edge"><title>2:s-&gt;5</title>
+<path fill="none" stroke="#000000" d="M202.7932,-109C202.7932,-109 342.7932,-109 342.7932,-109 342.7932,-109 342.7932,-84.729 342.7932,-84.729"></path><polygon fill="#000000" stroke="#000000" points="344.5433,-84.7289 342.7932,-79.729 341.0433,-84.729 344.5433,-84.7289"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge7" class="edge"><title>1:s-&gt;2</title>
+<path fill="none" stroke="#000000" d="M202.7932,-139C202.7932,-139 202.7932,-126.0987 202.7932,-126.0987"></path><polygon fill="#000000" stroke="#000000" points="204.5433,-126.0987 202.7932,-121.0987 201.0433,-126.0987 204.5433,-126.0987"></polygon></g><!-- 6 --><g id="node1" class="node"><title>6</title>
+<polygon fill="#ffffff" stroke="#000000" points="244.9762,-23.4033 160.6102,-23.4033 160.6102,-.1967 244.9762,-.1967 244.9762,-23.4033"></polygon><text text-anchor="start" x="167.452" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">ends with 150 items</text></g><!-- 3 --><g id="node2" class="node"><title>3</title>
+<polygon fill="#ffffff" stroke="#000000" points="125.3803,-79.6 .2061,-79.6 .2061,-41.6 125.3803,-41.6 125.3803,-79.6"></polygon><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:setosa</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In setosa the petals are</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 0.2 ± 0.1 cms wide</text></g><!-- 4 --><g id="node3" class="node"><title>4</title>
+<polygon fill="#ffffff" stroke="#000000" points="265.3803,-79.6 140.2061,-79.6 140.2061,-41.6 265.3803,-41.6 265.3803,-79.6"></polygon><text text-anchor="start" x="147" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:versicolor</text><text text-anchor="start" x="147" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In versicolor the petals are</text><text text-anchor="start" x="147" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 1.3 ± 0.2 cms wide</text></g><!-- 5 --><g id="node4" class="node"><title>5</title>
+<polygon fill="#ffffff" stroke="#000000" points="405.3803,-79.6 280.2061,-79.6 280.2061,-41.6 405.3803,-41.6 405.3803,-79.6"></polygon><text text-anchor="start" x="287" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:virginica</text><text text-anchor="start" x="287" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In virginica the petals are</text><text text-anchor="start" x="287" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 2.0 ± 0.3 cms wide</text></g><!-- 2 --><g id="node5" class="node"><title>2</title>
+<polygon fill="#ffffff" stroke="#000000" points="242.1941,-121.0033 163.3923,-121.0033 163.3923,-97.7967 242.1941,-97.7967 242.1941,-121.0033"></polygon><text text-anchor="start" x="170.3428" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 1 --><g id="node6" class="node"><title>1</title>
+<polygon fill="#ffffff" stroke="#000000" points="246.1909,-162.6033 159.3955,-162.6033 159.3955,-139.3967 246.1909,-139.3967 246.1909,-162.6033"></polygon><text text-anchor="start" x="166.3444" y="-148.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g></g></svg><p>A frequent use case for more detailed description is to have a subgroup count within a flowchart. This is different enough to have its own function <code><a href="../reference/count_subgroup.html">count_subgroup()</a></code>. This works best for factor subgroup columns but other data will be converted to a factor automatically. As this uses glue specifications a modified formatted output is also possible as in this example, where the subgroup percentages are calculated to 1dp.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cut</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/count_subgroup.html">count_subgroup</a></span><span class="op">(</span>
+    <span class="va">color</span>,
+    .messages <span class="op">=</span> <span class="st">"colour {.name}: {sprintf('%1.1f%%', {.count}/{.subtotal}*100)}"</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
+ --><!-- Title: %0 Pages: 1 --><svg width="419pt" height="211pt" viewbox="0.00 0.00 419.35 210.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 206.8)"><title>%0</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-206.8 415.3488,-206.8 415.3488,4 -4,4"></polygon><!-- 3&#45;&gt;8 --><g id="edge5" class="edge"><title>3:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M35.6744,-41.6C35.6744,-41.6 35.6744,-7 35.6744,-7 35.6744,-7 171.8362,-7 171.8362,-7"></path><polygon fill="#000000" stroke="#000000" points="171.8363,-8.7501 176.8362,-7 171.8362,-5.2501 171.8363,-8.7501"></polygon></g><!-- 4&#45;&gt;8 --><g id="edge4" class="edge"><title>4:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M120.6744,-41.6C120.6744,-41.6 120.6744,-15 120.6744,-15 120.6744,-15 171.8973,-15 171.8973,-15"></path><polygon fill="#000000" stroke="#000000" points="171.8973,-16.7501 176.8973,-15 171.8972,-13.2501 171.8973,-16.7501"></polygon></g><!-- 5&#45;&gt;8 --><g id="edge3" class="edge"><title>5:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M205.6744,-41.6C205.6744,-41.6 205.6744,-28.5777 205.6744,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="207.4245,-28.5777 205.6744,-23.5777 203.9245,-28.5778 207.4245,-28.5777"></polygon></g><!-- 6&#45;&gt;8 --><g id="edge2" class="edge"><title>6:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M290.6744,-41.6C290.6744,-41.6 290.6744,-15 290.6744,-15 290.6744,-15 239.4515,-15 239.4515,-15"></path><polygon fill="#000000" stroke="#000000" points="239.4516,-13.2501 234.4515,-15 239.4515,-16.7501 239.4516,-13.2501"></polygon></g><!-- 7&#45;&gt;8 --><g id="edge1" class="edge"><title>7:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M375.6744,-41.6C375.6744,-41.6 375.6744,-7 375.6744,-7 375.6744,-7 239.5126,-7 239.5126,-7"></path><polygon fill="#000000" stroke="#000000" points="239.5126,-5.2501 234.5126,-7 239.5125,-8.7501 239.5126,-5.2501"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge10" class="edge"><title>2:s-&gt;3</title>
+<path fill="none" stroke="#000000" d="M205.6744,-153C205.6744,-153 35.6744,-153 35.6744,-153 35.6744,-153 35.6744,-124.7666 35.6744,-124.7666"></path><polygon fill="#000000" stroke="#000000" points="37.4245,-124.7665 35.6744,-119.7666 33.9245,-124.7666 37.4245,-124.7665"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge9" class="edge"><title>2:s-&gt;4</title>
+<path fill="none" stroke="#000000" d="M205.6744,-145C205.6744,-145 120.6744,-145 120.6744,-145 120.6744,-145 120.6744,-124.9169 120.6744,-124.9169"></path><polygon fill="#000000" stroke="#000000" points="122.4245,-124.9168 120.6744,-119.9169 118.9245,-124.9169 122.4245,-124.9168"></polygon></g><!-- 2&#45;&gt;5 --><g id="edge8" class="edge"><title>2:s-&gt;5</title>
+<path fill="none" stroke="#000000" d="M205.6744,-137.4C205.6744,-137.4 205.6744,-124.7395 205.6744,-124.7395"></path><polygon fill="#000000" stroke="#000000" points="207.4245,-124.7394 205.6744,-119.7395 203.9245,-124.7395 207.4245,-124.7394"></polygon></g><!-- 2&#45;&gt;6 --><g id="edge7" class="edge"><title>2:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M205.6744,-145C205.6744,-145 290.6744,-145 290.6744,-145 290.6744,-145 290.6744,-124.9169 290.6744,-124.9169"></path><polygon fill="#000000" stroke="#000000" points="292.4245,-124.9168 290.6744,-119.9169 288.9245,-124.9169 292.4245,-124.9168"></polygon></g><!-- 2&#45;&gt;7 --><g id="edge6" class="edge"><title>2:s-&gt;7</title>
+<path fill="none" stroke="#000000" d="M205.6744,-153C205.6744,-153 375.6744,-153 375.6744,-153 375.6744,-153 375.6744,-124.7666 375.6744,-124.7666"></path><polygon fill="#000000" stroke="#000000" points="377.4245,-124.7665 375.6744,-119.7666 373.9245,-124.7666 377.4245,-124.7665"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge11" class="edge"><title>1:s-&gt;2</title>
+<path fill="none" stroke="#000000" d="M205.6744,-179C205.6744,-179 205.6744,-166.0987 205.6744,-166.0987"></path><polygon fill="#000000" stroke="#000000" points="207.4245,-166.0987 205.6744,-161.0987 203.9245,-166.0987 207.4245,-166.0987"></polygon></g><!-- 8 --><g id="node1" class="node"><title>8</title>
+<polygon fill="#ffffff" stroke="#000000" points="234.244,-23.4033 177.1048,-23.4033 177.1048,-.1967 234.244,-.1967 234.244,-23.4033"></polygon><text text-anchor="start" x="183.8904" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">53940 items</text></g><!-- 3 --><g id="node2" class="node"><title>3</title>
+<polygon fill="#ffffff" stroke="#000000" points="71.5241,-119.6 -.1753,-119.6 -.1753,-41.6 71.5241,-41.6 71.5241,-119.6"></polygon><text text-anchor="start" x="7" y="-106.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">cut:Fair</text><text text-anchor="start" x="7" y="-98.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour D: 10.1%</text><text text-anchor="start" x="7" y="-90.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour E: 13.9%</text><text text-anchor="start" x="7" y="-82.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour F: 19.4%</text><text text-anchor="start" x="7" y="-74.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour G: 19.5%</text><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour H: 18.8%</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour I: 10.9%</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour J: 7.4%</text></g><!-- 4 --><g id="node3" class="node"><title>4</title>
+<polygon fill="#ffffff" stroke="#000000" points="156.5241,-119.6 84.8247,-119.6 84.8247,-41.6 156.5241,-41.6 156.5241,-119.6"></polygon><text text-anchor="start" x="92" y="-106.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">cut:Good</text><text text-anchor="start" x="92" y="-98.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour D: 13.5%</text><text text-anchor="start" x="92" y="-90.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour E: 19.0%</text><text text-anchor="start" x="92" y="-82.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour F: 18.5%</text><text text-anchor="start" x="92" y="-74.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour G: 17.8%</text><text text-anchor="start" x="92" y="-66.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour H: 14.3%</text><text text-anchor="start" x="92" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour I: 10.6%</text><text text-anchor="start" x="92" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour J: 6.3%</text></g><!-- 5 --><g id="node4" class="node"><title>5</title>
+<polygon fill="#ffffff" stroke="#000000" points="241.5241,-119.6 169.8247,-119.6 169.8247,-41.6 241.5241,-41.6 241.5241,-119.6"></polygon><text text-anchor="start" x="177" y="-106.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">cut:Ideal</text><text text-anchor="start" x="177" y="-98.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour D: 13.2%</text><text text-anchor="start" x="177" y="-90.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour E: 18.1%</text><text text-anchor="start" x="177" y="-82.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour F: 17.8%</text><text text-anchor="start" x="177" y="-74.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour G: 22.7%</text><text text-anchor="start" x="177" y="-66.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour H: 14.5%</text><text text-anchor="start" x="177" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour I: 9.7%</text><text text-anchor="start" x="177" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour J: 4.2%</text></g><!-- 6 --><g id="node5" class="node"><title>6</title>
+<polygon fill="#ffffff" stroke="#000000" points="326.5241,-119.6 254.8247,-119.6 254.8247,-41.6 326.5241,-41.6 326.5241,-119.6"></polygon><text text-anchor="start" x="262" y="-106.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">cut:Premium</text><text text-anchor="start" x="262" y="-98.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour D: 11.6%</text><text text-anchor="start" x="262" y="-90.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour E: 16.9%</text><text text-anchor="start" x="262" y="-82.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour F: 16.9%</text><text text-anchor="start" x="262" y="-74.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour G: 21.2%</text><text text-anchor="start" x="262" y="-66.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour H: 17.1%</text><text text-anchor="start" x="262" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour I: 10.4%</text><text text-anchor="start" x="262" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour J: 5.9%</text></g><!-- 7 --><g id="node6" class="node"><title>7</title>
+<polygon fill="#ffffff" stroke="#000000" points="411.5241,-119.6 339.8247,-119.6 339.8247,-41.6 411.5241,-41.6 411.5241,-119.6"></polygon><text text-anchor="start" x="347" y="-106.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">cut:Very Good</text><text text-anchor="start" x="347" y="-98.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour D: 12.5%</text><text text-anchor="start" x="347" y="-90.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour E: 19.9%</text><text text-anchor="start" x="347" y="-82.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour F: 17.9%</text><text text-anchor="start" x="347" y="-74.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour G: 19.0%</text><text text-anchor="start" x="347" y="-66.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour H: 15.1%</text><text text-anchor="start" x="347" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour I: 10.0%</text><text text-anchor="start" x="347" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">colour J: 5.6%</text></g><!-- 2 --><g id="node7" class="node"><title>2</title>
+<polygon fill="#ffffff" stroke="#000000" points="236.2937,-161.0033 175.0551,-161.0033 175.0551,-137.7967 236.2937,-137.7967 236.2937,-161.0033"></polygon><text text-anchor="start" x="182.1148" y="-147" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by cut</text></g><!-- 1 --><g id="node8" class="node"><title>1</title>
+<polygon fill="#ffffff" stroke="#000000" points="234.244,-202.6033 177.1048,-202.6033 177.1048,-179.3967 234.244,-179.3967 234.244,-202.6033"></polygon><text text-anchor="start" x="183.8904" y="-188.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">53940 items</text></g></g></svg>
 </div>
-<div id="filtering-exclusions-and-inclusions" class="section level1">
-<h1 class="hasAnchor">
-<a href="#filtering-exclusions-and-inclusions" class="anchor"></a>Filtering, exclusions and inclusions</h1>
-<p>Documenting the data set is only useful if you can also manipulate it, and one part of this is including and excluding things we don’t want. The standard <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter</a></code> approach works for this, and we can use the before and after <code>.count.in</code> and <code>.count.out</code>, and the difference between the two <code>.excluded</code> to document what the result was.</p>
+<div class="section level1">
+<h1 id="filtering-exclusions-and-inclusions">Filtering, exclusions and inclusions<a class="anchor" aria-label="anchor" href="#filtering-exclusions-and-inclusions"></a>
+</h1>
+<p>Documenting the data set is only useful if you can also manipulate it, and one part of this is including and excluding things we don’t want. The standard <code><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">dplyr::filter</a></code> approach works for this, and we can use the before and after <code>.count.in</code> and <code>.count.out</code>, and the difference between the two <code>.excluded</code> to document what the result was.</p>
 <p>In this example we exclude items that are &gt;1 SD above the mean. The default message (<code>.messages = "excluded {.excluded} items"</code>) has been left as is which simply returns how many things have been excluded. With no customization the goal is for the pipeline to look as much as possible like a dplyr pipeline.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-
-<span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span>
+    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="354pt" height="121pt" viewbox="0.00 0.00 354.46 121.20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 117.2)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-117.2 350.4572,-117.2 350.4572,4 -4,4"></polygon><!-- 2&#45;&gt;6 --><g id="edge1" class="edge"><title>2:s-&gt;6</title>
@@ -242,30 +270,30 @@
 <polygon fill="#cccccc" stroke="#000000" points="346.464,-71.6 272.4368,-71.6 272.4368,-41.6 346.464,-41.6 346.464,-71.6"></polygon><text text-anchor="start" x="279.4436" y="-58.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:setosa</text><text text-anchor="start" x="279.4436" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">excluded 9 items</text></g><!-- 4 --><g id="node4" class="node"><title>4</title>
 <polygon fill="#cccccc" stroke="#000000" points="258.8441,-71.6 180.0567,-71.6 180.0567,-41.6 258.8441,-41.6 258.8441,-71.6"></polygon><text text-anchor="start" x="187.0036" y="-58.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:versicolor</text><text text-anchor="start" x="187.0036" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">excluded 5 items</text></g><!-- 5 --><g id="node5" class="node"><title>5</title>
 <polygon fill="#cccccc" stroke="#000000" points="166.464,-71.6 92.4368,-71.6 92.4368,-41.6 166.464,-41.6 166.464,-71.6"></polygon><text text-anchor="start" x="99.4436" y="-58.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:virginica</text><text text-anchor="start" x="99.4436" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">excluded 6 items</text></g><!-- 1 --><g id="node6" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="63.6251,-113.0033 15.2757,-113.0033 15.2757,-89.7967 63.6251,-89.7967 63.6251,-113.0033"></polygon><text text-anchor="start" x="22.1136" y="-99" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg><p>This is useful but the reason for exclusion is not as clear as we would like, and this does not scale particularly well to multiple criteria, which are typical of the filters needed to massage real life data. For this we have written <code>exclude_all</code> which takes multiple criteria and applies them in a step-wise manner, summarising at each step. Rather than a logical expression expected by <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter</a></code> we provide matching criteria as a formula relating the criteria to the glue specification (a trick inspired by case_when’s syntax). This is very much slower than <code>filter</code> but gives fine control over the output.</p>
+<polygon fill="#ffffff" stroke="#000000" points="63.6251,-113.0033 15.2757,-113.0033 15.2757,-89.7967 63.6251,-89.7967 63.6251,-113.0033"></polygon><text text-anchor="start" x="22.1136" y="-99" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg><p>This is useful but the reason for exclusion is not as clear as we would like, and this does not scale particularly well to multiple criteria, which are typical of the filters needed to massage real life data. For this we have written <code>exclude_all</code> which takes multiple criteria and applies them in a step-wise manner, summarising at each step. Rather than a logical expression expected by <code><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">dplyr::filter</a></code> we provide matching criteria as a formula relating the criteria to the glue specification (a trick inspired by case_when’s syntax). This is very much slower than <code>filter</code> but gives fine control over the output.</p>
 <p>It should be noted that the logic of <code>exlude_all</code> is reversed compared to base <code>filter</code> for which a TRUE value is INCLUDED. In this example there are no missing values, however the behaviour of the filter when filter expressions cannot be evaluated and NAs are generated, is controlled by <code>na.rm</code>. This defaults to FALSE which means that values that cannot be evaluated are <strong>NOT</strong> excluded. You can also explicitly check for missingness in the filter expression.</p>
 <p>Exclusions produced like this are additive and the items may be counted in more than one exclusion category, and so won’t add up to an exclusion total.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-
-<span class="va">dataset1</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">dataset1</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
     <span class="va">Species</span><span class="op">==</span><span class="st">"versicolor"</span> <span class="op">~</span> <span class="st">"removing {.excluded} versicolor"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD wider than the mean"</span>,
-    <span class="va">Petal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD longer than the mean"</span>,
-    <span class="va">Sepal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD wider than the mean"</span>,
-    <span class="va">Sepal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD longer than the mean"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD wider than the mean"</span>,
+    <span class="va">Petal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD longer than the mean"</span>,
+    <span class="va">Sepal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD wider than the mean"</span>,
+    <span class="va">Sepal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD longer than the mean"</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"ends with {.total} items"</span><span class="op">)</span>
 
-<span class="va">dataset1</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<span class="va">dataset1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="568pt" height="318pt" viewbox="0.00 0.00 568.48 318.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 314)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-314 564.4808,-314 564.4808,4 -4,4"></polygon><!-- 11&#45;&gt;12 --><g id="edge1" class="edge"><title>11:s-&gt;12</title>
@@ -293,29 +321,29 @@
 <polygon fill="#ffffff" stroke="#000000" points="236.4101,-268.2033 149.6147,-268.2033 149.6147,-244.9967 236.4101,-244.9967 236.4101,-268.2033"></polygon><text text-anchor="start" x="156.5636" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g><!-- 3 --><g id="node11" class="node"><title>3</title>
 <polygon fill="#cccccc" stroke="#000000" points="345.4631,-268.2033 250.5617,-268.2033 250.5617,-244.9967 345.4631,-244.9967 345.4631,-268.2033"></polygon><text text-anchor="start" x="257.7876" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">removing 50 versicolor</text></g><!-- 1 --><g id="node12" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="217.1871,-309.8033 168.8377,-309.8033 168.8377,-286.5967 217.1871,-286.5967 217.1871,-309.8033"></polygon><text text-anchor="start" x="175.6756" y="-295.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg><p>Sometimes inclusion criteria are more important. For this we use <code>include_any</code> which works in a similar manner but including items which match any of the supplied criteria, essentially combining with a logical OR operation, and in this case resulting in very different result from our previous example.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-
-<span class="va">dataset2</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">dataset2</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
     <span class="va">Species</span><span class="op">==</span><span class="st">"versicolor"</span> <span class="op">~</span> <span class="st">"{.included} versicolor"</span>,
     <span class="va">Species</span><span class="op">==</span><span class="st">"setosa"</span> <span class="op">~</span> <span class="st">"{.included} setosa"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="co">#mutate(Species = forcats::fct_drop(Species)) %&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD wider than the mean"</span>,
-    <span class="va">Petal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD longer than the mean"</span>,
-    <span class="va">Sepal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD wider than the mean"</span>,
-    <span class="va">Sepal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD longer than the mean"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD wider than the mean"</span>,
+    <span class="va">Petal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD longer than the mean"</span>,
+    <span class="va">Sepal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD wider than the mean"</span>,
+    <span class="va">Sepal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD longer than the mean"</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"ends with {.total} items"</span><span class="op">)</span>
   
-<span class="va">dataset2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<span class="va">dataset2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="370pt" height="435pt" viewbox="0.00 0.00 370.06 434.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 430.8)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-430.8 366.0552,-430.8 366.0552,4 -4,4"></polygon><!-- 11&#45;&gt;12 --><g id="edge1" class="edge"><title>11:s-&gt;12</title>
@@ -344,13 +372,13 @@
 <polygon fill="#ffffff" stroke="#000000" points="224.4253,-385.0033 137.6299,-385.0033 137.6299,-361.7967 224.4253,-361.7967 224.4253,-385.0033"></polygon><text text-anchor="start" x="144.5788" y="-371" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g><!-- 1 --><g id="node12" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="205.2023,-426.6033 156.8529,-426.6033 156.8529,-403.3967 205.2023,-403.3967 205.2023,-426.6033"></polygon><text text-anchor="start" x="163.6908" y="-412.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg>
 </div>
-<div id="displaying-combined-data-flows" class="section level1">
-<h1 class="hasAnchor">
-<a href="#displaying-combined-data-flows" class="anchor"></a>Displaying combined data flows</h1>
+<div class="section level1">
+<h1 id="displaying-combined-data-flows">Displaying combined data flows<a class="anchor" aria-label="anchor" href="#displaying-combined-data-flows"></a>
+</h1>
 <p>It is possible to merge data flows into the same flow diagram. This might make sense if you want to try and document a branching data pipeline. This is not obviously essential but is possible.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-
-<span class="fu"><a href="../reference/p_flowchart.html">p_flowchart</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">dataset1</span>,<span class="va">dataset2</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="fu"><a href="../reference/p_flowchart.html">p_flowchart</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">dataset1</span>,<span class="va">dataset2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="803pt" height="465pt" viewbox="0.00 0.00 803.04 465.20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 461.2)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-461.2 799.04,-461.2 799.04,4 -4,4"></polygon><!-- 21&#45;&gt;22 --><g id="edge1" class="edge"><title>21:s-&gt;22</title>
@@ -400,37 +428,37 @@
 <polygon fill="#cccccc" stroke="#000000" points="529.4631,-415.4033 434.5617,-415.4033 434.5617,-392.1967 529.4631,-392.1967 529.4631,-415.4033"></polygon><text text-anchor="start" x="441.7876" y="-401.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">removing 50 versicolor</text></g><!-- 1 --><g id="node22" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="401.1871,-457.0033 352.8377,-457.0033 352.8377,-433.7967 401.1871,-433.7967 401.1871,-457.0033"></polygon><text text-anchor="start" x="359.6756" y="-443" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg>
 </div>
-<div id="excluded-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#excluded-data" class="anchor"></a>Excluded data</h1>
+<div class="section level1">
+<h1 id="excluded-data">Excluded data<a class="anchor" aria-label="anchor" href="#excluded-data"></a>
+</h1>
 <p>When considering a data pipeline it is sometimes important to know what has been excluded and at what stage. This can help for debugging or for addressing data quality issues. Dtrackr can collect exclusions at the same time as the history graph. This is enabled by the <code><a href="../reference/capture_exclusions.html">capture_exclusions()</a></code> flag.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-
-<span class="va">tmp</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">tmp</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
     <span class="va">Petal.Length</span> <span class="op">&gt;</span> <span class="fl">5.8</span> <span class="op">~</span> <span class="st">"{.excluded} long ones"</span>,
     <span class="va">Petal.Length</span> <span class="op">&lt;</span> <span class="fl">1.3</span> <span class="op">~</span> <span class="st">"{.excluded} short ones"</span>,
     .stage <span class="op">=</span> <span class="st">"petal length exclusion"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
-    <span class="va">Sepal.Length</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="fl">0.05</span><span class="op">)</span>,
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span>
+    <span class="va">Sepal.Length</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="fl">0.05</span><span class="op">)</span>,
     .messages<span class="op">=</span><span class="st">"removing {.count.in-.count.out} with sepals &lt; q 0.05"</span>,
     .type <span class="op">=</span> <span class="st">"comment"</span>,
     .stage <span class="op">=</span> <span class="st">"sepal length exclusion"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
     <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fl">0.2</span> <span class="op">~</span> <span class="st">"{.excluded} narrow ones"</span>,
     <span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fl">2.1</span> <span class="op">~</span> <span class="st">"{.excluded} wide ones"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span>
 
 
-<span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="549pt" height="276pt" viewbox="0.00 0.00 549.35 276.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 272.4)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-272.4 545.3516,-272.4 545.3516,4 -4,4"></polygon><!-- 8&#45;&gt;14 --><g id="edge3" class="edge"><title>8:s-&gt;14</title>
@@ -464,36 +492,36 @@
 <polygon fill="#ffffff" stroke="#000000" points="272.7497,-175.4033 193.9479,-175.4033 193.9479,-152.1967 272.7497,-152.1967 272.7497,-175.4033"></polygon><text text-anchor="start" x="200.8984" y="-161.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 3 --><g id="node14" class="node"><title>3</title>
 <polygon fill="#ffffff" stroke="#000000" points="260.7529,-217.0033 205.9447,-217.0033 205.9447,-193.7967 260.7529,-193.7967 260.7529,-217.0033"></polygon><text text-anchor="start" x="212.8968" y="-203" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">leaving 133</text></g><!-- 1 --><g id="node15" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="257.5235,-263.4033 209.1741,-263.4033 209.1741,-240.1967 257.5235,-240.1967 257.5235,-263.4033"></polygon><text text-anchor="start" x="216.012" y="-249.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g><!-- 2 --><g id="node16" class="node"><title>2</title>
-<polygon fill="#cccccc" stroke="#000000" points="331.1483,-268.5006 271.5493,-268.5006 271.5493,-235.0994 331.1483,-235.0994 331.1483,-268.5006"></polygon><text text-anchor="start" x="278.4492" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">13 long ones</text><text text-anchor="start" x="278.4492" y="-244.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">4 short ones</text></g></g></svg><div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/excluded.html">excluded</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 40 × 9</span>
+<polygon fill="#cccccc" stroke="#000000" points="331.1483,-268.5006 271.5493,-268.5006 271.5493,-235.0994 331.1483,-235.0994 331.1483,-268.5006"></polygon><text text-anchor="start" x="278.4492" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">13 long ones</text><text text-anchor="start" x="278.4492" y="-244.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">4 short ones</text></g></g></svg><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/excluded.html">excluded</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 40 x 9</span></span>
 <span class="co">#&gt;    .stage     .strata .message Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;   &lt;glue&gt;   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;      </span>
-<span class="co">#&gt;  1 petal len… ""      13 long… 6.3          3.3         6            2.5        </span>
-<span class="co">#&gt;  2 petal len… ""      13 long… 7.1          3           5.9          2.1        </span>
-<span class="co">#&gt;  3 petal len… ""      13 long… 7.6          3           6.6          2.1        </span>
-<span class="co">#&gt;  4 petal len… ""      13 long… 7.3          2.9         6.3          1.8        </span>
-<span class="co">#&gt;  5 petal len… ""      13 long… 7.2          3.6         6.1          2.5        </span>
-<span class="co">#&gt;  6 petal len… ""      13 long… 7.7          3.8         6.7          2.2        </span>
-<span class="co">#&gt;  7 petal len… ""      13 long… 7.7          2.6         6.9          2.3        </span>
-<span class="co">#&gt;  8 petal len… ""      13 long… 7.7          2.8         6.7          2          </span>
-<span class="co">#&gt;  9 petal len… ""      13 long… 7.2          3.2         6            1.8        </span>
-<span class="co">#&gt; 10 petal len… ""      13 long… 7.4          2.8         6.1          1.9        </span>
-<span class="co">#&gt; # … with 30 more rows, and 2 more variables: Species &lt;chr&gt;, .filter &lt;chr&gt;</span></pre></div>
+<span class="co">#&gt;    <span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>      </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>   </span><span style="color: #949494;font-style: italic;">&lt;glue&gt;</span><span>   </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>        </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>       </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>        </span><span style="color: #949494;font-style: italic;">&lt;chr&gt;</span><span>      </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 6.3          3.3         6            2.5        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.1          3           5.9          2.1        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.6          3           6.6          2.1        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.3          2.9         6.3          1.8        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.2          3.6         6.1          2.5        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.7          3.8         6.7          2.2        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.7          2.6         6.9          2.3        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.7          2.8         6.7          2          </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.2          3.2         6            1.8        </span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span><span> petal len… </span><span style="color: #949494;">""</span><span>      13 long… 7.4          2.8         6.1          1.9        </span></span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 30 more rows, and 2 more variables: Species &lt;chr&gt;, .filter &lt;chr&gt;</span></span></code></pre></div>
 </div>
-<div id="advanced-handling-of-the-history-graph-" class="section level1">
-<h1 class="hasAnchor">
-<a href="#advanced-handling-of-the-history-graph-" class="anchor"></a>Advanced handling of the history graph.</h1>
+<div class="section level1">
+<h1 id="advanced-handling-of-the-history-graph-">Advanced handling of the history graph.<a class="anchor" aria-label="anchor" href="#advanced-handling-of-the-history-graph-"></a>
+</h1>
 <ul>
 <li>TODO: default values for message and headline that capture all operations</li>
 <li>capturing the operation name in the history graph in a way that makes it easy to put into the glue spec.</li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/p_get.html">p_get</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/p_get.html">p_get</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="future-work" class="section level1">
-<h1 class="hasAnchor">
-<a href="#future-work" class="anchor"></a>Future work:</h1>
+<div class="section level1">
+<h1 id="future-work">Future work:<a class="anchor" aria-label="anchor" href="#future-work"></a>
+</h1>
 <ul>
 <li>should items excluded during joins be captured? Arguably yes but should this be LHS only or both sides?</li>
 <li>behaviour during inner_join will be items on LHS &amp; RHS being excluded.</li>
@@ -519,11 +547,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Robert Challen.</p>
+  <p></p>
+<p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -531,6 +561,8 @@
 
   
 
+
+  
 
   </body>
 </html>

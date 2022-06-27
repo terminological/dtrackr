@@ -11,7 +11,8 @@
   .drop = dplyr::group_by_drop_default(.data),
   .messages = "stratify by {.cols}",
   .headline = NULL,
-  .tag = NULL
+  .tag = NULL,
+  .maxgroups = .defaultMaxSupportedGroupings()
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{
 \item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.cols\}.}
 
 \item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+
+\item{.maxgroups}{- the maximum number of subgroups allowed before the tracking is paused.}
 }
 \value{
 the .data but grouped.
