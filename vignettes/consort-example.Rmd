@@ -75,7 +75,7 @@ ilpd = dtrackr::ILPD %>%
 With a bit of experimentation the flowchart needed for a STROBE/CONSORT checklist can be generated. One option to output the flowchart is SVG which can then be manually formatted as required.
 
 ```{r}
-ilpd %>% flowchart()
+ilpd %>% flowchart(filename = here::here("vignettes/joss/figure1-ilpd-consort.pdf"))
 ```
 
 # Excluded data
