@@ -16,6 +16,7 @@ library(magrittr)
 library(dplyr)
 library(dtrackr)
 
+here::i_am("README.Rmd")
 ```
 
 # dtrackr
@@ -97,7 +98,7 @@ would have muttered something about having to look at the code to see what you d
 ```{r}
 
 # man/figures path needed here to ensure this works for pkgdown and for github
-dataset %>% flowchart("man/figures/demo")
+dataset %>% flowchart(here::here("man/figures/demo"))
 
 ```
 

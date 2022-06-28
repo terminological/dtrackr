@@ -103,7 +103,7 @@ but now all you do is this:
 ``` r
 
 # man/figures path needed here to ensure this works for pkgdown and for github
-dataset %>% flowchart("man/figures/demo")
+dataset %>% flowchart(here::here("man/figures/demo"))
 ```
 
 <img src="man/figures/demo.png" width="100%" />

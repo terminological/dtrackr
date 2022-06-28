@@ -20,7 +20,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-options(warn=1)
+here::i_am("vignettes/consort-example.Rmd")
+
 ```
 
 ```{r setup}

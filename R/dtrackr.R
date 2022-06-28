@@ -922,9 +922,9 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #' generate some summary statistics about the un-grouped data
 #'
 #' @param x - a dataframe which may be grouped (why not .data?)
-#' @param ... a set of dplyr summary expressions. If left blank a default of ".count=n()" will be filled in
-#' @param .messages - a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.count\}. the default is "total {.count} items"
-#' @param .headline - a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or \{.count\}.
+#' @param ... - passed to dplyr::ungroup()
+#' @param .messages - a set of glue specs. The glue code can use any any global variable, or \{.count\}. the default is "total \{.count\} items"
+#' @param .headline - a headline glue spec. The glue code can use \{.count\} and \{.strata\}.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
 #' @return the .data but dplyr::ungrouped.
@@ -935,15 +935,15 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #'    p_group_by(Species) %>%
 #'    p_comment("A test") %>%
 #'    p_ungroup(
-#'       my_avg = mean(Petal.Length),
-#'       my_count = dplyr::n(),
-#'       .messages="{my_count} items with {my_avg} petal length"
+#'       .messages="{.count} items"
 #'    ) %>%
 #'    p_get()
 p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
   .data = x %>% .untrack()
-  dots = dplyr::enexprs(...)
-  if(length(dots)==0) dots = list(.count=rlang::expr(dplyr::n()))
+  # dots = dplyr::enexprs(...)
+  # if(length(dots)==0) dots = list(.count=rlang::expr(dplyr::n()))
+  # out = .data %>% dplyr::ungroup() %>% p_copy(.data) %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise", .tag=.tag)
+  dots = list(.count=rlang::expr(dplyr::n()))
   out = .data %>% dplyr::ungroup() %>% p_copy(.data) %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise", .tag=.tag)
   return(out %>% .retrack())
 }
@@ -1517,12 +1517,20 @@ p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.coun
 
 ## Output operations ====
 
+# TRUE if the whole document is being knitted.
+# FALSE if running in chunk in RStudio, or not interactive, or
+is_knitting = function() {
+  isTRUE(getOption("knitr.in.progress"))
+}
+
+# TRUE is being knitted OR running in chunk in RStudio
+# FALSE if not interactive or interactive but in console in RStudio
 is_running_in_chunk = function() {
-  # message(rstudioapi::getActiveDocumentContext()$id)
-  isTRUE(try(
-    rstudioapi::getActiveDocumentContext()$id != "#console" &
-    rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
-  ))
+  is_knitting() |
+    isTRUE(try(
+      rstudioapi::getActiveDocumentContext()$id != "#console" &
+      rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
+    ))
 }
 
 #' Flowchart output

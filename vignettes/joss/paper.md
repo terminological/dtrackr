@@ -40,8 +40,10 @@ To surface these issues bio-medical journal articles are usually required to rep
 
 `dtrackr` was originally conceptualized during an analysis I undertook of the severity of the Alpha variant of SARS-CoV-2 [@challenRiskMortalityPatients2021], and has since been used for other epidemiological studies including an analysis of the incidence of hospitalization of acute lower respiratory tract disease in Bristol [@hyamsIncidenceCommunityAcquired2022], and a comparative analysis of the severity of the SARS-CoV-2 Omicron variant, versus the Delta variant against a range of hospital outcomes [reference pending].
 
+Although the specific example presented here is in the biomedical domain, tracking the provenance of data is a much broader issue, and we anticipate there are many other applications for `dtrackr`.
+
 # Acknowledgements
 
-Thanks for contributions from TJ McKinley.
+Thanks for contributions from TJ McKinley. I gratefully acknowledge the financial support of the EPSRC via grants EP/N014391/1, EP/T017856/1, the MRC (MC/PC/19067), and from the Somerset NHS Foundation Trust, Global Digital Exemplar programme.
 
 # References

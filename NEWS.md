@@ -36,7 +36,8 @@ transmute, ungroup
 * fix for multiple names join columns bug.
 * bug fixes and extended github workflows.
 
-# dtrackr 0.2.2.9001
+# dtrackr 0.2.3
 
 * documentation updates & JOSS paper
 * fix for fix for multiple names join columns bug.
+* ungroup()  change to fit with dplyr::ungroup API.

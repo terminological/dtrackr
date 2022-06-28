@@ -15,11 +15,11 @@ p_ungroup(
 \arguments{
 \item{x}{- a dataframe which may be grouped (why not .data?)}
 
-\item{...}{a set of dplyr summary expressions. If left blank a default of ".count=n()" will be filled in}
+\item{...}{- passed to dplyr::ungroup()}
 
-\item{.messages}{- a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.count\}. the default is "total {.count} items"}
+\item{.messages}{- a set of glue specs. The glue code can use any any global variable, or \{.count\}. the default is "total \{.count\} items"}
 
-\item{.headline}{- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or \{.count\}.}
+\item{.headline}{- a headline glue spec. The glue code can use \{.count\} and \{.strata\}.}
 
 \item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
 }
@@ -36,9 +36,7 @@ iris \%>\%
    p_group_by(Species) \%>\%
    p_comment("A test") \%>\%
    p_ungroup(
-      my_avg = mean(Petal.Length),
-      my_count = dplyr::n(),
-      .messages="{my_count} items with {my_avg} petal length"
+      .messages="{.count} items"
    ) \%>\%
    p_get()
 }

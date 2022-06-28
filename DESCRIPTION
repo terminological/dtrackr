@@ -1,6 +1,6 @@
 Package: dtrackr
 Title: Track your data pipelines
-Version: 0.2.2.9001
+Version: 0.2.3
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -27,6 +27,7 @@ Imports:
     fs,
     purrr
 Suggests: 
+    here,
     knitr,
     magick,
     rmarkdown,

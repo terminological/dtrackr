@@ -6,7 +6,7 @@ graphContains = function(g, .strata, .message) {
 test_that("ungrouping works", {
   df = tibble(a=c(1,1,1,2,2,2), b=c(1,2,3,1,2,3), c=c(1,2,3,4,5,6)) %>% group_by(a)
 
-  h = df %>% p_clear() %>% p_comment("test") %>% p_ungroup(mean_c=mean(c), count=n(), .messages=c("{mean_c} average c","{count} items")) %>% p_comment("test2")
+  h = df %>% p_clear() %>% p_comment("test") %>% p_ungroup(.messages="{.count} items") %>% p_comment("test2")
   g = h %>% p_get()
   testthat::expect_true(
     g %>% graphContains("","6 items") &
