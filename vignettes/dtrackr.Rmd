@@ -222,6 +222,8 @@ tmp %>% flowchart()
 
 ```
 
+Give the previous data pipeline we can identify the items that were excluded, the phse at which they were excluded and details of the code that resulted in them being excluded.
+
 ```{r}
 tmp %>% excluded()
 
@@ -229,21 +231,22 @@ tmp %>% excluded()
 
 # Advanced handling of the history graph.
 
-* TODO: default values for message and headline that capture all operations
-* capturing the operation name in the history graph in a way that makes it easy to put into the glue spec.
+The history graph is a stored as an attribute on a tracked dataframe. The contents of this attribute is a list of dataframes including an edge list and node list. These can be imported into other graph processing packages, and visualised in different ways.
 
 ```{r}
 tmp2 = tmp %>% p_get()
+
+# the nodes, .id is a graph unique identifier
+tmp2$nodes %>% glimpse()
+
+# the edges, .to and .from are foreign keys for .id
+tmp2$edges %>% glimpse()
 ```
 
-# Future work:
+The `GraphViz` language provides many options for formatting the flowchart. Rather than try and provide and interface for them we have gone for sane defaults. If you want to change this or use a different layout engine the `GraphViz` output can be retrieved and edited directly. Alternatively after rendering SVG output can be edited but hand. 
 
-* should items excluded during joins be captured? Arguably yes but should this be LHS only or both sides?
-* behaviour during inner_join will be items on LHS & RHS being excluded.
-* behaviour during left_join will be only items on RHS being excluded.
-* behaviour during right_join will be only items on LHS being excluded.
-* anti_join is like an exclude_all - i.e. a deliberate exclusion and makes sense only to capture excluded LHS.
-* semi_join is like an include_any (which are currently not captured)
-* to get excluded on lhs it is a lhs %>% anti_join(rhs, by=by) unless the operation is an anti_join itself when it is lhs %>% semi_join(rhs, by=by)
-* to get excluded on rhs it is rhs %>% anti_join(lhs, by = inversion_of_by). 
-* where inversion_of_by is a named vector with names and values swapped round.
+```{r}
+cat(tmp %>% p_get_as_dot())
+```
+
+

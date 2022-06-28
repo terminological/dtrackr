@@ -6,7 +6,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: dtrackr.bib
-csl: dtrackr.csl
 ---
 
 # CONSORT statement
@@ -34,10 +33,10 @@ The Indian liver patients data set has some clinical data on a case control stud
 
 Our study criteria are as follows:
 
-* Entry criteriais having a total bilirubin >= 0.7 for women or >= 0.8 for men.
+* Entry criteria is having a total bilirubin >= 0.7 for women or >= 0.8 for men.
 * Patients must be adults aged between the ages of 18 and 80 inclusive.
 
-This can be coded into the `dplyr` pipeline:
+This can be coded into the `dplyr` pipeline, with additional `dtrackr` functions:
 
 ```{r}
 # Some useful formatting options
@@ -72,9 +71,10 @@ ilpd = dtrackr::ILPD %>%
 
 ```
 
-With a bit of experimentation the flowchart needed for a STROBE/CONSORT checklist can be generated. One option to output the flowchart is SVG which can then be manually formatted as required.
+With a bit of experimentation the flowchart needed for a STROBE/CONSORT checklist can be generated. One option to output the flowchart is `SVG` which can then be manually formatted as required, but for publication ready output `pdf` is usually preferred.
 
 ```{r}
+# saving this flowchart for the JOSS paper.
 ilpd %>% flowchart(filename = here::here("vignettes/joss/figure1-ilpd-consort.pdf"))
 ```
 
@@ -92,6 +92,8 @@ ilpd %>% excluded() %>% select(.stage,.message,.filter,Age, Gender)
 
 This list may have multiple entries for a single data item, if for example something is excluded in any one step for many reasons.
 
+It would be interesting to integrate this into a continuous integration work-flow to run automated checks on data as it is collected.
+
 # Tagging the pipeline
 
 For reporting results it is useful to have the numbers from the flowchart to embed into the text of the results section of the write up. Here we show the same pipeline as above, but with 4 uses of the `.tag` system for labeling part of the pipeline. This captures data in a tag-value list during the pipeline, and retains it as metadata for later reuse. 
@@ -99,21 +101,31 @@ For reporting results it is useful to have the numbers from the flowchart to emb
 ```{r}
 
 ilpd = dtrackr::ILPD %>% 
+  
   track(.tag="initial cohort") %>%
   #     ^^^^^^^^^^^^^^^^^^^^^
+  #     TAGS DEFINED
+  
   capture_exclusions() %>%
+  
   include_any(
     Gender == "Female" & Total_Bilirubin >= 0.7 ~ "{.included} women with bili>0.7",
     Gender == "Male" & Total_Bilirubin >= 0.8 ~ "{.included} men with bili>0.8"
   ) %>%
+  
   group_by(Case_or_Control, .messages="cases versus controls") %>%
+  
   comment(.tag="study cohort") %>%
   #       ^^^^^^^^^^^^^^^^^^^
+  #       SECOND SET OF TAGS DEFINED
+  
   exclude_all(
     Age<18 ~ "{.excluded} subjects under 18",
     Age>80 ~ "{.excluded} subjects over 80"
   ) %>%
+  
   comment(.messages = "{.count} after exclusions") %>%
+  
   status(
     mean_bili = sprintf("%1.2f \u00B1 %1.2f",mean(Total_Bilirubin),sd(Total_Protein)),
     mean_alb = sprintf("%1.2f \u00B1 %1.2f",mean(Albumin),sd(Albumin)),
@@ -123,12 +135,15 @@ ilpd = dtrackr::ILPD %>%
     ),
     .tag = "qualifying patients"
   # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  # THIRD SET TAGS DEFINED
   ) %>%
+  
   ungroup(.messages = "{.count} in final data set", .tag="final set")
   #                                                 ^^^^^^^^^^^^^^^^
+  #                                                 LAST TAGS DEFINED
 ```
 
-This metadata can be retrieved as follows, which will give you all metadata for all 4 points in the pipeline:
+The tagged data can be retrieved as follows, which will give you all tagged data for all 4 points in the pipeline:
 
 ```{r}
 ilpd %>% tagged() %>% tidyr::unnest(.content)
@@ -145,14 +160,14 @@ finalSet = ilpd %>% tagged(.tag = "final set", .glue = "{.count} patients")
 
 For example there were `r initialSet` in the study, of whom `r finalSet` met the eligibility criteria.
 
-More complex formatting and calculations are possible including those that happen on a per group basis, and pull in values from elsewhere.
+More complex formatting and calculations are made possible by use of the `glue` specification, including those that happen on a per group basis, and we can also pull in values from elsewhere in our analysis.
 
 ```{r}
 ilpd %>% tagged(
     .tag = "qualifying patients", 
     .glue = "{.strata}: {.count}/{.total} ({sprintf('%1.1f', .count/.total*100)}%) patients on {sysDate}, with a mean bilirubin of {mean_bili}", 
     sysDate = Sys.Date()
-    # we could have any number of other parameters here from the global environment
+    # we could have included any number of other parameters here from the global environment
   ) %>% dplyr::pull(.label)
 ```
 
@@ -162,7 +177,7 @@ Sometimes it will be necessary to operate on all tagged content at once. This is
 ilpd %>% tagged(.glue = "{.count}/{.total} patients")
 ```
 
-For comparing different stages in the pipeline the following example may be useful which compares counts at different stages of the pipeline.
+For comparing inclusions and exclusions at different stages in the pipeline using tags the following example may be useful:
 
 ```{r}
 ilpd %>% 
@@ -175,6 +190,6 @@ ilpd %>%
                   outside the age limits. This left {`final set`} patients included in the final study (i.e. overall {`initial cohort`-`final set`} were removed).")
 ```
 
-
+# References
 
 <div id="refs"></div>

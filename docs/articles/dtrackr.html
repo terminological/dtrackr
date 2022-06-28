@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2.9001</span>
       </span>
     </div>
 
@@ -490,7 +490,8 @@
 <polygon fill="#ffffff" stroke="#000000" points="272.7497,-175.4033 193.9479,-175.4033 193.9479,-152.1967 272.7497,-152.1967 272.7497,-175.4033"></polygon><text text-anchor="start" x="200.8984" y="-161.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 3 --><g id="node14" class="node"><title>3</title>
 <polygon fill="#ffffff" stroke="#000000" points="260.7529,-217.0033 205.9447,-217.0033 205.9447,-193.7967 260.7529,-193.7967 260.7529,-217.0033"></polygon><text text-anchor="start" x="212.8968" y="-203" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">leaving 133</text></g><!-- 1 --><g id="node15" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="257.5235,-263.4033 209.1741,-263.4033 209.1741,-240.1967 257.5235,-240.1967 257.5235,-263.4033"></polygon><text text-anchor="start" x="216.012" y="-249.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g><!-- 2 --><g id="node16" class="node"><title>2</title>
-<polygon fill="#cccccc" stroke="#000000" points="331.1483,-268.5006 271.5493,-268.5006 271.5493,-235.0994 331.1483,-235.0994 331.1483,-268.5006"></polygon><text text-anchor="start" x="278.4492" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">13 long ones</text><text text-anchor="start" x="278.4492" y="-244.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">4 short ones</text></g></g></svg><div class="sourceCode" id="cb10"><pre class="downlit">
+<polygon fill="#cccccc" stroke="#000000" points="331.1483,-268.5006 271.5493,-268.5006 271.5493,-235.0994 331.1483,-235.0994 331.1483,-268.5006"></polygon><text text-anchor="start" x="278.4492" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">13 long ones</text><text text-anchor="start" x="278.4492" y="-244.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">4 short ones</text></g></g></svg><p>Give the previous data pipeline we can identify the items that were excluded, the phse at which they were excluded and details of the code that resulted in them being excluded.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/excluded.html">excluded</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 40 × 9</span>
 <span class="co">#&gt;    .stage     .strata .message Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
@@ -510,27 +511,107 @@
 <div id="advanced-handling-of-the-history-graph-" class="section level1">
 <h1 class="hasAnchor">
 <a href="#advanced-handling-of-the-history-graph-" class="anchor"></a>Advanced handling of the history graph.</h1>
-<ul>
-<li>TODO: default values for message and headline that capture all operations</li>
-<li>capturing the operation name in the history graph in a way that makes it easy to put into the glue spec.</li>
-</ul>
+<p>The history graph is a stored as an attribute on a tracked dataframe. The contents of this attribute is a list of dataframes including an edge list and node list. These can be imported into other graph processing packages, and visualised in different ways.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/p_get.html">p_get</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-</div>
-<div id="future-work" class="section level1">
-<h1 class="hasAnchor">
-<a href="#future-work" class="anchor"></a>Future work:</h1>
-<ul>
-<li>should items excluded during joins be captured? Arguably yes but should this be LHS only or both sides?</li>
-<li>behaviour during inner_join will be items on LHS &amp; RHS being excluded.</li>
-<li>behaviour during left_join will be only items on RHS being excluded.</li>
-<li>behaviour during right_join will be only items on LHS being excluded.</li>
-<li>anti_join is like an exclude_all - i.e. a deliberate exclusion and makes sense only to capture excluded LHS.</li>
-<li>semi_join is like an include_any (which are currently not captured)</li>
-<li>to get excluded on lhs it is a lhs %&gt;% anti_join(rhs, by=by) unless the operation is an anti_join itself when it is lhs %&gt;% semi_join(rhs, by=by)</li>
-<li>to get excluded on rhs it is rhs %&gt;% anti_join(lhs, by = inversion_of_by).</li>
-<li>where inversion_of_by is a named vector with names and values swapped round.</li>
-</ul>
+<span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/p_get.html">p_get</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="co"># the nodes, .id is a graph unique identifier</span>
+<span class="va">tmp2</span><span class="op">$</span><span class="va">nodes</span> <span class="op">%&gt;%</span> <span class="fu">glimpse</span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; Rows: 16</span>
+<span class="co">#&gt; Columns: 6</span>
+<span class="co">#&gt; $ .id     &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16</span>
+<span class="co">#&gt; $ .rank   &lt;dbl&gt; 1, 1, 2, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6</span>
+<span class="co">#&gt; $ .strata &lt;chr&gt; "", "", "", "", "Species:setosa", "Species:versicolor", "Speci…</span>
+<span class="co">#&gt; $ .label  &lt;chr&gt; "150 items&lt;BR ALIGN='LEFT'/&gt;", "13 long ones&lt;BR ALIGN='LEFT'/&gt;…</span>
+<span class="co">#&gt; $ .type   &lt;chr&gt; "info", "exclusion", "info", "stratify", "comment", "comment",…</span>
+<span class="co">#&gt; $ .stage  &lt;chr&gt; "", "petal length exclusion", "", "", "sepal length exclusion"…</span>
+
+<span class="co"># the edges, .to and .from are foreign keys for .id</span>
+<span class="va">tmp2</span><span class="op">$</span><span class="va">edges</span> <span class="op">%&gt;%</span> <span class="fu">glimpse</span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; Rows: 15</span>
+<span class="co">#&gt; Columns: 5</span>
+<span class="co">#&gt; $ .to          &lt;dbl&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16</span>
+<span class="co">#&gt; $ .from        &lt;dbl&gt; 1, 1, 3, 4, 4, 4, 5, 6, 7, 8, 9, 10, 8, 9, 10</span>
+<span class="co">#&gt; $ .rel         &lt;chr&gt; "exclusion", "info", "stratify", "comment", "comment", "c…</span>
+<span class="co">#&gt; $ .strata      &lt;chr&gt; "", "", "", "Species:setosa", "Species:versicolor", "Spec…</span>
+<span class="co">#&gt; $ .strata.prev &lt;chr&gt; "", "", "", "", "", "", "Species:setosa", "Species:versic…</span></pre></div>
+<p>The <code>GraphViz</code> language provides many options for formatting the flowchart. Rather than try and provide and interface for them we have gone for sane defaults. If you want to change this or use a different layout engine the <code>GraphViz</code> output can be retrieved and edited directly. Alternatively after rendering SVG output can be edited but hand.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/p_get_as_dot.html">p_get_as_dot</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; digraph {</span>
+<span class="co">#&gt;      graph [layout = 'dot',</span>
+<span class="co">#&gt;         splines='ortho',</span>
+<span class="co">#&gt;         rankdir = 'TB',</span>
+<span class="co">#&gt;         outputorder = 'edgesfirst',</span>
+<span class="co">#&gt;         bgcolor = 'white',</span>
+<span class="co">#&gt;         ranksep = '0.25',</span>
+<span class="co">#&gt;         nodesep = '0.2',</span>
+<span class="co">#&gt;         newrank='true']</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     node [fontname = 'Helvetica',</span>
+<span class="co">#&gt;         fontsize = '8',</span>
+<span class="co">#&gt;         shape='box',</span>
+<span class="co">#&gt;         fixedsize = 'false',</span>
+<span class="co">#&gt;         margin = '0.1,0.1',</span>
+<span class="co">#&gt;         width = '0',</span>
+<span class="co">#&gt;         height = '0',</span>
+<span class="co">#&gt;         style = 'filled',</span>
+<span class="co">#&gt;         color = 'black',</span>
+<span class="co">#&gt;         fontcolor = 'black',</span>
+<span class="co">#&gt;         labeljust='l']</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     edge [fontname = 'Helvetica',</span>
+<span class="co">#&gt;         fontsize = '8',</span>
+<span class="co">#&gt;         len = '0.5',</span>
+<span class="co">#&gt;         color = 'black',</span>
+<span class="co">#&gt;         arrowsize = '0.5']</span>
+<span class="co">#&gt;     </span>
+<span class="co">#&gt; { rank='same';</span>
+<span class="co">#&gt; '14' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 39&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
+<span class="co">#&gt; '15' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 47&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span>
+<span class="co">#&gt; '16' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 24&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
+<span class="co">#&gt; }</span>
+<span class="co">#&gt; { rank='same';</span>
+<span class="co">#&gt; '8' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 43&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
+<span class="co">#&gt; '9' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 47&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span>
+<span class="co">#&gt; '10' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 35&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
+<span class="co">#&gt; '11' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;4 narrow ones&lt;BR ALIGN='LEFT'/&gt;0 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='grey80'];</span>
+<span class="co">#&gt; '12' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;0 narrow ones&lt;BR ALIGN='LEFT'/&gt;0 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='grey80'];</span>
+<span class="co">#&gt; '13' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;0 narrow ones&lt;BR ALIGN='LEFT'/&gt;11 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='grey80'];</span>
+<span class="co">#&gt; }</span>
+<span class="co">#&gt; { rank='same';</span>
+<span class="co">#&gt; '5' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 3 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
+<span class="co">#&gt; '6' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 3 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span>
+<span class="co">#&gt; '7' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 2 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
+<span class="co">#&gt; }</span>
+<span class="co">#&gt; { rank='same';</span>
+<span class="co">#&gt; '4' [label=&lt;stratify by Species&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
+<span class="co">#&gt; }</span>
+<span class="co">#&gt; { rank='same';</span>
+<span class="co">#&gt; '3' [label=&lt;leaving 133&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
+<span class="co">#&gt; }</span>
+<span class="co">#&gt; { rank='same';</span>
+<span class="co">#&gt; '1' [label=&lt;150 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
+<span class="co">#&gt; '2' [label=&lt;13 long ones&lt;BR ALIGN='LEFT'/&gt;4 short ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='grey80'];</span>
+<span class="co">#&gt; }</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; '10' -&gt; '16' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '9' -&gt; '15' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '8' -&gt; '14' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '10' -&gt; '13' [tailport='e',weight='1']</span>
+<span class="co">#&gt; '9' -&gt; '12' [tailport='e',weight='1']</span>
+<span class="co">#&gt; '8' -&gt; '11' [tailport='e',weight='1']</span>
+<span class="co">#&gt; '7' -&gt; '10' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '6' -&gt; '9' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '5' -&gt; '8' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '4' -&gt; '7' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '4' -&gt; '6' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '4' -&gt; '5' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '3' -&gt; '4' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '1' -&gt; '3' [tailport='s',weight='100']</span>
+<span class="co">#&gt; '1' -&gt; '2' [tailport='e',weight='1']</span>
+<span class="co">#&gt; }</span></pre></div>
 </div>
   </div>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert dot to svg — dot2svg • dtrackr</title>
+<title>How to contribute: • dtrackr</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script>
+<link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,14 +33,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script>
+<link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Convert dot to svg — dot2svg" />
-<meta property="og:description" content="Convert a digraph as string to SVG as string" />
+<meta property="og:title" content="How to contribute:" />
 
 
 
@@ -59,7 +58,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -71,7 +70,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">dtrackr</a>
+        <a class="navbar-link" href="index.html">dtrackr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2.9001</span>
       </span>
     </div>
@@ -79,16 +78,16 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
+  <a href="index.html">
     <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="../articles/dtrackr.html">Get started</a>
+  <a href="articles/dtrackr.html">Get started</a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -98,18 +97,18 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="articles/consort-example.html">Dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="articles/dtrackr-options.html">Dtrackr - configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -125,42 +124,44 @@
       </header>
 
 <div class="row">
-  <div class="col-md-9 contents">
+  <div class="contents col-md-9">
     <div class="page-header">
-    <h1>Convert dot to svg</h1>
-    
-    <div class="hidden name"><code>dot2svg.Rd</code></div>
+      <h1>How to contribute:</h1>
     </div>
 
-    <div class="ref-description">
-    <p>Convert a digraph as string to SVG as string</p>
-    </div>
+<div id="how-to-contribute" class="section level1">
 
-    <pre class="usage"><span class='fu'>dot2svg</span><span class='op'>(</span><span class='va'>dot</span><span class='op'>)</span></pre>
+<p>Dive in. Raise an issue, fork the code, hack it about, show me what you’ve done. I’ll try and respond to comments on issues, and update my development plans there. I’m just one person with a life to lead though, so please be kind. Offers of help are always welcome.</p>
+<p>If you are reporting an issue please could you try and reproduce it using one of the data sets I’ve used in the vignettes (e.g. iris, diamonds, mtcars, dtrackr::ILPD ) or include the data set in your issue. If you can also tell me exactly what you expect to see in the flowchart that isn’t there, that would be helpful.</p>
+<div id="testing" class="section level2">
+<h2 class="hasAnchor">
+<a href="#testing" class="anchor"></a>Testing</h2>
+<p>I’d love some help with better test cases.</p>
+</div>
+<div id="submitting-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#submitting-changes" class="anchor"></a>Submitting changes</h2>
+<p>Please send a <a href="https://github.com/terminological/dtrackr/new/master">GitHub Pull Request</a> with a clear list of what you’ve done (read more about <a href="http://help.github.com/pull-requests/">pull requests</a>).</p>
+<p>For commits I’ve set up the repo to not run the R CMD check workflow for commits that contain the phrase “no check”.</p>
+</div>
+<div id="coding-conventions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#coding-conventions" class="anchor"></a>Coding conventions</h2>
+<p>Start reading my code and you’ll probably want to cry. I apologize. You can probably do better.</p>
+<p>Thanks, Rob Challen.</p>
+</div>
+</div>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>dot</th>
-      <td><p>- a graphviz dot string</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the SVG as a string</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>dot2svg</span><span class='op'>(</span><span class='st'>"digraph {A-&gt;B}"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;\n&lt;!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"&gt;\n&lt;!-- Generated by graphviz version 2.40.1 (20161225.0304)\n --&gt;\n&lt;!-- Title: %0 Pages: 1 --&gt;\n&lt;svg width=\"62pt\" height=\"116pt\"\n viewBox=\"0.00 0.00 62.00 116.00\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"&gt;\n&lt;g id=\"graph0\" class=\"graph\" transform=\"scale(1 1) rotate(0) translate(4 112)\"&gt;\n&lt;title&gt;%0&lt;/title&gt;\n&lt;polygon fill=\"#ffffff\" stroke=\"transparent\" points=\"-4,4 -4,-112 58,-112 58,4 -4,4\"/&gt;\n&lt;!-- A --&gt;\n&lt;g id=\"node1\" class=\"node\"&gt;\n&lt;title&gt;A&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-90\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-85.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;A&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- B --&gt;\n&lt;g id=\"node2\" class=\"node\"&gt;\n&lt;title&gt;B&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-18\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-13.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;B&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- A&amp;#45;&amp;gt;B --&gt;\n&lt;g id=\"edge1\" class=\"edge\"&gt;\n&lt;title&gt;A&amp;#45;&amp;gt;B&lt;/title&gt;\n&lt;path fill=\"none\" stroke=\"#000000\" d=\"M27,-71.8314C27,-64.131 27,-54.9743 27,-46.4166\"/&gt;\n&lt;polygon fill=\"#000000\" stroke=\"#000000\" points=\"30.5001,-46.4132 27,-36.4133 23.5001,-46.4133 30.5001,-46.4132\"/&gt;\n&lt;/g&gt;\n&lt;/g&gt;\n&lt;/svg&gt;\n"</div></pre>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
+
 
 
       <footer>

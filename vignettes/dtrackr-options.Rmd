@@ -112,6 +112,30 @@ dtrackr::ILPD %>%
 # options(dtrackr.default_headline = "{ifelse(.strata != '', glue::glue('subgroup: {.strata}'), '')}")
 ```
 
+## Subgroup count
+
+Subgroup counts are a slightly neater way of doing this. Their default layout can be modified using `dtrackr.default_count_subgroup`.
+
+```{r}
+
+options(dtrackr.default_headline = "{.strata}")
+options(dtrackr.default_count_subgroup = "{tolower(.name)}: {.count}/{.subtotal}")
+
+dtrackr::ILPD %>%
+  track() %>%
+  group_by(
+    Case_or_Control,
+    .messages = "case or control"
+  ) %>%
+  comment() %>%
+  count_subgroup(
+    Gender
+  ) %>%
+  ungroup() %>%
+  flowchart()
+
+```
+
 ## Exclusions
 
 Elsewhere we discuss the possibility of capturing excluded items for debugging. This behaviour can be added to any pipeline with the `capture_exclusions()` function. Alternatively it can be globally enabled with the following option. Usual caveats about performance apply.
@@ -122,10 +146,16 @@ options(dtrackr.exclusions=TRUE)
 
 ## Reporting exclusions which do nothing
 
+Sometimes in a pipeline we have a exclusion criteria which is not triggered, or is not triggered for a particular subgroup. In this case the default is not to show the zero items that were excluded. However sometimes it is reassuring to know that an filter was applied even if it results in nothing:
+
 ```{r}
 options(dtrackr.show_zero_exclusions=FALSE)
 ```
 
-## Future work
+## Maximum groupings
 
-There are a wide range of other pieces of default text which we would like to be able to configure on a global level. These can already be tweaked at the level of an individual flowchart but it would be helpful to allow more global configuration. 
+in `count_subgroup()` and `group_by()` statements there can be a large number of items generated if a particular grouping variable has a lot of possible values. This can cause performance issues and legibility issues for the resulting graph and is usually a mistake, as a result of an interim stage of the data pipeline (e.g. a `dataset %>% group_by(nearly_unique_id) %>% filter(row_number()==1)` type operation). The most number of groups that `dtrackr` will attempt to keep track of is configurable but defaults to 16:
+
+```{r}
+options(dtrackr.max_supported_groupings = 16)
+```
