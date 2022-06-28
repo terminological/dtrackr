@@ -33,11 +33,10 @@ transmute, ungroup
 # dtrackr 0.2.2
 
 * new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.
+* fix for multiple names join columns bug.
 * bug fixes and extended github workflows.
 
-# dtrackr Future developments
+# dtrackr 0.2.2.9001
 
-* move to tidy_eval use of rlang::.data
-* Track md5 of dataframes and compare history graphs for divergences
-* other dplyr functions
-* test working with dbplyr data frames
+* documentation updates & JOSS paper
+* fix for fix for multiple names join columns bug.

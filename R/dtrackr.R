@@ -1406,10 +1406,14 @@ p_bind_rows = function(..., .id = NULL, .messages="{.count.out} in union", .head
   x = x %>% .untrack()
   y = y %>% .untrack()
   #default_env = environment()
-  .keys = paste0(
-    ifelse(names(by) != "", paste(names(by),by,sep="="),by),
-    collapse=","
-  )
+  if (is.null(names(by))) {
+    .keys = paste0(by, collapse = ",")
+  } else {
+    .keys = paste0(
+      ifelse(names(by) != "", paste(names(by),by,sep="="),by),
+      collapse=","
+    )
+  }
   .count.lhs = nrow(x)
   .count.rhs = nrow(y)
   out = joinFunction(x, y, by=by, copy=copy, suffix=suffix, ...)

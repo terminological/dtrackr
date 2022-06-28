@@ -6,7 +6,7 @@ tags:
   - consort diagram
   - strobe statement
   - data quality
-  - flowchart
+  - reproducible research
 authors:
   - name: Robert Challen
     orcid: 0000-0002-5504-7768
@@ -32,9 +32,9 @@ Data analysis using `tidyverse` in R is a rapid means of transforming raw data i
 
 In complex data analysis, the use of interactive programming environments such as Read-Eval-Print Loops (REPL) in R markdown documents, interim caching of results, or conditional branching data pipelines, can result in the current state of a processed data set becoming decoupled from the code that is designed to generate them. 
 
-To surface these issues bio-medical journal articles are usually required to report data manipulation to an agreed standard. For example, CONSORT diagrams are part of the requirements in reporting parallel group clinical trials. They are described in the updated 2010 CONSORT statement [@schulzCONSORT2010Statement2010], and clarify how patients were recruited, selected, randomized and followed up. For observational studies, such as case control designs, an equivalent requirement is the STROBE statement [@vonelmStrengtheningReportingObservational2008]. There are many other similar requirements for other types of study, such as the TRIPOD statement for multivariate models [@collinsTransparentReportingMultivariable2015].
+To surface these issues bio-medical journal articles are usually required to report data manipulation to an agreed standard. For example, CONSORT diagrams are part of the requirements in reporting parallel group clinical trials. They are described in the updated 2010 CONSORT statement [@schulzCONSORT2010Statement2010], and clarify how patients were recruited, selected, randomized and followed up. For observational studies, such as case control designs, an equivalent requirement is the STROBE statement [@vonelmStrengtheningReportingObservational2008]. There are many other similar requirements for other types of study, such as the TRIPOD statement for multivariate models [@collinsTransparentReportingMultivariable2015]. Maintaining such CONSORT diagram over the course of a study when data sets are being actively collected and data quality issues being addressed is time-consuming.
 
-`dtrackr` addresses these issues by instrumenting standard `tidyverse` data manipulation pipelines. It records the steps taken, records excluded and a summary of the result of each data processing step, as part of the data set itself. In this way data sets retain an accurate history of their own provenance regardless of the actual route taken to assemble them. This history includes a complete record of any data quality issues that lead to excluded records. The history is a directed graph which can be expressed in the commonly used `GraphViz` language [@gansnerOpenGraphVisualization2000] and may be visualised as a flowchart such as in \autoref{fig:figure1}; this uses the Indian Liver Patients disease (ILPD) data set [@ramanaCriticalComparativeStudy; @ramanaCriticalStudySelected2011; @Dua2019] as an example of an observational study.
+`dtrackr` addresses these issues by instrumenting standard `tidyverse` data manipulation pipelines. It records the steps taken, records excluded and a summary of the result of each data processing step, as part of the data set itself. In this way data sets retain an accurate history of their own provenance regardless of the actual route taken to assemble them. This history includes a complete record of any data quality issues that lead to excluded records. The history is a directed graph which can be expressed in the commonly used `GraphViz` language [@gansnerOpenGraphVisualization2000] and may be visualised as a flowchart such as in \autoref{fig:figure1}; this uses the Indian Liver Patients disease (ILPD) data set [@ramanaCriticalComparativeStudy; @ramanaCriticalStudySelected2011; @Dua2019] as an example of an observational study and produces a STROBE like flowchart.
 
 ![An example flowchart derived directly from a simple analysis of the ILPD dataset demonstrating use of `dtrackr` to generate the key parts of a STROBE or CONSORT diagram. \label{fig:figure1}](figure1-ilpd-consort.pdf)
 
