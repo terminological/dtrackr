@@ -51,7 +51,8 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 3
-          extra-packages: rcmdcheck
+          extra-packages: any::rcmdcheck, any::XML
+          # work around for bug in pak
 
       - uses: r-lib/actions/check-r-package@v2
         with:
