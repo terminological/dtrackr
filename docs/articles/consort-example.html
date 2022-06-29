@@ -290,8 +290,8 @@
     sysDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>
     <span class="co"># we could have included any number of other parameters here from the global environment</span>
   <span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">.label</span><span class="op">)</span>
-<span class="co">#&gt; case: 344/460 (74.8%) patients on 2022-06-28, with a mean bilirubin of 4.79 ± 1.07</span>
-<span class="co">#&gt; control: 116/460 (25.2%) patients on 2022-06-28, with a mean bilirubin of 1.35 ± 1.05</span></pre></div>
+<span class="co">#&gt; case: 344/460 (74.8%) patients on 2022-06-29, with a mean bilirubin of 4.79 ± 1.07</span>
+<span class="co">#&gt; control: 116/460 (25.2%) patients on 2022-06-29, with a mean bilirubin of 1.35 ± 1.05</span></pre></div>
 <p>Sometimes it will be necessary to operate on all tagged content at once. This is possible but be aware that the content available depends somewhat on where the tag was set in the pipeline so not all fields will always be present (although <code>.count</code> and <code>.total</code> will be). The <code>.total</code> is the overall number of cases at that point in the pipeline. <code>.count</code> is the number of cases in each strata.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.glue <span class="op">=</span> <span class="st">"{.count}/{.total} patients"</span><span class="op">)</span>
@@ -325,7 +325,7 @@
 <p>Collins, Gary S., Johannes B. Reitsma, Douglas G. Altman, and Karel GM Moons. 2015. “Transparent Reporting of a Multivariable Prediction Model for Individual Prognosis or Diagnosis (TRIPOD): The TRIPOD Statement.” <em>BMC Medicine</em> 13 (1): 1. <a href="https://doi.org/10.1186/s12916-014-0241-z">https://doi.org/10.1186/s12916-014-0241-z</a>.</p>
 </div>
 <div id="ref-Dua2019">
-<p>Dua, Dheeru, and Casey Graff. 2017. “UCI Machine Learning Repository.” University of California, Irvine, School of Information and Computer Sciences. <a href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>.</p>
+<p>Dua, Dheeru, and Casey Graff. 2017. “UCI Machine Learning Repository.” University of California, Irvine, School of Information and Computer Sciences. <a href="http://archive.ics.uci.edu/ml/">http://archive.ics.uci.edu/ml/</a>.</p>
 </div>
 <div id="ref-vonelmStrengtheningReportingObservational2008">
 <p>Elm, Erik von, Douglas G Altman, Matthias Egger, Stuart J Pocock, Peter C Gøtzsche, Jan P Vandenbroucke, and STROBE Initiative. 2008. “The Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) Statement: Guidelines for Reporting Observational Studies.” <em>Journal of Clinical Epidemiology</em> 61 (4): 344–49.</p>

@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Track your data pipelines • dtrackr</title>
+<title>Track your Data Pipelines • dtrackr</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Track your data pipelines">
-<meta property="og:description" content="dtrackr is an R library for tracking and
+<script src="pkgdown.js"></script><meta property="og:title" content="Track your Data Pipelines">
+<meta property="og:description" content="R package for tracking and
     documenting dplyr data pipelines. As you filter, mutate, and join your
     way through a data set, dtrackr seamlessly keeps track of your data
     flow and makes publication ready documentation of a data pipeline simple.">
@@ -141,7 +141,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit">
 
 <span class="co"># man/figures path needed here to ensure this works for pkgdown and for github</span>
-<span class="va">dataset</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="st">"man/figures/demo"</span><span class="op">)</span></pre></div>
+<span class="va">dataset</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="st">"man/figures/demo"</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p><img src="reference/figures/demo.png" width="100%"></p>
 <p>And your publication ready data pipeline, with any assumptions you care to document, is creates in a format of your choice (as long as that choice is one of pdf, png, svg or ps), ready for submission to Nature.</p>
 <p>This is a trivial example, but the more complex the pipeline, the bigger benefit you will get.</p>
@@ -174,7 +174,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle:experimental"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle:experimental"></a></li>
 </ul>
 </div>
 </div>

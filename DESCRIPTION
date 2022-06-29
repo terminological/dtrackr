@@ -1,5 +1,5 @@
 Package: dtrackr
-Title: Track your data pipelines
+Title: Track your Data Pipelines
 Version: 0.2.3
 Authors@R: 
     person(given = "Robert",
@@ -7,9 +7,9 @@ Authors@R:
            role = c("aut", "cre"),
            email = "rc538@exeter.ac.uk",
            comment = c(ORCID = "0000-0002-5504-7768"))
-Description: dtrackr is an R library for tracking and
-    documenting dplyr data pipelines. As you filter, mutate, and join your
-    way through a data set, dtrackr seamlessly keeps track of your data
+Description: R package for tracking and
+    documenting 'dplyr' data pipelines. As you filter, mutate, and join your
+    way through a data set, 'dtrackr' seamlessly keeps track of your data
     flow and makes publication ready documentation of a data pipeline simple.
 License: MIT + file LICENSE
 Imports: 

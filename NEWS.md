@@ -41,3 +41,4 @@ transmute, ungroup
 * documentation updates & JOSS paper
 * fix for fix for multiple names join columns bug.
 * ungroup()  change to fit with dplyr::ungroup API.
+* fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.
