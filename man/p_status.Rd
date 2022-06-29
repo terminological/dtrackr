@@ -17,7 +17,7 @@ p_status(
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
 
-\item{...}{- any normal dplyr::summarise specification, e.g. count=n() or av = mean(x) etc.}
+\item{...}{- any normal dplyr::summarise specification, e.g. count=n() or av=mean(x) etc.}
 
 \item{.messages}{- a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the \{.strata\}, or any variables defined in the calling environment}
 

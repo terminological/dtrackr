@@ -18,7 +18,7 @@ p_add_count(
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
 
-\item{...}{a set of dplyr summary espressions.}
+\item{...}{a set of dplyr summary expressions.}
 
 \item{wt}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Frequency weights.
 Can be \code{NULL} or a variable:

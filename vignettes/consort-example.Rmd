@@ -97,7 +97,7 @@ It would be interesting to integrate this into a continuous integration work-flo
 
 # Tagging the pipeline
 
-For reporting results it is useful to have the numbers from the flowchart to embed into the text of the results section of the write up. Here we show the same pipeline as above, but with 4 uses of the `.tag` system for labeling part of the pipeline. This captures data in a tag-value list during the pipeline, and retains it as metadata for later reuse. 
+For reporting results it is useful to have the numbers from the flowchart to embed into the text of the results section of the write up. Here we show the same pipeline as above, but with 4 uses of the `.tag` system for labelling part of the pipeline. This captures data in a tag-value list during the pipeline, and retains it as metadata for later reuse. 
 
 ```{r}
 

@@ -41,7 +41,7 @@ All join types are supported by `dtrackr` which will allow us to report on the n
 
 # Unions
 
-Another type of binary operator is a union. This is a simpler problem and works as expected. In this example the early part of the pipeline is detecteded to be the same on both branches of the data flow. This therefore results in a flow that splits then subsequently joins again during the union (`bind_rows`) operator.
+Another type of binary operator is a union. This is a simpler problem and works as expected. In this example the early part of the pipeline is detected to be the same on both branches of the data flow. This therefore results in a flow that splits then subsequently joins again during the union (`bind_rows`) operator.
 
 ```{r}
 

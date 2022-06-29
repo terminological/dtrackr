@@ -16,7 +16,7 @@
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
 
-\item{...}{a set of dplyr summary espressions.}
+\item{...}{a set of dplyr summary expressions.}
 
 \item{.by_group}{If \code{TRUE}, will sort first by grouping variable. Applies to
 grouped data frames only.}

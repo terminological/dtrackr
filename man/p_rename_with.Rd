@@ -9,7 +9,7 @@ p_rename_with(.data, ..., .messages = "", .headline = "", .tag = NULL)
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
 
-\item{...}{a set of dplyr summary espressions.}
+\item{...}{a set of dplyr summary expressions.}
 
 \item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 

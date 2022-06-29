@@ -15,10 +15,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 I have been known to execute parts of my data pipeline more than once.
 Sometimes part of my pipeline is designed to change depending on a
-specific parameter, for example an age cutoff, which I tweak and re-run.
-With interactive data analysis, and particularly using RMarkdown, this
-sometimes happens in a non-linear fashion, leading to, at best,
-confusion and at worst erroneous analysis.
+specific parameter, for example an age cut-off, which I tweak and
+re-run. With interactive data analysis, and particularly using
+RMarkdown, this sometimes happens in a non-linear fashion, leading to,
+at best, confusion and at worst erroneous analysis.
 
 Accurate documentation of a data pipeline is a first step to
 reproducibility, but in parameterised analysis that relies on data that

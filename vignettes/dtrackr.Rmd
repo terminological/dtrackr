@@ -9,7 +9,7 @@ vignette: >
 
 # Tracking data provenance
 
-When wrangling raw data into a form suitable for analysis there may be many steps where explicit or implicit assumptions are made about the nature of the data, which determine the nature of the resulting analysis dataset. Checking that these assumptions have the expected results as the analysis is proceeding can be time consuming. If a data pipeline is broken up over a number of parameterised functions, following the data flow through the code is time consuming and getting an overview difficult. This is where tracking data provenance can help, by monitoring the steps the data goes through and summarizing the outcomes of the steps as they occur we can generate a flow chart of the data history.
+When wrangling raw data into a form suitable for analysis there may be many steps where explicit or implicit assumptions are made about the nature of the data, which determine the nature of the resulting analysis data-set. Checking that these assumptions have the expected results as the analysis is proceeding can be time consuming. If a data pipeline is broken up over a number of parameterised functions, following the data flow through the code is time consuming and getting an overview difficult. This is where tracking data provenance can help, by monitoring the steps the data goes through and summarizing the outcomes of the steps as they occur we can generate a flow chart of the data history.
 
 
 ```{r, include = FALSE}
@@ -30,7 +30,7 @@ library(dtrackr)
 
 # Basic operation - comments and stratification
 
-The main documentation for data pipelines is provided by the `comment` function. This (and all other functions) uses a `glue` package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables such as `filename` in this example. Secondly the `.count` variable is the number of rows in the current group. Thirdly the `.strata` variable is defined to be a description of the group(s) we are currently in, but in grouped data the grouping variables (in this case `Species`) can also be used. Finally the `.total` variable returns the whole size of the ungrouped dataset.
+The main documentation for data pipelines is provided by the `comment` function. This (and all other functions) uses a `glue` package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables such as `filename` in this example. Secondly the `.count` variable is the number of rows in the current group. Thirdly the `.strata` variable is defined to be a description of the group(s) we are currently in, but in grouped data the grouping variables (in this case `Species`) can also be used. Finally the `.total` variable returns the whole size of the ungrouped data-set.
 
 Comments can either be a single `.headline` or a list of `.messages`. Setting either of these to "" disables them for a given comment. As in the example, thanks to `glue`, any expression can be evaluated in the messages but be warned, debugging them is hard. If an error in the glue spec is present `dtrackr` will try and tell you what is the problem was and what variables should have been available for the glue spec. (N.B. A common mistake is to use `.message` rather than `.messages` when providing a glue spec.)
 
@@ -222,7 +222,7 @@ tmp %>% flowchart()
 
 ```
 
-Give the previous data pipeline we can identify the items that were excluded, the phse at which they were excluded and details of the code that resulted in them being excluded.
+Give the previous data pipeline we can identify the items that were excluded, the phase at which they were excluded and details of the code that resulted in them being excluded.
 
 ```{r}
 tmp %>% excluded()

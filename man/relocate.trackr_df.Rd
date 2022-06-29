@@ -17,7 +17,7 @@
 \arguments{
 \item{.data}{- a dataframe which may be grouped}
 
-\item{...}{a set of dplyr summary espressions.}
+\item{...}{a set of dplyr summary expressions.}
 
 \item{.before}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Destination of
 columns selected by \code{...}. Supplying neither will move columns to the

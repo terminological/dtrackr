@@ -12,6 +12,7 @@ Description: R package for tracking and
     way through a data set, 'dtrackr' seamlessly keeps track of your data
     flow and makes publication ready documentation of a data pipeline simple.
 License: MIT + file LICENSE
+Language: en-GB
 Imports: 
     dplyr,
     glue,

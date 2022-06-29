@@ -554,7 +554,7 @@ p_set = function(.data, .graph) {
 #'
 #' @param .data - a dataframe which may be grouped
 #'
-#' @return the hisotry graph
+#' @return the history graph
 #' @export
 #'
 #' @examples
@@ -653,7 +653,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #' Because of the ... summary specification parameters MUST BE NAMED.
 #'
 #' @param .data - a dataframe which may be grouped
-#' @param ... - any normal dplyr::summarise specification, e.g. count=n() or av = mean(x) etc.
+#' @param ... - any normal dplyr::summarise specification, e.g. count=n() or av=mean(x) etc.
 #' @param .messages - a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the \{.strata\}, or any variables defined in the calling environment
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
 #' @param .type - one of "info","exclusion": used to define formatting
@@ -700,7 +700,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #' @param .data - a dataframe which may be grouped
 #' @param .subgroup - a column with a small number of levels (e.g.)
 #' @param ... - additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.
-#' @param .messages - a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for teh subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count
+#' @param .messages - a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for the subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
 #' @param .type - one of "info","exclusion": used to define formatting
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
@@ -992,7 +992,7 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="", .
 #' This can be overridden with the .messages, or .headline values in which case they behave just like a `comment()`
 #'
 #' @param .data - a dataframe which may be grouped
-#' @param ... a set of dplyr summary espressions.
+#' @param ... a set of dplyr summary expressions.
 #' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.

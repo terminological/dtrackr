@@ -10,7 +10,7 @@ p_clear(.data)
 \item{.data}{- a dataframe which may be grouped}
 }
 \value{
-the hisotry graph
+the history graph
 }
 \description{
 Clear the dtrackr history graph

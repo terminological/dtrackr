@@ -23,7 +23,7 @@ p_count_subgroup(
 
 \item{...}{- additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.}
 
-\item{.messages}{- a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for teh subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count}
+\item{.messages}{- a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for the subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count}
 
 \item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment}
 
