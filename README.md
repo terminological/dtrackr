@@ -5,11 +5,12 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
 [![R-CMD-check](https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg)](https://github.com/terminological/dtrackr/actions)
 
 [![DOI](https://zenodo.org/badge/335974323.svg)](https://zenodo.org/badge/latestdoi/335974323)
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 I have been known to execute parts of my data pipeline more than once.
