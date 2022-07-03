@@ -7,7 +7,9 @@
 landscape(size)
 }
 \arguments{
-\item{size}{- list of width and height in inches, e.g. a std_size}
+\item{size}{\itemize{
+\item list of width and height in inches, e.g. a std_size
+}}
 }
 \value{
 a landscape size

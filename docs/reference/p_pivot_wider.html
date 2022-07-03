@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reshaping data using tidyr - pivot_wider — p_pivot_wider • dtrackr</title>
+<title>Reshaping data using tidyr::pivot_wider — p_pivot_wider • dtrackr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Reshaping data using tidyr - pivot_wider — p_pivot_wider" />
-<meta property="og:description" content="A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph" />
+<meta property="og:title" content="Reshaping data using tidyr::pivot_wider — p_pivot_wider" />
+<meta property="og:description" content="A drop in replacement for tidyr::pivot_wider which optionally takes a message and headline to store in the history graph.
+See tidyr::pivot_wider()." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -98,13 +99,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -127,13 +128,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Reshaping data using tidyr - pivot_wider</h1>
+    <h1>Reshaping data using <code>tidyr::pivot_wider</code></h1>
     
     <div class="hidden name"><code>p_pivot_wider.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph</p>
+    <p>A drop in replacement for <code><a href='https://tidyr.tidyverse.org/reference/pivot_wider.html'>tidyr::pivot_wider</a></code> which optionally takes a message and headline to store in the history graph.
+See <code><a href='https://tidyr.tidyverse.org/reference/pivot_wider.html'>tidyr::pivot_wider()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_pivot_wider</span><span class='op'>(</span>
@@ -240,21 +242,30 @@ to different <code>values_from</code> columns.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
+      <td><ul>
+<li><p>a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
+      <td><ul>
+<li><p>a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><p>- if you want the summary data from this step in the future then give it a name with .tag.</p></td>
+      <td><ul>
+<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the result of the pivot_wider but with a history graph.</p>
+    <p>the data dataframe result of the tidyr::pivot_wider function but with a history graph updated with a <code>.message</code> if requested.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>tidyr::pivot_wider()</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

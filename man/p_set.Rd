@@ -7,16 +7,22 @@
 p_set(.data, .graph)
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
-\item{.graph}{- a history graph list (consisting of nodes, edges, and head) see examples}
+\item{.graph}{\itemize{
+\item a history graph list (consisting of nodes, edges, and head) see examples
+}}
 }
 \value{
-the .data dataframe
+the .data dataframe with the history graph metadata set to the provided value
 }
 \description{
-Set the dtrackr history graph
+This is unlikely to be useful to an end user and is called automatically by many of the other
+functions here. On the off chance you need to copy history metadata from one dataframe to another
 }
 \examples{
-mtcars \%>\% p_set(iris \%>\% p_comment("A comment") \%>\% p_get())
+library(dplyr)
+mtcars \%>\% p_set(iris \%>\% comment("A comment") \%>\% p_get()) \%>\% history()
 }

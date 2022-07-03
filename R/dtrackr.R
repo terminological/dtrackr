@@ -196,14 +196,67 @@
   return(out)
 }
 
+#' Print a history graph to the console
+#'
+#' @param x a dtrackr history graph (e.g. output from [p_get()])
+#' @param ... not used
+#'
+#' @return nothing
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' iris %>% comment("hello {.total} rows") %>% history() %>% print()
+print.trackr_graph = function(x, ...) {
+  graph = x
+  ranks = length(unique(graph$nodes$.rank))
+  tags = paste0(unique(graph$tags$.tag),collapse="; ")
+  if (tags=="") tags="<none>"
+  if (is.null(graph$excluded)) {
+    excluded = "<not capturing exclusions>"
+  } else {
+    excluded = sum(sapply(graph$excluded$.excluded, nrow ), na.rm = TRUE)
+  }
+
+  tmp = c(
+    "dtrackr history:",
+    glue::glue("number of flowchart steps: {ranks} (approx)"),
+    glue::glue("tags defined: {tags}"),
+    glue::glue("items excluded so far: {excluded}")
+  )
+  if (isTRUE(graph$paused)) {
+   tmp = c(tmp,"TRACKING IS PAUSED")
+  }
+  cat(tmp,sep = "\n")
+}
+
+#' Plots a history graph as html
+#'
+#' @param x a dtrackr history graph (e.g. output from [history()])
+#' @param fill - the default node fill colour
+#' @param fontsize - the default font size
+#' @param colour - the default font colour
+#' @param ... not used
+#'
+#' @return HTML displayed
+#' @export
+#'
+#' @examples
+#' library(dplyr)
+#' iris %>% comment("hello {.total} rows") %>% history() %>% plot()
+plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", ...) {
+  graph = x
+  outgraph = .graph2dot(graph, fill, fontsize, colour, ...)
+  htmltools::HTML(dot2svg(outgraph)) %>% htmltools::html_print()
+}
+
 ## Basic operations ----
 
 .emptyGraph = function(exclusions = FALSE,...) {
   nodes=tibble::tibble(.id=integer(),.rank=integer(),.strata=character(),.label=character(),.type=character())
   edges=tibble::tibble(.to=integer(),.from=integer(),.rel=character(), .strata=character()) # empty edges
   head=tibble::tibble(.from=integer(), .strata=character())
-  return(
-    list(
+  tmp = list(
       nodes=nodes,
       edges=edges,
       head=head,
@@ -211,7 +264,9 @@
       paused=FALSE,
       tags=tibble::tibble(.tag=character(), .content=list())
       # excluded is set in p_capture_exclusions and will not be present all the time
-  ))
+  )
+  class(tmp) = unique(c("trackr_graph",class(tmp)))
+  return(tmp)
 }
 
 .untrack = function(.data) {
@@ -301,15 +356,16 @@
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} variable which is the count of all rows,
-#' the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of getOption("dtrackr.default_message").
+#' the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of `getOption("dtrackr.default_message")`.
 #' @param .headline - a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the history graph
+#' @return the .data dataframe with additional history graph metadata, to allow tracking.
 #' @export
 #'
 #' @examples
-#' iris %>% p_track()
+#' library(dplyr)
+#' iris %>% track() %>% history()
 p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
   if (.isTracked(.data)) return(.data)
   if (!"data.frame" %in% class(.data)) stop("dtrackr can only track data frames. Sorry.")
@@ -334,8 +390,11 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
 #'
 #' @param .data - a tracked dataframe
 #'
-#' @return the dataframe with no history
+#' @return the .data dataframe with history graph metadata removed.
 #' @export
+#' @examples
+#' library(dplyr)
+#' iris %>% track() %>% untrack() %>% class()
 p_untrack = function(.data) {
   .data = .data %>% p_clear()
   .data = .data %>% .untrack()
@@ -346,8 +405,11 @@ p_untrack = function(.data) {
 #'
 #' @param .data - a tracked dataframe
 #'
-#' @return the dataframe paused
+#' @return the .data dataframe with history graph tracking paused
 #' @export
+#' @examples
+#' library(dplyr)
+#' iris %>% track() %>% pause() %>% history()
 p_pause = function(.data) {
   old = .data %>% p_get()
   old$paused = TRUE
@@ -359,8 +421,11 @@ p_pause = function(.data) {
 #'
 #' @param .data - a tracked dataframe
 #'
-#' @return the dataframe resumed
+#' @return the .data dataframe with history graph tracking resumed
 #' @export
+#' @examples
+#' library(dplyr)
+#' iris %>% track() %>% pause() %>% resume() %>% history()
 p_resume = function(.data) {
   .strata = NULL
   old = .data %>% p_get()
@@ -381,13 +446,15 @@ p_resume = function(.data) {
 #' Start capturing exclusions on a tracked dataframe.
 #'
 #' @param .data - a tracked dataframe
-#' @param .capture - Should we capture exclusions (things removed from the data set). This is useful for debugging data issues but comes at a significant cost. Defaults to the value of getOption("dtrackr.exclusions") or FALSE.
+#' @param .capture - Should we capture exclusions (things removed from the data set). This is useful for debugging data issues but comes at a significant cost. Defaults to the value of `getOption("dtrackr.exclusions")` or `FALSE`.
 #'
-#' @return the .data dataframe with the exclusions flag set or cleared.
+#' @return the .data dataframe with the exclusions flag set (or cleared if `.capture=FALSE`).
 #' @export
 #'
 #' @examples
-#' iris %>% track() %>% capture_exclusions()
+#' library(dplyr)
+#' tmp = iris %>% track() %>% capture_exclusions()
+#' tmp %>% filter(Species!="versicolor") %>% history()
 p_capture_exclusions = function(.data, .capture=TRUE) {
   if (!.isTracked(.data)) stop("dtrackr can only capture exclusions in tracked data frames. Did you forget to do a data %>% dtrackr::track()")
   old = .data %>% p_get() # N.B. this allow the exclusions flag to be set in the tracker graph. It can never be reset though
@@ -402,16 +469,32 @@ p_capture_exclusions = function(.data, .capture=TRUE) {
 
 #' Get the dtrackr history graph
 #'
+#' This provides the raw history graph and is not really intended for mainstream use.
+#' The internal structure of the graph is explained below. print and plot S3 methods exist for
+#' the dtrackr history graph.
+#'
 #' @param .data - a dataframe which may be grouped
 #'
-#' @return the history graph
+#' @return the history graph. This is a list, of class trackr_graph, containing the following named items:
+#' * excluded - the data items that have been excluded thus far as a nested dataframe
+#' * tags - a dataframe of tag-value pairs containing the summary of the data at named points in the data flow (see [tagged()])
+#' * nodes - a dataframe of the nodes of the flow chart
+#' * edges - an edgelist (as a dataframe) of the relationships between the nodes in the flow chart
+#' * head - the current most recent nodes added into the graph as a dataframe.
+#'
+#' The format of this data may grow over time but these fields are unlikely to be changed.
+#'
 #' @export
 #'
 #' @examples
-#' iris %>% p_comment("A comment") %>% p_get()
+#' library(dplyr)
+#' graph = iris %>% track() %>% comment("A comment") %>% history()
+#' ls(graph)
 p_get = function(.data) {
   out = attr(.data,"prov")
   if (identical(out,NULL)) out = .emptyGraph()
+  # make sure has the correct class
+  class(out) = unique(c("trackr_graph",class(out)))
   return(out)
 }
 
@@ -420,18 +503,17 @@ p_get = function(.data) {
 #' @param .data - a dataframe which may be grouped
 #' @param simplify - return a single summary dataframe of all exclusions.
 #'
-#' @return a dataframe of the excluded data. This has a nested structure containing records excluded at each part of the pipeline.
+#' @return a new dataframe of the excluded data up to this point in the workflow. This dataframe is by default flattened, but if `.simplify=FALSE` has a nested structure containing records excluded at each part of the pipeline.
 #' @export
 #'
 #' @examples
-#' iris %>%
-#'  p_track() %>%
-#'  p_capture_exclusions() %>%
-#'  p_exclude_all(
+#' library(dplyr)
+#' tmp = iris %>% track() %>% capture_exclusions()
+#' tmp %>% exclude_all(
 #'    Petal.Length > 5.8 ~ "{.excluded} long ones",
 #'    Petal.Length < 1.3 ~ "{.excluded} short ones",
 #'    .stage = "petal length exclusion"
-#'  ) %>% p_excluded()
+#' ) %>% excluded()
 p_excluded = function(.data, simplify = TRUE) {
   .id = .rank = .stage = .from = .strata = .message = .excluded = .filter = NULL
   if (!.anyExclusionsTracked(.data)) stop("Exclusions were not tracked for this data frame. Did you forget to call '.data %>% capture_exclusions()'?")
@@ -482,6 +564,11 @@ p_excluded = function(.data, simplify = TRUE) {
 #' If this seems complex then the best thing is to experiment until you get the output you want, leaving any `.glue` options until you think you know what you are doing. It made sense at the time.
 #'
 #' @export
+#' @examples
+#' library(dplyr)
+#' tmp = iris %>% track() %>% comment(.tag = "step1")
+#' tmp = tmp %>% filter(Species!="versicolor") %>% group_by(Species)
+#' tmp %>% comment(.tag="step2") %>% tagged(.glue = "{.count}/{.total}")
 p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
   .content = .label = .content_rows = NULL
   out = .data %>% p_get()
@@ -532,14 +619,18 @@ p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
 
 #' Set the dtrackr history graph
 #'
+#' This is unlikely to be useful to an end user and is called automatically by many of the other
+#' functions here. On the off chance you need to copy history metadata from one dataframe to another
+#'
 #' @param .data - a dataframe which may be grouped
 #' @param .graph - a history graph list (consisting of nodes, edges, and head) see examples
 #'
-#' @return the .data dataframe
+#' @return the .data dataframe with the history graph metadata set to the provided value
 #' @export
 #'
 #' @examples
-#' mtcars %>% p_set(iris %>% p_comment("A comment") %>% p_get())
+#' library(dplyr)
+#' mtcars %>% p_set(iris %>% comment("A comment") %>% p_get()) %>% history()
 p_set = function(.data, .graph) {
   attr(.data,"prov") = .graph
   if (identical(.graph,NULL)) {
@@ -554,11 +645,12 @@ p_set = function(.data, .graph) {
 #'
 #' @param .data - a dataframe which may be grouped
 #'
-#' @return the history graph
+#' @return the .data dataframe with the history graph removed
 #' @export
 #'
 #' @examples
-#' mtcars %>% p_comment("A comment") %>% p_clear() %>% p_get()
+#' library(dplyr)
+#' mtcars %>% track() %>% comment("A comment") %>% p_clear() %>% history()
 p_clear = function(.data) {
   return(.data %>% p_set(NULL))
 }
@@ -568,11 +660,12 @@ p_clear = function(.data) {
 #' @param .data - a dataframe which may be grouped
 #' @param from - the dataframe to copy the history graph from
 #'
-#' @return the .data with the history graph of "from"
+#' @return the .data dataframe with the history graph of "from"
 #' @export
 #'
 #' @examples
-#' mtcars %>% p_copy(iris %>% p_comment("A comment"))
+#' library(dplyr)
+#' mtcars %>% p_copy(iris %>% comment("A comment")) %>% history()
 p_copy = function(.data, from) {
   return(.data %>% p_set(from %>% p_get()))
 }
@@ -587,16 +680,24 @@ p_copy = function(.data, from) {
 #' Simple count_if dplyr summary function
 #'
 #' @param ... - expression to be evaluated
+#' @param na.rm - ignore NA values?
 #'
-#' @return summary count
+#' @return a count of the number of times the expression evaluated to true, in the current context
 #' @export
 #'
-#' @examples iris %>% p_group_by(Species) %>% p_mutate(long_ones = p_count_if(Petal.Length > 4))
-p_count_if = function(...) {
-  return(sum(ifelse(...,1,0)))
+#' @examples
+#' library(dplyr)
+#' tmp = iris %>% dplyr::group_by(Species)
+#' tmp %>% dplyr::summarise(long_ones = p_count_if(Petal.Length > 4))
+p_count_if = function(..., na.rm = TRUE) {
+  return(sum(ifelse(...,1,0), na.rm = na.rm))
 }
 
 #' Add a generic comment to the dtrackr history graph
+#'
+#' A comment can be any kind fo note and is added once for every current grouping as defined by the `.message` field. It can be made context specific
+#' by including variables such as \{.count\} and \{.total\} in `.message` which refer to the grouped and ungrouped counts at this current stage of the pipeline for example.
+#' It can also pull in any global variable.
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .messages - a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} of all rows,
@@ -606,11 +707,12 @@ p_count_if = function(...) {
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the same .data dataframe with the history graph updated
+#' @return the same .data dataframe with the history graph updated with the comment
 #' @export
 #'
 #' @examples
-#' iris %>% p_comment("hello {.total} rows")
+#' library(dplyr)
+#' iris %>% track() %>% comment("hello {.total} rows") %>% history()
 p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL) {
   if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
 
@@ -650,6 +752,10 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 
 #' Add a summary to the dtrackr history graph
 #'
+#' In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts.
+#' `status` is essentially a `dplyr` summarisation step which is connected to a `glue` specification output,
+#' that is recorded in the data frame history. This means you can do an arbitrary summarisation and put the result into the flowchart.
+#'
 #' Because of the ... summary specification parameters MUST BE NAMED.
 #'
 #' @param .data - a dataframe which may be grouped
@@ -660,16 +766,17 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = FALSE).
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the same .data dataframe with the history graph updated
+#' @return the same .data dataframe with the history metadata updated with the status inserted as a new stage
 #' @export
 #'
 #' @examples
-#' iris %>% p_group_by(Species) %>%
-#'    p_status(
+#' library(dplyr)
+#' tmp = iris %>% track() %>% group_by(Species)
+#' tmp %>% status(
 #'       long = p_count_if(Petal.Length>5),
 #'       short = p_count_if(Petal.Length<2),
 #'       .messages="{Species}: {long} long ones & {short} short ones"
-#'    ) %>% p_get()
+#' ) %>% history()
 p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL) {
   if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
   dots = rlang::enquos(...)
@@ -695,7 +802,9 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 
 #' Add a subgroup count to the dtrackr history graph
 #'
-#' Because of the ... summary specification parameters MUST BE NAMED.
+#' A frequent use case for more detailed description is to have a subgroup count within a flowchart.
+#' This works best for factor subgroup columns but other data will be converted to a factor automatically.
+#' The count of the items in each subgroup is added as a new stage in the flowchart.
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .subgroup - a column with a small number of levels (e.g.)
@@ -707,17 +816,13 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #' @param .maxsubgroups - the maximum number of discrete values allowed is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.
 #'
-#' @return the same .data dataframe with the history graph updated
+#' @return the same .data dataframe with the history graph updated with a subgroup count as a new stage
 #' @export
-#'
 #' @examples
-#' ILPD %>% p_group_by(Case_or_Control) %>%
-#'    p_count_subgroup(
-#'       .subgroup = Gender,
-#'       .messages="{.name}: {.count}/{.subtotal}",
-#'       .headline="{Case_or_Control}: {.subtotal}/{.total}"
-#'    ) %>% p_get()
+#' library(dplyr)
+#' ILPD %>% track() %>% group_by(Case_or_Control) %>% count_subgroup(Gender) %>% history()
 p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgroup(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL, .maxsubgroups=.defaultMaxSupportedGroupings()) {
+
   .count = .name = NULL
   .subgroup = rlang::ensym(.subgroup)
   if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
@@ -753,9 +858,9 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
 }
 
 
-#' Exclude all items matching a criteria
+#' Exclude all items matching one or more criteria
 #'
-#' Apply a set of filters and dplyr::summarise the actions of the filter to the dtrackr history graph
+#' Apply a set of filters and summarise the actions of the filter to the dtrackr history graph
 #' Because of the ... filter specification, all parameters MUST BE NAMED.
 #' The filters work in an additive manner, i.e. the results excluding all things that match any of the criteria.
 #' If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria.
@@ -769,16 +874,15 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = TRUE).
 #' @param .stage - a name for this step in the pathway
 #'
-#' @return the filtered .data dataframe with the history graph updated
+#' @return the filtered .data dataframe with the history graph updated with the summary of excluded items as a new offshoot stage
 #' @export
 #'
 #' @examples
-#' iris %>%
-#'    p_exclude_all(
+#' library(dplyr)
+#' iris %>% track() %>% capture_exclusions() %>% exclude_all(
 #'       Petal.Length > 5 ~ "{.excluded} long ones",
 #'       Petal.Length < 2 ~ "{.excluded} short ones"
-#'    ) %>%
-#'    p_get()
+#' ) %>% history()
 p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, .type="exclusion", .asOffshoot = TRUE, .stage="") {
   .excl = .excl.na = .retain = .strata = .message = .excluded = .filter = NULL
   .data = .data %>% .untrack()
@@ -821,6 +925,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
       dplyr::group_by(!!!grps) %>%
       .createStrataCol()
     tmp$.message = rlang::eval_tidy(.doGlue(tmp,glueSpec,default_env), data=tmp, env = default_env)
+
     if(.trackingExclusions(.data)) {
       # browser()
       exclusions = out %>%
@@ -836,6 +941,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
         dplyr::mutate(.filter = filtStr) %>%
         dplyr::select(.strata,.message,.excluded,.filter)
       excluded = dplyr::bind_rows(excluded,exclusions)
+
     }
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
@@ -862,16 +968,15 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 #' @param .type - default "exclusion": used to define formatting
 #' @param .asOffshoot - do you want this comment to be an offshoot of the main flow (default = TRUE).
 #'
-#' @return the filtered .data dataframe with the history graph updated
+#' @return the filtered .data dataframe with the history graph updated with the summary of included items as a new stage
 #' @export
 #'
 #' @examples
-#' iris %>%
-#'    p_include_any(
+#' library(dplyr)
+#' iris %>% track() %>% include_any(
 #'       Petal.Length > 5 ~ "{.included} long ones",
 #'       Petal.Length < 2 ~ "{.included} short ones"
-#'    ) %>%
-#'    p_get()
+#' ) %>% history()
 p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .type="inclusion", .asOffshoot = FALSE) {
   .incl = .incl.na = .retain = NULL
   .data = .data %>% .untrack()
@@ -919,7 +1024,8 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #'
 #' Un-grouping a data set logically combines the different arms.
 #' In the history this joins any stratified branches and acts as a specific type of p_summary, allowing you to
-#' generate some summary statistics about the un-grouped data
+#' generate some summary statistics about the un-grouped data. See [dplyr::ungroup()].
+#' @seealso dplyr::ungroup()
 #'
 #' @param x - a dataframe which may be grouped (why not .data?)
 #' @param ... - passed to dplyr::ungroup()
@@ -927,17 +1033,13 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #' @param .headline - a headline glue spec. The glue code can use \{.count\} and \{.strata\}.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the .data but dplyr::ungrouped.
+#' @return the .data dataframe but dplyr::ungrouped with the history graph updated showing the ungroup operation as a new stage.
 #' @export
 #'
 #' @examples
-#' iris %>%
-#'    p_group_by(Species) %>%
-#'    p_comment("A test") %>%
-#'    p_ungroup(
-#'       .messages="{.count} items"
-#'    ) %>%
-#'    p_get()
+#' library(dplyr)
+#' tmp = iris %>% group_by(Species) %>% comment("A test")
+#' tmp %>% ungroup(.messages="{.count} items") %>% history()
 p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
   .data = x %>% .untrack()
   # dots = dplyr::enexprs(...)
@@ -952,7 +1054,8 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #'
 #' Summarising a data set acts in the normal way. Any columns resulting form the summary can be added to the history graph
 #' In the history this joins any stratified branches and acts as a specific type of p_summary, allowing you to
-#' generate some summary statistics about the un-grouped data
+#' generate some summary statistics about the un-grouped data. See [dplyr::summarise()].
+#' @seealso dplyr::summarise()
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr summary expressions.
@@ -961,14 +1064,13 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #' @param .groups	- Experimental lifecycle Grouping structure of the result.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the .data but ungrouped.
+#' @return the .data dataframe summarised with the history graph updated showing the summarise operation as a new stage
 #' @export
 #'
 #' @examples
-#' iris %>%
-#'    p_group_by(Species) %>%
-#'    p_summarise(avg = mean(Petal.Length), .messages="{avg} length") %>%
-#'    p_get()
+#' library(dplyr)
+#' tmp = iris %>% group_by(Species)
+#' tmp %>% summarise(avg = mean(Petal.Length), .messages="{avg} length") %>% history()
 p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="", .tag=NULL) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
@@ -990,6 +1092,10 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="", .
 #' Equivalent Dplyr functions for mutating, selecting and renaming a data set act in the normal way.
 #' mutates / selects / rename generally don't add anything in documentation so the default behaviour is to miss these out of the history.
 #' This can be overridden with the .messages, or .headline values in which case they behave just like a `comment()`
+#' See [dplyr::mutate()], [dplyr::add_count()], [dplyr::add_tally()], [dplyr::transmute()], [dplyr::select()], [dplyr::relocate()], [dplyr::rename()]
+#' [dplyr::rename_with()], [dplyr::arrange()] for more details.
+#'
+#' @seealso dplyr::mutate()
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr summary expressions.
@@ -997,13 +1103,8 @@ p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="", .
 #' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the .data but dplyr::ungrouped.
+#' @return the .data dataframe after being modified by the dplyr equivalent function, but with the history graph updated with a new stage if the `.messages` field is not empty
 #' @export
-#'
-#' @examples
-#' iris %>% p_group_by(Species) %>%
-#'     p_mutate(Petal.Length = 2*Petal.Length, .messages="doubling length") %>%
-#'     p_get()
 p_mutate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% dplyr::mutate(...)
@@ -1012,6 +1113,7 @@ p_mutate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::add_count()
 #' @inheritParams dplyr::add_count
 p_add_count = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1021,6 +1123,7 @@ p_add_count = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messag
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::add_tally()
 #' @inheritParams dplyr::add_tally
 p_add_tally = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1030,6 +1133,7 @@ p_add_tally = function(.data, ..., wt = NULL, sort = FALSE, name = NULL, .messag
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::transmute()
 #' @inheritParams dplyr::transmute
 p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1039,6 +1143,7 @@ p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::select()
 #' @inheritParams dplyr::select
 p_select = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1048,6 +1153,7 @@ p_select = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::relocate()
 #' @inheritParams dplyr::relocate
 p_relocate = function(.data, ..., .before = NULL, .after = NULL, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1057,6 +1163,7 @@ p_relocate = function(.data, ..., .before = NULL, .after = NULL, .messages = "",
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::rename()
 #' @inheritParams dplyr::rename
 p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1066,6 +1173,7 @@ p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::rename_with()
 #' @inheritParams dplyr::rename_with
 p_rename_with = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1075,6 +1183,7 @@ p_rename_with = function(.data, ..., .messages = "", .headline = "", .tag=NULL) 
 }
 
 #' @inherit p_mutate
+#' @seealso dplyr::arrange()
 #' @inheritParams dplyr::arrange
 p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
@@ -1083,16 +1192,18 @@ p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline =
   return(out %>% .retrack())
 }
 
-#' Reshaping data using tidyr - pivot_wider
+#' Reshaping data using `tidyr::pivot_wider`
 #'
-#' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
+#' A drop in replacement for `tidyr::pivot_wider` which optionally takes a message and headline to store in the history graph.
+#' See [tidyr::pivot_wider()].
+#' @seealso tidyr::pivot_wider()
 #'
-#' @inheritParams  tidyr::pivot_wider
+#' @inheritParams tidyr::pivot_wider
 #' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the result of the pivot_wider but with a history graph.
+#' @return the data dataframe result of the tidyr::pivot_wider function but with a history graph updated with a `.message` if requested.
 #' @export
 p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), names_prefix = "",
                          names_sep = "_",names_glue = NULL,names_sort = FALSE,names_repair = "check_unique",
@@ -1119,16 +1230,18 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), n
   return(out %>% .retrack())
 }
 
-#' Reshaping data using tidyr - pivot_longer
+#' Reshaping data using `tidyr::pivot_longer`
 #'
-#' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
+#' A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph.
+#' See [tidyr::pivot_longer()].
+#' @seealso tidyr::pivot_longer()
 #'
 #' @inheritParams  tidyr::pivot_longer
 #' @param .messages - a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline - a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the result of the pivot_wider but with a history graph.
+#' @return the result of the tidyr::pivot_wider but with a history graph updated.
 #' @export
 p_pivot_longer = function(data,
                           cols,
@@ -1172,6 +1285,8 @@ p_pivot_longer = function(data,
 #' This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. `dtrackr` will detect this issue
 #' and pause tracking the dataframe with a warning. It is up to the user to the `resume()` tracking when the large number of groups have been
 #' resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.
+#' See [dplyr::group_by()].
+#' @seealso dplyr::group_by()
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param ... a set of dplyr column expressions.
@@ -1185,7 +1300,9 @@ p_pivot_longer = function(data,
 #' @export
 #'
 #' @examples
-#' iris %>% p_group_by(Species, .messages="stratify by {.cols}") %>% p_comment("{.strata}") %>% p_get()
+#' library(dplyr)
+#' tmp = iris %>% track() %>% group_by(Species, .messages="stratify by {.cols}")
+#' tmp %>% comment("{.strata}") %>% history()
 p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL, .tag=NULL, .maxgroups = .defaultMaxSupportedGroupings()) {
   # explicitly dtrackr::ungroup is .add is false to generate an un-grouped node in the graph. otherwise we get an n x m crossover.
   if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup()
@@ -1226,9 +1343,11 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 
 #' Distinct values of data
 #'
-#' Distinct acts in the same way as in `dplyr`. Prior to the operation the size of the group is calculated \{.count.in\} and
+#' Distinct acts in the same way as in `dplyr::distinct`. Prior to the operation the size of the group is calculated \{.count.in\} and
 #' after the operation the output size \{.count.out\}
 #' The group \{.strata\} is also available (if grouped) for reporting
+#' See [dplyr::distinct()].
+#' @seealso dplyr::distinct()
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .f a function as expected by dplyr::group_modify e.g. function(d,g,...) { ...do something with d and return a dataframe... }
@@ -1238,12 +1357,13 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 #' @param .headline - a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the transformed .data.
+#' @return the .data dataframe with distinct values and history graph updated.
 #' @export
 #'
 #' @examples
-#' p_bind_rows(iris, iris %>% p_filter(Petal.Length > 5)) %>%
-#'    p_group_by(Species) %>% p_distinct() %>% p_get()
+#' library(dplyr)
+#' tmp = bind_rows(iris %>% track(), iris %>% track() %>% filter(Petal.Length > 5))
+#' tmp %>% group_by(Species) %>% distinct() %>% history()
 p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count.in-.count.out} duplicates", .headline=.defaultHeadline(), .tag=NULL) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
@@ -1264,9 +1384,10 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #' Filtering data
 #'
 #' Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
-#' after the operation the output size \{.count.out\}
-#' The group \{.strata\} is also available (if grouped) for reporting
+#' after the operation the output size \{.count.out\}. The group \{.strata\} is also available (if grouped) for reporting.
+#' See [dplyr::filter()].
 #'
+#' @seealso dplyr::filter()
 #' @param .data - a dataframe which may be grouped
 #' @param ... the filter criteria
 #' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
@@ -1277,11 +1398,13 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #' @inheritParams dplyr::filter
 #'
-#' @return the transformed .data.
+#' @return the filtered .data dataframe with history graph updated
 #' @export
 #'
 #' @examples
-#' iris %>% p_group_by(Species) %>% p_filter(Petal.Length > 5) %>% p_get()
+#' library(dplyr)
+#' tmp = iris %>% track() %>% group_by(Species)
+#' tmp %>% filter(Petal.Length > 5) %>% history()
 p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline=.defaultHeadline(), .type = "exclusion", .asOffshoot=(.type=="exclusion"), .stage="", .tag=NULL) {
   .count.in = .count.out = .strata = .message = NULL
   .data = .data %>% .untrack()
@@ -1328,6 +1451,9 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
 #' Prior to the operation the size of the group is calculated \{.count.in\} and
 #' after the operation the output size \{.count.out\}
 #' The group \{.strata\} is also available (if grouped) for reporting
+#' See [dplyr::group_modify()].
+#'
+#' @seealso dplyr::group_modify()
 #'
 #' @param .data - a dataframe which may be grouped
 #' @param .f a function as expected by dplyr::group_modify e.g. function(d,g,...) { ...do something with d and return a dataframe... }
@@ -1338,18 +1464,16 @@ p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.exclude
 #' @param .type - default "modify": used to define formatting
 #' @param .tag - if you want the summary data from this step in the future then give it a name with .tag.
 #'
-#' @return the transformed .data.
+#' @return the transformed .data dataframe with the history graph updated.
 #' @export
 #'
 #' @examples
-#' iris %>%
-#'    p_track() %>%
-#'    p_group_by(Species) %>%
-#'    p_group_modify(
+#' library(dplyr)
+#' tmp = iris %>% track() %>% group_by(Species)
+#' tmp %>% group_modify(
 #'       function(d,g,...) { return(tibble::tibble(x=runif(10))) },
 #'       .messages="{.count.in} in, {.count.out} out"
-#'    ) %>%
-#'    p_get()
+#' ) %>% history()
 p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headline=.defaultHeadline(), .type = "modify", .tag=NULL) {
   .data = .data %>% .untrack()
   default_env = rlang::caller_env()
@@ -1371,17 +1495,21 @@ p_group_modify = function(.data, .f, ..., .keep = FALSE, .messages=NULL, .headli
 #' Union of two or more data sets
 #'
 #' This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as {.count.out}
+#' in other terms it performs exactly the same operation as dplyr::bind_rows. See [dplyr::bind_rows()].
+#'
+#' @seealso dplyr::bind_rows()
 #'
 #' @param ... the data frames to bind
 #' @param .messages - a set of glue specs. The glue code can use any global variable, or \{.count.out\}
 #' @param .headline - a glue spec. The glue code can use any global variable, or \{.count.out\}
 #' @inheritParams dplyr::bind_rows
 #'
-#' @return the union data frame
+#' @return the logical union of the dataframes with the history graph updated.
 #' @export
 #'
 #' @examples
-#' p_bind_rows( iris %>% p_comment("one"), iris %>% p_comment("two") ) %>% p_get()
+#' library(dplyr)
+#' bind_rows( iris %>% comment("one"), iris %>% comment("two") ) %>% history()
 p_bind_rows = function(..., .id = NULL, .messages="{.count.out} in union", .headline="Union") {
   dots = rlang::list2(...)
   if(!all(sapply(dots,.isTracked))) return(dplyr::bind_rows(..., .id=.id))
@@ -1439,11 +1567,15 @@ p_bind_rows = function(..., .id = NULL, .messages="{.count.out} in union", .head
 
 #' Inner joins
 #'
-#' Mutating joins behave as dplyr joins
+#' Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+#' tracked dataframe with the history of both input dataframes. See [dplyr::inner_join()] for more details on the underlying functions.
+#'
+#' @seealso dplyr::inner_join()
 #'
 #' @inheritParams dplyr::inner_join
 #' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
 p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Inner join by {.keys}") {
@@ -1452,11 +1584,14 @@ p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ...,
 
 #' Left join
 #'
-#' Mutating joins behave as dplyr joins
+#' Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+#' tracked dataframe with the history of both input dataframes. See [dplyr::left_join()] for more details on the underlying functions.
+#' @seealso dplyr::left_join()
 #'
 #' @inheritParams dplyr::left_join
 #' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
 p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Left join by {.keys}") {
@@ -1465,11 +1600,14 @@ p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , 
 
 #' Right join
 #'
-#' Mutating joins behave as dplyr joins
+#' Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+#' tracked dataframe with the history of both input dataframes. See [dplyr::right_join()] for more details on the underlying functions.
+#' @seealso dplyr::right_join()
 #'
 #' @inheritParams dplyr::right_join
 #' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
 p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Right join by {.keys}") {
@@ -1478,11 +1616,14 @@ p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ...,
 
 #' Full join
 #'
-#' Mutating joins behave as dplyr joins
+#' Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+#' tracked dataframe with the history of both input dataframes. See [dplyr::full_join()] for more details on the underlying functions.
+#' @seealso dplyr::full_join()
 #'
 #' @inheritParams dplyr::full_join
 #' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
 p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Full join by {.keys}") {
@@ -1491,11 +1632,14 @@ p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., 
 
 #' Semi join
 #'
-#' Mutating joins behave as dplyr joins
+#' Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+#' tracked dataframe with the history of both input dataframes. See [dplyr::semi_join()] for more details on the underlying functions.
+#' @seealso dplyr::semi_join()
 #'
 #' @inheritParams dplyr::semi_join
 #' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
 p_semi_join = function(x, y,  by = NULL, copy=FALSE, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in intersection"), .headline="Semi join by {.keys}") {
@@ -1504,11 +1648,14 @@ p_semi_join = function(x, y,  by = NULL, copy=FALSE, ..., .messages = c("{.count
 
 #' Anti join
 #'
-#' Mutating joins behave as dplyr joins
+#' Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+#' tracked dataframe with the history of both input dataframes. See [dplyr::anti_join()] for more details on the underlying functions.
+#' @seealso dplyr::anti_join()
 #'
 #' @inheritParams dplyr::anti_join
 #' @param .messages - a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
 #' @param .headline - a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+#' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
 p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} not matched"), .headline="Semi join by {.keys}") {
@@ -1535,16 +1682,22 @@ is_running_in_chunk = function() {
 
 #' Flowchart output
 #'
-#' Create a flowchart of the history of the dataframe
+#' Generate a flowchart of the history of the dataframe, with all the transformations as stages in the flowchart.
 #'
 #' @param .data - the tracked dataframes
 #' @param ... - other params passed onto p_get_as_dot, notable ones are fill, fontsize, colour, size, maxWidth and maxHeight
 #' @param filename - a filename (without extension) which will be where the formatted flowcharts are saved
 #' @inheritParams save_dot
+#' @param defaultToHTML - if the correct output format is not easy to determine from the context, default providing HTML or to embedding the PNG
 #'
-#' @return the output depends on the context in which the function is called. Some form of browse-able output if in an interactive session or a PNG/PDG link if in knitr
+#' @return the nature of the flowchart output depends on the context in which the function is called. It will be some form of browse-able html output if called from an interactive session
+#' or a PNG/PDG link if in knitr and knitting latex or word type outputs,
 #' @export
-p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, rot=size$rot, formats=c("dot","png","pdf","svg"),...) {
+#' @examples
+#' library(dplyr)
+#' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
+#' tmp %>% group_by(Species) %>% comment(.tag="step2") %>% flowchart()
+p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, rot=size$rot, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, ...) {
 
   if("trackr_df" %in% class(.data)) .data = list(.data)
   mergedGraph=.emptyGraph()
@@ -1556,39 +1709,88 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
     }
   }
 
+  # if we are knitting and the output is not HTML we will need the image
+  # saved somewhere as a png and pdf.
+  # Also if we are viewing the image in the console and the user requested the png
+  if(
+    (is_knitting() && !knitr::is_html_output())
+    ||
+    (!is_knitting() && !is_running_in_chunk() && !defaultToHTML)
+  ) {
+    if (is.null(filename)) {
+      # no file was given but for latex we need to convert to PDF anyway
+      filename = tempfile()
+      formats = c("png","pdf")
+    } else {
+      formats = unique(c("png","pdf",formats))
+    }
+  }
+
   outgraph = mergedGraph %>% .graph2dot(...)
 
   if (!identical(filename,NULL)) {
-
-    return(outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight,rot=rot,formats = formats))
-
+    tmp = outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight,rot=rot,formats = formats)
+    svg = tmp$svg
   } else {
-    if( isTRUE(getOption("knitr.in.progress")) ) {
+    svg = dot2svg(outgraph)
+  }
 
-      #fmt <- rmarkdown::default_output_format(knitr::current_input())$name
-      if (knitr::is_html_output()) { #|| fmt %>% stringr::str_detect("html") || fmt=="article") {
+  # Decide on the output format
 
-        return(htmltools::HTML(dot2svg(outgraph)))
-      } else {
+  if (is_knitting()) {
 
-        filename = tempfile()
-        return(outgraph %>% save_dot(filename= filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight,rot=rot,formats = c("png","pdf")))
-      }
+    # warning(knitr::pandoc_to())
+
+    # fmt <- rmarkdown::default_output_format(knitr::current_input())$name
+    if (knitr::is_html_output(excludes = c("markdown","gfm"))) {
+      return(htmltools::HTML(svg))
+
+    } else if (knitr::is_latex_output()) {
+      return(knitr::include_graphics(tmp$paths$png,auto_pdf = TRUE))
+
+    } else if (knitr::pandoc_to(fmt = c("docx","odt"))) {
+      return(knitr::include_graphics(tmp$paths$png))
+
+    } else if (knitr::pandoc_to(fmt = c("markdown","gfm"))) {
+      return(knitr::asis_output(sprintf("![](%s)", base64enc::dataURI(data = charToRaw(svg), mime = "image/svg+xml"))))
 
     } else {
-
-      if(is_running_in_chunk()) {
-        return(htmltools::HTML(dot2svg(outgraph)))
+      # the user sepcified type.
+      if (!defaultToHTML) {
+        return(knitr::include_graphics(tmp$paths$png,auto_pdf = TRUE))
       } else {
-        return(htmltools::HTML(dot2svg(outgraph)) %>% htmltools::html_print())
+        return(htmltools::HTML(svg))
+      }
+
+    }
+
+
+
+  } else {
+
+    # We are not kitting
+    if(is_running_in_chunk()) {
+
+      # We are in an RStudio chunk
+      return(htmltools::HTML(svg))
+    } else {
+
+      # We are at the console probably
+      if (defaultToHTML) {
+        # print the html
+        htmltools::HTML(svg) %>% htmltools::html_print()
+      } else {
+        # display the png
+        getOption("viewer")(tmp$paths$png)
       }
     }
   }
+
 }
 
 #' DOT output
 #'
-#' Outputs a dtrackr history graph as a DOT string for rendering with graphviz
+#' (advance usage) outputs a dtrackr history graph as a DOT string for rendering with `Graphviz`
 #'
 #' @param .data - the tracked dataframe
 #' @param fill - the default node fill colour
@@ -1596,8 +1798,13 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
 #' @param colour - the default font colour
 #' @param ... - not used
 #'
-#' @return a dot string
+#' @return a representation of the history graph in `Graphviz` dot format.
 #' @export
+#' @examples
+#' library(dplyr)
+#' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
+#' dot = tmp %>% group_by(Species) %>% comment(.tag="step2") %>% p_get_as_dot()
+#' cat(dot)
 p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", ...) {
   graph = .data %>% p_get()
   return(.graph2dot(graph))
@@ -1692,6 +1899,10 @@ p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", .
 #' @inherit p_track
 #' @export
 track <- p_track
+
+#' @inherit p_get
+#' @export
+history <- p_get
 
 #' @inherit p_pause
 #' @export
@@ -1851,13 +2062,10 @@ anti_join.trackr_df <- p_anti_join
 # re-exports:
 
 # TODO: Not really sure why I need this to make the R CMD check work but it does seem to be important.
+# this is something to do with stats::filter and dplyr::filter
 #' @importFrom dplyr filter
 #' @export
 dplyr::filter
-
-#' @importFrom dplyr ungroup
-#' @export
-dplyr::ungroup
 
 # complete override:
 

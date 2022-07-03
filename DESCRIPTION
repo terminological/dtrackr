@@ -1,14 +1,14 @@
 Package: dtrackr
 Title: Track your Data Pipelines
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
            role = c("aut", "cre"),
            email = "rc538@exeter.ac.uk",
            comment = c(ORCID = "0000-0002-5504-7768"))
-Description: R package for tracking and
-    documenting 'dplyr' data pipelines. As you filter, mutate, and join your
+Description: Track and
+    document 'dplyr' data pipelines. As you filter, mutate, and join your
     way through a data set, 'dtrackr' seamlessly keeps track of your data
     flow and makes publication ready documentation of a data pipeline simple.
 License: MIT + file LICENSE
@@ -26,7 +26,8 @@ Imports:
     utils,
     V8,
     fs,
-    purrr
+    purrr,
+    base64enc
 Suggests: 
     here,
     knitr,
@@ -41,6 +42,7 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10)

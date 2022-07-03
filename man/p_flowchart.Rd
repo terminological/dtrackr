@@ -12,29 +12,56 @@ p_flowchart(
   maxHeight = size$height,
   rot = size$rot,
   formats = c("dot", "png", "pdf", "svg"),
+  defaultToHTML = TRUE,
   ...
 )
 }
 \arguments{
-\item{.data}{- the tracked dataframes}
+\item{.data}{\itemize{
+\item the tracked dataframes
+}}
 
-\item{filename}{- a filename (without extension) which will be where the formatted flowcharts are saved}
+\item{filename}{\itemize{
+\item a filename (without extension) which will be where the formatted flowcharts are saved
+}}
 
-\item{size}{- a list of length and width in inches e.g. a std_size}
+\item{size}{\itemize{
+\item a list of length and width in inches e.g. a std_size
+}}
 
-\item{maxWidth}{- a width in inches is size is not defined}
+\item{maxWidth}{\itemize{
+\item a width in inches is size is not defined
+}}
 
-\item{maxHeight}{- a height in inches if size is not defined}
+\item{maxHeight}{\itemize{
+\item a height in inches if size is not defined
+}}
 
-\item{rot}{- an angle of rotation for the saved file if size is not defined}
+\item{rot}{\itemize{
+\item an angle of rotation for the saved file if size is not defined
+}}
 
-\item{formats}{- some of "pdf","dot","svg","png","ps"}
+\item{formats}{\itemize{
+\item some of "pdf","dot","svg","png","ps"
+}}
 
-\item{...}{- other params passed onto p_get_as_dot, notable ones are fill, fontsize, colour, size, maxWidth and maxHeight}
+\item{defaultToHTML}{\itemize{
+\item if the correct output format is not easy to determine from the context, default providing HTML or to embedding the PNG
+}}
+
+\item{...}{\itemize{
+\item other params passed onto p_get_as_dot, notable ones are fill, fontsize, colour, size, maxWidth and maxHeight
+}}
 }
 \value{
-the output depends on the context in which the function is called. Some form of browse-able output if in an interactive session or a PNG/PDG link if in knitr
+the nature of the flowchart output depends on the context in which the function is called. It will be some form of browse-able html output if called from an interactive session
+or a PNG/PDG link if in knitr and knitting latex or word type outputs,
 }
 \description{
-Create a flowchart of the history of the dataframe
+Generate a flowchart of the history of the dataframe, with all the transformations as stages in the flowchart.
+}
+\examples{
+library(dplyr)
+tmp = iris \%>\% track() \%>\% comment(.tag = "step1") \%>\% filter(Species!="versicolor")
+tmp \%>\% group_by(Species) \%>\% comment(.tag="step2") \%>\% flowchart()
 }

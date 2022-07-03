@@ -13,28 +13,34 @@ tagged(.data, .tag = NULL, .strata = NULL, .glue = NULL, ...)
 
 \item{.strata}{(optional) filter the tagged data by the strata. set to "" to filter just the top level ungrouped data.}
 
-\item{.glue}{(optional) a glue specification which will be applied to the tagged content to generate a `.label` for the tagged content.}
+\item{.glue}{(optional) a glue specification which will be applied to the tagged content to generate a \code{.label} for the tagged content.}
 
-\item{...}{(optional) any other named parameters will be passed to `glue::glue` and can be used to generate a label.}
+\item{...}{(optional) any other named parameters will be passed to \code{glue::glue} and can be used to generate a label.}
 }
 \value{
 various things depending on what is requested.
 
-By default a tibble with a `.tag` column and all associated summary values in a nested `.content` column.
+By default a tibble with a \code{.tag} column and all associated summary values in a nested \code{.content} column.
 
-If a `.strata` column is specified the results are filtered to just those that match a given `.strata` grouping (i.e. this will be the grouping label on the flowchart). Ungrouped content will have an empty "" as `.strata`
+If a \code{.strata} column is specified the results are filtered to just those that match a given \code{.strata} grouping (i.e. this will be the grouping label on the flowchart). Ungrouped content will have an empty "" as \code{.strata}
 
-If `.tag` is specified the result will be for a single tag and `.content` will be automatically un-nested to give a single un-nested dataframe of the content captured at the `.tag` tagged step.
+If \code{.tag} is specified the result will be for a single tag and \code{.content} will be automatically un-nested to give a single un-nested dataframe of the content captured at the \code{.tag} tagged step.
 This could be single or multiple rows depending on whether the original data was grouped at the point of tagging.
 
-If both the `.tag` and `.glue` is specified a `.label` column will be computed from `.glue` and the tagged content. If the result of this is a single row then just the string value of `.label` is returned.
+If both the \code{.tag} and \code{.glue} is specified a \code{.label} column will be computed from \code{.glue} and the tagged content. If the result of this is a single row then just the string value of \code{.label} is returned.
 
-If just the `.glue` is specified, an un-nested dataframe with `.tag`,`.strata` and `.label` columns with a label for each tag in each strata.
+If just the \code{.glue} is specified, an un-nested dataframe with \code{.tag},\code{.strata} and \code{.label} columns with a label for each tag in each strata.
 
-If this seems complex then the best thing is to experiment until you get the output you want, leaving any `.glue` options until you think you know what you are doing. It made sense at the time.
+If this seems complex then the best thing is to experiment until you get the output you want, leaving any \code{.glue} options until you think you know what you are doing. It made sense at the time.
 }
 \description{
-Any counts at the individual stages that was stored with a `.tag` option in a pipeline step can be recovered here. The idea here is to provide a quick way to access a single value
+Any counts at the individual stages that was stored with a \code{.tag} option in a pipeline step can be recovered here. The idea here is to provide a quick way to access a single value
 for the counts or other details tagged in a pipeline into a format that can be reported in text of a document. (e.g. for a results section). For more examples the consort statement vignette
 has some examples of use.
+}
+\examples{
+library(dplyr)
+tmp = iris \%>\% track() \%>\% comment(.tag = "step1")
+tmp = tmp \%>\% filter(Species!="versicolor") \%>\% group_by(Species)
+tmp \%>\% comment(.tag="step2") \%>\% tagged(.glue = "{.count}/{.total}")
 }

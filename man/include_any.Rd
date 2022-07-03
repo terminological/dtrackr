@@ -14,21 +14,33 @@ include_any(
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
-\item{...}{- a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables,
-variables from the environment and \{.included\} and \{.matched\} or \{.missing\} (included = matched+missing), \{.count\} and \{.total\} - group and overall counts respectively, e.g. "excluding \{.matched\} items and \{.missing\} with missing values".}
+\item{...}{\itemize{
+\item a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables,
+variables from the environment and \{.included\} and \{.matched\} or \{.missing\} (included = matched+missing), \{.count\} and \{.total\} - group and overall counts respectively, e.g. "excluding \{.matched\} items and \{.missing\} with missing values".
+}}
 
-\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment}
+\item{.headline}{\itemize{
+\item a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
+}}
 
-\item{na.rm}{- (default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)}
+\item{na.rm}{\itemize{
+\item (default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)
+}}
 
-\item{.type}{- default "exclusion": used to define formatting}
+\item{.type}{\itemize{
+\item default "exclusion": used to define formatting
+}}
 
-\item{.asOffshoot}{- do you want this comment to be an offshoot of the main flow (default = TRUE).}
+\item{.asOffshoot}{\itemize{
+\item do you want this comment to be an offshoot of the main flow (default = TRUE).
+}}
 }
 \value{
-the filtered .data dataframe with the history graph updated
+the filtered .data dataframe with the history graph updated with the summary of included items as a new stage
 }
 \description{
 Apply a set of inclusion criteria and dplyr::summarise the actions of the filter to the dtrackr history graph
@@ -37,10 +49,9 @@ The criteria work in an alternative manner, i.e. the results include anything th
 If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria - that may be true.
 }
 \examples{
-iris \%>\%
-   p_include_any(
+library(dplyr)
+iris \%>\% track() \%>\% include_any(
       Petal.Length > 5 ~ "{.included} long ones",
       Petal.Length < 2 ~ "{.included} short ones"
-   ) \%>\%
-   p_get()
+) \%>\% history()
 }

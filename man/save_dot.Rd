@@ -2,7 +2,7 @@
 % Please edit documentation in R/dot.R
 \name{save_dot}
 \alias{save_dot}
-\title{Save DOT to a file}
+\title{Save DOT content to a file}
 \usage{
 save_dot(
   dot,
@@ -15,26 +15,40 @@ save_dot(
 )
 }
 \arguments{
-\item{dot}{- a graphviz dot string}
+\item{dot}{\itemize{
+\item a graphviz dot string
+}}
 
-\item{filename}{- the root of the desired filename (minus extension)}
+\item{filename}{\itemize{
+\item the full path of the filename (minus extension for multiple formats)
+}}
 
-\item{size}{- a list of length and width in inches e.g. a std_size}
+\item{size}{\itemize{
+\item a list of length and width in inches e.g. a std_size
+}}
 
-\item{maxWidth}{- a width in inches is size is not defined}
+\item{maxWidth}{\itemize{
+\item a width in inches is size is not defined
+}}
 
-\item{maxHeight}{- a height in inches if size is not defined}
+\item{maxHeight}{\itemize{
+\item a height in inches if size is not defined
+}}
 
-\item{rot}{- an angle of rotation for the saved file if size is not defined}
+\item{rot}{\itemize{
+\item an angle of rotation for the saved file if size is not defined
+}}
 
-\item{formats}{- some of "pdf","dot","svg","png","ps"}
+\item{formats}{\itemize{
+\item some of "pdf","dot","svg","png","ps"
+}}
 }
 \value{
-the SVG as a string
+a list with items \code{paths} with the absolute paths of the saved files, and svg as the SVG string of the rendered dot file.
 }
 \description{
-Convert a digraph and save as a file
+Convert a digraph in dot file to SVG and save it to an output file
 }
 \examples{
-dot2svg("digraph {A->B}")
+dot2svg("digraph {A->B} ")
 }

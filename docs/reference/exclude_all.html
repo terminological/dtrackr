@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Exclude all items matching a criteria — exclude_all • dtrackr</title>
+<title>Exclude all items matching one or more criteria — exclude_all • dtrackr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Exclude all items matching a criteria — exclude_all" />
-<meta property="og:description" content="Apply a set of filters and dplyr::summarise the actions of the filter to the dtrackr history graph
+<meta property="og:title" content="Exclude all items matching one or more criteria — exclude_all" />
+<meta property="og:description" content="Apply a set of filters and summarise the actions of the filter to the dtrackr history graph
 Because of the ... filter specification, all parameters MUST BE NAMED.
 The filters work in an additive manner, i.e. the results excluding all things that match any of the criteria.
 If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria." />
@@ -75,7 +75,7 @@ If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -101,13 +101,13 @@ If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -130,13 +130,13 @@ If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Exclude all items matching a criteria</h1>
+    <h1>Exclude all items matching one or more criteria</h1>
     
     <div class="hidden name"><code>exclude_all.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Apply a set of filters and dplyr::summarise the actions of the filter to the dtrackr history graph
+    <p>Apply a set of filters and summarise the actions of the filter to the dtrackr history graph
 Because of the ... filter specification, all parameters MUST BE NAMED.
 The filters work in an additive manner, i.e. the results excluding all things that match any of the criteria.
 If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria.</p>
@@ -157,71 +157,63 @@ If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><p>- a dataframe which may be grouped</p></td>
+      <td><ul>
+<li><p>a dataframe which may be grouped</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>- a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables
-variables from the environment and {.excluded} and {.matched} or {.missing} (excluded = matched+missing), {.count} and {.total} - group and overall counts respectively, e.g. "excluding {.matched} items and {.missing} with missing values".</p></td>
+      <td><ul>
+<li><p>a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables
+variables from the environment and {.excluded} and {.matched} or {.missing} (excluded = matched+missing), {.count} and {.total} - group and overall counts respectively, e.g. "excluding {.matched} items and {.missing} with missing values".</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></td>
+      <td><ul>
+<li><p>a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>na.rm</th>
-      <td><p>- (default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)</p></td>
+      <td><ul>
+<li><p>(default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.type</th>
-      <td><p>- default "exclusion": used to define formatting</p></td>
+      <td><ul>
+<li><p>default "exclusion": used to define formatting</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.asOffshoot</th>
-      <td><p>- do you want this comment to be an offshoot of the main flow (default = TRUE).</p></td>
+      <td><ul>
+<li><p>do you want this comment to be an offshoot of the main flow (default = TRUE).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.stage</th>
-      <td><p>- a name for this step in the pathway</p></td>
+      <td><ul>
+<li><p>a name for this step in the pathway</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the filtered .data dataframe with the history graph updated</p>
+    <p>the filtered .data dataframe with the history graph updated with the summary of excluded items as a new offshoot stage</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>iris</span> <span class='op'>%&gt;%</span>
-   <span class='fu'><a href='p_exclude_all.html'>p_exclude_all</a></span><span class='op'>(</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>exclude_all</span><span class='op'>(</span>
       <span class='va'>Petal.Length</span> <span class='op'>&gt;</span> <span class='fl'>5</span> <span class='op'>~</span> <span class='st'>"{.excluded} long ones"</span>,
       <span class='va'>Petal.Length</span> <span class='op'>&lt;</span> <span class='fl'>2</span> <span class='op'>~</span> <span class='st'>"{.excluded} short ones"</span>
-   <span class='op'>)</span> <span class='op'>%&gt;%</span>
-   <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $excluded
-#&gt; NULL
-#&gt; 
-#&gt; $capture
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $tags
-#&gt; <span style='color: #949494;'># A tibble: 0 × 2</span><span>
-#&gt; </span><span style='color: #949494;'># … with 2 variables: .tag &lt;chr&gt;, .content &lt;list&gt;</span><span>
-#&gt; 
-#&gt; $nodes
-#&gt; </span><span style='color: #949494;'># A tibble: 1 × 6</span><span>
-#&gt;     .id .rank .strata .label                                        .type .stage
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                         </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     0 </span><span style='color: #949494;'>""</span><span>      42 long ones&lt;BR ALIGN='LEFT'/&gt;50 short ones&lt;… excl… </span><span style='color: #949494;'>""</span><span>    
-#&gt; 
-#&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 0 × 5</span><span>
-#&gt; </span><span style='color: #949494;'># … with 5 variables: .to &lt;dbl&gt;, .from &lt;int&gt;, .rel &lt;chr&gt;, .strata &lt;chr&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   .strata.prev &lt;chr&gt;</span><span>
-#&gt; 
-#&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 0 × 2</span><span>
-#&gt; </span><span style='color: #949494;'># … with 2 variables: .from &lt;int&gt;, .strata &lt;chr&gt;</span><span>
-#&gt; </div></span></pre>
+<span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 1 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

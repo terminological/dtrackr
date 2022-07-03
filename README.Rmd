@@ -1,8 +1,7 @@
 ---
 output: github_document
+title: 'dtrackr: Track your Data Pipelines'
 ---
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -18,8 +17,6 @@ library(dtrackr)
 
 here::i_am("README.Rmd")
 ```
-
-# dtrackr
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg)](https://github.com/terminological/dtrackr/actions)
@@ -97,8 +94,7 @@ would have muttered something about having to look at the code to see what you d
 
 ```{r}
 
-# man/figures path needed here to ensure this works for pkgdown and for github
-dataset %>% flowchart(here::here("man/figures/demo"))
+dataset %>% flowchart()
 
 ```
 
@@ -106,3 +102,4 @@ And your publication ready data pipeline, with any assumptions you care to docum
 
 This is a trivial example, but the more complex the pipeline, the bigger benefit you will get. 
 
+Check out the [main documentation for detailed examples](https://terminological.github.io/dtrackr/)

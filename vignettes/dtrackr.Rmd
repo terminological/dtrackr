@@ -1,8 +1,8 @@
 ---
-title: "Dtrackr - Basic operations"
+title: "dtrackr - Basic operations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Dtrackr - Basic operations}
+  %\VignetteIndexEntry{dtrackr - Basic operations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,8 +17,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-options(warn=1)
 ```
 
 ```{r setup}

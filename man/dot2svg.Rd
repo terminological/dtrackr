@@ -2,19 +2,21 @@
 % Please edit documentation in R/dot.R
 \name{dot2svg}
 \alias{dot2svg}
-\title{Convert dot to svg}
+\title{Convert Graphviz dot content to a SVG}
 \usage{
 dot2svg(dot)
 }
 \arguments{
-\item{dot}{- a graphviz dot string}
+\item{dot}{\itemize{
+\item a graphviz dot string
+}}
 }
 \value{
 the SVG as a string
 }
 \description{
-Convert a digraph as string to SVG as string
+Convert a graphviz dot digraph as string to SVG as string
 }
 \examples{
-dot2svg("digraph {A->B}")
+dot2svg("digraph { A->B }")
 }

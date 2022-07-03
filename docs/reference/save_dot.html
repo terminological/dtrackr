@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Save DOT to a file — save_dot • dtrackr</title>
+<title>Save DOT content to a file — save_dot • dtrackr</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Save DOT to a file — save_dot" />
+<meta property="og:title" content="Save DOT content to a file — save_dot" />
 <meta property="og:description" content="Convert a digraph and save as a file" />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -98,13 +98,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -127,7 +127,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Save DOT to a file</h1>
+    <h1>Save DOT content to a file</h1>
     
     <div class="hidden name"><code>save_dot.Rd</code></div>
     </div>
@@ -151,37 +151,51 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dot</th>
-      <td><p>- a graphviz dot string</p></td>
+      <td><ul>
+<li><p>a graphviz dot string</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>filename</th>
-      <td><p>- the root of the desired filename (minus extension)</p></td>
+      <td><ul>
+<li><p>the full path of the filename (minus extension for multiple formats)</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>size</th>
-      <td><p>- a list of length and width in inches e.g. a std_size</p></td>
+      <td><ul>
+<li><p>a list of length and width in inches e.g. a std_size</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>maxWidth</th>
-      <td><p>- a width in inches is size is not defined</p></td>
+      <td><ul>
+<li><p>a width in inches is size is not defined</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>maxHeight</th>
-      <td><p>- a height in inches if size is not defined</p></td>
+      <td><ul>
+<li><p>a height in inches if size is not defined</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>rot</th>
-      <td><p>- an angle of rotation for the saved file if size is not defined</p></td>
+      <td><ul>
+<li><p>an angle of rotation for the saved file if size is not defined</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>formats</th>
-      <td><p>- some of "pdf","dot","svg","png","ps"</p></td>
+      <td><ul>
+<li><p>some of "pdf","dot","svg","png","ps"</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the SVG as a string</p>
+    <p>the result depends on the context, if in an interactive session a browseable result such as SVG, if in a knitr session html content or a link to a png or pdf file depending on the document type being knitted</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='dot2svg.html'>dot2svg</a></span><span class='op'>(</span><span class='st'>"digraph {A-&gt;B}"</span><span class='op'>)</span>

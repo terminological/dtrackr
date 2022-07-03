@@ -42,3 +42,12 @@ transmute, ungroup
 * fix for fix for multiple names join columns bug.
 * ungroup()  change to fit with dplyr::ungroup API.
 * fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.
+
+# dtrackr 0.2.4
+
+* second round fixes for CRAN. Improved examples in documentation. 
+* Print and plot S3 methods for history graph. 
+* Vignette fixes. 
+* Non breaking changes to API so bumping to new minor version for CRAN submission.
+* (Version to stay unstable until CRAN submission complete)
+

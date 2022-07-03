@@ -14,29 +14,41 @@
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
 \item{...}{a set of dplyr summary expressions.}
 
-\item{.groups}{- Experimental lifecycle Grouping structure of the result.}
+\item{.groups}{\itemize{
+\item Experimental lifecycle Grouping structure of the result.
+}}
 
-\item{.messages}{- a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
+}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}}
+\item{.headline}{\itemize{
+\item a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 }
 \value{
-the .data but ungrouped.
+the .data dataframe summarised with the history graph updated showing the summarise operation as a new stage
 }
 \description{
 Summarising a data set acts in the normal way. Any columns resulting form the summary can be added to the history graph
 In the history this joins any stratified branches and acts as a specific type of p_summary, allowing you to
-generate some summary statistics about the un-grouped data
+generate some summary statistics about the un-grouped data. See \code{\link[dplyr:summarise]{dplyr::summarise()}}.
 }
 \examples{
-iris \%>\%
-   p_group_by(Species) \%>\%
-   p_summarise(avg = mean(Petal.Length), .messages="{avg} length") \%>\%
-   p_get()
+library(dplyr)
+tmp = iris \%>\% group_by(Species)
+tmp \%>\% summarise(avg = mean(Petal.Length), .messages="{avg} length") \%>\% history()
+}
+\seealso{
+dplyr::summarise()
 }

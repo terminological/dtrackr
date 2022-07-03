@@ -58,10 +58,21 @@ Should be a character vector of length 2.}
 \item{keep}{Should the join keys from both \code{x} and \code{y} be preserved in the
 output?}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+}}
 
-\item{.headline}{- a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively}
+\item{.headline}{\itemize{
+\item a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
+}}
+}
+\value{
+the join of the two dataframes with the history graph updated.
 }
 \description{
-Mutating joins behave as dplyr joins
+Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+tracked dataframe with the history of both input dataframes. See \code{\link[dplyr:mutate-joins]{dplyr::full_join()}} for more details on the underlying functions.
+}
+\seealso{
+dplyr::full_join()
 }

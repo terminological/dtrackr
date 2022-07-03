@@ -23,16 +23,25 @@ list of data frames is supplied, the labels are taken from the
 names of the list. If no names are found a numeric sequence is
 used instead.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.count.out\}}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any global variable, or \{.count.out\}
+}}
 
-\item{.headline}{- a glue spec. The glue code can use any global variable, or \{.count.out\}}
+\item{.headline}{\itemize{
+\item a glue spec. The glue code can use any global variable, or \{.count.out\}
+}}
 }
 \value{
-the union data frame
+the logical union of the dataframes with the history graph updated.
 }
 \description{
 This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as {.count.out}
+in other terms it performs exactly the same operation as dplyr::bind_rows. See \code{\link[dplyr:bind]{dplyr::bind_rows()}}.
 }
 \examples{
-p_bind_rows( iris \%>\% p_comment("one"), iris \%>\% p_comment("two") ) \%>\% p_get()
+library(dplyr)
+bind_rows( iris \%>\% comment("one"), iris \%>\% comment("two") ) \%>\% history()
+}
+\seealso{
+dplyr::bind_rows()
 }

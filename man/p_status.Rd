@@ -15,31 +15,51 @@ p_status(
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
-\item{...}{- any normal dplyr::summarise specification, e.g. count=n() or av=mean(x) etc.}
+\item{...}{\itemize{
+\item any normal dplyr::summarise specification, e.g. count=n() or av=mean(x) etc.
+}}
 
-\item{.messages}{- a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the \{.strata\}, or any variables defined in the calling environment}
+\item{.messages}{\itemize{
+\item a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the \{.strata\}, or any variables defined in the calling environment
+}}
 
-\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment}
+\item{.headline}{\itemize{
+\item a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
+}}
 
-\item{.type}{- one of "info","exclusion": used to define formatting}
+\item{.type}{\itemize{
+\item one of "info","exclusion": used to define formatting
+}}
 
-\item{.asOffshoot}{- do you want this comment to be an offshoot of the main flow (default = FALSE).}
+\item{.asOffshoot}{\itemize{
+\item do you want this comment to be an offshoot of the main flow (default = FALSE).
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 }
 \value{
-the same .data dataframe with the history graph updated
+the same .data dataframe with the history metadata updated with the status inserted as a new stage
 }
 \description{
+In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts.
+\code{status} is essentially a \code{dplyr} summarisation step which is connected to a \code{glue} specification output,
+that is recorded in the data frame history. This means you can do an arbitrary summarisation and put the result into the flowchart.
+}
+\details{
 Because of the ... summary specification parameters MUST BE NAMED.
 }
 \examples{
-iris \%>\% p_group_by(Species) \%>\%
-   p_status(
+library(dplyr)
+tmp = iris \%>\% track() \%>\% group_by(Species)
+tmp \%>\% status(
       long = p_count_if(Petal.Length>5),
       short = p_count_if(Petal.Length<2),
       .messages="{Species}: {long} long ones & {short} short ones"
-   ) \%>\% p_get()
+) \%>\% history()
 }

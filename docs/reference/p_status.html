@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Add a summary to the dtrackr history graph — p_status" />
-<meta property="og:description" content="Because of the ... summary specification parameters MUST BE NAMED." />
+<meta property="og:description" content="In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts.
+status is essentially a dplyr summarisation step which is connected to a glue specification output,
+that is recorded in the data frame history. This means you can do an arbitrary summarisation and put the result into the flowchart." />
 
 
 
@@ -72,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -98,13 +100,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -133,7 +135,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Because of the ... summary specification parameters MUST BE NAMED.</p>
+    <p>In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts.
+<code>status</code> is essentially a <code>dplyr</code> summarisation step which is connected to a <code>glue</code> specification output,
+that is recorded in the data frame history. This means you can do an arbitrary summarisation and put the result into the flowchart.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_status</span><span class='op'>(</span>
@@ -151,80 +155,67 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><p>- a dataframe which may be grouped</p></td>
+      <td><ul>
+<li><p>a dataframe which may be grouped</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>- any normal dplyr::summarise specification, e.g. count=n() or av=mean(x) etc.</p></td>
+      <td><ul>
+<li><p>any normal dplyr::summarise specification, e.g. count=n() or av=mean(x) etc.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the {.strata}, or any variables defined in the calling environment</p></td>
+      <td><ul>
+<li><p>a character vector of glue specifications. A glue specification can refer to the summary outputs, any grouping variables of .data, the {.strata}, or any variables defined in the calling environment</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></td>
+      <td><ul>
+<li><p>a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.type</th>
-      <td><p>- one of "info","exclusion": used to define formatting</p></td>
+      <td><ul>
+<li><p>one of "info","exclusion": used to define formatting</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.asOffshoot</th>
-      <td><p>- do you want this comment to be an offshoot of the main flow (default = FALSE).</p></td>
+      <td><ul>
+<li><p>do you want this comment to be an offshoot of the main flow (default = FALSE).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><p>- if you want the summary data from this step in the future then give it a name with .tag.</p></td>
+      <td><ul>
+<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the same .data dataframe with the history graph updated</p>
+    <p>the same .data dataframe with the history metadata updated with the status inserted as a new stage</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Because of the ... summary specification parameters MUST BE NAMED.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_group_by.html'>p_group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-   <span class='fu'>p_status</span><span class='op'>(</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='va'>tmp</span> <span class='op'>=</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span>
+<span class='va'>tmp</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='status.html'>status</a></span><span class='op'>(</span>
       long <span class='op'>=</span> <span class='fu'><a href='p_count_if.html'>p_count_if</a></span><span class='op'>(</span><span class='va'>Petal.Length</span><span class='op'>&gt;</span><span class='fl'>5</span><span class='op'>)</span>,
       short <span class='op'>=</span> <span class='fu'><a href='p_count_if.html'>p_count_if</a></span><span class='op'>(</span><span class='va'>Petal.Length</span><span class='op'>&lt;</span><span class='fl'>2</span><span class='op'>)</span>,
       .messages<span class='op'>=</span><span class='st'>"{Species}: {long} long ones &amp; {short} short ones"</span>
-   <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $excluded
-#&gt; NULL
-#&gt; 
-#&gt; $capture
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $tags
-#&gt; <span style='color: #949494;'># A tibble: 0 × 2</span><span>
-#&gt; </span><span style='color: #949494;'># … with 2 variables: .tag &lt;chr&gt;, .content &lt;list&gt;</span><span>
-#&gt; 
-#&gt; $nodes
-#&gt; </span><span style='color: #949494;'># A tibble: 4 × 6</span><span>
-#&gt;     .id .rank .strata              .label                           .type .stage
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                            </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>                   stratify by Species&lt;BR ALIGN='L… stra… </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     2 </span><span style='color: #949494;'>"</span><span>Species:setosa</span><span style='color: #949494;'>"</span><span>     &lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN=… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     2 </span><span style='color: #949494;'>"</span><span>Species:versicolor</span><span style='color: #949494;'>"</span><span> &lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR AL… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4     2 </span><span style='color: #949494;'>"</span><span>Species:virginica</span><span style='color: #949494;'>"</span><span>  &lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALI… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; 
-#&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 3 × 5</span><span>
-#&gt;     .to .from .rel  .strata            .strata.prev
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2     1 info  Species:setosa     </span><span style='color: #949494;'>""</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3     1 info  Species:versicolor </span><span style='color: #949494;'>""</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     4     1 info  Species:virginica  </span><span style='color: #949494;'>""</span><span>          
-#&gt; 
-#&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 3 × 2</span><span>
-#&gt;   .from .strata           
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2 Species:setosa    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3 Species:versicolor
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     4 Species:virginica 
-#&gt; </div></span></pre>
+<span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

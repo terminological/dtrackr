@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Union of two or more data sets — p_bind_rows" />
-<meta property="og:description" content="This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as .count.out" />
+<meta property="og:description" content="This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as .count.out
+in other terms it performs exactly the same operation as dplyr::bind_rows. See dplyr::bind_rows()." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -98,13 +99,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -133,7 +134,8 @@
     </div>
 
     <div class="ref-description">
-    <p>This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as .count.out</p>
+    <p>This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as .count.out
+in other terms it performs exactly the same operation as dplyr::bind_rows. See <code><a href='https://dplyr.tidyverse.org/reference/bind.html'>dplyr::bind_rows()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_bind_rows</span><span class='op'>(</span>
@@ -162,51 +164,32 @@ used instead.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a set of glue specs. The glue code can use any global variable, or {.count.out}</p></td>
+      <td><ul>
+<li><p>a set of glue specs. The glue code can use any global variable, or {.count.out}</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a glue spec. The glue code can use any global variable, or {.count.out}</p></td>
+      <td><ul>
+<li><p>a glue spec. The glue code can use any global variable, or {.count.out}</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the union data frame</p>
+    <p>the logical union of the dataframes with the history graph updated.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>dplyr::bind_rows()</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>p_bind_rows</span><span class='op'>(</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_comment.html'>p_comment</a></span><span class='op'>(</span><span class='st'>"one"</span><span class='op'>)</span>, <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_comment.html'>p_comment</a></span><span class='op'>(</span><span class='st'>"two"</span><span class='op'>)</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $excluded
-#&gt; NULL
-#&gt; 
-#&gt; $capture
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $tags
-#&gt; <span style='color: #949494;'># A tibble: 0 × 2</span><span>
-#&gt; </span><span style='color: #949494;'># … with 2 variables: .tag &lt;chr&gt;, .content &lt;list&gt;</span><span>
-#&gt; 
-#&gt; $nodes
-#&gt; </span><span style='color: #949494;'># A tibble: 3 × 6</span><span>
-#&gt;     .id .rank .strata .label                                        .type .stage
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                                         </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>      one&lt;BR ALIGN='LEFT'/&gt;                         info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     1 </span><span style='color: #949494;'>""</span><span>      two&lt;BR ALIGN='LEFT'/&gt;                         info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     2 </span><span style='color: #949494;'>""</span><span>      &lt;B&gt;Union&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;300 in union&lt;B… comb… </span><span style='color: #949494;'>""</span><span>    
-#&gt; 
-#&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 2 × 5</span><span>
-#&gt;     .to .from .rel    .strata .strata.prev
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     3     1 combine </span><span style='color: #949494;'>""</span><span>      </span><span style='color: #949494;'>""</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3     2 combine </span><span style='color: #949494;'>""</span><span>      </span><span style='color: #949494;'>""</span><span>          
-#&gt; 
-#&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 1 × 2</span><span>
-#&gt;   .from .strata
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     3 </span><span style='color: #949494;'>""</span><span>     
-#&gt; </div></span></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='fu'><a href='bind_rows.html'>bind_rows</a></span><span class='op'>(</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"one"</span><span class='op'>)</span>, <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"two"</span><span class='op'>)</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 1 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

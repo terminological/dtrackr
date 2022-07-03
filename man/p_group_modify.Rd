@@ -16,39 +16,53 @@ p_group_modify(
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
 \item{.f}{a function as expected by dplyr::group_modify e.g. function(d,g,...) { ...do something with d and return a dataframe... }}
 
 \item{...}{additional parameters for .f.}
 
-\item{.keep}{- are the grouping variables kept in d, or split out to g (the default)}
+\item{.keep}{\itemize{
+\item are the grouping variables kept in d, or split out to g (the default)
+}}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
+\item{.headline}{\itemize{
+\item a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+}}
 
-\item{.type}{- default "modify": used to define formatting}
+\item{.type}{\itemize{
+\item default "modify": used to define formatting
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 }
 \value{
-the transformed .data.
+the transformed .data dataframe with the history graph updated.
 }
 \description{
 Group modifying a data set acts in the normal way. The internal mechanics of the modify function are opaque to the history.
-This means these can be used to wrap any unsupported operation without losing the history (e.g. `df %>% track() %>% group_modify(function(d,...) { d %>% unsupported_operation() })` )
+This means these can be used to wrap any unsupported operation without losing the history (e.g. \code{df \%>\% track() \%>\% group_modify(function(d,...) { d \%>\% unsupported_operation() })} )
 Prior to the operation the size of the group is calculated \{.count.in\} and
 after the operation the output size \{.count.out\}
 The group \{.strata\} is also available (if grouped) for reporting
+See \code{\link[dplyr:group_map]{dplyr::group_modify()}}.
 }
 \examples{
-iris \%>\%
-   p_track() \%>\%
-   p_group_by(Species) \%>\%
-   p_group_modify(
+library(dplyr)
+tmp = iris \%>\% track() \%>\% group_by(Species)
+tmp \%>\% group_modify(
       function(d,g,...) { return(tibble::tibble(x=runif(10))) },
       .messages="{.count.in} in, {.count.out} out"
-   ) \%>\%
-   p_get()
+) \%>\% history()
+}
+\seealso{
+dplyr::group_modify()
 }

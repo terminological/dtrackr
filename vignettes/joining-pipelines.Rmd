@@ -1,8 +1,8 @@
 ---
-title: "Dtrackr - Joining data pipelines"
+title: "dtrackr - Joining data pipelines"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Dtrackr - Joining data pipelines}
+  %\VignetteIndexEntry{dtrackr - Joining data pipelines}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -11,6 +11,6 @@ An object of class \code{list} of length 8.
 std_size
 }
 \description{
-Standard paper sizes
+A list of standard paper sizes
 }
 \keyword{datasets}

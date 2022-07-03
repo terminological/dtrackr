@@ -14,25 +14,40 @@ p_comment(
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
-\item{.messages}{- a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} of all rows,
-the \{.count\} variable which is the count in each group and \{.strata\} a description of the group}
+\item{.messages}{\itemize{
+\item a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} of all rows,
+the \{.count\} variable which is the count in each group and \{.strata\} a description of the group
+}}
 
-\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data)and \{.strata\}}
+\item{.headline}{\itemize{
+\item a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data)and \{.strata\}
+}}
 
-\item{.type}{- one of "info","...,"exclusion": used to define formatting}
+\item{.type}{\itemize{
+\item one of "info","...,"exclusion": used to define formatting
+}}
 
-\item{.asOffshoot}{- do you want this comment to be an offshoot of the main flow (default = FALSE).}
+\item{.asOffshoot}{\itemize{
+\item do you want this comment to be an offshoot of the main flow (default = FALSE).
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 }
 \value{
-the same .data dataframe with the history graph updated
+the same .data dataframe with the history graph updated with the comment
 }
 \description{
-Add a generic comment to the dtrackr history graph
+A comment can be any kind fo note and is added once for every current grouping as defined by the \code{.message} field. It can be made context specific
+by including variables such as \{.count\} and \{.total\} in \code{.message} which refer to the grouped and ungrouped counts at this current stage of the pipeline for example.
+It can also pull in any global variable.
 }
 \examples{
-iris \%>\% p_comment("hello {.total} rows")
+library(dplyr)
+iris \%>\% track() \%>\% comment("hello {.total} rows") \%>\% history()
 }

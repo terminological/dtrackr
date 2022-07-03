@@ -15,29 +15,44 @@ p_distinct(
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
 \item{.f}{a function as expected by dplyr::group_modify e.g. function(d,g,...) { ...do something with d and return a dataframe... }}
 
 \item{...}{additional parameters for .f.}
 
-\item{.keep}{- are the grouping variables kept in d, or split out to g (the default)}
+\item{.keep}{\itemize{
+\item are the grouping variables kept in d, or split out to g (the default)
+}}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
+\item{.headline}{\itemize{
+\item a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 }
 \value{
-the transformed .data.
+the .data dataframe with distinct values and history graph updated.
 }
 \description{
-Distinct acts in the same way as in `dplyr`. Prior to the operation the size of the group is calculated \{.count.in\} and
+Distinct acts in the same way as in \code{dplyr::distinct}. Prior to the operation the size of the group is calculated \{.count.in\} and
 after the operation the output size \{.count.out\}
 The group \{.strata\} is also available (if grouped) for reporting
+See \code{\link[dplyr:distinct]{dplyr::distinct()}}.
 }
 \examples{
-p_bind_rows(iris, iris \%>\% p_filter(Petal.Length > 5)) \%>\%
-   p_group_by(Species) \%>\% p_distinct() \%>\% p_get()
+library(dplyr)
+tmp = bind_rows(iris \%>\% track(), iris \%>\% track() \%>\% filter(Petal.Length > 5))
+tmp \%>\% group_by(Species) \%>\% distinct() \%>\% history()
+}
+\seealso{
+dplyr::distinct()
 }

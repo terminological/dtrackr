@@ -40,11 +40,12 @@
 
 
 <meta property="og:title" content="Stratifying your analysis — group_by.trackr_df" />
-<meta property="og:description" content="Grouping a data set acts in the normal way. When tracking a dataframe sometimes a `group_by()` operation will create a lot of groups.
-This happens for example if you are doing a `group_by()`, `summarise()` step that is aggregating data on a fine scale, e.g. by day in a timeseries.
-This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. `dtrackr` will detect this issue
-and pause tracking the dataframe with a warning. It is up to the user to the `resume()` tracking when the large number of groups have been
-resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `options(&quot;dtrackr.max_supported_groupings&quot;=XX)`. The default is 16." />
+<meta property="og:description" content="Grouping a data set acts in the normal way. When tracking a dataframe sometimes a group_by() operation will create a lot of groups.
+This happens for example if you are doing a group_by(), summarise() step that is aggregating data on a fine scale, e.g. by day in a timeseries.
+This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. dtrackr will detect this issue
+and pause tracking the dataframe with a warning. It is up to the user to the resume() tracking when the large number of groups have been
+resolved e.g. using a dplyr::ungroup(). This limit is configurable with options(&quot;dtrackr.max_supported_groupings&quot;=XX). The default is 16.
+See dplyr::group_by()." />
 
 
 
@@ -76,7 +77,7 @@ resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `optio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -102,13 +103,13 @@ resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `optio
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -137,15 +138,16 @@ resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `optio
     </div>
 
     <div class="ref-description">
-    <p>Grouping a data set acts in the normal way. When tracking a dataframe sometimes a `group_by()` operation will create a lot of groups.
-This happens for example if you are doing a `group_by()`, `summarise()` step that is aggregating data on a fine scale, e.g. by day in a timeseries.
-This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. `dtrackr` will detect this issue
-and pause tracking the dataframe with a warning. It is up to the user to the `resume()` tracking when the large number of groups have been
-resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.</p>
+    <p>Grouping a data set acts in the normal way. When tracking a dataframe sometimes a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by()</a></code> operation will create a lot of groups.
+This happens for example if you are doing a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise()</a></code> step that is aggregating data on a fine scale, e.g. by day in a timeseries.
+This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. <code>dtrackr</code> will detect this issue
+and pause tracking the dataframe with a warning. It is up to the user to the <code><a href='resume.html'>resume()</a></code> tracking when the large number of groups have been
+resolved e.g. using a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::ungroup()</a></code>. This limit is configurable with <code><a href='https://rdrr.io/r/base/options.html'>options("dtrackr.max_supported_groupings"=XX)</a></code>. The default is 16.
+See <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::group_by()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for trackr_df</span>
-<span class='fu'>group_by</span><span class='op'>(</span>
+<span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span>
   <span class='va'>.data</span>,
   <span class='va'>...</span>,
   .add <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -161,7 +163,9 @@ resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `optio
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><p>- a dataframe which may be grouped</p></td>
+      <td><ul>
+<li><p>a dataframe which may be grouped</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>...</th>
@@ -169,7 +173,7 @@ resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `optio
     </tr>
     <tr>
       <th>.add</th>
-      <td><p>When <code>FALSE</code>, the default, <code>group_by()</code> will
+      <td><p>When <code>FALSE</code>, the default, <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by()</a></code> will
 override existing groups. To add to the existing groups, use
 <code>.add = TRUE</code>.</p>
 <p>This argument was previously called <code>add</code>, but that prevented
@@ -184,63 +188,45 @@ grouped with <code>.drop = FALSE</code>. See <code><a href='https://dplyr.tidyve
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a set of glue specs. The glue code can use any global variable, or {.cols} which is the columns that are being grouped by.</p></td>
+      <td><ul>
+<li><p>a set of glue specs. The glue code can use any global variable, or {.cols} which is the columns that are being grouped by.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a headline glue spec. The glue code can use any global variable, or {.cols}.</p></td>
+      <td><ul>
+<li><p>a headline glue spec. The glue code can use any global variable, or {.cols}.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><p>- if you want the summary data from this step in the future then give it a name with .tag.</p></td>
+      <td><ul>
+<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.maxgroups</th>
-      <td><p>- the maximum number of subgroups allowed before the tracking is paused.</p></td>
+      <td><ul>
+<li><p>the maximum number of subgroups allowed before the tracking is paused.</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>the .data but grouped.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>dplyr::group_by()</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_group_by.html'>p_group_by</a></span><span class='op'>(</span><span class='va'>Species</span>, .messages<span class='op'>=</span><span class='st'>"stratify by {.cols}"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_comment.html'>p_comment</a></span><span class='op'>(</span><span class='st'>"{.strata}"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $excluded
-#&gt; NULL
-#&gt; 
-#&gt; $capture
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $tags
-#&gt; <span style='color: #949494;'># A tibble: 0 × 2</span><span>
-#&gt; </span><span style='color: #949494;'># … with 2 variables: .tag &lt;chr&gt;, .content &lt;list&gt;</span><span>
-#&gt; 
-#&gt; $nodes
-#&gt; </span><span style='color: #949494;'># A tibble: 4 × 6</span><span>
-#&gt;     .id .rank .strata              .label                           .type .stage
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                            </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>                   stratify by Species&lt;BR ALIGN='L… stra… </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     2 </span><span style='color: #949494;'>"</span><span>Species:setosa</span><span style='color: #949494;'>"</span><span>     &lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN=… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     2 </span><span style='color: #949494;'>"</span><span>Species:versicolor</span><span style='color: #949494;'>"</span><span> &lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR AL… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4     2 </span><span style='color: #949494;'>"</span><span>Species:virginica</span><span style='color: #949494;'>"</span><span>  &lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALI… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; 
-#&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 3 × 5</span><span>
-#&gt;     .to .from .rel  .strata            .strata.prev
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2     1 info  Species:setosa     </span><span style='color: #949494;'>""</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3     1 info  Species:versicolor </span><span style='color: #949494;'>""</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     4     1 info  Species:virginica  </span><span style='color: #949494;'>""</span><span>          
-#&gt; 
-#&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 3 × 2</span><span>
-#&gt;   .from .strata           
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2 Species:setosa    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3 Species:versicolor
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     4 Species:virginica 
-#&gt; </div></span></pre>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='va'>tmp</span> <span class='op'>=</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span>, .messages<span class='op'>=</span><span class='st'>"stratify by {.cols}"</span><span class='op'>)</span>
+<span class='va'>tmp</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.strata}"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

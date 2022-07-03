@@ -13,30 +13,39 @@
 )
 }
 \arguments{
-\item{x}{- a dataframe which may be grouped (why not .data?)}
+\item{x}{\itemize{
+\item a dataframe which may be grouped (why not .data?)
+}}
 
-\item{...}{- passed to dplyr::ungroup()}
+\item{...}{\itemize{
+\item passed to dplyr::ungroup()
+}}
 
-\item{.messages}{- a set of glue specs. The glue code can use any any global variable, or \{.count\}. the default is "total \{.count\} items"}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any any global variable, or \{.count\}. the default is "total \{.count\} items"
+}}
 
-\item{.headline}{- a headline glue spec. The glue code can use \{.count\} and \{.strata\}.}
+\item{.headline}{\itemize{
+\item a headline glue spec. The glue code can use \{.count\} and \{.strata\}.
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 }
 \value{
-the .data but dplyr::ungrouped.
+the .data dataframe but dplyr::ungrouped with the history graph updated showing the ungroup operation as a new stage.
 }
 \description{
 Un-grouping a data set logically combines the different arms.
 In the history this joins any stratified branches and acts as a specific type of p_summary, allowing you to
-generate some summary statistics about the un-grouped data
+generate some summary statistics about the un-grouped data. See \code{\link[dplyr:group_by]{dplyr::ungroup()}}.
 }
 \examples{
-iris \%>\%
-   p_group_by(Species) \%>\%
-   p_comment("A test") \%>\%
-   p_ungroup(
-      .messages="{.count} items"
-   ) \%>\%
-   p_get()
+library(dplyr)
+tmp = iris \%>\% group_by(Species) \%>\% comment("A test")
+tmp \%>\% ungroup(.messages="{.count} items") \%>\% history()
+}
+\seealso{
+dplyr::ungroup()
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dtrackr.R
 \name{pivot_longer.trackr_df}
 \alias{pivot_longer.trackr_df}
-\title{Reshaping data using tidyr - pivot_longer}
+\title{Reshaping data using \code{tidyr::pivot_longer}}
 \usage{
 \method{pivot_longer}{trackr_df}(
   data,
@@ -145,15 +145,25 @@ will be the common type of the input columns used to generate them.}
 
 \item{...}{Additional arguments passed on to methods.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.}
+\item{.headline}{\itemize{
+\item a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 }
 \value{
-the result of the pivot_wider but with a history graph.
+the result of the tidyr::pivot_wider but with a history graph updated.
 }
 \description{
-A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph
+A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph.
+See \code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}.
+}
+\seealso{
+tidyr::pivot_longer()
 }

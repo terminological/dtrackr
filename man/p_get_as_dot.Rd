@@ -7,19 +7,35 @@
 p_get_as_dot(.data, fill = "lightgrey", fontsize = "8", colour = "black", ...)
 }
 \arguments{
-\item{.data}{- the tracked dataframe}
+\item{.data}{\itemize{
+\item the tracked dataframe
+}}
 
-\item{fill}{- the default node fill colour}
+\item{fill}{\itemize{
+\item the default node fill colour
+}}
 
-\item{fontsize}{- the default font size}
+\item{fontsize}{\itemize{
+\item the default font size
+}}
 
-\item{colour}{- the default font colour}
+\item{colour}{\itemize{
+\item the default font colour
+}}
 
-\item{...}{- not used}
+\item{...}{\itemize{
+\item not used
+}}
 }
 \value{
-a dot string
+a representation of the history graph in \code{Graphviz} dot format.
 }
 \description{
-Outputs a dtrackr history graph as a DOT string for rendering with graphviz
+(advance usage) outputs a dtrackr history graph as a DOT string for rendering with \code{Graphviz}
+}
+\examples{
+library(dplyr)
+tmp = iris \%>\% track() \%>\% comment(.tag = "step1") \%>\% filter(Species!="versicolor")
+dot = tmp \%>\% group_by(Species) \%>\% comment(.tag="step2") \%>\% p_get_as_dot()
+cat(dot)
 }

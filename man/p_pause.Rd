@@ -7,11 +7,17 @@
 p_pause(.data)
 }
 \arguments{
-\item{.data}{- a tracked dataframe}
+\item{.data}{\itemize{
+\item a tracked dataframe
+}}
 }
 \value{
-the dataframe paused
+the .data dataframe with history graph tracking paused
 }
 \description{
 Pause tracking the dataframe
+}
+\examples{
+library(dplyr)
+iris \%>\% track() \%>\% pause() \%>\% history()
 }

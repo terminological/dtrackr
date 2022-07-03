@@ -17,35 +17,51 @@ count_subgroup(
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
-\item{.subgroup}{- a column with a small number of levels (e.g.)}
+\item{.subgroup}{\itemize{
+\item a column with a small number of levels (e.g.)
+}}
 
-\item{...}{- additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.}
+\item{...}{\itemize{
+\item additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.
+}}
 
-\item{.messages}{- a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for the subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count}
+\item{.messages}{\itemize{
+\item a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for the subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count
+}}
 
-\item{.headline}{- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment}
+\item{.headline}{\itemize{
+\item a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
+}}
 
-\item{.type}{- one of "info","exclusion": used to define formatting}
+\item{.type}{\itemize{
+\item one of "info","exclusion": used to define formatting
+}}
 
-\item{.asOffshoot}{- do you want this comment to be an offshoot of the main flow (default = FALSE).}
+\item{.asOffshoot}{\itemize{
+\item do you want this comment to be an offshoot of the main flow (default = FALSE).
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 
-\item{.maxsubgroups}{- the maximum number of discrete values allowed is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.}
+\item{.maxsubgroups}{\itemize{
+\item the maximum number of discrete values allowed is configurable with \code{options("dtrackr.max_supported_groupings"=XX)}. The default is 16.
+}}
 }
 \value{
-the same .data dataframe with the history graph updated
+the same .data dataframe with the history graph updated with a subgroup count as a new stage
 }
 \description{
-Because of the ... summary specification parameters MUST BE NAMED.
+A frequent use case for more detailed description is to have a subgroup count within a flowchart.
+This works best for factor subgroup columns but other data will be converted to a factor automatically.
+The count of the items in each subgroup is added as a new stage in the flowchart.
 }
 \examples{
-ILPD \%>\% p_group_by(Case_or_Control) \%>\%
-   p_count_subgroup(
-      .subgroup = Gender,
-      .messages="{.name}: {.count}/{.subtotal}",
-      .headline="{Case_or_Control}: {.subtotal}/{.total}"
-   ) \%>\% p_get()
+library(dplyr)
+ILPD \%>\% track() \%>\% group_by(Case_or_Control) \%>\% count_subgroup(Gender) \%>\% history()
 }

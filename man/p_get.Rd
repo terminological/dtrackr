@@ -7,14 +7,29 @@
 p_get(.data)
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 }
 \value{
-the history graph
+the history graph. This is a list, of class trackr_graph, containing the following named items:
+\itemize{
+\item excluded - the data items that have been excluded thus far as a nested dataframe
+\item tags - a dataframe of tag-value pairs containing the summary of the data at named points in the data flow (see \code{\link[=tagged]{tagged()}})
+\item nodes - a dataframe of the nodes of the flow chart
+\item edges - an edgelist (as a dataframe) of the relationships between the nodes in the flow chart
+\item head - the current most recent nodes added into the graph as a dataframe.
+}
+
+The format of this data may grow over time but these fields are unlikely to be changed.
 }
 \description{
-Get the dtrackr history graph
+This provides the raw history graph and is not really intended for mainstream use.
+The internal structure of the graph is explained below. print and plot S3 methods exist for
+the dtrackr history graph.
 }
 \examples{
-iris \%>\% p_comment("A comment") \%>\% p_get()
+library(dplyr)
+graph = iris \%>\% track() \%>\% comment("A comment") \%>\% history()
+ls(graph)
 }

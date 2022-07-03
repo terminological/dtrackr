@@ -16,7 +16,9 @@
 )
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
 \item{...}{a set of dplyr column expressions.}
 
@@ -32,24 +34,38 @@ our naming conventions.}
 data? The default is \code{TRUE} except when \code{.data} has been previously
 grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{group_by_drop_default()}} for details.}
 
-\item{.messages}{- a set of glue specs. The glue code can use any global variable, or \{.cols\} which is the columns that are being grouped by.}
+\item{.messages}{\itemize{
+\item a set of glue specs. The glue code can use any global variable, or \{.cols\} which is the columns that are being grouped by.
+}}
 
-\item{.headline}{- a headline glue spec. The glue code can use any global variable, or \{.cols\}.}
+\item{.headline}{\itemize{
+\item a headline glue spec. The glue code can use any global variable, or \{.cols\}.
+}}
 
-\item{.tag}{- if you want the summary data from this step in the future then give it a name with .tag.}
+\item{.tag}{\itemize{
+\item if you want the summary data from this step in the future then give it a name with .tag.
+}}
 
-\item{.maxgroups}{- the maximum number of subgroups allowed before the tracking is paused.}
+\item{.maxgroups}{\itemize{
+\item the maximum number of subgroups allowed before the tracking is paused.
+}}
 }
 \value{
 the .data but grouped.
 }
 \description{
-Grouping a data set acts in the normal way. When tracking a dataframe sometimes a `group_by()` operation will create a lot of groups.
-This happens for example if you are doing a `group_by()`, `summarise()` step that is aggregating data on a fine scale, e.g. by day in a timeseries.
-This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. `dtrackr` will detect this issue
-and pause tracking the dataframe with a warning. It is up to the user to the `resume()` tracking when the large number of groups have been
-resolved e.g. using a `dplyr::ungroup()`. This limit is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.
+Grouping a data set acts in the normal way. When tracking a dataframe sometimes a \code{group_by()} operation will create a lot of groups.
+This happens for example if you are doing a \code{group_by()}, \code{summarise()} step that is aggregating data on a fine scale, e.g. by day in a timeseries.
+This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. \code{dtrackr} will detect this issue
+and pause tracking the dataframe with a warning. It is up to the user to the \code{resume()} tracking when the large number of groups have been
+resolved e.g. using a \code{dplyr::ungroup()}. This limit is configurable with \code{options("dtrackr.max_supported_groupings"=XX)}. The default is 16.
+See \code{\link[dplyr:group_by]{dplyr::group_by()}}.
 }
 \examples{
-iris \%>\% p_group_by(Species, .messages="stratify by {.cols}") \%>\% p_comment("{.strata}") \%>\% p_get()
+library(dplyr)
+tmp = iris \%>\% track() \%>\% group_by(Species, .messages="stratify by {.cols}")
+tmp \%>\% comment("{.strata}") \%>\% history()
+}
+\seealso{
+dplyr::group_by()
 }

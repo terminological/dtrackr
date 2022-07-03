@@ -7,11 +7,17 @@
 p_untrack(.data)
 }
 \arguments{
-\item{.data}{- a tracked dataframe}
+\item{.data}{\itemize{
+\item a tracked dataframe
+}}
 }
 \value{
-the dataframe with no history
+the .data dataframe with history graph metadata removed.
 }
 \description{
 Remove tracking from the dataframe
+}
+\examples{
+library(dplyr)
+iris \%>\% track() \%>\% untrack() \%>\% class()
 }

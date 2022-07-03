@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Full join — full_join.trackr_df" />
-<meta property="og:description" content="Mutating joins behave as dplyr joins" />
+<meta property="og:description" content="Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+tracked dataframe with the history of both input dataframes. See dplyr::full_join() for more details on the underlying functions." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -98,13 +99,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -133,11 +134,12 @@
     </div>
 
     <div class="ref-description">
-    <p>Mutating joins behave as dplyr joins</p>
+    <p>Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
+tracked dataframe with the history of both input dataframes. See <code><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>dplyr::full_join()</a></code> for more details on the underlying functions.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for trackr_df</span>
-<span class='fu'>full_join</span><span class='op'>(</span>
+<span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>full_join</a></span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>y</span>,
   by <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -205,14 +207,24 @@ output?</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively</p></td>
+      <td><ul>
+<li><p>a set of glue specs. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively</p></td>
+      <td><ul>
+<li><p>a glue spec. The glue code can use any global variable, {.keys} for the joining columns, {.count.lhs}, {.count.rhs}, {.count.out} for the input and output dataframes sizes respectively</p></li>
+</ul></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>the join of the two dataframes with the history graph updated.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>dplyr::full_join()</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

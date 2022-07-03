@@ -1,8 +1,11 @@
 ---
-title: "Dtrackr - Consort statement example"
+title: "dtrackr - Consort statement example"
 output: rmarkdown::html_vignette
+# output: html_document
+# output: pdf_document
+# output: word_document
 vignette: >
-  %\VignetteIndexEntry{Dtrackr - Consort statement example}
+  %\VignetteIndexEntry{dtrackr - Consort statement example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: dtrackr.bib
@@ -41,10 +44,12 @@ This can be coded into the `dplyr` pipeline, with additional `dtrackr` functions
 
 ```{r}
 # Some useful formatting options
-options(dtrackr.strata_glue="{tolower(.value)}")
-options(dtrackr.strata_sep=", ")
-options(dtrackr.default_message = "{.count} patients")
-options(dtrackr.default_headline = NULL)
+old = options(
+  dtrackr.strata_glue="{tolower(.value)}",
+  dtrackr.strata_sep=", ",
+  dtrackr.default_message = "{.count} patients",
+  dtrackr.default_headline = NULL
+)
 
 ilpd = dtrackr::ILPD %>% 
   track() %>%
@@ -70,13 +75,16 @@ ilpd = dtrackr::ILPD %>%
   ) %>%
   ungroup(.messages = "{.count} in final data set")
 
+# restore to originals
+options(old)
 ```
 
 With a bit of experimentation the flowchart needed for a STROBE/CONSORT checklist can be generated. One option to output the flowchart is `SVG` which can then be manually formatted as required, but for publication ready output `pdf` is usually preferred.
 
 ```{r}
 # saving this flowchart for the JOSS paper.
-ilpd %>% flowchart(filename = here::here("vignettes/joss/figure1-ilpd-consort.pdf"))
+# ilpd %>% flowchart(filename = here::here("vignettes/joss/figure1-ilpd-consort.pdf"))
+ilpd %>% flowchart()
 ```
 
 # Excluded data

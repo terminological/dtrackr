@@ -7,16 +7,21 @@
 p_copy(.data, from)
 }
 \arguments{
-\item{.data}{- a dataframe which may be grouped}
+\item{.data}{\itemize{
+\item a dataframe which may be grouped
+}}
 
-\item{from}{- the dataframe to copy the history graph from}
+\item{from}{\itemize{
+\item the dataframe to copy the history graph from
+}}
 }
 \value{
-the .data with the history graph of "from"
+the .data dataframe with the history graph of "from"
 }
 \description{
 Copy the dtrackr history graph from one df to another
 }
 \examples{
-mtcars \%>\% p_copy(iris \%>\% p_comment("A comment"))
+library(dplyr)
+mtcars \%>\% p_copy(iris \%>\% comment("A comment")) \%>\% history()
 }

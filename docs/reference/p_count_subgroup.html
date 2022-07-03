@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Add a subgroup count to the dtrackr history graph — p_count_subgroup" />
-<meta property="og:description" content="Because of the ... summary specification parameters MUST BE NAMED." />
+<meta property="og:description" content="A frequent use case for more detailed description is to have a subgroup count within a flowchart.
+This works best for factor subgroup columns but other data will be converted to a factor automatically.
+The count of the items in each subgroup is added as a new stage in the flowchart." />
 
 
 
@@ -72,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
       </span>
     </div>
 
@@ -98,13 +100,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/consort-example.html">Dtrackr - Consort statement example</a>
+      <a href="../articles/consort-example.html">dtrackr - Consort statement example</a>
     </li>
     <li>
-      <a href="../articles/dtrackr-options.html">Dtrackr - configuration example</a>
+      <a href="../articles/dtrackr-options.html">dtrackr - Configuration example</a>
     </li>
     <li>
-      <a href="../articles/joining-pipelines.html">Dtrackr - Joining data pipelines</a>
+      <a href="../articles/joining-pipelines.html">dtrackr - Joining data pipelines</a>
     </li>
   </ul>
 </li>
@@ -133,7 +135,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Because of the ... summary specification parameters MUST BE NAMED.</p>
+    <p>A frequent use case for more detailed description is to have a subgroup count within a flowchart.
+This works best for factor subgroup columns but other data will be converted to a factor automatically.
+The count of the items in each subgroup is added as a new stage in the flowchart.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_count_subgroup</span><span class='op'>(</span>
@@ -153,85 +157,64 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><p>- a dataframe which may be grouped</p></td>
+      <td><ul>
+<li><p>a dataframe which may be grouped</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.subgroup</th>
-      <td><p>- a column with a small number of levels (e.g.)</p></td>
+      <td><ul>
+<li><p>a column with a small number of levels (e.g.)</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>- additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.</p></td>
+      <td><ul>
+<li><p>additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><p>- a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for the subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count</p></td>
+      <td><ul>
+<li><p>a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for the subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><p>- a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></td>
+      <td><ul>
+<li><p>a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.type</th>
-      <td><p>- one of "info","exclusion": used to define formatting</p></td>
+      <td><ul>
+<li><p>one of "info","exclusion": used to define formatting</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.asOffshoot</th>
-      <td><p>- do you want this comment to be an offshoot of the main flow (default = FALSE).</p></td>
+      <td><ul>
+<li><p>do you want this comment to be an offshoot of the main flow (default = FALSE).</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><p>- if you want the summary data from this step in the future then give it a name with .tag.</p></td>
+      <td><ul>
+<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.maxsubgroups</th>
-      <td><p>- the maximum number of discrete values allowed is configurable with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16.</p></td>
+      <td><ul>
+<li><p>the maximum number of discrete values allowed is configurable with <code><a href='https://rdrr.io/r/base/options.html'>options("dtrackr.max_supported_groupings"=XX)</a></code>. The default is 16.</p></li>
+</ul></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the same .data dataframe with the history graph updated</p>
+    <p>the same .data dataframe with the history graph updated with a subgroup count as a new stage</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>ILPD</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_group_by.html'>p_group_by</a></span><span class='op'>(</span><span class='va'>Case_or_Control</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-   <span class='fu'>p_count_subgroup</span><span class='op'>(</span>
-      .subgroup <span class='op'>=</span> <span class='va'>Gender</span>,
-      .messages<span class='op'>=</span><span class='st'>"{.name}: {.count}/{.subtotal}"</span>,
-      .headline<span class='op'>=</span><span class='st'>"{Case_or_Control}: {.subtotal}/{.total}"</span>
-   <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='p_get.html'>p_get</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $excluded
-#&gt; NULL
-#&gt; 
-#&gt; $capture
-#&gt; [1] FALSE
-#&gt; 
-#&gt; $tags
-#&gt; <span style='color: #949494;'># A tibble: 0 × 2</span><span>
-#&gt; </span><span style='color: #949494;'># … with 2 variables: .tag &lt;chr&gt;, .content &lt;list&gt;</span><span>
-#&gt; 
-#&gt; $nodes
-#&gt; </span><span style='color: #949494;'># A tibble: 3 × 6</span><span>
-#&gt;     .id .rank .strata                   .label                      .type .stage
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> 
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1     1 </span><span style='color: #949494;'>""</span><span>                        stratify by Case_or_Contro… stra… </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2     2 </span><span style='color: #949494;'>"</span><span>Case_or_Control:case</span><span style='color: #949494;'>"</span><span>    &lt;B&gt;case: 416/583&lt;/B&gt;&lt;BR AL… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3     2 </span><span style='color: #949494;'>"</span><span>Case_or_Control:control</span><span style='color: #949494;'>"</span><span> &lt;B&gt;control: 167/583&lt;/B&gt;&lt;BR… info  </span><span style='color: #949494;'>""</span><span>    
-#&gt; 
-#&gt; $edges
-#&gt; </span><span style='color: #949494;'># A tibble: 2 × 5</span><span>
-#&gt;     .to .from .rel  .strata                 .strata.prev
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2     1 info  Case_or_Control:case    </span><span style='color: #949494;'>""</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3     1 info  Case_or_Control:control </span><span style='color: #949494;'>""</span><span>          
-#&gt; 
-#&gt; $head
-#&gt; </span><span style='color: #949494;'># A tibble: 2 × 2</span><span>
-#&gt;   .from .strata                
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                  
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     2 Case_or_Control:case   
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3 Case_or_Control:control
-#&gt; </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

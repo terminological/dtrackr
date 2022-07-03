@@ -4,17 +4,25 @@
 \alias{p_count_if}
 \title{Simple count_if dplyr summary function}
 \usage{
-p_count_if(...)
+p_count_if(..., na.rm = TRUE)
 }
 \arguments{
-\item{...}{- expression to be evaluated}
+\item{...}{\itemize{
+\item expression to be evaluated
+}}
+
+\item{na.rm}{\itemize{
+\item ignore NA values?
+}}
 }
 \value{
-summary count
+a count of the number of times the expression evaluated to true, in the current context
 }
 \description{
 Simple count_if dplyr summary function
 }
 \examples{
-iris \%>\% p_group_by(Species) \%>\% p_mutate(long_ones = p_count_if(Petal.Length > 4))
+library(dplyr)
+tmp = iris \%>\% dplyr::group_by(Species)
+tmp \%>\% dplyr::summarise(long_ones = p_count_if(Petal.Length > 4))
 }
