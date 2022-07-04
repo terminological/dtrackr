@@ -65,3 +65,9 @@ examples/vignettes/tests in the user's home filespace.
 * Please always make sure to reset to user's options(), working directory
 or par() after you changed it in examples and vignettes and demos. 
      - DONE.
+
+4th July 2022
+
+* I think you missed to add the \value in one of your .Rd files. Please 
+also add it there as you did in the others.
+     - DONE. APOLOGIES OLD VERSION OF DEVTOOLS GENERATED FILE. 
