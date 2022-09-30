@@ -10,7 +10,6 @@ p_flowchart(
   size = std_size$half,
   maxWidth = size$width,
   maxHeight = size$height,
-  rot = size$rot,
   formats = c("dot", "png", "pdf", "svg"),
   defaultToHTML = TRUE,
   ...
@@ -35,10 +34,6 @@ p_flowchart(
 
 \item{maxHeight}{\itemize{
 \item a height in inches if size is not defined
-}}
-
-\item{rot}{\itemize{
-\item an angle of rotation for the saved file if size is not defined
 }}
 
 \item{formats}{\itemize{

@@ -1,6 +1,7 @@
-test_that("group by works", {
+library(tidyverse)
+library(dtrackr)
 
-  library(tidyverse)
+test_that("group by works", {
 
   # expect_silent({
   iris %>%

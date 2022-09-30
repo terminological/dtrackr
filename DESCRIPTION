@@ -1,11 +1,11 @@
 Package: dtrackr
 Title: Track your Data Pipelines
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
            role = c("aut", "cre"),
-           email = "rc538@exeter.ac.uk",
+           email = "rob.challen@bristol.ac.uk",
            comment = c(ORCID = "0000-0002-5504-7768"))
 Description: Track and
     document 'dplyr' data pipelines. As you filter, mutate, and join your
@@ -27,13 +27,13 @@ Imports:
     V8,
     fs,
     purrr,
-    base64enc
+    base64enc,
+    pdftools,
+    png
 Suggests: 
     here,
     knitr,
-    magick,
     rmarkdown,
-    staplr,
     tidyverse,
     devtools,
     testthat (>= 2.1.0),
@@ -43,6 +43,9 @@ VignetteBuilder:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Depends: 
     R (>= 2.10)
+URL: https://terminological.github.io/dtrackr/index.html,
+	https://github.com/terminological/dtrackr
+BugReports: https://github.com/terminological/dtrackr/issues

@@ -1,11 +1,11 @@
 ^trackr\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
-cran-comments.md
+^cran-comments\.md$
+^LICENSE\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-.travis.yml
 ^data-raw$
 ^\.github$
 ^CRAN-SUBMISSION$

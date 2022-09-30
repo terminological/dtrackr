@@ -1,5 +1,5 @@
 library(testthat)
-library(dtrackr)
 library(tidyverse)
+library(dtrackr)
 
 test_check("dtrackr")

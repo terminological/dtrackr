@@ -10,8 +10,8 @@ save_dot(
   size = std_size$half,
   maxWidth = size$width,
   maxHeight = size$height,
-  rot = size$rot,
-  formats = c("dot", "png", "pdf", "svg")
+  formats = c("dot", "png", "pdf", "svg"),
+  ...
 )
 }
 \arguments{
@@ -35,20 +35,18 @@ save_dot(
 \item a height in inches if size is not defined
 }}
 
-\item{rot}{\itemize{
-\item an angle of rotation for the saved file if size is not defined
-}}
-
 \item{formats}{\itemize{
 \item some of "pdf","dot","svg","png","ps"
 }}
+
+\item{...}{ignored}
 }
 \value{
-a list with items \code{paths} with the absolute paths of the saved files, and svg as the SVG string of the rendered dot file.
+a list with items \code{paths} with the absolute paths of the saved files as a named list, and \code{svg} as the SVG string of the rendered dot file.
 }
 \description{
 Convert a digraph in dot file to SVG and save it to an output file
 }
 \examples{
-dot2svg("digraph {A->B} ")
+save_dot("digraph {A->B}",tempfile())
 }

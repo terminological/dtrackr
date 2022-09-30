@@ -1673,11 +1673,16 @@ is_knitting = function() {
 # TRUE is being knitted OR running in chunk in RStudio
 # FALSE if not interactive or interactive but in console in RStudio
 is_running_in_chunk = function() {
-  is_knitting() |
+  # check for installation as dependency is optional
+  if (rlang::is_installed("rstudioapi")) {
+    is_knitting() ||
     isTRUE(try(
       rstudioapi::getActiveDocumentContext()$id != "#console" &
       rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
     ))
+  } else {
+    return(is_knitting())
+  }
 }
 
 #' Flowchart output
@@ -1697,7 +1702,7 @@ is_running_in_chunk = function() {
 #' library(dplyr)
 #' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
 #' tmp %>% group_by(Species) %>% comment(.tag="step2") %>% flowchart()
-p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, rot=size$rot, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, ...) {
+p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, ...) {
 
   if("trackr_df" %in% class(.data)) .data = list(.data)
   mergedGraph=.emptyGraph()
@@ -1729,7 +1734,7 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
   outgraph = mergedGraph %>% .graph2dot(...)
 
   if (!identical(filename,NULL)) {
-    tmp = outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight,rot=rot,formats = formats)
+    tmp = outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight, formats = formats)
     svg = tmp$svg
   } else {
     svg = dot2svg(outgraph)
@@ -1746,13 +1751,13 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
       return(htmltools::HTML(svg))
 
     } else if (knitr::is_latex_output()) {
-      return(knitr::include_graphics(tmp$paths$png,auto_pdf = TRUE))
+      return(knitr::include_graphics(tmp$paths$png, auto_pdf = TRUE))
 
     } else if (knitr::pandoc_to(fmt = c("docx","odt"))) {
       return(knitr::include_graphics(tmp$paths$png))
 
     } else if (knitr::pandoc_to(fmt = c("markdown","gfm"))) {
-      return(knitr::asis_output(sprintf("![](%s)", base64enc::dataURI(data = charToRaw(svg), mime = "image/svg+xml"))))
+      return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(data = charToRaw(svg), mime = "image/svg+xml"))))
 
     } else {
       # the user sepcified type.

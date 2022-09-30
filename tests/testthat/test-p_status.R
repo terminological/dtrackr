@@ -1,4 +1,6 @@
 library(tidyverse)
+library(dtrackr)
+
 graphContains = function(g, .strata, .message) {
   return(g$nodes %>% filter(.strata==.strata,.label %>% stringr::str_detect(paste0("(^|>)",stringr::fixed(.message),"<"))) %>% nrow() > 0)
 }

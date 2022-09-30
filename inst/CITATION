@@ -1,0 +1,11 @@
+c(
+	bibentry(bibtype = "Manual",
+		title = "dtrackr: Track your Data Pipelines",
+		year = 2022,
+		note = "R package version 0.2.4",
+		url = "https://terminological.github.io/dtrackr/",
+		doi = "https://doi.org/10.5281/zenodo.6576064",
+		author = c(
+			person(given = "Rob",family = "Challen",email = "rob.challen@bristol.ac.uk",comment = structure("0000-0002-5504-7768", .Names = "ORCID"),role = c("aut", "cre"))		)
+	)
+)

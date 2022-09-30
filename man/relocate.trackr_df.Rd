@@ -21,11 +21,7 @@
 
 \item{...}{a set of dplyr summary expressions.}
 
-\item{.before}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Destination of
-columns selected by \code{...}. Supplying neither will move columns to the
-left-hand side; specifying both is an error.}
-
-\item{.after}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Destination of
+\item{.before, .after}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Destination of
 columns selected by \code{...}. Supplying neither will move columns to the
 left-hand side; specifying both is an error.}
 

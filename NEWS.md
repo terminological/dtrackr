@@ -51,3 +51,6 @@ transmute, ungroup
 * Non breaking changes to API so bumping to new minor version for CRAN submission.
 * (Version to stay unstable until CRAN submission complete)
 
+# dtrackr 0.2.5
+
+* TODO: bug fix for group_by not checking pause status before warning that pause required.

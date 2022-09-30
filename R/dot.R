@@ -8,7 +8,8 @@
 #' @return the SVG as a string
 #' @export
 #'
-#' @examples dot2svg("digraph { A->B }")
+#' @examples
+#' dot2svg("digraph { A->B }")
 dot2svg <- function(dot) {
 
   if(!requireNamespace("V8", quietly = TRUE)) stop("V8 package is required", call. = FALSE)
@@ -73,14 +74,15 @@ landscape = function(size) {return(list(width=size$height, height = size$width, 
 #' @param size - a list of length and width in inches e.g. a std_size
 #' @param maxWidth - a width in inches is size is not defined
 #' @param maxHeight - a height in inches if size is not defined
-#' @param rot - an angle of rotation for the saved file if size is not defined
 #' @param formats - some of "pdf","dot","svg","png","ps"
+#' @param ... ignored
 #'
-#' @return a list with items `paths` with the absolute paths of the saved files, and svg as the SVG string of the rendered dot file.
+#' @return a list with items `paths` with the absolute paths of the saved files as a named list, and `svg` as the SVG string of the rendered dot file.
 #' @export
 #'
-#' @examples dot2svg("digraph {A->B} ")
-save_dot = function(dot, filename, size = std_size$half, maxWidth = size$width, maxHeight = size$height, rot=size$rot, formats=c("dot","png","pdf","svg")) {
+#' @examples
+#' save_dot("digraph {A->B}",tempfile())
+save_dot = function(dot, filename, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), ...) {
 
   tmp = filename %>% fs::path_ext()
   if(tmp %in% c("dot","png","pdf","svg","ps")) formats=tmp
@@ -97,63 +99,75 @@ save_dot = function(dot, filename, size = std_size$half, maxWidth = size$width, 
   svg = dot %>% dot2svg()
   defaultWidth = (svg %>% stringr::str_match("width=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
   defaultHeight = (svg %>% stringr::str_match("height=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
-
   aspectRatio = defaultWidth / defaultHeight
+  widthIn = min(maxWidth,maxHeight*aspectRatio,defaultWidth/72)
+  heightIn = min(maxHeight,maxWidth/aspectRatio,defaultHeight/72)
+
+  # resize = function(dpi) {
+  #   svg %>%
+  #     stringr::str_replace_all("width=\"([0-9]*)pt\"", sprintf("width=\"%1.0fpt\"", widthIn*dpi)) %>%
+  #     stringr::str_replace_all("height=\"([0-9]*)pt\"", sprintf("height=\"%1.0fpt\"", heightIn*dpi)) # %>%
+  #     # stringr::str_replace_all("viewBox=\"[^\"]+\"", sprintf("viewBox=\"0.00 0.00 %1.2f %1.2f\"", widthIn*dpi, heightIn*dpi))
+  # }
 
   if ("pdf" %in% formats) {
     svg %>% charToRaw() %>% rsvg::rsvg_pdf(
       file = fname("pdf"),
-      width = min(maxWidth,maxHeight*aspectRatio,defaultWidth)*72,
-      height = min(maxHeight,maxWidth/aspectRatio,defaultHeight)*72
+      width = widthIn*72,
+      height = heightIn*72
     )
     try(
       grDevices::embedFonts(fname("pdf")),
       silent=TRUE
     );
-    if (rot!=0 & isNamespaceLoaded("staplr")) {
-      staplr::rotate_pdf(page_rotation = rot,
-        input_filepath = fname("pdf"),
-        output_filepath = fname("pdf"),
-        overwrite = TRUE)
-    }
+    # if (rot!=0 & rlang::is_installed("staplr")) {
+    #   staplr::rotate_pdf(page_rotation = rot,
+    #     input_filepath = fname("pdf"),
+    #     output_filepath = fname("pdf"),
+    #     overwrite = TRUE)
+    # }
   }
 
   if ("png" %in% formats) {
-    svg %>% charToRaw() %>% rsvg::rsvg_png(
-      file = fname("png"),
-      width = min(maxWidth,maxHeight*aspectRatio,defaultWidth)*300,
-      height = min(maxHeight,maxWidth/aspectRatio,defaultHeight)*300
-    )
-    if (rot != 0 & isNamespaceLoaded("magick")) {
-      magick::image_rotate(
-        magick::image_read(
-          fname("png")
-        )
-        ,rot
-      ) %>% magick::image_write(
-        fname("png")
-      )
+    if (!fs::file_exists(fname("pdf"))) {
+      tmp = tempfile()
+      svg %>% charToRaw() %>% rsvg::rsvg_pdf(file = tmp,
+         width = widthIn*72,
+         height = heightIn*72)
+    } else {
+      tmp = fname("pdf")
     }
+    pdftools::pdf_render_page(tmp,page = 1,dpi=300) %>%
+      png::writePNG(fname("png"))
+    # if (rot != 0 & rlang::is_installed("magick")) {
+    #   magick::image_rotate(
+    #     magick::image_read(
+    #       fname("png")
+    #     )
+    #     ,rot
+    #   ) %>% magick::image_write(
+    #     fname("png")
+    #   )
+    # }
   }
 
   if ("svg" %in% formats) {
     svg %>% charToRaw() %>% rsvg::rsvg_svg(
       file = fname("svg"),
-      width = min(maxWidth,maxHeight*aspectRatio,defaultWidth)*72,
-      height = min(maxHeight,maxWidth/aspectRatio,defaultHeight)*72
+      width = widthIn*72,
+      height = heightIn*72
     )
   }
 
   if ("ps" %in% formats) {
     svg %>% charToRaw() %>% rsvg::rsvg_ps(
         file = fname("ps"),
-        width = min(maxWidth,maxHeight*aspectRatio,defaultWidth)*72,
-        height = min(maxHeight,maxWidth/aspectRatio,defaultHeight)*72
+        width = widthIn*72,
+        height = heightIn*72
     )
   }
 
-  paths =  as.list(fname(formats))
-  names(paths) = formats
+  paths =  as.list(sapply(formats,fname))
   return(
     list(
       paths = paths,
