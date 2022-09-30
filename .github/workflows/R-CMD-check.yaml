@@ -12,7 +12,7 @@ jobs:
   R-CMD-check:
 
     runs-on: ${{ matrix.config.os }}
-    if: "!contains(github.event.head_commit.message, 'no check')"
+    if: "!contains(github.event.head_commit.message, 'minor')"
 
     continue-on-error: false
 
@@ -33,9 +33,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       RSPM: ${{ matrix.config.rspm }}
       R_KEEP_PKG_SOURCE: yes
-    
-    if: "!contains(github.event.head_commit.message, 'minor')"
-    
+
     steps:
       - uses: actions/checkout@v2
 
