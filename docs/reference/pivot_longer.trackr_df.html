@@ -8,6 +8,13 @@
 
 <title>Reshaping data using tidyr::pivot_longer — pivot_longer.trackr_df • dtrackr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -42,6 +49,7 @@
 <meta property="og:title" content="Reshaping data using tidyr::pivot_longer — pivot_longer.trackr_df" />
 <meta property="og:description" content="A drop in replacement for tidyr::pivot_longer which optionally takes a message and headline to store in the history graph.
 See tidyr::pivot_longer()." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -73,7 +81,7 @@ See tidyr::pivot_longer()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
       </span>
     </div>
 
@@ -114,7 +122,12 @@ See tidyr::pivot_longer()." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/terminological/dtrackr/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -129,7 +142,7 @@ See tidyr::pivot_longer()." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Reshaping data using <code>tidyr::pivot_longer</code></h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/terminological/dtrackr/blob/master/R/dtrackr.R'><code>R/dtrackr.R</code></a></small>
     <div class="hidden name"><code>pivot_longer.trackr_df.Rd</code></div>
     </div>
 
@@ -196,7 +209,7 @@ overriding <code>values_to</code> entirely.</p></li>
 from the start of each variable name.</p></td>
     </tr>
     <tr>
-      <th>names_sep</th>
+      <th>names_sep, names_pattern</th>
       <td><p>If <code>names_to</code> contains multiple values,
 these arguments control how the column name is broken up.</p>
 <p><code>names_sep</code> takes the same specification as <code><a href='https://tidyr.tidyverse.org/reference/separate.html'>separate()</a></code>, and can either
@@ -209,20 +222,7 @@ expression containing matching groups (<code>()</code>).</p>
 needed.</p></td>
     </tr>
     <tr>
-      <th>names_pattern</th>
-      <td><p>If <code>names_to</code> contains multiple values,
-these arguments control how the column name is broken up.</p>
-<p><code>names_sep</code> takes the same specification as <code><a href='https://tidyr.tidyverse.org/reference/separate.html'>separate()</a></code>, and can either
-be a numeric vector (specifying positions to break on), or a single string
-(specifying a regular expression to split on).</p>
-<p><code>names_pattern</code> takes the same specification as <code><a href='https://tidyr.tidyverse.org/reference/extract.html'>extract()</a></code>, a regular
-expression containing matching groups (<code>()</code>).</p>
-<p>If these arguments do not give you enough control, use
-<code>pivot_longer_spec()</code> to create a spec object and process manually as
-needed.</p></td>
-    </tr>
-    <tr>
-      <th>names_ptypes</th>
+      <th>names_ptypes, values_ptypes</th>
       <td><p>Optionally, a list of column name-prototype
 pairs. Alternatively, a single empty prototype can be supplied, which will
 be applied to all columns. A prototype (or ptype for short) is a
@@ -236,7 +236,7 @@ being identical to <code>NULL</code> rather than as using a list prototype on al
 columns. Expect this to change in the future.</p></td>
     </tr>
     <tr>
-      <th>names_transform</th>
+      <th>names_transform, values_transform</th>
       <td><p>Optionally, a list of column
 name-function pairs. Alternatively, a single function can be supplied,
 which will be applied to all columns. Use these arguments if you need to
@@ -268,31 +268,6 @@ existing column names.</p></td>
 in the <code>value_to</code> column. This effectively converts explicit missing values
 to implicit missing values, and should generally be used only when missing
 values in <code>data</code> were created by its structure.</p></td>
-    </tr>
-    <tr>
-      <th>values_ptypes</th>
-      <td><p>Optionally, a list of column name-prototype
-pairs. Alternatively, a single empty prototype can be supplied, which will
-be applied to all columns. A prototype (or ptype for short) is a
-zero-length vector (like <code><a href='https://rdrr.io/r/base/integer.html'>integer()</a></code> or <code><a href='https://rdrr.io/r/base/numeric.html'>numeric()</a></code>) that defines the type,
-class, and attributes of a vector. Use these arguments if you want to
-confirm that the created columns are the types that you expect. Note that
-if you want to change (instead of confirm) the types of specific columns,
-you should use <code>names_transform</code> or <code>values_transform</code> instead.</p>
-<p>For backwards compatibility reasons, supplying <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> is interpreted as
-being identical to <code>NULL</code> rather than as using a list prototype on all
-columns. Expect this to change in the future.</p></td>
-    </tr>
-    <tr>
-      <th>values_transform</th>
-      <td><p>Optionally, a list of column
-name-function pairs. Alternatively, a single function can be supplied,
-which will be applied to all columns. Use these arguments if you need to
-change the types of specific columns. For example, <code>names_transform = list(week = as.integer)</code> would convert a character variable called <code>week</code>
-to an integer.</p>
-<p>If not specified, the type of the columns generated from <code>names_to</code> will
-be character, and the type of the variables generated from <code>values_to</code>
-will be the common type of the input columns used to generate them.</p></td>
     </tr>
     <tr>
       <th>...</th>

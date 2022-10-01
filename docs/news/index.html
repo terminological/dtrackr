@@ -8,6 +8,13 @@
 
 <title>Changelog • dtrackr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -40,6 +47,7 @@
 
 
 <meta property="og:title" content="Changelog" />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -71,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
       </span>
     </div>
 
@@ -112,7 +120,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/terminological/dtrackr/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -127,12 +140,13 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      
+      <small>Source: <a href='https://github.com/terminological/dtrackr/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
     <div id="dtrackr-0109000---pre-release-github-version" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0.9000">
-<a href="#dtrackr-0109000---pre-release-github-version" class="anchor"></a>dtrackr 0.1.0.9000 - pre-release github version</h1>
+<a href="#dtrackr-0109000---pre-release-github-version" class="anchor"></a>dtrackr 0.1.0.9000 - pre-release github version<small> Unreleased </small>
+</h1>
 <ul>
 <li>Initial package features complete</li>
 <li>Dplyr like for like functionality supporting - add_count, add_tally, anti_join, arrange, bind_rows, comment, distinct, exclude_all, filter, full_join, group_by, group_modify, inner_join, left_join, mutate, pivot_longer, pivot_wider, relocate, rename, rename_with, right_join, select, semi_join, summarise, transmute, ungroup</li>
@@ -146,7 +160,8 @@
 </div>
     <div id="dtrackr-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
-<a href="#dtrackr-020" class="anchor"></a>dtrackr 0.2.0</h1>
+<a href="#dtrackr-020" class="anchor"></a>dtrackr 0.2.0<small> Unreleased </small>
+</h1>
 <ul>
 <li>track excluded items with debugging info</li>
 <li>allow across syntax in most situations (except group_by)</li>
@@ -157,7 +172,8 @@
 </div>
     <div id="dtrackr-021" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.1">
-<a href="#dtrackr-021" class="anchor"></a>dtrackr 0.2.1</h1>
+<a href="#dtrackr-021" class="anchor"></a>dtrackr 0.2.1<small> Unreleased </small>
+</h1>
 <ul>
 <li>minor bug fixes for grouping</li>
 <li>support for tagging pipeline with a piece of data for later retrieval to support e.g. for counts within abstract</li>
@@ -166,7 +182,8 @@
 </div>
     <div id="dtrackr-022" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.2">
-<a href="#dtrackr-022" class="anchor"></a>dtrackr 0.2.2</h1>
+<a href="#dtrackr-022" class="anchor"></a>dtrackr 0.2.2<small> Unreleased </small>
+</h1>
 <ul>
 <li>new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.</li>
 <li>fix for multiple names join columns bug.</li>
@@ -175,7 +192,8 @@
 </div>
     <div id="dtrackr-023" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.3">
-<a href="#dtrackr-023" class="anchor"></a>dtrackr 0.2.3</h1>
+<a href="#dtrackr-023" class="anchor"></a>dtrackr 0.2.3<small> Unreleased </small>
+</h1>
 <ul>
 <li>documentation updates &amp; JOSS paper</li>
 <li>fix for fix for multiple names join columns bug.</li>
@@ -185,13 +203,22 @@
 </div>
     <div id="dtrackr-024" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.4">
-<a href="#dtrackr-024" class="anchor"></a>dtrackr 0.2.4</h1>
+<a href="#dtrackr-024" class="anchor"></a>dtrackr 0.2.4<small> 2022-07-05 </small>
+</h1>
 <ul>
 <li>second round fixes for CRAN. Improved examples in documentation.</li>
 <li>Print and plot S3 methods for history graph.</li>
 <li>Vignette fixes.</li>
 <li>Non breaking changes to API so bumping to new minor version for CRAN submission.</li>
 <li>(Version to stay unstable until CRAN submission complete)</li>
+</ul>
+</div>
+    <div id="dtrackr-025" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.5">
+<a href="#dtrackr-025" class="anchor"></a>dtrackr 0.2.5<small> Unreleased </small>
+</h1>
+<ul>
+<li>TODO: bug fix for group_by not checking pause status before warning that pause required.</li>
 </ul>
 </div>
   </div>

@@ -8,6 +8,13 @@
 
 <title>Flowchart output — flowchart • dtrackr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -41,6 +48,7 @@
 
 <meta property="og:title" content="Flowchart output — flowchart" />
 <meta property="og:description" content="Generate a flowchart of the history of the dataframe, with all the transformations as stages in the flowchart." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -72,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
       </span>
     </div>
 
@@ -113,7 +121,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/terminological/dtrackr/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,7 +141,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Flowchart output</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/terminological/dtrackr/blob/master/R/dtrackr.R'><code>R/dtrackr.R</code></a></small>
     <div class="hidden name"><code>flowchart.Rd</code></div>
     </div>
 
@@ -142,8 +155,8 @@
   size <span class='op'>=</span> <span class='va'>std_size</span><span class='op'>$</span><span class='va'>half</span>,
   maxWidth <span class='op'>=</span> <span class='va'>size</span><span class='op'>$</span><span class='va'>width</span>,
   maxHeight <span class='op'>=</span> <span class='va'>size</span><span class='op'>$</span><span class='va'>height</span>,
-  rot <span class='op'>=</span> <span class='va'>size</span><span class='op'>$</span><span class='va'>rot</span>,
   formats <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"dot"</span>, <span class='st'>"png"</span>, <span class='st'>"pdf"</span>, <span class='st'>"svg"</span><span class='op'>)</span>,
+  defaultToHTML <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -181,15 +194,15 @@
 </ul></td>
     </tr>
     <tr>
-      <th>rot</th>
-      <td><ul>
-<li><p>an angle of rotation for the saved file if size is not defined</p></li>
-</ul></td>
-    </tr>
-    <tr>
       <th>formats</th>
       <td><ul>
 <li><p>some of "pdf","dot","svg","png","ps"</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>defaultToHTML</th>
+      <td><ul>
+<li><p>if the correct output format is not easy to determine from the context, default providing HTML or to embedding the PNG</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -202,7 +215,8 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the nature of the flowchart output depends on the context in which the function is called. It will be some form of browse-able html output if called from an interactive session or a PNG/PDG link if in knitr</p>
+    <p>the nature of the flowchart output depends on the context in which the function is called. It will be some form of browse-able html output if called from an interactive session
+or a PNG/PDG link if in knitr and knitting latex or word type outputs,</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>

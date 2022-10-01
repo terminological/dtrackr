@@ -18,7 +18,11 @@ p_right_join(
 )
 }
 \arguments{
-\item{x, y}{A pair of data frames, data frame extensions (e.g. a tibble), or
+\item{x}{A pair of data frames, data frame extensions (e.g. a tibble), or
+lazy data frames (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
+more details.}
+
+\item{y}{A pair of data frames, data frame extensions (e.g. a tibble), or
 lazy data frames (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 

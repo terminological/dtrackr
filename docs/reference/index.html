@@ -8,6 +8,13 @@
 
 <title>Function reference • dtrackr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -40,6 +47,7 @@
 
 
 <meta property="og:title" content="Function reference" />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -71,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
       </span>
     </div>
 
@@ -112,7 +120,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/terminological/dtrackr/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -140,8 +153,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
+          <h2 id="section-controlling-dtrackr" class="hasAnchor"><a href="#section-controlling-dtrackr" class="anchor"></a>Controlling dtrackr</h2>
+          <p class="section-desc"><p>Functions that control <code>dtrackr</code></p></p>
         </th>
       </tr>
       
@@ -152,39 +165,51 @@
       <tr>
         
         <td>
-          <p><code><a href="ILPD.html">ILPD</a></code> </p>
+          <p><code><a href="track.html">track()</a></code> </p>
         </td>
-        <td><p>Indian Liver Patient Dataset</p></td>
+        <td><p>Start tracking the dtrackr history graph</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="add_count.html">add_count()</a></code> </p>
+          <p><code><a href="untrack.html">untrack()</a></code> </p>
         </td>
-        <td><p>Standard dplyr modifying operations</p></td>
+        <td><p>Remove tracking from the dataframe</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="add_tally.html">add_tally()</a></code> </p>
+          <p><code><a href="pause.html">pause()</a></code> </p>
         </td>
-        <td><p>Standard dplyr modifying operations</p></td>
+        <td><p>Pause tracking the dataframe</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="anti_join.trackr_df.html">anti_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+          <p><code><a href="resume.html">resume()</a></code> </p>
         </td>
-        <td><p>Anti join</p></td>
+        <td><p>Resume tracking the dataframe. This may reset the grouping of the tracked data</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="arrange.trackr_df.html">arrange(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+          <p><code><a href="print.trackr_graph.html">print(<i>&lt;trackr_graph&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Standard dplyr modifying operations</p></td>
+        <td><p>Print a history graph to the console</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="bind_rows.html">bind_rows()</a></code> </p>
+          <p><code><a href="plot.trackr_graph.html">plot(<i>&lt;trackr_graph&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Union of two or more data sets</p></td>
+        <td><p>Plots a history graph as html</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="flowchart.html">flowchart()</a></code> </p>
+        </td>
+        <td><p>Flowchart output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="history.html">history()</a></code> </p>
+        </td>
+        <td><p>Get the dtrackr history graph</p></td>
       </tr><tr>
         
         <td>
@@ -192,6 +217,31 @@
         </td>
         <td><p>Start capturing exclusions on a tracked dataframe.</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="excluded.html">excluded()</a></code> </p>
+        </td>
+        <td><p>Get the dtrackr excluded data record</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="tagged.html">tagged()</a></code> </p>
+        </td>
+        <td><p>Retrieve tagged data in the history graph</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-pipeline-annotations" class="hasAnchor"><a href="#section-pipeline-annotations" class="anchor"></a>Pipeline annotations</h2>
+          <p class="section-desc"><p><code>dtrackr</code> specific additions to a data pipeline. These are novel data pipeline functions that don’t have a direct equivalent in <code>dplyr</code> or <code>tidyr</code>.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="comment.html">comment()</a></code> </p>
@@ -206,45 +256,64 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="distinct.trackr_df.html">distinct(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Distinct values of data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="dot2svg.html">dot2svg()</a></code> </p>
-        </td>
-        <td><p>Convert Graphviz dot content to a SVG</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="exclude_all.html">exclude_all()</a></code> </p>
         </td>
         <td><p>Exclude all items matching one or more criteria</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="excluded.html">excluded()</a></code> </p>
+          <p><code><a href="include_any.html">include_any()</a></code> </p>
         </td>
-        <td><p>Get the dtrackr excluded data record</p></td>
+        <td><p>Include any items matching a criteria</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="status.html">status()</a></code> </p>
+        </td>
+        <td><p>Add a summary to the dtrackr history graph</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-s-tidyverse-extensions" class="hasAnchor"><a href="#section-s-tidyverse-extensions" class="anchor"></a>S3 tidyverse extensions</h2>
+          <p class="section-desc"><p>S3 functions extend the behaviour of a subset of the <code>dplyr</code> or <code>tidyr</code> commands that operate on dataframes, and return dataframes, to include a history graph. In general these work the same as the normal <code>dplyr</code> functions but allow additional parameters that capture the history as they are executed.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="add_count.html">add_count()</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="add_tally.html">add_tally()</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="arrange.trackr_df.html">arrange(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="distinct.trackr_df.html">distinct(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Distinct values of data</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="filter.trackr_df.html">filter(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
         <td><p>Filtering data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="flowchart.html">flowchart()</a></code> </p>
-        </td>
-        <td><p>Flowchart output</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="full_join.trackr_df.html">full_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Full join</p></td>
       </tr><tr>
         
         <td>
@@ -260,15 +329,75 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="history.html">history()</a></code> </p>
+          <p><code><a href="mutate.trackr_df.html">mutate(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Get the dtrackr history graph</p></td>
+        <td><p>Standard dplyr modifying operations</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="include_any.html">include_any()</a></code> </p>
+          <p><code><a href="pivot_longer.trackr_df.html">pivot_longer(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Include any items matching a criteria</p></td>
+        <td><p>Reshaping data using <code>tidyr::pivot_longer</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pivot_wider.trackr_df.html">pivot_wider(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Reshaping data using <code>tidyr::pivot_wider</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="relocate.trackr_df.html">relocate(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rename.trackr_df.html">rename(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rename_with.trackr_df.html">rename_with(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="select.trackr_df.html">select(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="summarise.trackr_df.html">summarise(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Summarise a data set</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="transmute.trackr_df.html">transmute(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Standard dplyr modifying operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ungroup.trackr_df.html">ungroup(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Remove a stratification from a data set</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="anti_join.trackr_df.html">anti_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Anti join</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="full_join.trackr_df.html">full_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Full join</p></td>
       </tr><tr>
         
         <td>
@@ -278,22 +407,97 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="landscape.html">landscape()</a></code> </p>
-        </td>
-        <td><p>Convert page size from portrait to landscape</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="left_join.trackr_df.html">left_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
         <td><p>Left join</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="mutate.trackr_df.html">mutate(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+          <p><code><a href="right_join.trackr_df.html">right_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Standard dplyr modifying operations</p></td>
+        <td><p>Right join</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="semi_join.trackr_df.html">semi_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Semi join</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="bind_rows.html">bind_rows()</a></code> </p>
+        </td>
+        <td><p>Union of two or more data sets</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-flowchart-and-output-control-" class="hasAnchor"><a href="#section-flowchart-and-output-control-" class="anchor"></a>Flowchart and output control.</h2>
+          <p class="section-desc"><p>Rendering of a <code>dtrackr</code> history once converted to <code>GraphViz</code> dot format. These can be also used for non-dtrackr dot content</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="dot2svg.html">dot2svg()</a></code> </p>
+        </td>
+        <td><p>Convert Graphviz dot content to a SVG</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="landscape.html">landscape()</a></code> </p>
+        </td>
+        <td><p>Convert page size from portrait to landscape</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="save_dot.html">save_dot()</a></code> </p>
+        </td>
+        <td><p>Save DOT content to a file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="std_size.html">std_size</a></code> </p>
+        </td>
+        <td><p>Standard paper sizes</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-datasets" class="hasAnchor"><a href="#section-datasets" class="anchor"></a>Datasets</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="ILPD.html">ILPD</a></code> </p>
+        </td>
+        <td><p>Indian Liver Patient Dataset</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-legacy-interface" class="hasAnchor"><a href="#section-legacy-interface" class="anchor"></a>Legacy interface</h2>
+          <p class="section-desc"><p>The following operations are all aliases for functions above. They are generally backend functions.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="p_add_count.html">p_add_count()</a></code> </p>
@@ -549,132 +753,6 @@
         
         <td>
           <p><code><a href="p_untrack.html">p_untrack()</a></code> </p>
-        </td>
-        <td><p>Remove tracking from the dataframe</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="pause.html">pause()</a></code> </p>
-        </td>
-        <td><p>Pause tracking the dataframe</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="pivot_longer.trackr_df.html">pivot_longer(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Reshaping data using <code>tidyr::pivot_longer</code></p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="pivot_wider.trackr_df.html">pivot_wider(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Reshaping data using <code>tidyr::pivot_wider</code></p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot.trackr_graph.html">plot(<i>&lt;trackr_graph&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plots a history graph as html</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.trackr_graph.html">print(<i>&lt;trackr_graph&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Print a history graph to the console</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="relocate.trackr_df.html">relocate(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Standard dplyr modifying operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="rename.trackr_df.html">rename(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Standard dplyr modifying operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="rename_with.trackr_df.html">rename_with(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Standard dplyr modifying operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="resume.html">resume()</a></code> </p>
-        </td>
-        <td><p>Resume tracking the dataframe. This may reset the grouping of the tracked data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="right_join.trackr_df.html">right_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Right join</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="save_dot.html">save_dot()</a></code> </p>
-        </td>
-        <td><p>Save DOT content to a file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="select.trackr_df.html">select(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Standard dplyr modifying operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="semi_join.trackr_df.html">semi_join(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Semi join</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="status.html">status()</a></code> </p>
-        </td>
-        <td><p>Add a summary to the dtrackr history graph</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="std_size.html">std_size</a></code> </p>
-        </td>
-        <td><p>Standard paper sizes</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summarise.trackr_df.html">summarise(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Summarise a data set</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tagged.html">tagged()</a></code> </p>
-        </td>
-        <td><p>Retrieve tagged data in the history graph</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="track.html">track()</a></code> </p>
-        </td>
-        <td><p>Start tracking the dtrackr history graph</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="transmute.trackr_df.html">transmute(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Standard dplyr modifying operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ungroup.trackr_df.html">ungroup(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Remove a stratification from a data set</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="untrack.html">untrack()</a></code> </p>
         </td>
         <td><p>Remove tracking from the dataframe</p></td>
       </tr>

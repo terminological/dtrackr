@@ -8,6 +8,13 @@
 
 <title>Add a subgroup count to the dtrackr history graph — p_count_subgroup • dtrackr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -43,6 +50,7 @@
 <meta property="og:description" content="A frequent use case for more detailed description is to have a subgroup count within a flowchart.
 This works best for factor subgroup columns but other data will be converted to a factor automatically.
 The count of the items in each subgroup is added as a new stage in the flowchart." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -74,7 +82,7 @@ The count of the items in each subgroup is added as a new stage in the flowchart
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
       </span>
     </div>
 
@@ -115,7 +123,12 @@ The count of the items in each subgroup is added as a new stage in the flowchart
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/terminological/dtrackr/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -130,7 +143,7 @@ The count of the items in each subgroup is added as a new stage in the flowchart
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Add a subgroup count to the dtrackr history graph</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/terminological/dtrackr/blob/master/R/dtrackr.R'><code>R/dtrackr.R</code></a></small>
     <div class="hidden name"><code>p_count_subgroup.Rd</code></div>
     </div>
 
@@ -215,6 +228,13 @@ The count of the items in each subgroup is added as a new stage in the flowchart
 
     <p>the same .data dataframe with the history graph updated with a subgroup count as a new stage</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='va'>ILPD</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Case_or_Control</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='count_subgroup.html'>count_subgroup</a></span><span class='op'>(</span><span class='va'>Gender</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

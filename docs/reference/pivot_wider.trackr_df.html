@@ -8,6 +8,13 @@
 
 <title>Reshaping data using tidyr::pivot_wider — pivot_wider.trackr_df • dtrackr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -42,6 +49,7 @@
 <meta property="og:title" content="Reshaping data using tidyr::pivot_wider — pivot_wider.trackr_df" />
 <meta property="og:description" content="A drop in replacement for tidyr::pivot_wider which optionally takes a message and headline to store in the history graph.
 See tidyr::pivot_wider()." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -73,7 +81,7 @@ See tidyr::pivot_wider()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
       </span>
     </div>
 
@@ -114,7 +122,12 @@ See tidyr::pivot_wider()." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/terminological/dtrackr/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -129,7 +142,7 @@ See tidyr::pivot_wider()." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Reshaping data using <code>tidyr::pivot_wider</code></h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/terminological/dtrackr/blob/master/R/dtrackr.R'><code>R/dtrackr.R</code></a></small>
     <div class="hidden name"><code>pivot_wider.trackr_df.Rd</code></div>
     </div>
 
@@ -173,7 +186,7 @@ Typically used when you have redundant variables, i.e. variables whose
 values are perfectly correlated with existing variables.</p></td>
     </tr>
     <tr>
-      <th>names_from</th>
+      <th>names_from, values_from</th>
       <td><p>&lt;<code><a href='https://tidyr.tidyverse.org/reference/tidyr_tidy_select.html'>tidy-select</a></code>&gt; A pair of
 arguments describing which column (or columns) to get the name of the
 output column (<code>names_from</code>), and which column (or columns) to get the
@@ -211,15 +224,6 @@ The default, <code>"check_unique"</code> is to error if the columns are duplicat
 Use <code>"minimal"</code> to allow duplicates in the output, or <code>"unique"</code> to
 de-duplicated by adding numeric suffixes. See <code><a href='https://vctrs.r-lib.org/reference/vec_as_names.html'>vctrs::vec_as_names()</a></code>
 for more options.</p></td>
-    </tr>
-    <tr>
-      <th>values_from</th>
-      <td><p>&lt;<code><a href='https://tidyr.tidyverse.org/reference/tidyr_tidy_select.html'>tidy-select</a></code>&gt; A pair of
-arguments describing which column (or columns) to get the name of the
-output column (<code>names_from</code>), and which column (or columns) to get the
-cell values from (<code>values_from</code>).</p>
-<p>If <code>values_from</code> contains multiple values, the value will be added to the
-front of the output column.</p></td>
     </tr>
     <tr>
       <th>values_fill</th>

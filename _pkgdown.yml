@@ -1,1 +1,82 @@
 destination: docs
+reference:
+- title: "Controlling dtrackr"
+  desc: >
+    Functions that control `dtrackr`
+  contents:
+  - track
+  - untrack
+  - pause
+  - resume
+  - print.trackr_graph
+  - plot.trackr_graph
+  - flowchart
+  - history
+  - capture_exclusions
+  - excluded
+  - tagged
+
+- title: "Pipeline annotations"
+  desc: >
+    `dtrackr` specific additions to a data pipeline. These are novel data
+    pipeline functions that don't have a direct equivalent in `dplyr` or
+    `tidyr`.
+  contents:
+  - comment
+  - count_subgroup
+  - exclude_all
+  - include_any
+  - status
+
+- title: "S3 tidyverse extensions"
+  desc: >
+    S3 functions extend the behaviour of a subset of the `dplyr` or `tidyr` commands
+    that operate on dataframes, and return dataframes, to include a history graph. In general
+    these work the same as the normal `dplyr` functions but allow additional
+    parameters that capture the history as they are executed.
+  contents:
+  - add_count
+  - add_tally
+  - arrange.trackr_df
+  - distinct.trackr_df
+  - filter.trackr_df
+  - group_by.trackr_df
+  - group_modify.trackr_df
+  - mutate.trackr_df
+  - pivot_longer.trackr_df
+  - pivot_wider.trackr_df
+  - relocate.trackr_df
+  - rename.trackr_df
+  - rename_with.trackr_df
+  - select.trackr_df
+  - summarise.trackr_df
+  - transmute.trackr_df
+  - ungroup.trackr_df
+  - anti_join.trackr_df
+  - full_join.trackr_df
+  - inner_join.trackr_df
+  - left_join.trackr_df
+  - right_join.trackr_df
+  - semi_join.trackr_df
+  - bind_rows
+
+- title: "Flowchart and output control."
+  desc: >
+    Rendering of a `dtrackr` history once converted to
+    `GraphViz` dot format. These can be also used for non-dtrackr dot content
+  contents:
+  - dot2svg
+  - landscape
+  - save_dot
+  - std_size
+
+- title: "Datasets"
+  contents:
+  - ILPD
+
+- title: "Legacy interface"
+  desc: >
+    The following operations are all aliases for functions above. They are
+    generally backend functions.
+  contents:
+  - starts_with("p_")

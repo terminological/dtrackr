@@ -1676,10 +1676,10 @@ is_running_in_chunk = function() {
   # check for installation as dependency is optional
   if (rlang::is_installed("rstudioapi")) {
     is_knitting() ||
-    isTRUE(try(
+    isTRUE(try({
       rstudioapi::getActiveDocumentContext()$id != "#console" &
       rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
-    ))
+    },silent = TRUE))
   } else {
     return(is_knitting())
   }

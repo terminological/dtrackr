@@ -8,6 +8,13 @@
 
 <title>Save DOT content to a file — save_dot • dtrackr</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -40,7 +47,8 @@
 
 
 <meta property="og:title" content="Save DOT content to a file — save_dot" />
-<meta property="og:description" content="Convert a digraph and save as a file" />
+<meta property="og:description" content="Convert a digraph in dot file to SVG and save it to an output file" />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -72,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
       </span>
     </div>
 
@@ -113,7 +121,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/terminological/dtrackr/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,12 +141,12 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Save DOT content to a file</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/terminological/dtrackr/blob/master/R/dot.R'><code>R/dot.R</code></a></small>
     <div class="hidden name"><code>save_dot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Convert a digraph and save as a file</p>
+    <p>Convert a digraph in dot file to SVG and save it to an output file</p>
     </div>
 
     <pre class="usage"><span class='fu'>save_dot</span><span class='op'>(</span>
@@ -142,8 +155,8 @@
   size <span class='op'>=</span> <span class='va'>std_size</span><span class='op'>$</span><span class='va'>half</span>,
   maxWidth <span class='op'>=</span> <span class='va'>size</span><span class='op'>$</span><span class='va'>width</span>,
   maxHeight <span class='op'>=</span> <span class='va'>size</span><span class='op'>$</span><span class='va'>height</span>,
-  rot <span class='op'>=</span> <span class='va'>size</span><span class='op'>$</span><span class='va'>rot</span>,
-  formats <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"dot"</span>, <span class='st'>"png"</span>, <span class='st'>"pdf"</span>, <span class='st'>"svg"</span><span class='op'>)</span>
+  formats <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"dot"</span>, <span class='st'>"png"</span>, <span class='st'>"pdf"</span>, <span class='st'>"svg"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -180,26 +193,40 @@
 </ul></td>
     </tr>
     <tr>
-      <th>rot</th>
-      <td><ul>
-<li><p>an angle of rotation for the saved file if size is not defined</p></li>
-</ul></td>
-    </tr>
-    <tr>
       <th>formats</th>
       <td><ul>
 <li><p>some of "pdf","dot","svg","png","ps"</p></li>
 </ul></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>ignored</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the result depends on the context, if in an interactive session a browseable result such as SVG, if in a knitr session html content or a link to a png or pdf file depending on the document type being knitted</p>
+    <p>a list with items <code>paths</code> with the absolute paths of the saved files as a named list, and <code>svg</code> as the SVG string of the rendered dot file.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='dot2svg.html'>dot2svg</a></span><span class='op'>(</span><span class='st'>"digraph {A-&gt;B}"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;\n&lt;!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"&gt;\n&lt;!-- Generated by graphviz version 2.40.1 (20161225.0304)\n --&gt;\n&lt;!-- Title: %0 Pages: 1 --&gt;\n&lt;svg width=\"62pt\" height=\"116pt\"\n viewBox=\"0.00 0.00 62.00 116.00\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"&gt;\n&lt;g id=\"graph0\" class=\"graph\" transform=\"scale(1 1) rotate(0) translate(4 112)\"&gt;\n&lt;title&gt;%0&lt;/title&gt;\n&lt;polygon fill=\"#ffffff\" stroke=\"transparent\" points=\"-4,4 -4,-112 58,-112 58,4 -4,4\"/&gt;\n&lt;!-- A --&gt;\n&lt;g id=\"node1\" class=\"node\"&gt;\n&lt;title&gt;A&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-90\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-85.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;A&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- B --&gt;\n&lt;g id=\"node2\" class=\"node\"&gt;\n&lt;title&gt;B&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-18\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-13.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;B&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- A&amp;#45;&amp;gt;B --&gt;\n&lt;g id=\"edge1\" class=\"edge\"&gt;\n&lt;title&gt;A&amp;#45;&amp;gt;B&lt;/title&gt;\n&lt;path fill=\"none\" stroke=\"#000000\" d=\"M27,-71.8314C27,-64.131 27,-54.9743 27,-46.4166\"/&gt;\n&lt;polygon fill=\"#000000\" stroke=\"#000000\" points=\"30.5001,-46.4132 27,-36.4133 23.5001,-46.4133 30.5001,-46.4132\"/&gt;\n&lt;/g&gt;\n&lt;/g&gt;\n&lt;/svg&gt;\n"</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>save_dot</span><span class='op'>(</span><span class='st'>"digraph {A-&gt;B}"</span>,<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $paths
+#&gt; $paths$dot
+#&gt; [1] "/tmp/RtmpOSsBj5/file1add47ea6d75.dot"
+#&gt; 
+#&gt; $paths$png
+#&gt; [1] "/tmp/RtmpOSsBj5/file1add47ea6d75.png"
+#&gt; 
+#&gt; $paths$pdf
+#&gt; [1] "/tmp/RtmpOSsBj5/file1add47ea6d75.pdf"
+#&gt; 
+#&gt; $paths$svg
+#&gt; [1] "/tmp/RtmpOSsBj5/file1add47ea6d75.svg"
+#&gt; 
+#&gt; 
+#&gt; $svg
+#&gt; [1] "&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;\n&lt;!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"&gt;\n&lt;!-- Generated by graphviz version 2.40.1 (20161225.0304)\n --&gt;\n&lt;!-- Title: %0 Pages: 1 --&gt;\n&lt;svg width=\"62pt\" height=\"116pt\"\n viewBox=\"0.00 0.00 62.00 116.00\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"&gt;\n&lt;g id=\"graph0\" class=\"graph\" transform=\"scale(1 1) rotate(0) translate(4 112)\"&gt;\n&lt;title&gt;%0&lt;/title&gt;\n&lt;polygon fill=\"#ffffff\" stroke=\"transparent\" points=\"-4,4 -4,-112 58,-112 58,4 -4,4\"/&gt;\n&lt;!-- A --&gt;\n&lt;g id=\"node1\" class=\"node\"&gt;\n&lt;title&gt;A&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-90\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-85.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;A&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- B --&gt;\n&lt;g id=\"node2\" class=\"node\"&gt;\n&lt;title&gt;B&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-18\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-13.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;B&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- A&amp;#45;&amp;gt;B --&gt;\n&lt;g id=\"edge1\" class=\"edge\"&gt;\n&lt;title&gt;A&amp;#45;&amp;gt;B&lt;/title&gt;\n&lt;path fill=\"none\" stroke=\"#000000\" d=\"M27,-71.8314C27,-64.131 27,-54.9743 27,-46.4166\"/&gt;\n&lt;polygon fill=\"#000000\" stroke=\"#000000\" points=\"30.5001,-46.4132 27,-36.4133 23.5001,-46.4133 30.5001,-46.4132\"/&gt;\n&lt;/g&gt;\n&lt;/g&gt;\n&lt;/svg&gt;\n"
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

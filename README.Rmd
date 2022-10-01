@@ -59,7 +59,7 @@ You can install the released version of `dtrackr` from [CRAN](https://CRAN.R-pro
 install.packages("dtrackr")
 ```
 
-### System dependencies for installatio from source
+### System dependencies for installation from source
 
 For installation from source on in Linux, `dtrackr` has required transitive dependencies on 
 a few system libraries. These can be installed with the following commands:
@@ -153,15 +153,15 @@ And your publication ready data pipeline, with any assumptions you care to
 document, is creates in a format of your choice (as long as that choice is one
 of `pdf`, `png`, `svg` or `ps`), ready for submission to Nature.
 
-This is a trivial example, but the more complex the pipeline, the bigger benefit you will get. 
+This is a trivial example, but the more complex the pipeline, the bigger 
+benefit you will get. 
 
 Check out the [main documentation for detailed examples](https://terminological.github.io/dtrackr/)
 
-## Developers
+## Testing and integration
 
-For automated testing `dtrackr` uses the `testthat` framework. For vignette
-building there are dependencies on the `tidyverse` package, as well as other 
-system libraries required for vignette building with `pandoc`.
+For testing `dtrackr` uses the `testthat` framework. It is configured to run both
+the unit tests and the functional tests in the code examples.
 
 ```R
 # assuming dtrackr has been cloned from github into the working directory 
@@ -182,9 +182,21 @@ install.packages(c("here","tidyverse","devtools","testthat","pkgdown"))
 # Examples:
 devtools::run_examples()
 
-# automated testing with testthat:
+# automated testing with testthat (also runs all examples):
 devtools::test()
 
-# pkgdown site building (which runs all the vignettes:
+# pkgdown site building (which executes all the vignettes):
 pkgdown::build_site()
 ```
+
+Github workflows are enabled on this repository for continuous integration. 
+These perform an `R CMD check` on code commits, which will run all `testthat`
+unit tests, run all man page examples, and build all the vignettes.
+
+For vignette building there are dependencies on the `tidyverse` package, 
+as well as other system libraries required for vignette building with `pandoc`.
+The CI tests check the library can be installed on macOs, windows, and Ubuntu, 
+with R versions 3.6.1, 4.1, 4.2 and the R development branch.
+
+On tagged releases, additional Github workflows are triggered by in the 
+`r-universe` repository, to build binary releases on a range of platforms.
