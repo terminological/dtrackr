@@ -157,7 +157,8 @@ tracked dataframe with the history of both input dataframes. See <code><a href='
   by <span class='op'>=</span> <span class='cn'>NULL</span>,
   copy <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>...</span>,
-  .messages <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"{.count.lhs} on LHS"</span>, <span class='st'>"{.count.rhs} on RHS"</span>, <span class='st'>"{.count.out} not matched"</span><span class='op'>)</span>,
+  .messages <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"{.count.lhs} on LHS"</span>, <span class='st'>"{.count.rhs} on RHS"</span>,
+    <span class='st'>"{.count.out} not matched"</span><span class='op'>)</span>,
   .headline <span class='op'>=</span> <span class='st'>"Semi join by {.keys}"</span>
 <span class='op'>)</span></pre>
 
@@ -165,7 +166,13 @@ tracked dataframe with the history of both input dataframes. See <code><a href='
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x, y</th>
+      <th>x</th>
+      <td><p>A pair of data frames, data frame extensions (e.g. a tibble), or
+lazy data frames (e.g. from dbplyr or dtplyr). See <em>Methods</em>, below, for
+more details.</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
       <td><p>A pair of data frames, data frame extensions (e.g. a tibble), or
 lazy data frames (e.g. from dbplyr or dtplyr). See <em>Methods</em>, below, for
 more details.</p></td>

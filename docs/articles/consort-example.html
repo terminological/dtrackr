@@ -313,8 +313,8 @@
     sysDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>
     <span class="co"># we could have included any number of other parameters here from the global environment</span>
   <span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">.label</span><span class="op">)</span>
-<span class="co">#&gt; Case_or_Control:case: 344/460 (74.8%) patients on 2022-10-01, with a mean bilirubin of 4.79 ± 1.07</span>
-<span class="co">#&gt; Case_or_Control:control: 116/460 (25.2%) patients on 2022-10-01, with a mean bilirubin of 1.35 ± 1.05</span></pre></div>
+<span class="co">#&gt; Case_or_Control:case: 344/460 (74.8%) patients on 2022-10-02, with a mean bilirubin of 4.79 ± 1.07</span>
+<span class="co">#&gt; Case_or_Control:control: 116/460 (25.2%) patients on 2022-10-02, with a mean bilirubin of 1.35 ± 1.05</span></pre></div>
 <p>Sometimes it will be necessary to operate on all tagged content at once. This is possible but be aware that the content available depends somewhat on where the tag was set in the pipeline so not all fields will always be present (although <code>.count</code> and <code>.total</code> will be). The <code>.total</code> is the overall number of cases at that point in the pipeline. <code>.count</code> is the number of cases in each strata.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="va">ilpd</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/tagged.html">tagged</a></span><span class="op">(</span>.glue <span class="op">=</span> <span class="st">"{.count}/{.total} patients"</span><span class="op">)</span>

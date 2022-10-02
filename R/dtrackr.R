@@ -1317,7 +1317,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 
   tmp = p_comment(.data, .messages, .headline = .headline, .type="stratify", .tag=.tag)
   tmp2 = tmp %>% .untrack() %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% p_copy(tmp)
-  if (dplyr::n_groups(tmp2) > .maxgroups ) {
+  if (!.isPaused(tmp2) && dplyr::n_groups(tmp2) > .maxgroups ) {
     rlang::inform(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "always")
     rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'. To continue tracking use ungroup then dtrackr::resume once groupings have become a bit more manageable",.frequency = "once",.frequency_id = "maxgrp")
     tmp2 = .data %>% dplyr::group_by(..., .add=.add, .drop=.drop) %>% p_copy(.data) %>% p_pause()
@@ -1715,12 +1715,14 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
   }
 
   # if we are knitting and the output is not HTML we will need the image
-  # saved somewhere as a png and pdf.
+  # saved somewhere as a png and pdf.Also if output if github markdown
   # Also if we are viewing the image in the console and the user requested the png
   if(
-    (is_knitting() && !knitr::is_html_output())
+    (is_knitting() && !(knitr::is_html_output()))
     ||
     (!is_knitting() && !is_running_in_chunk() && !defaultToHTML)
+    ||
+    knitr::pandoc_to("gfm")
   ) {
     if (is.null(filename)) {
       # no file was given but for latex we need to convert to PDF anyway
@@ -1756,8 +1758,11 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
     } else if (knitr::pandoc_to(fmt = c("docx","odt"))) {
       return(knitr::include_graphics(tmp$paths$png))
 
-    } else if (knitr::pandoc_to(fmt = c("markdown","gfm"))) {
+    } else if (knitr::pandoc_to(fmt = c("markdown"))) {
       return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(data = charToRaw(svg), mime = "image/svg+xml"))))
+
+    } else if (knitr::pandoc_to(fmt = c("gfm"))) {
+      return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = tmp$paths$png, mime = "image/png"))))
 
     } else {
       # the user sepcified type.
