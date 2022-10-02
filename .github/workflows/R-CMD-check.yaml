@@ -27,7 +27,7 @@ jobs:
           - {os: windows-2022, r: '4.1.0'}
           - {os: ubuntu-20.04, r: '3.6.1'}
           - {os: ubuntu-20.04, r: '4.2.0'}
-          - {os: ubuntu-18.04, r: 'devel'}
+          - {os: ubuntu-18.04, r: 'devel', http-user-agent: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -40,31 +40,18 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-
-      # - name: Install xml deps on Linux
-      #   if: runner.os == 'Linux'
-      #   run: sudo apt-get update -y && sudo apt-get install -y libxmlsec1-dev pkg-config pandoc-citeproc
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 3
           extra-packages: any::rcmdcheck
           # work around for bug in pak
+          needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--no-multiarch", "--as-cran")'
+          upload-snapshots: true
 
-      - name: Show testthat output
-        if: always()
-        run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
-        shell: bash
-
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
