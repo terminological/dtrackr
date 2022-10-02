@@ -22,16 +22,15 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04, r: '4.1.0', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04, r: '4.1.0'}
           - {os: macOS-11, r: '4.1.0'}
           - {os: windows-2022, r: '4.1.0'}
-          - {os: ubuntu-20.04, r: '3.6.1', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-20.04, r: '4.2.0', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-18.04, r: 'devel', http-user-agent: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04, r: '3.6.1'}
+          - {os: ubuntu-20.04, r: '4.2.0'}
+          - {os: ubuntu-18.04, r: 'devel'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      RSPM: ${{ matrix.config.rspm }}
       R_KEEP_PKG_SOURCE: yes
 
     steps:
@@ -41,7 +40,6 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
 
       # - name: Install xml deps on Linux
       #   if: runner.os == 'Linux'
@@ -52,7 +50,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 3
-          extra-packages: any::rcmdcheck, XML
+          extra-packages: any::rcmdcheck
           # work around for bug in pak
 
       - uses: r-lib/actions/check-r-package@v2
