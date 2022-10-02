@@ -1762,6 +1762,8 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
       return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(data = charToRaw(svg), mime = "image/svg+xml"))))
 
     } else if (knitr::pandoc_to(fmt = c("gfm"))) {
+      # https://github.com/YourUserAccount/YourProject/blob/master/DirectoryPath/ReadMe.md
+      # https://stackoverflow.com/questions/14494747/how-to-add-images-to-readme-md-on-github/48723190#48723190
       return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = tmp$paths$png, mime = "image/png"))))
 
     } else {
