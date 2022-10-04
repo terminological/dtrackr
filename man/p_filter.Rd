@@ -17,9 +17,7 @@ p_filter(
 )
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 
 \item{...}{the filter criteria}
 
@@ -27,40 +25,36 @@ p_filter(
 If \code{.preserve = FALSE} (the default), the grouping structure
 is recalculated based on the resulting data, otherwise the grouping is kept as is.}
 
-\item{.messages}{\itemize{
-\item a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
-}}
+\item{.messages}{a set of glue specs. The glue code can use any global
+variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
-\item{.headline}{\itemize{
-\item a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
-}}
+\item{.headline}{a headline glue spec. The glue code can use any global
+variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
-\item{.type}{\itemize{
-\item the format type of the action - typically an exclusion
-}}
+\item{.type}{the format type of the action typically an exclusion}
 
-\item{.asOffshoot}{\itemize{
-\item if the type is exclusion, asOffshoot places the information box outside of the main flow, as an exclusion.
-}}
+\item{.asOffshoot}{if the type is exclusion, \code{.asOffshoot} places the
+information box outside of the main flow, as an exclusion.}
 
-\item{.stage}{\itemize{
-\item a name for this step in the pathway
-}}
+\item{.stage}{a name for this step in the pathway}
 
-\item{.tag}{\itemize{
-\item if you want the summary data from this step in the future then give it a name with .tag.
-}}
+\item{.tag}{if you want the summary data from this step in the future then
+give it a name with \code{.tag}.}
 }
 \value{
 the filtered .data dataframe with history graph updated
 }
 \description{
-Filter acts in the same way as DPLYR. Prior to the operation the size of the group is calculated \{.count.in\} and
-after the operation the output size \{.count.out\}. The group \{.strata\} is also available (if grouped) for reporting.
-See \code{\link[dplyr:filter]{dplyr::filter()}}.
+Filter acts in the same way as in \code{dplyr} where predicates which evaluate to
+TRUE act to select items to include, and items for which the predicate cannot
+be evaluated are excluded. For tracking prior to the filter operation the
+size of each group is calculated \{.count.in\} and after the operation the
+output size of each group \{.count.out\}. The grouping \{.strata\} is also
+available (if grouped) for reporting. See \code{\link[dplyr:filter]{dplyr::filter()}}.
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 tmp = iris \%>\% track() \%>\% group_by(Species)
 tmp \%>\% filter(Petal.Length > 5) \%>\% history()
 }

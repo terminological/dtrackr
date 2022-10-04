@@ -15,41 +15,37 @@
 )
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 
-\item{.f}{a function as expected by dplyr::group_modify e.g. function(d,g,...) { ...do something with d and return a dataframe... }}
+\item{.f}{a function as expected by dplyr::group_modify e.g.
+function(d,g,...) { ...do something with d and return a dataframe... }}
 
 \item{...}{additional parameters for .f.}
 
-\item{.keep}{\itemize{
-\item are the grouping variables kept in d, or split out to g (the default)
-}}
+\item{.keep}{are the grouping variables kept in d, or split out to g (the
+default)}
 
-\item{.messages}{\itemize{
-\item a set of glue specs. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
-}}
+\item{.messages}{a set of glue specs. The glue code can use any global
+variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
-\item{.headline}{\itemize{
-\item a headline glue spec. The glue code can use any global variable, or \{.strata\},\{.count.in\},and \{.count.out\}
-}}
+\item{.headline}{a headline glue spec. The glue code can use any global
+variable, or \{.strata\},\{.count.in\},and \{.count.out\}}
 
-\item{.tag}{\itemize{
-\item if you want the summary data from this step in the future then give it a name with .tag.
-}}
+\item{.tag}{if you want the summary data from this step in the future then
+give it a name with .tag.}
 }
 \value{
 the .data dataframe with distinct values and history graph updated.
 }
 \description{
-Distinct acts in the same way as in \code{dplyr::distinct}. Prior to the operation the size of the group is calculated \{.count.in\} and
-after the operation the output size \{.count.out\}
-The group \{.strata\} is also available (if grouped) for reporting
-See \code{\link[dplyr:distinct]{dplyr::distinct()}}.
+Distinct acts in the same way as in \code{dplyr::distinct}. Prior to the operation
+the size of the group is calculated \{.count.in\} and after the operation the
+output size \{.count.out\} The group \{.strata\} is also available (if
+grouped) for reporting See \code{\link[dplyr:distinct]{dplyr::distinct()}}.
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 tmp = bind_rows(iris \%>\% track(), iris \%>\% track() \%>\% filter(Petal.Length > 5))
 tmp \%>\% group_by(Species) \%>\% distinct() \%>\% history()
 }

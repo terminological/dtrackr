@@ -7,9 +7,7 @@
 untrack(.data)
 }
 \arguments{
-\item{.data}{\itemize{
-\item a tracked dataframe
-}}
+\item{.data}{a tracked dataframe}
 }
 \value{
 the .data dataframe with history graph metadata removed.
@@ -19,5 +17,6 @@ Remove tracking from the dataframe
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 iris \%>\% track() \%>\% untrack() \%>\% class()
 }

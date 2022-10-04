@@ -31,7 +31,7 @@ except for the columns specified in \code{names_from} and \code{values_from}.
 Typically used when you have redundant variables, i.e. variables whose
 values are perfectly correlated with existing variables.}
 
-\item{names_from}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A pair of
+\item{names_from, values_from}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A pair of
 arguments describing which column (or columns) to get the name of the
 output column (\code{names_from}), and which column (or columns) to get the
 cell values from (\code{values_from}).
@@ -60,14 +60,6 @@ Use \code{"minimal"} to allow duplicates in the output, or \code{"unique"} to
 de-duplicated by adding numeric suffixes. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}
 for more options.}
 
-\item{values_from}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A pair of
-arguments describing which column (or columns) to get the name of the
-output column (\code{names_from}), and which column (or columns) to get the
-cell values from (\code{values_from}).
-
-If \code{values_from} contains multiple values, the value will be added to the
-front of the output column.}
-
 \item{values_fill}{Optionally, a (scalar) value that specifies what each
 \code{value} should be filled in with when missing.
 
@@ -84,24 +76,22 @@ to different \code{values_from} columns.}
 
 \item{...}{Additional arguments passed on to methods.}
 
-\item{.messages}{\itemize{
-\item a set of glue specs. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
-}}
+\item{.messages}{a set of glue specs. The glue code can use any global
+variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
-\item{.headline}{\itemize{
-\item a headline glue spec. The glue code can use any global variable, grouping variable, or \{.strata\}. Defaults to nothing.
-}}
+\item{.headline}{a headline glue spec. The glue code can use any global
+variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
-\item{.tag}{\itemize{
-\item if you want the summary data from this step in the future then give it a name with .tag.
-}}
+\item{.tag}{if you want the summary data from this step in the future then
+give it a name with .tag.}
 }
 \value{
-the data dataframe result of the tidyr::pivot_wider function but with a history graph updated with a \code{.message} if requested.
+the data dataframe result of the tidyr::pivot_wider function but with
+a history graph updated with a \code{.message} if requested.
 }
 \description{
-A drop in replacement for \code{tidyr::pivot_wider} which optionally takes a message and headline to store in the history graph.
-See \code{\link[tidyr:pivot_wider]{tidyr::pivot_wider()}}.
+A drop in replacement for \code{\link[tidyr:pivot_wider]{tidyr::pivot_wider()}} which optionally takes a
+message and headline to store in the history graph.
 }
 \seealso{
 tidyr::pivot_wider()

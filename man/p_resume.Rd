@@ -7,9 +7,7 @@
 p_resume(.data)
 }
 \arguments{
-\item{.data}{\itemize{
-\item a tracked dataframe
-}}
+\item{.data}{a tracked dataframe}
 }
 \value{
 the .data dataframe with history graph tracking resumed
@@ -19,5 +17,6 @@ Resume tracking the dataframe. This may reset the grouping of the tracked data
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 iris \%>\% track() \%>\% pause() \%>\% resume() \%>\% history()
 }

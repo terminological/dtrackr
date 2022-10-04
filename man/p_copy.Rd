@@ -2,26 +2,23 @@
 % Please edit documentation in R/dtrackr.R
 \name{p_copy}
 \alias{p_copy}
-\title{Copy the dtrackr history graph from one df to another}
+\title{Copy the dtrackr history graph from one dataframe to another}
 \usage{
 p_copy(.data, from)
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 
-\item{from}{\itemize{
-\item the dataframe to copy the history graph from
-}}
+\item{from}{the dataframe to copy the history graph from}
 }
 \value{
 the .data dataframe with the history graph of "from"
 }
 \description{
-Copy the dtrackr history graph from one df to another
+Copy the dtrackr history graph from one dataframe to another
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 mtcars \%>\% p_copy(iris \%>\% comment("A comment")) \%>\% history()
 }

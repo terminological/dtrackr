@@ -23,6 +23,7 @@ here::i_am("README.Rmd")
 [![R-CMD-check](https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg)](https://github.com/terminological/dtrackr/actions)
 [![DOI](https://zenodo.org/badge/335974323.svg)](https://zenodo.org/badge/latestdoi/335974323)
 [![dtrackr status badge](https://terminological.r-universe.dev/badges/dtrackr)](https://terminological.r-universe.dev)
+<!-- [![DOI](https://joss.theoj.org/papers/10.21105/joss.04707/status.svg)](https://doi.org/) -->
 <!-- badges: end -->
 
 ## Overview
@@ -143,11 +144,18 @@ visual summary is useful, and for bio-medical journals or clinical trials often
 a requirement. 
 
 
-```{r}
-
+```R
 dataset %>% flowchart()
-
 ```
+
+```{r include=FALSE}
+# Needed because this is a github README to allow relative links to a hosted
+# file.
+dataset %>% flowchart(here::here("man/figures/README-flowchart.png")) %>%
+  invisible()
+```
+
+![](man/figures/README-flowchart.png?raw=true)
 
 And your publication ready data pipeline, with any assumptions you care to
 document, is creates in a format of your choice (as long as that choice is one
@@ -176,7 +184,7 @@ devtools::load_all()
 # zlib1g-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev 
 # libjpeg-dev libpng-dev libtiff-dev git libgit2-dev
 
-pak::::local_system_requirements("ubuntu","20.04")
+pak::local_system_requirements("ubuntu","20.04")
 install.packages(c("here","tidyverse","devtools","testthat","pkgdown"))
 
 # Examples:

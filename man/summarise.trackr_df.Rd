@@ -14,9 +14,7 @@
 )
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 
 \item{...}{a set of dplyr summary expressions.}
 
@@ -24,28 +22,31 @@
 \item Experimental lifecycle Grouping structure of the result.
 }}
 
-\item{.messages}{\itemize{
-\item a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
-}}
+\item{.messages}{a set of glue specs. The glue code can use any summary
+variable defined in the ... parameter, or any global variable, or
+\{.strata\}}
 
-\item{.headline}{\itemize{
-\item a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or \{.strata\}
-}}
+\item{.headline}{a headline glue spec. The glue code can use any summary
+variable defined in the ... parameter, or any global variable, or
+\{.strata\}}
 
-\item{.tag}{\itemize{
-\item if you want the summary data from this step in the future then give it a name with .tag.
-}}
+\item{.tag}{if you want the summary data from this step in the future then
+give it a name with .tag.}
 }
 \value{
-the .data dataframe summarised with the history graph updated showing the summarise operation as a new stage
+the .data dataframe summarised with the history graph updated showing
+the summarise operation as a new stage
 }
 \description{
-Summarising a data set acts in the normal way. Any columns resulting form the summary can be added to the history graph
-In the history this joins any stratified branches and acts as a specific type of p_summary, allowing you to
-generate some summary statistics about the un-grouped data. See \code{\link[dplyr:summarise]{dplyr::summarise()}}.
+Summarising a data set acts in the normal \code{dplyr} manner to collapse groups
+to individual rows. Any columns resulting from the summary can be added to
+the history graph In the history this also joins any stratified branches and
+allows you to generate some summary statistics about the un-grouped data. See
+\code{\link[dplyr:summarise]{dplyr::summarise()}}.
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 tmp = iris \%>\% group_by(Species)
 tmp \%>\% summarise(avg = mean(Petal.Length), .messages="{avg} length") \%>\% history()
 }

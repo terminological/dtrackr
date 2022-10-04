@@ -18,24 +18,33 @@ reference:
 
 - title: "Pipeline annotations"
   desc: >
-    `dtrackr` specific additions to a data pipeline. These are novel data
-    pipeline functions that don't have a direct equivalent in `dplyr` or
-    `tidyr`.
+    `dtrackr` has functions that are specific additions to a data pipeline.
+    These are novel data pipeline functions that don't have a direct equivalent
+    in `dplyr` or `tidyr`.
   contents:
   - comment
+  - status
   - count_subgroup
   - exclude_all
   - include_any
-  - status
 
-- title: "S3 tidyverse extensions"
+- title: "S3 dplyr function extensions"
   desc: >
     S3 functions extend the behaviour of a subset of the `dplyr` or `tidyr` commands
     that operate on dataframes, and return dataframes, to include a history graph. In general
     these work the same as the normal `dplyr` functions but allow additional
-    parameters that capture the history as they are executed.
+    parameters that allow us to configure how the history is captured as they
+    are executed. `dplyr` functions that are not listed here can still be used
+    as normal with a tracked dataframe as input and give you the same output
+    but simply do not give you the additional functionality to store a entry
+    in the history graph. This may be because the operations are terminal
+    such as `count()`, `tally()`, `glimpse()`, `pull()`, or they
+    modify subsequent behaviour (e.g `rowwise()`), or they do not output dataframes
+    (e.g. `group_map()` and `group_walk()`). If a function is not supported in
+    `dtrackr` it can still be used, but that step of the pipeline will not be
+    captured in the history graph.
   contents:
-  - add_count
+  - add_count.trackr_df
   - add_tally
   - arrange.trackr_df
   - distinct.trackr_df
@@ -43,8 +52,6 @@ reference:
   - group_by.trackr_df
   - group_modify.trackr_df
   - mutate.trackr_df
-  - pivot_longer.trackr_df
-  - pivot_wider.trackr_df
   - relocate.trackr_df
   - rename.trackr_df
   - rename_with.trackr_df
@@ -58,9 +65,36 @@ reference:
   - left_join.trackr_df
   - right_join.trackr_df
   - semi_join.trackr_df
+  - nest_join.trackr_df
+  - slice.trackr_df
+  - slice_head.trackr_df
+  - slice_tail.trackr_df
+  - slice_min.trackr_df
+  - slice_max.trackr_df
+  - slice_sample.trackr_df
   - bind_rows
+  - bind_cols
+  - intersect.trackr_df
+  - union.trackr_df
+  - union_all.trackr_df
+  - setdiff.trackr_df
 
-- title: "Flowchart and output control."
+- title: "S3 function extensions in other packages"
+  desc: >
+    `dtrackr` support for functions from other tidyverse packages is evolving.
+    The focus is on functions that take a dataframe as input and produce a
+    dataframe as output, and naturally fit within a data pipeline. `pivot_longer()`
+    and `pivot_wider()` are good examples which are already implemented. Tracking
+    of `nest()` and `unnest()` is not yet implemented (but this does not stop you
+    from using these functions in a pipeline), and `purrr` functions such as `map_df()`,
+    `map_dfc()`, `map_dfr()`, `pmap()`, `pmap_dfr()`, `pmap_dfc()` are potential
+    candidates for future implementation, as are functions that acquire data
+    such as those from the `readr` package.
+  contents:
+  - pivot_longer.trackr_df
+  - pivot_wider.trackr_df
+
+- title: "Dot graph rendering."
   desc: >
     Rendering of a `dtrackr` history once converted to
     `GraphViz` dot format. These can be also used for non-dtrackr dot content
@@ -77,6 +111,6 @@ reference:
 - title: "Legacy interface"
   desc: >
     The following operations are all aliases for functions above. They are
-    generally backend functions.
+    generally backend functions, and should not be used for new projects.
   contents:
   - starts_with("p_")

@@ -7,9 +7,7 @@
 p_get(.data)
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 }
 \value{
 the history graph. This is a list, of class trackr_graph, containing the following named items:
@@ -30,6 +28,7 @@ the dtrackr history graph.
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 graph = iris \%>\% track() \%>\% comment("A comment") \%>\% history()
-ls(graph)
+print(graph)
 }

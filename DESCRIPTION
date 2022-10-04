@@ -1,6 +1,6 @@
 Package: dtrackr
 Title: Track your Data Pipelines
-Version: 0.2.5
+Version: 0.2.4.9000
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -35,6 +35,7 @@ Suggests:
     knitr,
     rmarkdown,
     tidyverse,
+    tidyselect,
     devtools,
     testthat (>= 2.1.0),
     rstudioapi

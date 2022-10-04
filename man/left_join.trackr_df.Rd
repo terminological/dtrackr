@@ -18,11 +18,7 @@
 )
 }
 \arguments{
-\item{x}{A pair of data frames, data frame extensions (e.g. a tibble), or
-lazy data frames (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
-more details.}
-
-\item{y}{A pair of data frames, data frame extensions (e.g. a tibble), or
+\item{x, y}{A pair of data frames, data frame extensions (e.g. a tibble), or
 lazy data frames (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
@@ -58,20 +54,82 @@ Should be a character vector of length 2.}
 \item{keep}{Should the join keys from both \code{x} and \code{y} be preserved in the
 output?}
 
-\item{.messages}{\itemize{
-\item a set of glue specs. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
-}}
+\item{.messages}{a set of glue specs. The glue code can use any global
+variable, \{.keys\} for the joining columns, \{.count.lhs\},
+\{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes
+respectively}
 
-\item{.headline}{\itemize{
-\item a glue spec. The glue code can use any global variable, \{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes respectively
-}}
+\item{.headline}{a glue spec. The glue code can use any global variable,
+\{.keys\} for the joining columns, \{.count.lhs\}, \{.count.rhs\},
+\{.count.out\} for the input and output dataframes sizes respectively}
 }
 \value{
 the join of the two dataframes with the history graph updated.
 }
 \description{
-Mutating joins behave as dplyr joins, except the history graph of the two sides of the joins is merged resulting in a
-tracked dataframe with the history of both input dataframes. See \code{\link[dplyr:mutate-joins]{dplyr::left_join()}} for more details on the underlying functions.
+Mutating joins behave as \code{dplyr} joins, except the history graph of the two
+sides of the joins is merged resulting in a tracked dataframe with the
+history of both input dataframes. See \code{\link[dplyr:mutate-joins]{dplyr::left_join()}} for more details
+on the underlying functions.
+}
+\examples{
+library(dplyr)
+library(tidyr)
+library(dtrackr)
+# Joins across data sets
+
+# example data uses the dplyr starways data
+people = starwars \%>\% select(-films, -vehicles, -starships)
+films = starwars \%>\% select(name,films) \%>\% unnest(cols = c(films))
+
+lhs = people \%>\% track() \%>\% comment("People df {.total}")
+rhs = films \%>\% track() \%>\% comment("Films df {.total}") \%>\%
+  comment("a test comment")
+
+# Inner join
+join = lhs \%>\% inner_join(rhs, by="name") \%>\% comment("joined {.total}")
+# See what the history of the graph is:
+join \%>\% history() \%>\% print()
+nrow(join)
+# Display the tracked graph (not run in examples)
+# join \%>\% flowchart()
+
+# Left join
+join = lhs \%>\% left_join(rhs, by="name") \%>\% comment("joined {.total}")
+# See what the history of the graph is:
+join \%>\% history()
+nrow(join)
+
+# Full join
+join = lhs \%>\% full_join(rhs, by="name") \%>\% comment("joined {.total}")
+# See what the history of the graph is:
+join \%>\% history()
+nrow(join)
+
+# Semi join
+join = lhs \%>\% semi_join(rhs, by="name") \%>\% comment("joined {.total}")
+# See what the history of the graph is:
+join \%>\% history()
+nrow(join)
+
+# Anti join
+join = lhs \%>\% anti_join(rhs, by="name") \%>\% comment("joined {.total}")
+# See what the history of the graph is:
+join \%>\% history()
+nrow(join)
+
+# Nest join
+join = lhs \%>\% nest_join(rhs, by="name") \%>\% comment("joined {.total}")
+# See what the history of the graph is:
+join \%>\% history()
+nrow(join)
+
+
+
+
+
+
+
 }
 \seealso{
 dplyr::left_join()

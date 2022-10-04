@@ -47,8 +47,8 @@
 
 
 <meta property="og:title" content="Reshaping data using tidyr::pivot_wider — pivot_wider.trackr_df" />
-<meta property="og:description" content="A drop in replacement for tidyr::pivot_wider which optionally takes a message and headline to store in the history graph.
-See tidyr::pivot_wider()." />
+<meta property="og:description" content="A drop in replacement for tidyr::pivot_wider() which optionally takes a
+message and headline to store in the history graph." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -81,7 +81,7 @@ See tidyr::pivot_wider()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -147,12 +147,12 @@ See tidyr::pivot_wider()." />
     </div>
 
     <div class="ref-description">
-    <p>A drop in replacement for <code><a href='https://tidyr.tidyverse.org/reference/pivot_wider.html'>tidyr::pivot_wider</a></code> which optionally takes a message and headline to store in the history graph.
-See <code><a href='https://tidyr.tidyverse.org/reference/pivot_wider.html'>tidyr::pivot_wider()</a></code>.</p>
+    <p>A drop in replacement for <code><a href='https://tidyr.tidyverse.org/reference/pivot_wider.html'>tidyr::pivot_wider()</a></code> which optionally takes a
+message and headline to store in the history graph.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for trackr_df</span>
-<span class='fu'>pivot_wider</span><span class='op'>(</span>
+<span class='fu'><a href='https://tidyr.tidyverse.org/reference/pivot_wider.html'>pivot_wider</a></span><span class='op'>(</span>
   <span class='va'>data</span>,
   id_cols <span class='op'>=</span> <span class='cn'>NULL</span>,
   names_from <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/name.html'>as.symbol</a></span><span class='op'>(</span><span class='st'>"name"</span><span class='op'>)</span>,
@@ -186,7 +186,7 @@ Typically used when you have redundant variables, i.e. variables whose
 values are perfectly correlated with existing variables.</p></td>
     </tr>
     <tr>
-      <th>names_from</th>
+      <th>names_from, values_from</th>
       <td><p>&lt;<code><a href='https://tidyr.tidyverse.org/reference/tidyr_tidy_select.html'>tidy-select</a></code>&gt; A pair of
 arguments describing which column (or columns) to get the name of the
 output column (<code>names_from</code>), and which column (or columns) to get the
@@ -226,15 +226,6 @@ de-duplicated by adding numeric suffixes. See <code><a href='https://vctrs.r-lib
 for more options.</p></td>
     </tr>
     <tr>
-      <th>values_from</th>
-      <td><p>&lt;<code><a href='https://tidyr.tidyverse.org/reference/tidyr_tidy_select.html'>tidy-select</a></code>&gt; A pair of
-arguments describing which column (or columns) to get the name of the
-output column (<code>names_from</code>), and which column (or columns) to get the
-cell values from (<code>values_from</code>).</p>
-<p>If <code>values_from</code> contains multiple values, the value will be added to the
-front of the output column.</p></td>
-    </tr>
-    <tr>
       <th>values_fill</th>
       <td><p>Optionally, a (scalar) value that specifies what each
 <code>value</code> should be filled in with when missing.</p>
@@ -256,27 +247,25 @@ to different <code>values_from</code> columns.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></li>
-</ul></td>
+      <td><p>a set of glue specs. The glue code can use any global
+variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></li>
-</ul></td>
+      <td><p>a headline glue spec. The glue code can use any global
+variable, grouping variable, or {.strata}. Defaults to nothing.</p></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><ul>
-<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
-</ul></td>
+      <td><p>if you want the summary data from this step in the future then
+give it a name with .tag.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the data dataframe result of the tidyr::pivot_wider function but with a history graph updated with a <code>.message</code> if requested.</p>
+    <p>the data dataframe result of the tidyr::pivot_wider function but with
+a history graph updated with a <code>.message</code> if requested.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>tidyr::pivot_wider()</p></div>

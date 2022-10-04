@@ -47,10 +47,12 @@
 
 
 <meta property="og:title" content="Include any items matching a criteria — p_include_any" />
-<meta property="og:description" content="Apply a set of inclusion criteria and dplyr::summarise the actions of the filter to the dtrackr history graph
-Because of the ... filter specification, all parameters MUST BE NAMED.
-The criteria work in an alternative manner, i.e. the results include anything that match any of the criteria.
-If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria - that may be true." />
+<meta property="og:description" content="Apply a set of inclusion criteria and record the actions of the
+filter to the dtrackr history graph. Because of the ... filter specification,
+all parameters MUST BE NAMED. This function is the opposite of
+exclude_all() and the filtering criteria work to identify rows to
+include i.e. the results include anything that match any of the criteria. If
+na.rm=TRUE they also keep anything that cannot be evaluated by the criteria." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -83,7 +85,7 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -149,10 +151,12 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
     </div>
 
     <div class="ref-description">
-    <p>Apply a set of inclusion criteria and dplyr::summarise the actions of the filter to the dtrackr history graph
-Because of the ... filter specification, all parameters MUST BE NAMED.
-The criteria work in an alternative manner, i.e. the results include anything that match any of the criteria.
-If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria - that may be true.</p>
+    <p>Apply a set of inclusion criteria and record the actions of the
+filter to the <code>dtrackr</code> history graph. Because of the ... filter specification,
+all parameters MUST BE NAMED. This function is the opposite of
+<code><a href='exclude_all.html'>exclude_all()</a></code> and the filtering criteria work to identify rows to
+include i.e. the results include anything that match any of the criteria. If
+<code>na.rm=TRUE</code> they also keep anything that cannot be evaluated by the criteria.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_include_any</span><span class='op'>(</span>
@@ -169,57 +173,62 @@ If na.rm = TRUE they also keep anything that cannot be evaluated by a criteria -
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><ul>
-<li><p>a dataframe which may be grouped</p></li>
-</ul></td>
+      <td><p>a dataframe which may be grouped</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><ul>
-<li><p>a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables,
-variables from the environment and {.included} and {.matched} or {.missing} (included = matched+missing), {.count} and {.total} - group and overall counts respectively, e.g. "excluding {.matched} items and {.missing} with missing values".</p></li>
-</ul></td>
+      <td><p>a dplyr filter specification as a set of formulae where the LHS
+are predicates to test the data set against, items that match at least one
+of the predicates will be included. The RHS is a glue specification,
+defining the message, to be entered in the history graph for each predicate
+matched. This can refer to grouping variables, variables from the
+environment and {.included} and {.matched} or {.missing} (included =
+matched+missing), {.count} and {.total} - group and overall counts
+respectively, e.g. "excluding {.matched} items and {.missing} with
+missing values".</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></li>
-</ul></td>
+      <td><p>a glue specification which can refer to grouping variables
+of .data, or any variables defined in the calling environment</p></td>
     </tr>
     <tr>
       <th>na.rm</th>
-      <td><ul>
-<li><p>(default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)</p></li>
-</ul></td>
+      <td><p>(default TRUE) if the filter cannot be evaluated for a row
+count that row as missing and either exclude it (TRUE) or don't exclude it
+(FALSE)</p></td>
     </tr>
     <tr>
       <th>.type</th>
-      <td><ul>
-<li><p>default "exclusion": used to define formatting</p></li>
-</ul></td>
+      <td><p>default "inclusion": used to define formatting</p></td>
     </tr>
     <tr>
       <th>.asOffshoot</th>
-      <td><ul>
-<li><p>do you want this comment to be an offshoot of the main flow (default = TRUE).</p></li>
-</ul></td>
+      <td><p>do you want this comment to be an offshoot of the main
+flow (default = FALSE).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the filtered .data dataframe with the history graph updated with the summary of included items as a new stage</p>
+    <p>the filtered .data dataframe with the history graph updated with the
+summary of included items as a new stage</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-<span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='include_any.html'>include_any</a></span><span class='op'>(</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='include_any.html'>include_any</a></span><span class='op'>(</span>
       <span class='va'>Petal.Length</span> <span class='op'>&gt;</span> <span class='fl'>5</span> <span class='op'>~</span> <span class='st'>"{.included} long ones"</span>,
       <span class='va'>Petal.Length</span> <span class='op'>&lt;</span> <span class='fl'>2</span> <span class='op'>~</span> <span class='st'>"{.included} short ones"</span>
 <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; dtrackr history:
-#&gt; number of flowchart steps: 2 (approx)
+#&gt; number of flowchart steps: 3 (approx)
 #&gt; tags defined: &lt;none&gt;
-#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "Species:setosa", "inclusions:", "0 long ones", "50 short ones"
+#&gt; ├ [Species:versicolor]: "Species:versicolor", "inclusions:", "1 long ones", "0 short ones"
+#&gt; └ [Species:virginica]: "Species:virginica", "inclusions:", "41 long ones", "0 short ones"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

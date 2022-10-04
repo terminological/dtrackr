@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -161,28 +161,20 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><ul>
-<li><p>a dataframe which may be grouped</p></li>
-</ul></td>
+      <td><p>a dataframe which may be grouped</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} variable which is the count of all rows,
-the {.count} variable which is the count of rows in the current group and the {.strata} which describes the current group. Defaults to the value of <code><a href='https://rdrr.io/r/base/options.html'>getOption("dtrackr.default_message")</a></code>.</p></li>
-</ul></td>
+      <td><p>a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the {.total} variable which is the count of all rows,
+the {.count} variable which is the count of rows in the current group and the {.strata} which describes the current group. Defaults to the value of <code><a href='https://rdrr.io/r/base/options.html'>getOption("dtrackr.default_message")</a></code>.</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").</p></li>
-</ul></td>
+      <td><p>a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the {.total} variable which is nrow(.data), or {.strata} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").</p></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><ul>
-<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
-</ul></td>
+      <td><p>if you want the summary data from this step in the future then give it a name with .tag.</p></td>
     </tr>
     </table>
 
@@ -192,11 +184,14 @@ the {.count} variable which is the count of rows in the current group and the {.
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
 <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'>track</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; dtrackr history:
 #&gt; number of flowchart steps: 1 (approx)
 #&gt; tags defined: &lt;none&gt;
-#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "150 items"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

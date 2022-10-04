@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -218,7 +218,17 @@
 <a href="#dtrackr-025" class="anchor"></a>dtrackr 0.2.5<small> Unreleased </small>
 </h1>
 <ul>
-<li>TODO: bug fix for group_by not checking pause status before warning that pause required.</li>
+<li>incubating - pending JOSS review.</li>
+<li>bug fix for group_by not checking pause status before warning that pause required.</li>
+<li>documentation improvements - full review of all documentation. Additional context to function reference to draw attention to supported dplyr operations</li>
+<li>added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and missing set operations functions.</li>
+<li>re-factored mutate style operations, regression tested</li>
+<li>automated testing for new methods, and full testing for slice, set ops, and mutate style functions with new example code.</li>
+<li>expanded test coverage ( covr::package_coverage(type=“all”): dtrackr Coverage: 83.60%, R/dot.R: 78.12%, R/dtrackr.R: 84.08%) mostly through examples</li>
+<li>improved error handling and reporting in mutate functions.</li>
+<li>issues: documentation results in examples tests running multiple times.</li>
+<li>TODO: (next version) exclusions in joins.</li>
+<li>Logo.</li>
 </ul>
 </div>
   </div>

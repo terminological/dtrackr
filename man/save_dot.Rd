@@ -15,29 +15,17 @@ save_dot(
 )
 }
 \arguments{
-\item{dot}{\itemize{
-\item a graphviz dot string
-}}
+\item{dot}{a graphviz dot string}
 
-\item{filename}{\itemize{
-\item the full path of the filename (minus extension for multiple formats)
-}}
+\item{filename}{the full path of the filename (minus extension for multiple formats)}
 
-\item{size}{\itemize{
-\item a list of length and width in inches e.g. a std_size
-}}
+\item{size}{a list of length and width in inches e.g. a std_size}
 
-\item{maxWidth}{\itemize{
-\item a width in inches is size is not defined
-}}
+\item{maxWidth}{a width in inches is size is not defined}
 
-\item{maxHeight}{\itemize{
-\item a height in inches if size is not defined
-}}
+\item{maxHeight}{a height in inches if size is not defined}
 
-\item{formats}{\itemize{
-\item some of "pdf","dot","svg","png","ps"
-}}
+\item{formats}{some of "pdf","dot","svg","png","ps"}
 
 \item{...}{ignored}
 }

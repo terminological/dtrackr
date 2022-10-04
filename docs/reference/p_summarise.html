@@ -47,9 +47,11 @@
 
 
 <meta property="og:title" content="Summarise a data set — p_summarise" />
-<meta property="og:description" content="Summarising a data set acts in the normal way. Any columns resulting form the summary can be added to the history graph
-In the history this joins any stratified branches and acts as a specific type of p_summary, allowing you to
-generate some summary statistics about the un-grouped data. See dplyr::summarise()." />
+<meta property="og:description" content="Summarising a data set acts in the normal dplyr manner to collapse groups
+to individual rows. Any columns resulting from the summary can be added to
+the history graph In the history this also joins any stratified branches and
+allows you to generate some summary statistics about the un-grouped data. See
+dplyr::summarise()." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -82,7 +84,7 @@ generate some summary statistics about the un-grouped data. See dplyr::summarise
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -148,9 +150,11 @@ generate some summary statistics about the un-grouped data. See dplyr::summarise
     </div>
 
     <div class="ref-description">
-    <p>Summarising a data set acts in the normal way. Any columns resulting form the summary can be added to the history graph
-In the history this joins any stratified branches and acts as a specific type of p_summary, allowing you to
-generate some summary statistics about the un-grouped data. See <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>dplyr::summarise()</a></code>.</p>
+    <p>Summarising a data set acts in the normal <code>dplyr</code> manner to collapse groups
+to individual rows. Any columns resulting from the summary can be added to
+the history graph In the history this also joins any stratified branches and
+allows you to generate some summary statistics about the un-grouped data. See
+<code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>dplyr::summarise()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_summarise</span><span class='op'>(</span>
@@ -167,9 +171,7 @@ generate some summary statistics about the un-grouped data. See <code><a href='h
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><ul>
-<li><p>a dataframe which may be grouped</p></li>
-</ul></td>
+      <td><p>a dataframe which may be grouped</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -183,39 +185,42 @@ generate some summary statistics about the un-grouped data. See <code><a href='h
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a set of glue specs. The glue code can use any summary variable defined in the ... parameter, or any global variable, or {.strata}</p></li>
-</ul></td>
+      <td><p>a set of glue specs. The glue code can use any summary
+variable defined in the ... parameter, or any global variable, or
+{.strata}</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a headline glue spec. The glue code can use any summary variable defined in the ... parameter, or any global variable, or {.strata}</p></li>
-</ul></td>
+      <td><p>a headline glue spec. The glue code can use any summary
+variable defined in the ... parameter, or any global variable, or
+{.strata}</p></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><ul>
-<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
-</ul></td>
+      <td><p>if you want the summary data from this step in the future then
+give it a name with .tag.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the .data dataframe summarised with the history graph updated showing the summarise operation as a new stage</p>
+    <p>the .data dataframe summarised with the history graph updated showing
+the summarise operation as a new stage</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>dplyr::summarise()</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>=</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>avg <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>Petal.Length</span><span class='op'>)</span>, .messages<span class='op'>=</span><span class='st'>"{avg} length"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; dtrackr history:
 #&gt; number of flowchart steps: 0 (approx)
 #&gt; tags defined: &lt;none&gt;
-#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ &lt;empty history&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

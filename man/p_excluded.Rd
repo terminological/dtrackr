@@ -7,13 +7,9 @@
 p_excluded(.data, simplify = TRUE)
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 
-\item{simplify}{\itemize{
-\item return a single summary dataframe of all exclusions.
-}}
+\item{simplify}{return a single summary dataframe of all exclusions.}
 }
 \value{
 a new dataframe of the excluded data up to this point in the workflow. This dataframe is by default flattened, but if \code{.simplify=FALSE} has a nested structure containing records excluded at each part of the pipeline.
@@ -23,6 +19,7 @@ Get the dtrackr excluded data record
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 tmp = iris \%>\% track() \%>\% capture_exclusions()
 tmp \%>\% exclude_all(
    Petal.Length > 5.8 ~ "{.excluded} long ones",

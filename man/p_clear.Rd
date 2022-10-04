@@ -7,17 +7,16 @@
 p_clear(.data)
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 }
 \value{
 the .data dataframe with the history graph removed
 }
 \description{
-Clear the dtrackr history graph
+This is unlikely to be needed directly and is mostly and internal function
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 mtcars \%>\% track() \%>\% comment("A comment") \%>\% p_clear() \%>\% history()
 }

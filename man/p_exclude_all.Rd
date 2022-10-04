@@ -15,46 +15,45 @@ p_exclude_all(
 )
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 
-\item{...}{\itemize{
-\item a dplyr filter specification as a formula where the RHS is a glue specification, defining the message. This can refer to grouping variables
-variables from the environment and \{.excluded\} and \{.matched\} or \{.missing\} (excluded = matched+missing), \{.count\} and \{.total\} - group and overall counts respectively, e.g. "excluding \{.matched\} items and \{.missing\} with missing values".
-}}
+\item{...}{a dplyr filter specification as a set of formulae where the LHS are
+predicates to test the data set against, items that match any of the predicates will
+be excluded. The RHS is a glue specification, defining the message, to be
+entered in the history graph for each predicate. This can refer to grouping variables
+variables from the environment and \{.excluded\} and \{.matched\} or
+\{.missing\} (excluded = matched+missing), \{.count\} and \{.total\} -
+group and overall counts respectively, e.g. "excluding \{.matched\} items
+and \{.missing\} with missing values".}
 
-\item{.headline}{\itemize{
-\item a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment
-}}
+\item{.headline}{a glue specification which can refer to grouping variables
+of .data, or any variables defined in the calling environment}
 
-\item{na.rm}{\itemize{
-\item (default FALSE) if the filter cannot be evaluated for a row count that row as missing and either exclude it (TRUE) or don't exclude it (FALSE)
-}}
+\item{na.rm}{(default FALSE) if the filter cannot be evaluated for a row
+count that row as missing and either exclude it (TRUE) or don't exclude it
+(FALSE)}
 
-\item{.type}{\itemize{
-\item default "exclusion": used to define formatting
-}}
+\item{.type}{default "exclusion": used to define formatting}
 
-\item{.asOffshoot}{\itemize{
-\item do you want this comment to be an offshoot of the main flow (default = TRUE).
-}}
+\item{.asOffshoot}{do you want this comment to be an offshoot of the main
+flow (default = TRUE).}
 
-\item{.stage}{\itemize{
-\item a name for this step in the pathway
-}}
+\item{.stage}{a name for this step in the pathway}
 }
 \value{
-the filtered .data dataframe with the history graph updated with the summary of excluded items as a new offshoot stage
+the filtered .data dataframe with the history graph updated with the
+summary of excluded items as a new offshoot stage
 }
 \description{
-Apply a set of filters and summarise the actions of the filter to the dtrackr history graph
-Because of the ... filter specification, all parameters MUST BE NAMED.
-The filters work in an additive manner, i.e. the results excluding all things that match any of the criteria.
-If na.rm = TRUE they also remove anything that cannot be evaluated by a criteria.
+Apply a set of filters and summarise the actions of the filter to the \code{dtrackr}
+history graph. Because of the ... filter specification, all parameters MUST BE
+NAMED. The filters work in an additive manner, i.e. the results excluding all
+things that match any of the criteria. If \code{na.rm = TRUE} they also remove
+anything that cannot be evaluated by any criteria.
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 iris \%>\% track() \%>\% capture_exclusions() \%>\% exclude_all(
       Petal.Length > 5 ~ "{.excluded} long ones",
       Petal.Length < 2 ~ "{.excluded} short ones"

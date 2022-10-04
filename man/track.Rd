@@ -12,22 +12,14 @@ track(
 )
 }
 \arguments{
-\item{.data}{\itemize{
-\item a dataframe which may be grouped
-}}
+\item{.data}{a dataframe which may be grouped}
 
-\item{.messages}{\itemize{
-\item a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} variable which is the count of all rows,
-the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of \code{getOption("dtrackr.default_message")}.
-}}
+\item{.messages}{a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} variable which is the count of all rows,
+the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of \code{getOption("dtrackr.default_message")}.}
 
-\item{.headline}{\itemize{
-\item a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").
-}}
+\item{.headline}{a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").}
 
-\item{.tag}{\itemize{
-\item if you want the summary data from this step in the future then give it a name with .tag.
-}}
+\item{.tag}{if you want the summary data from this step in the future then give it a name with .tag.}
 }
 \value{
 the .data dataframe with additional history graph metadata, to allow tracking.
@@ -37,5 +29,6 @@ Start tracking the dtrackr history graph
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 iris \%>\% track() \%>\% history()
 }

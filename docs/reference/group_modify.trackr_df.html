@@ -47,12 +47,12 @@
 
 
 <meta property="og:title" content="Group-wise modification of data and complex operations — group_modify.trackr_df" />
-<meta property="og:description" content="Group modifying a data set acts in the normal way. The internal mechanics of the modify function are opaque to the history.
-This means these can be used to wrap any unsupported operation without losing the history (e.g. df %&amp;gt;% track() %&amp;gt;% group_modify(function(d,...) { d %&amp;gt;% unsupported_operation() }) )
-Prior to the operation the size of the group is calculated {.count.in} and
-after the operation the output size {.count.out}
-The group {.strata} is also available (if grouped) for reporting
-See dplyr::group_modify()." />
+<meta property="og:description" content="Group modifying a data set acts in the normal way. The internal mechanics of
+the modify function are opaque to the history. This means these can be used
+to wrap any unsupported operation without losing the history (e.g. df %&amp;gt;% track() %&amp;gt;% group_modify(function(d,...) { d %&amp;gt;% unsupported_operation() })
+) Prior to the operation the size of the group is calculated {.count.in}
+and after the operation the output size {.count.out} The group {.strata}
+is also available (if grouped) for reporting See dplyr::group_modify()." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -85,7 +85,7 @@ See dplyr::group_modify()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -151,12 +151,12 @@ See dplyr::group_modify()." />
     </div>
 
     <div class="ref-description">
-    <p>Group modifying a data set acts in the normal way. The internal mechanics of the modify function are opaque to the history.
-This means these can be used to wrap any unsupported operation without losing the history (e.g. <code>df %&gt;% track() %&gt;% group_modify(function(d,...) { d %&gt;% unsupported_operation() })</code> )
-Prior to the operation the size of the group is calculated {.count.in} and
-after the operation the output size {.count.out}
-The group {.strata} is also available (if grouped) for reporting
-See <code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>dplyr::group_modify()</a></code>.</p>
+    <p>Group modifying a data set acts in the normal way. The internal mechanics of
+the modify function are opaque to the history. This means these can be used
+to wrap any unsupported operation without losing the history (e.g. <code>df %&gt;% track() %&gt;% group_modify(function(d,...) { d %&gt;% unsupported_operation() })</code>
+) Prior to the operation the size of the group is calculated {.count.in}
+and after the operation the output size {.count.out} The group {.strata}
+is also available (if grouped) for reporting See <code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>dplyr::group_modify()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for trackr_df</span>
@@ -176,13 +176,12 @@ See <code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>dplyr::
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><ul>
-<li><p>a dataframe which may be grouped</p></li>
-</ul></td>
+      <td><p>a dataframe which may be grouped</p></td>
     </tr>
     <tr>
       <th>.f</th>
-      <td><p>a function as expected by dplyr::group_modify e.g. function(d,g,...)  ...do something with d and return a dataframe...</p></td>
+      <td><p>a function as expected by dplyr::group_modify e.g.
+function(d,g,...)  ...do something with d and return a dataframe...</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -190,33 +189,27 @@ See <code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>dplyr::
     </tr>
     <tr>
       <th>.keep</th>
-      <td><ul>
-<li><p>are the grouping variables kept in d, or split out to g (the default)</p></li>
-</ul></td>
+      <td><p>are the grouping variables kept in d, or split out to g (the
+default)</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a set of glue specs. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}</p></li>
-</ul></td>
+      <td><p>a set of glue specs. The glue code can use any global
+variable, or {.strata},{.count.in},and {.count.out}</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a headline glue spec. The glue code can use any global variable, or {.strata},{.count.in},and {.count.out}</p></li>
-</ul></td>
+      <td><p>a headline glue spec. The glue code can use any global
+variable, or {.strata},{.count.in},and {.count.out}</p></td>
     </tr>
     <tr>
       <th>.type</th>
-      <td><ul>
-<li><p>default "modify": used to define formatting</p></li>
-</ul></td>
+      <td><p>default "modify": used to define formatting</p></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><ul>
-<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
-</ul></td>
+      <td><p>if you want the summary data from this step in the future then
+give it a name with .tag.</p></td>
     </tr>
     </table>
 
@@ -229,6 +222,7 @@ See <code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>dplyr::
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>=</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_map.html'>group_modify</a></span><span class='op'>(</span>
       <span class='kw'>function</span><span class='op'>(</span><span class='va'>d</span>,<span class='va'>g</span>,<span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span> <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>}</span>,
@@ -237,7 +231,11 @@ See <code><a href='https://dplyr.tidyverse.org/reference/group_map.html'>dplyr::
 </div><div class='output co'>#&gt; dtrackr history:
 #&gt; number of flowchart steps: 3 (approx)
 #&gt; tags defined: &lt;none&gt;
-#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "Species:setosa", "50 in, 10 out"
+#&gt; ├ [Species:versicolor]: "Species:versicolor", "50 in, 10 out"
+#&gt; └ [Species:virginica]: "Species:virginica", "50 in, 10 out"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

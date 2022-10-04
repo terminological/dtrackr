@@ -9,7 +9,34 @@ vignette: >
 
 # Tracking data provenance
 
-When wrangling raw data into a form suitable for analysis there may be many steps where explicit or implicit assumptions are made about the nature of the data, which determine the nature of the resulting analysis data-set. Checking that these assumptions have the expected results as the analysis is proceeding can be time consuming. If a data pipeline is broken up over a number of parameterised functions, following the data flow through the code is time consuming and getting an overview difficult. This is where tracking data provenance can help, by monitoring the steps the data goes through and summarizing the outcomes of the steps as they occur we can generate a flow chart of the data history.
+When wrangling complex data sets into a form suitable for analysis there may be many
+steps where transformations and filtering of the data is performed in a data pipeline. 
+At each stage we want to reassure ourselves that if we have removed data we have
+done so for the right reasons, and for scientific publication we need to communicate 
+what processing the data has undergone, and whether the data processing unevenly 
+affects the groups we wish to compare. In frequently updated analyses this must be 
+automated.
+
+`dtrackr` provides a generic capability that can address this and other
+problems. By extending the normal data manipulation functions provided by
+`dplyr`, we allow operations on a dataframe to be recorded as metadata, as the
+dataframe passes through a data pipeline, in a "history graph". We can export the history graph as a
+flowchart which helps with documentation, and makes accurate reporting in the
+scientific literature simpler.
+
+Tracking the data through the pipeline also allows us a way to capture where and why data is being
+excluded, and see both a visual summary and a detailed line list of exclusions. 
+This can help with identifying and rectifying data quality issues.
+
+In the situation where data is analysed interactively, as pipeline code is being
+created, tracking the history of a dataframe, and visualising it, allows us to identify if data has
+been manipulated in the way we intend, and helps debug pipeline code, or uncover 
+unsupported assumptions about the data.
+
+There are other places where tracking data provenance could also help, by 
+visualising the steps an individual data item takes through a pipeline we can compare 
+different data, such as new versions of data sets, and quickly validate our 
+data pipeline for use with new data.
 
 
 ```{r, include = FALSE}
@@ -28,9 +55,23 @@ library(dtrackr)
 
 # Basic operation - comments and stratification
 
-The main documentation for data pipelines is provided by the `comment` function. This (and all other functions) uses a `glue` package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use global variables such as `filename` in this example. Secondly the `.count` variable is the number of rows in the current group. Thirdly the `.strata` variable is defined to be a description of the group(s) we are currently in, but in grouped data the grouping variables (in this case `Species`) can also be used. Finally the `.total` variable returns the whole size of the ungrouped data-set.
+The main documentation for data pipelines is provided by the `comment` function.
+This (and all other functions) uses a `glue` package specification to define the
+comment text. This glue specification can use a range of variables to describe
+the data as it passes through the pipeline. Firstly it can use any global variables
+such as `filename` in this example. Secondly the `.count` variable is the number
+of rows in the current group. Thirdly the `.strata` variable is defined to be a
+description of the group(s) we are currently in, but in grouped data the
+grouping variables (in this case `Species`) can also be used. Finally the
+`.total` variable returns the whole size of the ungrouped data-set.
 
-Comments can either be a single `.headline` or a list of `.messages`. Setting either of these to "" disables them for a given comment. As in the example, thanks to `glue`, any expression can be evaluated in the messages but be warned, debugging them is hard. If an error in the glue spec is present `dtrackr` will try and tell you what is the problem was and what variables should have been available for the glue spec. (N.B. A common mistake is to use `.message` rather than `.messages` when providing a glue spec.)
+Comments can either be a single `.headline` or a list of `.messages`. Setting
+either of these to "" disables them for a given comment. As in the example,
+thanks to `glue`, any expression can be evaluated in the messages but be warned,
+debugging them is hard. If an error in the glue spec is present `dtrackr` will
+try and tell you what is the problem was and what variables should have been
+available for the glue spec. (N.B. A common mistake is to use `.message` rather
+than `.messages` when providing a glue spec.)
 
 
 ```{r}
@@ -41,12 +82,12 @@ filename = "~/tmp/iris.csv"
 
 
 iris %>%
-  track() %>%
-  comment(
+  track(
     .headline = "Iris data:",
     .messages = c(
       "loaded from \"{filename}\"",
-      "starts with {.count} items")) %>%
+      "starts with {.count} items")
+  ) %>%
   group_by(Species) %>%
   comment(
     .headline = "{.strata}",
@@ -64,7 +105,13 @@ iris %>%
 
 # Status - Further analysis in the workflow
 
-In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts. `comment` has a more sophisticated counterpart `status`. `status` is essentially a `dplyr` summarisation step which is connected to a `glue` specification output, that is recorded in the data frame history. In plain English this means you can do an arbitrary summarisation and put the result into the flowchart.
+In the middle of a pipeline you may wish to document something about the data
+that is more complex than the simple counts. `comment` has a more sophisticated
+counterpart `status`. `status` is essentially a `dplyr` summarisation step which
+is connected to a `glue` specification output, that is recorded in the data
+frame history. In plain English this means you can do an arbitrary summarisation
+and put the result into the flowchart, without interrupting the data flow, 
+for example:
 
 ```{r}
 
@@ -82,7 +129,12 @@ iris %>%
 
 ```
 
-A frequent use case for more detailed description is to have a subgroup count within a flowchart. This is different enough to have its own function `count_subgroup()`. This works best for factor subgroup columns but other data will be converted to a factor automatically. As this uses glue specifications a modified formatted output is also possible as in this example, where the subgroup percentages are calculated to 1dp.
+A frequent use case for a more detailed description is to have a subgroup count
+within a flowchart. This is different enough to have its own function
+`count_subgroup()`. This works best for factor subgroup columns but other data
+will be converted to a factor automatically. As this uses glue specifications a
+modified formatted output is also possible as in this example, where the
+subgroup percentages are calculated to 1 decimal place.
 
 ```{r}
 diamonds %>%
@@ -98,9 +150,19 @@ diamonds %>%
 
 # Filtering, exclusions and inclusions
 
-Documenting the data set is only useful if you can also manipulate it, and one part of this is including and excluding things we don't want. The standard `dplyr::filter` approach works for this, and we can use the before and after `.count.in` and `.count.out`, and the difference between the two `.excluded` to document what the result was.
+Documenting the data set is only useful if you can also manipulate it, and one
+part of this is including and excluding things we don't want. The standard
+`dplyr::filter` approach works for this, and we can use the before and after
+`.count.in` and `.count.out`, and the difference between the two `.excluded` to
+document what the result was.
 
-In this example we exclude items that are >1 SD above the mean. The default message (`.messages = "excluded {.excluded} items"`) has been left as is which simply returns how many things have been excluded. With no customization the goal is for the pipeline to look as much as possible like a dplyr pipeline.
+In this example we exclude items that are more than one standard deviation above
+the mean. The default message (`.messages = "excluded {.excluded} items"`) has
+been left as is which simply returns how many things have been excluded. With no
+customization the goal is for the pipeline to look as much as possible like a
+`dplyr` pipeline and it should be possible to take a normal `dplyr` pipeline and
+insert `track()` at the front and `flowchart()` at the end to get a documented 
+pipeline.
 
 ```{r}
 
@@ -116,11 +178,32 @@ iris %>%
 ```
 
 
-This is useful but the reason for exclusion is not as clear as we would like, and this does not scale particularly well to multiple criteria, which are typical of the filters needed to massage real life data. For this we have written `exclude_all` which takes multiple criteria and applies them in a step-wise manner, summarising at each step. Rather than a logical expression expected by `dplyr::filter` we provide matching criteria as a formula relating the criteria to the glue specification (a trick inspired by case_when's syntax). This is very much slower than `filter` but gives fine control over the output.
+This is useful but the reason for exclusion is not as clear as we would like,
+and this does not scale particularly well to multiple criteria, which are
+typical of the filters needed to massage real life data. For this we have
+written `exclude_all` which takes multiple criteria and applies them in a
+step-wise manner, summarising at each step. Rather than the logical expression
+expected by `dplyr::filter` we provide matching criteria as a formula relating
+the filtering criteria on the left hand side, to the glue specification on the
+right hand side (a trick inspired by `dplyr::case_when()`'s syntax). This is
+very much slower than `filter` but gives fine control over the output.
 
-It should be noted that the logic of `exlude_all` is reversed compared to base `filter` for which a TRUE value is INCLUDED. In this example there are no missing values, however the behaviour of the filter when filter expressions cannot be evaluated and NAs are generated, is controlled by `na.rm`. This defaults to FALSE which means that values that cannot be evaluated are __NOT__ excluded. You can also explicitly check for missingness in the filter expression. 
+The logic of `exclude_all()` is reversed compared to `dplyr::filter()`. 
+In `filter()` only items for which the filtering criteria is TRUE are INCLUDED. 
+In this example there are no missing values, however the behaviour of the `filter()`
+when the criteria cannot be evaluated and `NA` values are generated is to exclude them.
 
-Exclusions produced like this are additive and the items may be counted in more than one exclusion category, and so won't add up to an exclusion total.
+In `exclude_all()` there can be multiple criteria and ALL items that match any of the 
+criteria are EXCLUDED. If a particular criteria cannot be evaluated for a data item
+teh behaviour of `exclude_all()` is controlled by the `na.rm` parameter. This
+defaults to FALSE which means that any values that cannot be evaluated are __NOT__
+excluded. 
+
+For each different criteria the number of items excluded is recorded in the 
+history graph in a manner defined by the right hand side of the exclusion criteria
+formulae. 
+
+
 
 ```{r}
 
@@ -146,7 +229,14 @@ dataset1 %>% flowchart()
 
 ```
 
-Sometimes inclusion criteria are more important. For this we use `include_any` which works in a similar manner but including items which match any of the supplied criteria, essentially combining with a logical OR operation, and in this case resulting in very different result from our previous example.
+Exclusions produced like this are additive and the items may be excluded by more
+than one exclusion criteria, and the list of exclusion counts won't necessarily
+add up to an exclusion total.
+
+Sometimes inclusion criteria are more important. For this we use `include_any`
+which works in a similar manner but INCLUDING items which match ANY of the
+supplied criteria, essentially combining the criteria with a logical OR operation, and in
+this case resulting in very different result from our previous example. 
 
 ```{r}
 
@@ -174,21 +264,13 @@ dataset2 %>% flowchart()
 
 ```
 
-# Displaying combined data flows
-
-It is possible to merge data flows into the same flow diagram. This might make sense if you want to try and document a branching data pipeline. This is not obviously essential but is possible.
-
-```{r}
-
-p_flowchart(list(dataset1,dataset2))
-
-```
-
-
-
 # Excluded data
 
-When considering a data pipeline it is sometimes important to know what has been excluded and at what stage. This can help for debugging or for addressing data quality issues. Dtrackr can collect exclusions at the same time as the history graph. This is enabled by the `capture_exclusions()` flag. 
+When considering a data pipeline it is sometimes important to know what has been
+excluded and at what stage. This can help for debugging or for addressing data
+quality issues. `dtrackr` can collect all data excluded at the same time as the history
+graph, along with a record of when in the pipeline and why an item was excluded. 
+This behaviour is enabled by the `capture_exclusions()` flag.
 
 ```{r}
 
@@ -220,7 +302,9 @@ tmp %>% flowchart()
 
 ```
 
-Give the previous data pipeline we can identify the items that were excluded, the phase at which they were excluded and details of the code that resulted in them being excluded.
+Give the previous data pipeline we can identify the items that were excluded,
+the stage of the pipeline at which they were excluded and details of the code
+that resulted in them being excluded.
 
 ```{r}
 tmp %>% excluded()
@@ -229,7 +313,11 @@ tmp %>% excluded()
 
 # Advanced handling of the history graph.
 
-The history graph is a stored as an attribute on a tracked dataframe. The contents of this attribute is a list of dataframes including an edge list and node list. These can be imported into other graph processing packages, and visualised in different ways.
+The history graph is a stored as an attribute on a tracked dataframe. The
+contents of this attribute is a list of dataframes including an edge list and
+node list. These can be imported into other graph processing packages, and
+visualised in different ways. Alternatively they could be used for automated testing of 
+data pipelines, for example.
 
 ```{r}
 tmp2 = tmp %>% p_get()
@@ -241,10 +329,20 @@ tmp2$nodes %>% glimpse()
 tmp2$edges %>% glimpse()
 ```
 
-The `GraphViz` language provides many options for formatting the flowchart. Rather than try and provide and interface for them we have gone for sane defaults. If you want to change this or use a different layout engine the `GraphViz` output can be retrieved and edited directly. Alternatively after rendering SVG output can be edited but hand. 
+The `GraphViz` language provides many options for formatting the flowchart.
+Rather than try and provide an interface for them, we have gone for sane
+defaults. If you want to change this or use a different layout engine the
+`GraphViz` output can be retrieved and edited directly. Alternatively if the 
+output you need is different, rendered SVG output can be edited but hand.
 
 ```{r}
 cat(tmp %>% p_get_as_dot())
 ```
+
+# Combined data flows
+
+Data sets that undergo different processing may be joined into a single dataset. 
+This is supported in `dtrackr` and demonstrated in the "joining-pipelines" vignette.
+
 
 

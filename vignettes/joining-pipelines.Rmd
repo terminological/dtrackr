@@ -15,33 +15,50 @@ library(dtrackr)
 
 # Joins across data sets
 
-Joining `dtrackr` tracked data is supported and allows us to combine linked data sets. In this toy example the data sets are characters from a popular film from my youth. 
+Joining `dtrackr` tracked data is supported and allows us to combine linked data
+sets. In this toy example the data sets are characters from a popular film from
+my youth.
 
 ```{r}
 
-
-
+# here we create a set of linked data from the starwars data
+# in a real example these data sets woudl have come from different places
 people = starwars %>% select(-films, -vehicles, -starships)
 vehicles = starwars %>% select(name,vehicles) %>% unnest(cols = c(vehicles))
 starships = starwars %>% select(name,starships) %>% unnest(cols = c(starships))
 films = starwars %>% select(name,films) %>% unnest(cols = c(films))
+# these 4 data frames are linked together by the name attribute
 
+# we track both input data sets:
 tmp1 = people %>% track() %>% comment("People df {.total}")
 tmp2 = films %>% track() %>% comment("Films df {.total}") %>% comment("a test comment")
 
-tmp1 %>% inner_join(tmp2, by="name") %>% comment("joined {.total}") %>% flowchart()
-# The join message is configurable but defaults to 
+# and here we (re)join the two data sets:
+tmp1 %>% 
+  inner_join(tmp2, by="name") %>% 
+  comment("joined {.total}") %>% 
+  flowchart()
+
+# The join message used by inner_join here is configurable but defaults to 
 # {.count.lhs} on LHS
 # {.count.rhs} on RHS
 # {.count.out} in linked set
 
 ```
 
-All join types are supported by `dtrackr` which will allow us to report on the numbers on either side of the join and on the resulting total. This can help detect if any data items are lost during the join. However we do not yet capture data that becomes excluded during joins, as the interpretation depends on the type of join employed.
+All `dplyr` join types are supported by `dtrackr` which allows us to report on the
+numbers on either side of the join and on the resulting total. This can help
+detect if any data items are lost during the join. However we do not yet capture
+data that becomes excluded during joins, as the interpretation depends on the
+type of join employed.
 
 # Unions
 
-Another type of binary operator is a union. This is a simpler problem and works as expected. In this example the early part of the pipeline is detected to be the same on both branches of the data flow. This therefore results in a flow that splits then subsequently joins again during the union (`bind_rows`) operator.
+Another type of binary operator is a union. This is a simpler problem and works
+as expected. In this example the early part of the pipeline is detected to be
+the same on both branches of the data flow. This therefore results in a flow
+that splits then subsequently joins again during the union (`bind_rows`)
+operator.
 
 ```{r}
 
@@ -61,4 +78,6 @@ tmp3 %>% flowchart()
 
 ```
 
-
+Other `dplyr` set operations are supported such as `setdiff()`, `union()`,
+`union_all()` and `intersect()` which are included in the function
+documentation.

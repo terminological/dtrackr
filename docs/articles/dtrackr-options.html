@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -163,7 +163,7 @@
 <polygon fill="#ffffff" stroke="#000000" points="346.9659,-252.2033 298.6165,-252.2033 298.6165,-228.9967 346.9659,-228.9967 346.9659,-252.2033"></polygon><text text-anchor="start" x="305.4544" y="-238.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 items</text></g></g></svg><div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="co"># reset options </span>
 <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></pre></div>
-<p>In particular in situations like this where you are faceting on factors or strings, disposing of the group name may make this clearer. In the following example we only include the group value, force it to lower case, and use a comma to separate multiple facets. We have used manual override of the messages in the grouping stages to specify what we are faceting by in a more natural way:</p>
+<p>In particular in situations like this where you are faceting on factors or strings, disposing of the group name may make this clearer. In the following example we only include the group value, force it to lower case, and use a comma to separate multiple facets. We have used manual override of the messages in the grouping stages, by providing a <code>.messages</code> parameter, to specify what we are faceting by in a more natural way:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="co"># only include the group value in the description of the group</span>
 <span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>
@@ -277,7 +277,10 @@
 <polygon fill="#ffffff" stroke="#000000" points="315.8239,-175.6 219.3129,-175.6 219.3129,-145.6 315.8239,-145.6 315.8239,-175.6"></polygon><text text-anchor="start" x="226.4408" y="-162.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: control</text><text text-anchor="start" x="226.4408" y="-154.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 167 patients</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
 <polygon fill="#ffffff" stroke="#000000" points="245.0244,-217.0033 178.1124,-217.0033 178.1124,-193.7967 245.0244,-193.7967 245.0244,-217.0033"></polygon><text text-anchor="start" x="185.3412" y="-203" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">case or control</text></g><!-- 1 --><g id="node11" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="259.8239,-265.2 163.3129,-265.2 163.3129,-235.2 259.8239,-235.2 259.8239,-265.2"></polygon><text text-anchor="start" x="170.4408" y="-252" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: </text><text text-anchor="start" x="170.4408" y="-244" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 583 patients</text></g></g></svg><div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="co"># N.b. this setting includes some unwanted headlines in the ungrouped stages of the flow chart. If a headline evaluates to "" then the headline is suppressed and we can get rid of unwanted headlines. An example of doing this is as follows:</span>
+<span class="co"># N.b. this setting includes some unwanted headlines in the ungrouped stages of</span>
+<span class="co"># the flow chart. If a headline evaluates to "" then the headline is suppressed</span>
+<span class="co"># and we can get rid of unwanted headlines. An example of doing this is as</span>
+<span class="co"># follows:</span>
 <span class="co"># options(dtrackr.default_headline = "{ifelse(.strata != '', glue::glue('subgroup: {.strata}'), '')}")</span>
 
 <span class="co"># reset options </span>
@@ -342,7 +345,7 @@
 <div id="maximum-groupings" class="section level2">
 <h2 class="hasAnchor">
 <a href="#maximum-groupings" class="anchor"></a>Maximum groupings</h2>
-<p>in <code><a href="../reference/count_subgroup.html">count_subgroup()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> statements there can be a large number of items generated if a particular grouping variable has a lot of possible values. This can cause performance issues and legibility issues for the resulting graph and is usually a mistake, as a result of an interim stage of the data pipeline (e.g. a <code>dataset %&gt;% group_by(nearly_unique_id) %&gt;% filter(row_number()==1)</code> type operation). The most number of groups that <code>dtrackr</code> will attempt to keep track of is configurable but defaults to 16:</p>
+<p>In <code><a href="../reference/count_subgroup.html">count_subgroup()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> statements there can be a large number of items generated if a particular grouping variable has a lot of possible values. This can cause performance issues and legibility issues for the resulting graph and is usually a result of an interim stage of the data pipeline where grouping is used to do fine scale summarisation operation (e.g. a <code>dataset %&gt;% group_by(nearly_unique_id) %&gt;% filter(row_number()==1)</code> or a timeseries where things need to be aggregated by date, and the data is quickly ungrouped (e.g. <code>timeseries %&gt;% group_by(date) %&gt;% summarise(count = n())</code>). The most number of groups that <code>dtrackr</code> will attempt to keep track of is configurable but defaults to 16:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.max_supported_groupings <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></pre></div>
 </div>

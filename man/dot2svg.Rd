@@ -7,9 +7,7 @@
 dot2svg(dot)
 }
 \arguments{
-\item{dot}{\itemize{
-\item a graphviz dot string
-}}
+\item{dot}{a graphviz dot string}
 }
 \value{
 the SVG as a string

@@ -7,13 +7,9 @@
 capture_exclusions(.data, .capture = TRUE)
 }
 \arguments{
-\item{.data}{\itemize{
-\item a tracked dataframe
-}}
+\item{.data}{a tracked dataframe}
 
-\item{.capture}{\itemize{
-\item Should we capture exclusions (things removed from the data set). This is useful for debugging data issues but comes at a significant cost. Defaults to the value of \code{getOption("dtrackr.exclusions")} or \code{FALSE}.
-}}
+\item{.capture}{Should we capture exclusions (things removed from the data set). This is useful for debugging data issues but comes at a significant cost. Defaults to the value of \code{getOption("dtrackr.exclusions")} or \code{FALSE}.}
 }
 \value{
 the .data dataframe with the exclusions flag set (or cleared if \code{.capture=FALSE}).
@@ -23,6 +19,7 @@ Start capturing exclusions on a tracked dataframe.
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 tmp = iris \%>\% track() \%>\% capture_exclusions()
 tmp \%>\% filter(Species!="versicolor") \%>\% history()
 }

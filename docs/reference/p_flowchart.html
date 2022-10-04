@@ -47,7 +47,10 @@
 
 
 <meta property="og:title" content="Flowchart output — p_flowchart" />
-<meta property="og:description" content="Generate a flowchart of the history of the dataframe, with all the transformations as stages in the flowchart." />
+<meta property="og:description" content="Generate a flowchart of the history of the dataframe(s), with all the tracked
+data pipeline as stages in the flowchart. Multiple dataframes can be plotted
+together in which case an attempt is made to determine which parts are
+common." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -146,7 +149,10 @@
     </div>
 
     <div class="ref-description">
-    <p>Generate a flowchart of the history of the dataframe, with all the transformations as stages in the flowchart.</p>
+    <p>Generate a flowchart of the history of the dataframe(s), with all the tracked
+data pipeline as stages in the flowchart. Multiple dataframes can be plotted
+together in which case an attempt is made to determine which parts are
+common.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_flowchart</span><span class='op'>(</span>
@@ -165,61 +171,54 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><ul>
-<li><p>the tracked dataframes</p></li>
-</ul></td>
+      <td><p>the tracked dataframes</p></td>
     </tr>
     <tr>
       <th>filename</th>
-      <td><ul>
-<li><p>a filename (without extension) which will be where the formatted flowcharts are saved</p></li>
-</ul></td>
+      <td><p>a filename which will be where the formatted flowcharts are
+saved. If no extension is specified the output formats are determined by
+the <code>formats</code> parameter.</p></td>
     </tr>
     <tr>
       <th>size</th>
-      <td><ul>
-<li><p>a list of length and width in inches e.g. a std_size</p></li>
-</ul></td>
+      <td><p>a list of length and width in inches e.g. a std_size</p></td>
     </tr>
     <tr>
       <th>maxWidth</th>
-      <td><ul>
-<li><p>a width in inches is size is not defined</p></li>
-</ul></td>
+      <td><p>a width in inches is size is not defined</p></td>
     </tr>
     <tr>
       <th>maxHeight</th>
-      <td><ul>
-<li><p>a height in inches if size is not defined</p></li>
-</ul></td>
+      <td><p>a height in inches if size is not defined</p></td>
     </tr>
     <tr>
       <th>formats</th>
-      <td><ul>
-<li><p>some of "pdf","dot","svg","png","ps"</p></li>
-</ul></td>
+      <td><p>some of "pdf","dot","svg","png","ps"</p></td>
     </tr>
     <tr>
       <th>defaultToHTML</th>
-      <td><ul>
-<li><p>if the correct output format is not easy to determine from the context, default providing HTML or to embedding the PNG</p></li>
-</ul></td>
+      <td><p>if the correct output format is not easy to determine
+from the context, default providing HTML (TRUE) or to embedding the PNG (FALSE)</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><ul>
-<li><p>other params passed onto p_get_as_dot, notable ones are fill, fontsize, colour, size, maxWidth and maxHeight</p></li>
-</ul></td>
+      <td><p>other params passed onto either <code><a href='p_get_as_dot.html'>p_get_as_dot()</a></code>, notable ones are
+<code>fill</code> (background colour e.g. 'lightgrey'), <code>fontsize</code> (in points),
+<code>colour</code> (font colour)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the nature of the flowchart output depends on the context in which the function is called. It will be some form of browse-able html output if called from an interactive session
-or a PNG/PDG link if in knitr and knitting latex or word type outputs,</p>
+    <p>the nature of the flowchart output depends on the context in which
+the function is called. It will be some form of browse-able html output if
+called from an interactive session or a PNG/PDG link if in knitr and
+knitting latex or word type outputs, if filename is specified the output
+will also be saved at the given location.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>=</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span>.tag <span class='op'>=</span> <span class='st'>"step1"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>!=</span><span class='st'>"versicolor"</span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span>.tag<span class='op'>=</span><span class='st'>"step2"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='flowchart.html'>flowchart</a></span><span class='op'>(</span><span class='op'>)</span>
 </div></pre>

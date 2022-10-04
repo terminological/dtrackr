@@ -47,12 +47,17 @@
 
 
 <meta property="og:title" content="Stratifying your analysis — group_by.trackr_df" />
-<meta property="og:description" content="Grouping a data set acts in the normal way. When tracking a dataframe sometimes a group_by() operation will create a lot of groups.
-This happens for example if you are doing a group_by(), summarise() step that is aggregating data on a fine scale, e.g. by day in a timeseries.
-This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. dtrackr will detect this issue
-and pause tracking the dataframe with a warning. It is up to the user to the resume() tracking when the large number of groups have been
-resolved e.g. using a dplyr::ungroup(). This limit is configurable with options(&quot;dtrackr.max_supported_groupings&quot;=XX). The default is 16.
-See dplyr::group_by()." />
+<meta property="og:description" content="Grouping a data set acts in the normal way. When tracking a dataframe
+sometimes a group_by() operation will create a lot of groups. This happens
+for example if you are doing a group_by(), summarise() step that is
+aggregating data on a fine scale, e.g. by day in a timeseries. This is
+generally a terrible idea when tracking a dataframe as the resulting
+flowchart will have many many branches and be illegible. dtrackr will detect this issue and
+pause tracking the dataframe with a warning. It is up to the user to the
+resume() tracking when the large number of groups have been resolved e.g.
+using a dplyr::ungroup(). This limit is configurable with
+options(&quot;dtrackr.max_supported_groupings&quot;=XX). The default is 16. See
+dplyr::group_by()." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -85,7 +90,7 @@ See dplyr::group_by()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -151,12 +156,17 @@ See dplyr::group_by()." />
     </div>
 
     <div class="ref-description">
-    <p>Grouping a data set acts in the normal way. When tracking a dataframe sometimes a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by()</a></code> operation will create a lot of groups.
-This happens for example if you are doing a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise()</a></code> step that is aggregating data on a fine scale, e.g. by day in a timeseries.
-This is generally a terrible idea when tracking a dataframe as the resulting flowchart will have many many branches. <code>dtrackr</code> will detect this issue
-and pause tracking the dataframe with a warning. It is up to the user to the <code><a href='resume.html'>resume()</a></code> tracking when the large number of groups have been
-resolved e.g. using a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::ungroup()</a></code>. This limit is configurable with <code><a href='https://rdrr.io/r/base/options.html'>options("dtrackr.max_supported_groupings"=XX)</a></code>. The default is 16.
-See <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::group_by()</a></code>.</p>
+    <p>Grouping a data set acts in the normal way. When tracking a dataframe
+sometimes a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by()</a></code> operation will create a lot of groups. This happens
+for example if you are doing a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise()</a></code> step that is
+aggregating data on a fine scale, e.g. by day in a timeseries. This is
+generally a terrible idea when tracking a dataframe as the resulting
+flowchart will have many many branches and be illegible. <code>dtrackr</code> will detect this issue and
+pause tracking the dataframe with a warning. It is up to the user to the
+<code><a href='resume.html'>resume()</a></code> tracking when the large number of groups have been resolved e.g.
+using a <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::ungroup()</a></code>. This limit is configurable with
+<code><a href='https://rdrr.io/r/base/options.html'>options("dtrackr.max_supported_groupings"=XX)</a></code>. The default is 16. See
+<code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::group_by()</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for trackr_df</span>
@@ -176,9 +186,7 @@ See <code><a href='https://dplyr.tidyverse.org/reference/group_by.html'>dplyr::g
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><ul>
-<li><p>a dataframe which may be grouped</p></li>
-</ul></td>
+      <td><p>a dataframe which may be grouped</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -201,27 +209,23 @@ grouped with <code>.drop = FALSE</code>. See <code><a href='https://dplyr.tidyve
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a set of glue specs. The glue code can use any global variable, or {.cols} which is the columns that are being grouped by.</p></li>
-</ul></td>
+      <td><p>a set of glue specs. The glue code can use any global
+variable, or {.cols} which is the columns that are being grouped by.</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a headline glue spec. The glue code can use any global variable, or {.cols}.</p></li>
-</ul></td>
+      <td><p>a headline glue spec. The glue code can use any global
+variable, or {.cols}.</p></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><ul>
-<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
-</ul></td>
+      <td><p>if you want the summary data from this step in the future then
+give it a name with .tag.</p></td>
     </tr>
     <tr>
       <th>.maxgroups</th>
-      <td><ul>
-<li><p>the maximum number of subgroups allowed before the tracking is paused.</p></li>
-</ul></td>
+      <td><p>the maximum number of subgroups allowed before the tracking
+is paused.</p></td>
     </tr>
     </table>
 
@@ -234,12 +238,17 @@ grouped with <code>.drop = FALSE</code>. See <code><a href='https://dplyr.tidyve
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>=</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span>, .messages<span class='op'>=</span><span class='st'>"stratify by {.cols}"</span><span class='op'>)</span>
 <span class='va'>tmp</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.strata}"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; dtrackr history:
 #&gt; number of flowchart steps: 3 (approx)
 #&gt; tags defined: &lt;none&gt;
-#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "Species:setosa", "Species:setosa"
+#&gt; ├ [Species:versicolor]: "Species:versicolor", "Species:versicolor"
+#&gt; └ [Species:virginica]: "Species:virginica", "Species:virginica"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

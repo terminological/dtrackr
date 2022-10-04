@@ -47,9 +47,10 @@
 
 
 <meta property="og:title" content="Add a subgroup count to the dtrackr history graph — count_subgroup" />
-<meta property="og:description" content="A frequent use case for more detailed description is to have a subgroup count within a flowchart.
-This works best for factor subgroup columns but other data will be converted to a factor automatically.
-The count of the items in each subgroup is added as a new stage in the flowchart." />
+<meta property="og:description" content="A frequent use case for more detailed description is to have a subgroup count
+within a flowchart. This works best for factor subgroup columns but other
+data will be converted to a factor automatically. The count of the items in
+each subgroup is added as a new stage in the flowchart." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -82,7 +83,7 @@ The count of the items in each subgroup is added as a new stage in the flowchart
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -148,9 +149,10 @@ The count of the items in each subgroup is added as a new stage in the flowchart
     </div>
 
     <div class="ref-description">
-    <p>A frequent use case for more detailed description is to have a subgroup count within a flowchart.
-This works best for factor subgroup columns but other data will be converted to a factor automatically.
-The count of the items in each subgroup is added as a new stage in the flowchart.</p>
+    <p>A frequent use case for more detailed description is to have a subgroup count
+within a flowchart. This works best for factor subgroup columns but other
+data will be converted to a factor automatically. The count of the items in
+each subgroup is added as a new stage in the flowchart.</p>
     </div>
 
     <pre class="usage"><span class='fu'>count_subgroup</span><span class='op'>(</span>
@@ -170,71 +172,68 @@ The count of the items in each subgroup is added as a new stage in the flowchart
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.data</th>
-      <td><ul>
-<li><p>a dataframe which may be grouped</p></li>
-</ul></td>
+      <td><p>a dataframe which may be grouped</p></td>
     </tr>
     <tr>
       <th>.subgroup</th>
-      <td><ul>
-<li><p>a column with a small number of levels (e.g.)</p></li>
-</ul></td>
+      <td><p>a column with a small number of levels (e.g. a factor)</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><ul>
-<li><p>additional parameters will be passed to factor(subgroup,...) to control levels, ordering, etc.</p></li>
-</ul></td>
+      <td><p>additional parameters will be passed to <code><a href='https://rdrr.io/r/base/factor.html'>factor(subgroup,...)</a></code> to
+control levels, ordering, etc.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a character vector of glue specifications. A glue specification can refer to anything from the calling environment and .name for the subgroup name, .count for the subgroup count, .subtotal for the current grouping count and .total for the whole count</p></li>
-</ul></td>
+      <td><p>a character vector of glue specifications. A glue
+specification can refer to anything from the calling environment and {.name}
+for the subgroup name, {.count} for the subgroup count, {.subtotal} for the
+current grouping count and {.total} for the whole count</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment</p></li>
-</ul></td>
+      <td><p>a glue specification which can refer to grouping variables
+of .data, or any variables defined in the calling environment</p></td>
     </tr>
     <tr>
       <th>.type</th>
-      <td><ul>
-<li><p>one of "info","exclusion": used to define formatting</p></li>
-</ul></td>
+      <td><p>one of "info","exclusion": used to define formatting</p></td>
     </tr>
     <tr>
       <th>.asOffshoot</th>
-      <td><ul>
-<li><p>do you want this comment to be an offshoot of the main flow (default = FALSE).</p></li>
-</ul></td>
+      <td><p>do you want this comment to be an offshoot of the main
+flow (default = FALSE).</p></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><ul>
-<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
-</ul></td>
+      <td><p>if you want to use the summary data from this step in the future then
+give it a name with .tag.</p></td>
     </tr>
     <tr>
       <th>.maxsubgroups</th>
-      <td><ul>
-<li><p>the maximum number of discrete values allowed is configurable with <code><a href='https://rdrr.io/r/base/options.html'>options("dtrackr.max_supported_groupings"=XX)</a></code>. The default is 16.</p></li>
-</ul></td>
+      <td><p>the maximum number of discrete values allowed in .subgroup is
+configurable with <code><a href='https://rdrr.io/r/base/options.html'>options("dtrackr.max_supported_groupings"=XX)</a></code>. The
+default is 16. Large values produce unwieldy flow charts.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the same .data dataframe with the history graph updated with a subgroup count as a new stage</p>
+    <p>the same .data dataframe with the history graph updated with a
+subgroup count as a new stage</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-<span class='va'>ILPD</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Case_or_Control</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>count_subgroup</span><span class='op'>(</span><span class='va'>Gender</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
+<span class='va'>ILPD</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Case_or_Control</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>count_subgroup</span><span class='op'>(</span><span class='va'>Gender</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; dtrackr history:
 #&gt; number of flowchart steps: 3 (approx)
 #&gt; tags defined: &lt;none&gt;
-#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Case_or_Control:case]: "Case_or_Control:case", "Female: 92 items", "Male: 324 items"
+#&gt; └ [Case_or_Control:control]: "Case_or_Control:control", "Female: 50 items", "Male: 117 items"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

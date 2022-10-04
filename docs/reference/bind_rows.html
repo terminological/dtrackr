@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Union of two or more data sets — bind_rows • dtrackr</title>
+<title>Set operations — bind_rows • dtrackr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,14 @@
 
 
 
-<meta property="og:title" content="Union of two or more data sets — bind_rows" />
-<meta property="og:description" content="This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as .count.out
-in other terms it performs exactly the same operation as dplyr::bind_rows. See dplyr::bind_rows()." />
+<meta property="og:title" content="Set operations — bind_rows" />
+<meta property="og:description" content="These perform set operations on tracked dataframes. It merges the history
+of 2 (or more) dataframes and combines the rows (or columns). It calculates the total number of
+resulting rows as {.count.out} in other terms it performs exactly the same
+operation as the equivalent dplyr operation. See dplyr::bind_rows(),
+dplyr::bind_cols(), dplyr::intersect(), dplyr::union(),
+dplyr::setdiff(),dplyr::intersect(), or dplyr::union_all() for the
+underlying function details." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -81,7 +86,7 @@ in other terms it performs exactly the same operation as dplyr::bind_rows. See d
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -141,14 +146,19 @@ in other terms it performs exactly the same operation as dplyr::bind_rows. See d
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Union of two or more data sets</h1>
+    <h1>Set operations</h1>
     <small class="dont-index">Source: <a href='https://github.com/terminological/dtrackr/blob/master/R/dtrackr.R'><code>R/dtrackr.R</code></a></small>
     <div class="hidden name"><code>bind_rows.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This merges the history of 2 dataframes and binds the rows. It calculates the total number of resulting rows as .count.out
-in other terms it performs exactly the same operation as dplyr::bind_rows. See <code><a href='https://dplyr.tidyverse.org/reference/bind.html'>dplyr::bind_rows()</a></code>.</p>
+    <p>These perform set operations on tracked dataframes. It merges the history
+of 2 (or more) dataframes and combines the rows (or columns). It calculates the total number of
+resulting rows as {.count.out} in other terms it performs exactly the same
+operation as the equivalent <code>dplyr</code> operation. See <code><a href='https://dplyr.tidyverse.org/reference/bind.html'>dplyr::bind_rows()</a></code>,
+<code><a href='https://dplyr.tidyverse.org/reference/bind.html'>dplyr::bind_cols()</a></code>, <code><a href='https://generics.r-lib.org/reference/setops.html'>dplyr::intersect()</a></code>, <code><a href='https://generics.r-lib.org/reference/setops.html'>dplyr::union()</a></code>,
+<code><a href='https://generics.r-lib.org/reference/setops.html'>dplyr::setdiff()</a></code>,<code><a href='https://generics.r-lib.org/reference/setops.html'>dplyr::intersect()</a></code>, or <code><a href='https://dplyr.tidyverse.org/reference/setops.html'>dplyr::union_all()</a></code> for the
+underlying function details.</p>
     </div>
 
     <pre class="usage"><span class='fu'>bind_rows</span><span class='op'>(</span>
@@ -163,7 +173,14 @@ in other terms it performs exactly the same operation as dplyr::bind_rows. See <
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p>the data frames to bind</p></td>
+      <td><p>Data frames to combine.</p>
+<p>Each argument can either be a data frame, a list that could be a data
+frame, or a list of data frames.</p>
+<p>When row-binding, columns are matched by name, and any missing
+columns will be filled with NA.</p>
+<p>When column-binding, rows are matched by position, so all data
+frames must have the same number of rows. To match by value, not
+position, see <a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>mutate-joins</a>.</p></td>
     </tr>
     <tr>
       <th>.id</th>
@@ -177,15 +194,13 @@ used instead.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a set of glue specs. The glue code can use any global variable, or {.count.out}</p></li>
-</ul></td>
+      <td><p>a set of glue specs. The glue code can use any global
+variable, or {.count.out}</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a glue spec. The glue code can use any global variable, or {.count.out}</p></li>
-</ul></td>
+      <td><p>a glue spec. The glue code can use any global variable, or
+{.count.out}</p></td>
     </tr>
     </table>
 
@@ -198,18 +213,88 @@ used instead.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:dtrackr’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    add_count, add_tally, bind_rows</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'>bind_rows</span><span class='op'>(</span> <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"one"</span><span class='op'>)</span>, <span class='va'>iris</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"two"</span><span class='op'>)</span> <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyr.tidyverse.org'>tidyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
+
+<span class='co'># Set operations</span>
+<span class='va'>people</span> <span class='op'>=</span> <span class='va'>starwars</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>films</span>, <span class='op'>-</span><span class='va'>vehicles</span>, <span class='op'>-</span><span class='va'>starships</span><span class='op'>)</span>
+<span class='va'>chrs</span> <span class='op'>=</span> <span class='va'>people</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='st'>"start"</span><span class='op'>)</span>
+
+<span class='va'>lhs</span> <span class='op'>=</span> <span class='va'>chrs</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='include_any.html'>include_any</a></span><span class='op'>(</span>
+  <span class='va'>species</span> <span class='op'>==</span> <span class='st'>"Human"</span> <span class='op'>~</span> <span class='st'>"{.included} humans"</span>,
+  <span class='va'>species</span> <span class='op'>==</span> <span class='st'>"Droid"</span> <span class='op'>~</span> <span class='st'>"{.included} droids"</span>
+<span class='op'>)</span>
+
+<span class='co'># these are different subsets of the same data</span>
+<span class='va'>rhs</span> <span class='op'>=</span> <span class='va'>chrs</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='include_any.html'>include_any</a></span><span class='op'>(</span>
+  <span class='va'>species</span> <span class='op'>==</span> <span class='st'>"Human"</span> <span class='op'>~</span> <span class='st'>"{.included} humans"</span>,
+  <span class='va'>species</span> <span class='op'>==</span> <span class='st'>"Gungan"</span> <span class='op'>~</span> <span class='st'>"{.included} gungans"</span>
+<span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.count} gungans &amp; humans"</span><span class='op'>)</span>
+
+
+<span class='co'># Unions</span>
+<span class='va'>set</span> <span class='op'>=</span> <span class='fu'>bind_rows</span><span class='op'>(</span><span class='va'>lhs</span>,<span class='va'>rhs</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.count} 2*human,droids and gungans"</span><span class='op'>)</span>
+<span class='co'># display the history of the result:</span>
+<span class='va'>set</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; dtrackr history:
-#&gt; number of flowchart steps: 1 (approx)
+#&gt; number of flowchart steps: 3 (approx)
 #&gt; tags defined: &lt;none&gt;
-#&gt; items excluded so far: &lt;not capturing exclusions&gt;</div></pre>
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "79 2*human,droids and gungans"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>set</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 79</div><div class='input'><span class='co'># not run - display the flowchart:</span>
+<span class='co'># set %&gt;% flowchart()</span>
+
+<span class='va'>set</span> <span class='op'>=</span> <span class='fu'><a href='https://generics.r-lib.org/reference/setops.html'>union</a></span><span class='op'>(</span><span class='va'>lhs</span>,<span class='va'>rhs</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.count} human,droids and gungans"</span><span class='op'>)</span>
+<span class='co'># display the history of the result:</span>
+<span class='va'>set</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 5 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "44 human,droids and gungans"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>set</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 44</div><div class='input'><span class='co'># not run - display the flowchart:</span>
+<span class='co'># set %&gt;% flowchart()</span>
+
+<span class='va'>set</span> <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/setops.html'>union_all</a></span><span class='op'>(</span><span class='va'>lhs</span>,<span class='va'>rhs</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.count} 2*human,droids and gungans"</span><span class='op'>)</span>
+<span class='co'># display the history of the result:</span>
+<span class='va'>set</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 5 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "79 2*human,droids and gungans"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>set</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 79</div><div class='input'><span class='co'># not run - display the flowchart:</span>
+<span class='co'># set %&gt;% flowchart()</span>
+
+<span class='co'># Intersections and differences</span>
+
+<span class='va'>set</span> <span class='op'>=</span> <span class='fu'><a href='https://generics.r-lib.org/reference/setops.html'>setdiff</a></span><span class='op'>(</span><span class='va'>lhs</span>,<span class='va'>rhs</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.count} droids and gungans"</span><span class='op'>)</span>
+<span class='co'># display the history of the result:</span>
+<span class='va'>set</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 5 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "6 droids and gungans"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>set</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 6</div><div class='input'><span class='co'># not run - display the flowchart:</span>
+<span class='co'># set %&gt;% flowchart()</span>
+
+<span class='va'>set</span> <span class='op'>=</span> <span class='fu'><a href='https://generics.r-lib.org/reference/setops.html'>intersect</a></span><span class='op'>(</span><span class='va'>lhs</span>,<span class='va'>rhs</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comment.html'>comment</a></span><span class='op'>(</span><span class='st'>"{.count} humans"</span><span class='op'>)</span>
+<span class='co'># display the history of the result:</span>
+<span class='va'>set</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 5 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "35 humans"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>set</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 35</div><div class='input'><span class='co'># not run - display the flowchart:</span>
+<span class='co'># set %&gt;% flowchart()</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

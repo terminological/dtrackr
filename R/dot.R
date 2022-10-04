@@ -3,7 +3,7 @@
 #'
 #' Convert a graphviz dot digraph as string to SVG as string
 #'
-#' @param dot - a graphviz dot string
+#' @param dot a graphviz dot string
 #'
 #' @return the SVG as a string
 #' @export
@@ -58,7 +58,7 @@ std_size = list(
 
 #' Convert page size from portrait to landscape
 #'
-#' @param size - list of width and height in inches, e.g. a std_size
+#' @param size list of width and height in inches, e.g. a std_size
 #'
 #' @return a landscape size
 #' @export
@@ -69,12 +69,12 @@ landscape = function(size) {return(list(width=size$height, height = size$width, 
 #'
 #' Convert a digraph in dot file to SVG and save it to an output file
 #'
-#' @param dot - a graphviz dot string
-#' @param filename - the full path of the filename (minus extension for multiple formats)
-#' @param size - a list of length and width in inches e.g. a std_size
-#' @param maxWidth - a width in inches is size is not defined
-#' @param maxHeight - a height in inches if size is not defined
-#' @param formats - some of "pdf","dot","svg","png","ps"
+#' @param dot a graphviz dot string
+#' @param filename the full path of the filename (minus extension for multiple formats)
+#' @param size a list of length and width in inches e.g. a std_size
+#' @param maxWidth a width in inches is size is not defined
+#' @param maxHeight a height in inches if size is not defined
+#' @param formats some of "pdf","dot","svg","png","ps"
 #' @param ... ignored
 #'
 #' @return a list with items `paths` with the absolute paths of the saved files as a named list, and `svg` as the SVG string of the rendered dot file.

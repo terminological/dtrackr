@@ -7,13 +7,9 @@
 p_count_if(..., na.rm = TRUE)
 }
 \arguments{
-\item{...}{\itemize{
-\item expression to be evaluated
-}}
+\item{...}{expression to be evaluated}
 
-\item{na.rm}{\itemize{
-\item ignore NA values?
-}}
+\item{na.rm}{ignore NA values?}
 }
 \value{
 a count of the number of times the expression evaluated to true, in the current context
@@ -23,6 +19,7 @@ Simple count_if dplyr summary function
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 tmp = iris \%>\% dplyr::group_by(Species)
 tmp \%>\% dplyr::summarise(long_ones = p_count_if(Petal.Length > 4))
 }

@@ -53,4 +53,20 @@ transmute, ungroup
 
 # dtrackr 0.2.5
 
-* TODO: bug fix for group_by not checking pause status before warning that pause required.
+* incubating - pending JOSS review.
+* bug fix for group_by not checking pause status before warning that pause required.
+* documentation improvements - full review of all documentation. Additional
+context to function reference to draw attention to supported dplyr operations 
+* added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and 
+missing set operations functions. 
+* re-factored mutate style operations, regression tested
+* automated testing for new methods, and full testing for slice, set ops, and mutate style
+functions with new example code.
+* expanded test coverage ( covr::package_coverage(type="all"):
+dtrackr Coverage: 83.60%,
+R/dot.R: 78.12%,
+R/dtrackr.R: 84.08%) mostly through examples
+* improved error handling and reporting in mutate functions.
+* issues: documentation results in examples tests running multiple times.
+* TODO: (next version) exclusions in joins. 
+* Logo.

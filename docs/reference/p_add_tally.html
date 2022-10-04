@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Standard dplyr modifying operations — p_add_tally • dtrackr</title>
+<title>dplyr modifying operations — p_add_tally • dtrackr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,11 +46,14 @@
 
 
 
-<meta property="og:title" content="Standard dplyr modifying operations — p_add_tally" />
-<meta property="og:description" content="Equivalent Dplyr functions for mutating, selecting and renaming a data set act in the normal way.
-mutates / selects / rename generally don't add anything in documentation so the default behaviour is to miss these out of the history.
-This can be overridden with the .messages, or .headline values in which case they behave just like a comment()
-See dplyr::mutate(), dplyr::add_count(), dplyr::add_tally(), dplyr::transmute(), dplyr::select(), dplyr::relocate(), dplyr::rename()
+<meta property="og:title" content="dplyr modifying operations — p_add_tally" />
+<meta property="og:description" content="Equivalent dplyr functions for mutating, selecting and renaming a data set
+act in the normal way. mutates / selects / rename generally don't add
+anything in documentation so the default behaviour is to miss these out of
+the history. This can be overridden with the .messages, or .headline values
+in which case they behave just like a comment() See dplyr::mutate(),
+dplyr::add_count(), dplyr::add_tally(), dplyr::transmute(),
+dplyr::select(), dplyr::relocate(), dplyr::rename()
 dplyr::rename_with(), dplyr::arrange() for more details." />
 <meta property="og:image" content="/logo.png" />
 
@@ -84,7 +87,7 @@ dplyr::rename_with(), dplyr::arrange() for more details." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
       </span>
     </div>
 
@@ -144,21 +147,24 @@ dplyr::rename_with(), dplyr::arrange() for more details." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Standard dplyr modifying operations</h1>
+    <h1>dplyr modifying operations</h1>
     <small class="dont-index">Source: <a href='https://github.com/terminological/dtrackr/blob/master/R/dtrackr.R'><code>R/dtrackr.R</code></a></small>
     <div class="hidden name"><code>p_add_tally.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Equivalent Dplyr functions for mutating, selecting and renaming a data set act in the normal way.
-mutates / selects / rename generally don't add anything in documentation so the default behaviour is to miss these out of the history.
-This can be overridden with the .messages, or .headline values in which case they behave just like a <code><a href='comment.html'>comment()</a></code>
-See <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::mutate()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/count.html'>dplyr::add_count()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/count.html'>dplyr::add_tally()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::transmute()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/select.html'>dplyr::select()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/relocate.html'>dplyr::relocate()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/rename.html'>dplyr::rename()</a></code>
+    <p>Equivalent <code>dplyr</code> functions for mutating, selecting and renaming a data set
+act in the normal way. mutates / selects / rename generally don't add
+anything in documentation so the default behaviour is to miss these out of
+the history. This can be overridden with the .messages, or .headline values
+in which case they behave just like a <code><a href='comment.html'>comment()</a></code> See <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::mutate()</a></code>,
+<code><a href='https://dplyr.tidyverse.org/reference/count.html'>dplyr::add_count()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/count.html'>dplyr::add_tally()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::transmute()</a></code>,
+<code><a href='https://dplyr.tidyverse.org/reference/select.html'>dplyr::select()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/relocate.html'>dplyr::relocate()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/rename.html'>dplyr::rename()</a></code>
 <code><a href='https://dplyr.tidyverse.org/reference/rename.html'>dplyr::rename_with()</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/arrange.html'>dplyr::arrange()</a></code> for more details.</p>
     </div>
 
     <pre class="usage"><span class='fu'>p_add_tally</span><span class='op'>(</span>
-  <span class='va'>.data</span>,
+  <span class='va'>x</span>,
   <span class='va'>...</span>,
   wt <span class='op'>=</span> <span class='cn'>NULL</span>,
   sort <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -172,14 +178,21 @@ See <code><a href='https://dplyr.tidyverse.org/reference/mutate.html'>dplyr::mut
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.data</th>
-      <td><ul>
-<li><p>a dataframe which may be grouped</p></li>
-</ul></td>
+      <th>x</th>
+      <td><p>A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr).</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>a set of dplyr summary expressions.</p></td>
+      <td><p>&lt;<code><a href='https://dplyr.tidyverse.org/reference/dplyr_data_masking.html'>data-masking</a></code>&gt; Name-value pairs.
+The name gives the name of the column in the output.</p>
+<p>The value can be:</p><ul>
+<li><p>A vector of length 1, which will be recycled to the correct length.</p></li>
+<li><p>A vector the same length as the current group (or the whole data frame
+if ungrouped).</p></li>
+<li><p><code>NULL</code>, to remove the column.</p></li>
+<li><p>A data frame or tibble, to create multiple columns in the output.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>wt</th>
@@ -201,31 +214,200 @@ it will error, and require you to specify the name.</p></td>
     </tr>
     <tr>
       <th>.messages</th>
-      <td><ul>
-<li><p>a set of glue specs. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></li>
-</ul></td>
+      <td><p>a set of glue specs. The glue code can use any global
+variable, grouping variable, {.new_cols} or {.dropped_cols} for changes to
+columns, {.cols} for the output column names, or {.strata}. Defaults to nothing.</p></td>
     </tr>
     <tr>
       <th>.headline</th>
-      <td><ul>
-<li><p>a headline glue spec. The glue code can use any global variable, grouping variable, or {.strata}. Defaults to nothing.</p></li>
-</ul></td>
+      <td><p>a headline glue spec. The glue code can use any global
+variable, grouping variable, {.new_cols}, {.dropped_cols}, {.cols} or {.strata}.
+Defaults to nothing.</p></td>
     </tr>
     <tr>
       <th>.tag</th>
-      <td><ul>
-<li><p>if you want the summary data from this step in the future then give it a name with .tag.</p></li>
-</ul></td>
+      <td><p>if you want the summary data from this step in the future then
+give it a name with .tag.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the .data dataframe after being modified by the dplyr equivalent function, but with the history graph updated with a new stage if the <code>.messages</code> field is not empty</p>
+    <p>the .data dataframe after being modified by the <code>dplyr</code> equivalent
+function, but with the history graph updated with a new stage if the
+<code>.messages</code> or <code>.headline</code> parameter is not empty.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>dplyr::add_tally()</p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyselect.r-lib.org'>tidyselect</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyr.tidyverse.org'>tidyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://terminological.github.io/dtrackr/index.html'>dtrackr</a></span><span class='op'>)</span>
+
+<span class='co'># mutate and other functions are unitary operations that generally change</span>
+<span class='co'># the structure but not size of a dataframe. In dtrackr these are by ignored</span>
+<span class='co'># by default but we can change that so that their behaviour is obvious.</span>
+
+<span class='co'># mutate</span>
+<span class='co'># In this example we compare the column names of the input and the</span>
+<span class='co'># output to identify the new columns created by the mutate operation as</span>
+<span class='co'># the `.new_cols` variable</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>extra_col <span class='op'>=</span> <span class='cn'>NA_real_</span>,
+         .messages<span class='op'>=</span><span class='st'>"{.new_cols}"</span>,
+         .headline<span class='op'>=</span><span class='st'>"Extra columns from mutate:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 2 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "Extra columns from mutate:", "extra_col"</div><div class='input'>
+<span class='co'># transmute</span>
+<span class='co'># Here we do the same for a transmute()</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>transmute</a></span><span class='op'>(</span>
+    sepal.w <span class='op'>=</span> <span class='va'>Sepal.Width</span><span class='op'>-</span><span class='fl'>1</span>,
+    sepal.l <span class='op'>=</span> <span class='va'>Sepal.Length</span><span class='op'>+</span><span class='fl'>1</span>,
+    .messages<span class='op'>=</span><span class='st'>"{.new_cols}"</span>,
+    .headline<span class='op'>=</span><span class='st'>"New columns from transmute:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "New columns from transmute:", "sepal.w, sepal.l"
+#&gt; ├ [Species:versicolor]: "New columns from transmute:", "sepal.w, sepal.l"
+#&gt; └ [Species:virginica]: "New columns from transmute:", "sepal.w, sepal.l"</div><div class='input'>
+<span class='co'># select</span>
+<span class='co'># The output of the select verb (here using tidyselect syntax) can be captured</span>
+<span class='co'># and here all column names are being reported with the .cols variable.</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span>
+    <span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"Sepal"</span><span class='op'>)</span>,
+    .messages<span class='op'>=</span><span class='st'>"{.cols}"</span>,
+    .headline<span class='op'>=</span><span class='st'>"Output columns from select:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Adding missing grouping variables: `Species`</span></div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "Output columns from select:", "Species, Sepal.Length, Sepal.Width"
+#&gt; ├ [Species:versicolor]: "Output columns from select:", "Species, Sepal.Length, Sepal.Width"
+#&gt; └ [Species:virginica]: "Output columns from select:", "Species, Sepal.Length, Sepal.Width"</div><div class='input'>
+<span class='co'># relocate, this shows how the columns can be reordered</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/relocate.html'>relocate</a></span><span class='op'>(</span>
+    <span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>starts_with</a></span><span class='op'>(</span><span class='st'>"Sepal"</span><span class='op'>)</span>,
+    .after<span class='op'>=</span><span class='va'>Species</span>,
+    .messages<span class='op'>=</span><span class='st'>"{.cols}"</span>,
+    .headline<span class='op'>=</span><span class='st'>"Order of columns from relocate:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "Order of columns from relocate:", "Petal.Length, Petal.Width, Species, Sepal.Length, Sepal.Width"
+#&gt; ├ [Species:versicolor]: "Order of columns from relocate:", "Petal.Length, Petal.Width, Species, Sepal.Length, Sepal.Width"
+#&gt; └ [Species:virginica]: "Order of columns from relocate:", "Petal.Length, Petal.Width, Species, Sepal.Length, Sepal.Width"</div><div class='input'>
+<span class='co'># rename can show us which columns are new and which have been</span>
+<span class='co'># removed (with .dropped_cols)</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename</a></span><span class='op'>(</span>
+    Stamen.Width <span class='op'>=</span> <span class='va'>Sepal.Width</span>,
+    Stamen.Length <span class='op'>=</span> <span class='va'>Sepal.Length</span>,
+    .messages<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"added {.new_cols}"</span>,<span class='st'>"dropped {.dropped_cols}"</span><span class='op'>)</span>,
+    .headline<span class='op'>=</span><span class='st'>"Renamed columns:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "Renamed columns:", "added Stamen.Length, Stamen.Width", "dropped Sepal.Length, Sepal.Width"
+#&gt; ├ [Species:versicolor]: "Renamed columns:", "added Stamen.Length, Stamen.Width", "dropped Sepal.Length, Sepal.Width"
+#&gt; └ [Species:virginica]: "Renamed columns:", "added Stamen.Length, Stamen.Width", "dropped Sepal.Length, Sepal.Width"</div><div class='input'>
+<span class='co'># rename_with uses a function</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename_with</a></span><span class='op'>(</span>
+    .fn <span class='op'>=</span> <span class='va'>toupper</span>,
+    .messages<span class='op'>=</span><span class='st'>"{.new_cols}"</span>,
+    .headline<span class='op'>=</span><span class='st'>"Renamed columns:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [SPECIES:setosa]: "Renamed columns:", "SEPAL.LENGTH, SEPAL.WIDTH, PETAL.LENGTH, PETAL.WIDTH, SPECIES"
+#&gt; ├ [SPECIES:versicolor]: "Renamed columns:", "SEPAL.LENGTH, SEPAL.WIDTH, PETAL.LENGTH, PETAL.WIDTH, SPECIES"
+#&gt; └ [SPECIES:virginica]: "Renamed columns:", "SEPAL.LENGTH, SEPAL.WIDTH, PETAL.LENGTH, PETAL.WIDTH, SPECIES"</div><div class='input'>
+<span class='co'># arrange</span>
+<span class='co'># In this case we sort the data descending and show the first value</span>
+<span class='co'># is the same as the maximum value.</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span><span class='op'>(</span><span class='va'>Petal.Width</span><span class='op'>)</span>,
+    .messages<span class='op'>=</span><span class='st'>"{.count} items, columns: {.cols}"</span>,
+    .headline<span class='op'>=</span><span class='st'>"Reordered dataframe:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 2 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "Reordered dataframe:", "150 items, columns: Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, Species"</div><div class='input'>
+<span class='co'># add_count</span>
+<span class='co'># adding in a count or tally column as a new column</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/count.html'>add_count</a></span><span class='op'>(</span><span class='va'>Species</span>, name<span class='op'>=</span><span class='st'>"new_count_total"</span>,
+            .messages<span class='op'>=</span><span class='st'>"{.new_cols}"</span>,
+            <span class='co'># .messages="{.cols}",</span>
+            .headline<span class='op'>=</span><span class='st'>"New columns from add_count:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 2 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; └ "New columns from add_count:", "new_count_total"</div><div class='input'>
+<span class='co'># add_tally</span>
+<span class='va'>iris</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='track.html'>track</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Species</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>dtrackr</span><span class='fu'>::</span><span class='fu'><a href='add_tally.html'>add_tally</a></span><span class='op'>(</span>wt<span class='op'>=</span><span class='va'>Petal.Length</span>, name<span class='op'>=</span><span class='st'>"new_tally_total"</span>,
+            .messages<span class='op'>=</span><span class='st'>"{.new_cols}"</span>,
+            .headline<span class='op'>=</span><span class='st'>"New columns from add_tally:"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='history.html'>history</a></span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; dtrackr history:
+#&gt; number of flowchart steps: 3 (approx)
+#&gt; tags defined: &lt;none&gt;
+#&gt; items excluded so far: &lt;not capturing exclusions&gt;
+#&gt; last entry / entries:
+#&gt; ├ [Species:setosa]: "New columns from add_tally:", "new_tally_total"
+#&gt; ├ [Species:versicolor]: "New columns from add_tally:", "new_tally_total"
+#&gt; └ [Species:virginica]: "New columns from add_tally:", "new_tally_total"</div><div class='input'>
+
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
