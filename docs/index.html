@@ -109,13 +109,13 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>Accurate documentation of a data pipeline is a first step to reproducibility, and a flow chart describing the steps taken to prepare data is a useful part of this documentation. In analyses that relies on data that is frequently updated, documenting a data flow by copying and pasting row counts into flowcharts in PowerPoint becomes quickly tedious. With interactive data analysis, and particularly using RMarkdown, code execution sometimes happens in a non-linear fashion, and this can lead to, at best, confusion and at worst erroneous analysis. Basing such documentation on what the code does when executed sequentially can be inaccurate when the data has being analysed interactively.</p>
+<p>Accurate documentation of a data pipeline is a first step to reproducibility, and a flow chart describing the steps taken to prepare data is a useful part of this documentation. In analyses that rely on data that is frequently updated, documenting a data flow by copying and pasting row counts into flowcharts in PowerPoint becomes quickly tedious. With interactive data analysis, and particularly using RMarkdown, code execution sometimes happens in a non-linear fashion, and this can lead to, at best, confusion and at worst erroneous analysis. Basing such documentation on what the code does when executed sequentially can be inaccurate when the data has being analysed interactively.</p>
 <p>The goal of <code>dtrackr</code> is to take away this pain by instrumenting and monitoring a dataframe through a <code>dplyr</code> pipeline, creating a step-by-step summary of the important parts of the wrangling as it actually happened to the dataframe, right into dataframe metadata itself. This metadata can be used to generate documentation as a flowchart, and allows both a quick overview of the data and also a visual check of the actual data processing.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>In general use <code>dtrackr</code> is expected to be installed alongside the <code>idyverse</code> set of packages. It is recommended to install <code>tidyverse</code> first.</p>
+<p>In general use <code>dtrackr</code> is expected to be installed alongside the <code>tidyverse</code> set of packages. It is recommended to install <code>tidyverse</code> first.</p>
 <p>Binary packages of <code>dtrackr</code> are available on CRAN and r-universe for <code>macOS</code> and <code>Windows</code>. <code>dtrackr</code> can be installed from source on Linux. <code>dtrackr</code> has been tested on R versions 3.6, 4.0, 4.1 and 4.2.</p>
 <p>You can install the released version of <code>dtrackr</code> from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
@@ -190,7 +190,7 @@
 <p><img src="reference/figures/README-flowchart.png?raw=true"></p>
 <p>And your publication ready data pipeline, with any assumptions you care to document, is creates in a format of your choice (as long as that choice is one of <code>pdf</code>, <code>png</code>, <code>svg</code> or <code>ps</code>), ready for submission to Nature.</p>
 <p>This is a trivial example, but the more complex the pipeline, the bigger benefit you will get.</p>
-<p>Check out the <a href="https://terminological.github.io/dtrackr/">main documentation for detailed examples</a></p>
+<p>Check out the <a href="https://terminological.github.io/dtrackr">main documentation for more details</a>, and in particular the <a href="https://terminological.github.io/dtrackr/articles/dtrackr.html">getting started vignette</a>.</p>
 </div>
 <div id="testing-and-integration" class="section level2">
 <h2 class="hasAnchor">
@@ -271,6 +271,8 @@
 <li><a href="https://github.com/terminological/dtrackr/actions"><img src="https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/335974323"><img src="https://zenodo.org/badge/335974323.svg" alt="DOI"></a></li>
 <li><a href="https://terminological.r-universe.dev"><img src="https://terminological.r-universe.dev/badges/dtrackr" alt="dtrackr status badge"></a></li>
+<li><a href="https://cran.r-project.org/package=dtrackr"><img src="https://cranlogs.r-pkg.org/badges/dtrackr" alt="metacran downloads"></a></li>
+<li><a href="https://cran.r-project.org/package=dtrackr"><img src="https://www.r-pkg.org/badges/version/dtrackr" alt="CRAN_Status_Badge"></a></li>
 </ul>
 </div>
 </div>

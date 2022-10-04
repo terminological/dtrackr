@@ -7,6 +7,9 @@
 [![DOI](https://zenodo.org/badge/335974323.svg)](https://zenodo.org/badge/latestdoi/335974323)
 [![dtrackr status
 badge](https://terminological.r-universe.dev/badges/dtrackr)](https://terminological.r-universe.dev)
+[![metacran
+downloads](https://cranlogs.r-pkg.org/badges/dtrackr)](https://cran.r-project.org/package=dtrackr)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr)
 <!-- [![DOI](https://joss.theoj.org/papers/10.21105/joss.04707/status.svg)](https://doi.org/) -->
 <!-- badges: end -->
 
@@ -14,7 +17,7 @@ badge](https://terminological.r-universe.dev/badges/dtrackr)](https://terminolog
 
 Accurate documentation of a data pipeline is a first step to
 reproducibility, and a flow chart describing the steps taken to prepare
-data is a useful part of this documentation. In analyses that relies on
+data is a useful part of this documentation. In analyses that rely on
 data that is frequently updated, documenting a data flow by copying and
 pasting row counts into flowcharts in PowerPoint becomes quickly
 tedious. With interactive data analysis, and particularly using
@@ -35,7 +38,7 @@ visual check of the actual data processing.
 ## Installation
 
 In general use `dtrackr` is expected to be installed alongside the
-`idyverse` set of packages. It is recommended to install `tidyverse`
+`tidyverse` set of packages. It is recommended to install `tidyverse`
 first.
 
 Binary packages of `dtrackr` are available on CRAN and r-universe for
@@ -148,8 +151,10 @@ Nature.
 This is a trivial example, but the more complex the pipeline, the bigger
 benefit you will get.
 
-Check out the [main documentation for detailed
-examples](https://terminological.github.io/dtrackr/)
+Check out the [main documentation for more
+details](https://terminological.github.io/dtrackr), and in particular
+the [getting started
+vignette](https://terminological.github.io/dtrackr/articles/dtrackr.html).
 
 ## Testing and integration
 
