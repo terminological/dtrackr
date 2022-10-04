@@ -1,20 +1,31 @@
 
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+When contributing to this repository, please first discuss the change you wish
+to make via issue, email, or any other method with the owners of this repository
+before making a change.
 
-Please note we have a code of conduct, please follow it in all your interactions with the project.
+Please note we have a code of conduct, please follow it in all your interactions
+with the project.
 
 ## Submitting changes and raising issues
 
-We aim to respond to all comments on issues, and keep update my development plans there. Offers of help are always welcome.
+We aim to respond to all comments on issues, and keep update my development
+plans there. Offers of help are always welcome.
 
-If you are reporting an issue please could you try and reproduce it using one of the data sets we've used in the vignettes (e.g. iris, diamonds, mtcars, dtrackr::ILPD ) or include the data set in your issue.
+If you are reporting an issue please could you try and reproduce it using one of
+the data sets we've used in the vignettes (e.g. iris, diamonds, mtcars,
+dtrackr::ILPD ) or include the data set in your issue.
 
-If you can also tell us exactly what text you expect to see in the flowchart that isn't there, that would be helpful.
+If you can also tell us exactly what text you expect to see in the flowchart
+that isn't there, that would be helpful.
 
-Please send a [GitHub Pull Request](https://github.com/terminological/dtrackr/new/master) with a clear list of what you've done (read more about [pull requests](http://help.github.com/pull-requests/)). 
+Please fork the code and send a [GitHub Pull Request](https://github.com/terminological/dtrackr/new/master) with a clear list
+of what you've done (read more about [pull requests](http://help.github.com/pull-requests/)).
+
+## Testing
+
+We'd love some help with better test cases. 
 
 ## Code of Conduct
 
@@ -91,19 +102,3 @@ available at [http://contributor-covenant.org/version/1/4][version]
 [homepage]: http://contributor-covenant.org
 [version]: http://contributor-covenant.org/version/1/4/
 
-# How to contribute:
-
-
-
-## Testing
-
-I'd love some help with better test cases. 
-
-
-
-## Coding conventions
-
-Start reading my code and you'll probably want to cry. I apologize. You can probably do better.
-
-Thanks,
-Rob Challen.
