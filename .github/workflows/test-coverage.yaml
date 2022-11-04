@@ -26,6 +26,8 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
+      - uses: r-lib/actions/setup-pandoc@v2
+
       - name: Test coverage
         run: |
           covr::codecov(
