@@ -11,6 +11,8 @@ name: test-coverage
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'minor')"
+
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
