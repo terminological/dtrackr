@@ -43,7 +43,18 @@ dot2svg <- function(dot) {
 #' Standard paper sizes
 #'
 #' A list of standard paper sizes for outputting flowcharts or other dot
-#' graphs
+#' graphs. These include width and height dimensions in inches and can be
+#' used as one way to specify the output size of a dot graph, including
+#' flowcharts (see the `size` parameter of [dtrackr::flowchart()]).
+#'
+#' The sizes available are `A4`, `A5`, `full` (fits a portrait A4 with margins), `half` (half an
+#' A4 with margins), `third`, `two_third`, `quarter`, `sixth` (all with reference to
+#' an A4 page with margins). There are 2 landscape sizes `A4_landscape` and `full_landscape` which
+#' fit an A4 page with or without margins. There are also 2 slide dimensions,
+#' to fit with standard presentation software dimensions.
+#'
+#' This is just a convenience. Similar effects can be achieved by providing `width` and `height`
+#' parameters to [dtrackr::flowchart()] directly.
 #'
 #' @export
 std_size = list(
