@@ -39,7 +39,8 @@ Suggests:
     devtools,
     testthat (>= 2.1.0),
     rstudioapi,
-    survival
+    survival,
+    covr
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

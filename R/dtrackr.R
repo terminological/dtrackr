@@ -2645,6 +2645,5 @@ bind_rows <- p_bind_rows
 bind_cols <- p_bind_cols
 
 #' @inherit p_add_tally
-#' @importFrom dplyr add_tally
 #' @export
 add_tally <- p_add_tally
