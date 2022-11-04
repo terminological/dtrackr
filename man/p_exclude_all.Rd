@@ -11,7 +11,8 @@ p_exclude_all(
   na.rm = FALSE,
   .type = "exclusion",
   .asOffshoot = TRUE,
-  .stage = ""
+  .stage = (if (is.null(.tag)) "" else .tag),
+  .tag = NULL
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ count that row as missing and either exclude it (TRUE) or don't exclude it
 flow (default = TRUE).}
 
 \item{.stage}{a name for this step in the pathway}
+
+\item{.tag}{if you want the summary data from this step in the future then
+give it a name with .tag.}
 }
 \value{
 the filtered .data dataframe with the history graph updated with the
@@ -47,15 +51,51 @@ summary of excluded items as a new offshoot stage
 \description{
 Apply a set of filters and summarise the actions of the filter to the \code{dtrackr}
 history graph. Because of the ... filter specification, all parameters MUST BE
-NAMED. The filters work in an additive manner, i.e. the results excluding all
-things that match any of the criteria. If \code{na.rm = TRUE} they also remove
+NAMED. The filters work in an combinatorial manner, i.e. the results EXCLUDE ALL
+rows that match any of the criteria. If \code{na.rm = TRUE} they also remove
 anything that cannot be evaluated by any criteria.
 }
 \examples{
 library(dplyr)
 library(dtrackr)
+
 iris \%>\% track() \%>\% capture_exclusions() \%>\% exclude_all(
       Petal.Length > 5 ~ "{.excluded} long ones",
       Petal.Length < 2 ~ "{.excluded} short ones"
 ) \%>\% history()
+
+
+# simultaneous evaluation of criteria:
+data.frame(a = 1:10) \%>\%
+  track() \%>\%
+  exclude_all(
+    # These two criteria identify the same value and one item is excluded
+    a > 9 ~ "{.excluded} value > 9",
+    a == max(a) ~ "{.excluded} max value",
+  ) \%>\%
+  status() \%>\%
+  history()
+
+# the behaviour is equivalent to the inverse of dplyr's filter function:
+data.frame(a=1:10) \%>\%
+  dplyr::filter(a <= 9, a != max(a)) \%>\%
+  nrow()
+
+# step-wise evaluation of criteria results in a different output
+data.frame(a = 1:10) \%>\%
+  track() \%>\%
+  # Performing the same exclusion sequentially results in 2 items
+  # being excluded as the criteria no longer identify the same
+  # item.
+  exclude_all(a > 9 ~ "{.excluded} value > 9") \%>\%
+  exclude_all(a == max(a) ~ "{.excluded} max value") \%>\%
+  status() \%>\%
+  history()
+
+# the behaviour is equivalent to the inverse of dplyr's filter function:
+data.frame(a=1:10) \%>\%
+  dplyr::filter(a <= 9) \%>\%
+  dplyr::filter(a != max(a)) \%>\%
+  nrow()
+
 }

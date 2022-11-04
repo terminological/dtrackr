@@ -1,5 +1,4 @@
 library(dplyr)
-library(tidyr)
 library(dtrackr)
 
 # Set operations

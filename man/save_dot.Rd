@@ -19,7 +19,8 @@ save_dot(
 
 \item{filename}{the full path of the filename (minus extension for multiple formats)}
 
-\item{size}{a list of length and width in inches e.g. a std_size}
+\item{size}{a named list with 2 elements, length and width in inches. A predefined set
+of standard sizes are available in the \link{std_size} object}
 
 \item{maxWidth}{a width in inches is size is not defined}
 
@@ -33,7 +34,7 @@ save_dot(
 a list with items \code{paths} with the absolute paths of the saved files as a named list, and \code{svg} as the SVG string of the rendered dot file.
 }
 \description{
-Convert a digraph in dot file to SVG and save it to an output file
+Convert a digraph in dot format to SVG and save it to a range of output file types
 }
 \examples{
 save_dot("digraph {A->B}",tempfile())

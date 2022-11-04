@@ -16,7 +16,5 @@ the .data dataframe with history graph tracking paused
 Pause tracking the dataframe
 }
 \examples{
-library(dplyr)
-library(dtrackr)
 iris \%>\% track() \%>\% pause() \%>\% history()
 }

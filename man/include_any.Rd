@@ -10,7 +10,8 @@ include_any(
   .headline = .defaultHeadline(),
   na.rm = TRUE,
   .type = "inclusion",
-  .asOffshoot = FALSE
+  .asOffshoot = FALSE,
+  .tag = NULL
 )
 }
 \arguments{
@@ -37,6 +38,9 @@ count that row as missing and either exclude it (TRUE) or don't exclude it
 
 \item{.asOffshoot}{do you want this comment to be an offshoot of the main
 flow (default = FALSE).}
+
+\item{.tag}{if you want the summary data from this step in the future then
+give it a name with .tag.}
 }
 \value{
 the filtered .data dataframe with the history graph updated with the
@@ -53,8 +57,43 @@ include i.e. the results include anything that match any of the criteria. If
 \examples{
 library(dplyr)
 library(dtrackr)
+
 iris \%>\% track() \%>\% group_by(Species) \%>\% include_any(
       Petal.Length > 5 ~ "{.included} long ones",
       Petal.Length < 2 ~ "{.included} short ones"
 ) \%>\% history()
+
+# simultaneous evaluation of criteria:
+data.frame(a = 1:10) \%>\%
+  track() \%>\%
+  include_any(
+    # These two criteria identify the same value and one item is excluded
+    a > 1 ~ "{.included} value > 1",
+    a != min(a) ~ "{.included} everything but the smallest value",
+  ) \%>\%
+  status() \%>\%
+  history()
+
+# the behaviour is equivalent to dplyr's filter function:
+data.frame(a=1:10) \%>\%
+  dplyr::filter(a > 1, a != min(a)) \%>\%
+  nrow()
+
+# step-wise evaluation of criteria results in a different output
+data.frame(a = 1:10) \%>\%
+  track() \%>\%
+  # Performing the same exclusion sequentially results in 2 items
+  # being excluded as the criteria no longer identify the same
+  # item.
+  include_any(a > 1 ~ "{.included} value > 1") \%>\%
+  include_any(a != min(a) ~ "{.included} everything but the smallest value") \%>\%
+  status() \%>\%
+  history()
+
+# the behaviour is equivalent to dplyr's filter function:
+data.frame(a=1:10) \%>\%
+  dplyr::filter(a > 1) \%>\%
+  dplyr::filter(a != min(a)) \%>\%
+  nrow()
+
 }

@@ -39,6 +39,7 @@ See \code{\link[dplyr:group_by]{dplyr::ungroup()}}.
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = iris \%>\% group_by(Species) \%>\% comment("A test")
 tmp \%>\% ungroup(.messages="{.count} items in combined") \%>\% history()
 }

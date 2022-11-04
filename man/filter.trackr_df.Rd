@@ -12,7 +12,7 @@
   .headline = .defaultHeadline(),
   .type = "exclusion",
   .asOffshoot = (.type == "exclusion"),
-  .stage = "",
+  .stage = (if (is.null(.tag)) "" else .tag),
   .tag = NULL
 )
 }
@@ -55,6 +55,7 @@ available (if grouped) for reporting. See \code{\link[dplyr:filter]{dplyr::filte
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = iris \%>\% track() \%>\% group_by(Species)
 tmp \%>\% filter(Petal.Length > 5) \%>\% history()
 }

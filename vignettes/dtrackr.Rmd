@@ -181,27 +181,29 @@ iris %>%
 This is useful but the reason for exclusion is not as clear as we would like,
 and this does not scale particularly well to multiple criteria, which are
 typical of the filters needed to massage real life data. For this we have
-written `exclude_all` which takes multiple criteria and applies them in a
-step-wise manner, summarising at each step. Rather than the logical expression
-expected by `dplyr::filter` we provide matching criteria as a formula relating
-the filtering criteria on the left hand side, to the glue specification on the
-right hand side (a trick inspired by `dplyr::case_when()`'s syntax). This is
-very much slower than `filter` but gives fine control over the output.
+written `exclude_all` which takes multiple criteria and applies them in
+parallel, combining the result at the end, after documenting their individual
+effects. Rather than the logical expression expected by `dplyr::filter` we
+provide matching criteria as a formula relating the filtering criteria on the
+left hand side, to the glue specification on the right hand side (a trick
+inspired by `dplyr::case_when()`'s syntax). This is very much slower than
+`filter` but gives fine control over the output.
 
-The logic of `exclude_all()` is reversed compared to `dplyr::filter()`. 
-In `filter()` only items for which the filtering criteria is TRUE are INCLUDED. 
-In this example there are no missing values, however the behaviour of the `filter()`
-when the criteria cannot be evaluated and `NA` values are generated is to exclude them.
+The logic of `exclude_all()` is reversed compared to `dplyr::filter()`. In
+`filter()` only items for which the filtering criteria is TRUE are INCLUDED. In
+this example there are no missing values, however the behaviour of the
+`filter()` when the criteria cannot be evaluated and `NA` values are generated
+is to exclude them.
 
-In `exclude_all()` there can be multiple criteria and ALL items that match any of the 
-criteria are EXCLUDED. If a particular criteria cannot be evaluated for a data item
-teh behaviour of `exclude_all()` is controlled by the `na.rm` parameter. This
-defaults to FALSE which means that any values that cannot be evaluated are __NOT__
-excluded. 
+In `exclude_all()` there can be multiple criteria and ALL items that match any
+of the criteria are EXCLUDED. If a particular criteria cannot be evaluated for a
+data item the behaviour of `exclude_all()` is controlled by the `na.rm`
+parameter. This defaults to FALSE which means that any values that cannot be
+evaluated are __NOT__ excluded.
 
-For each different criteria the number of items excluded is recorded in the 
-history graph in a manner defined by the right hand side of the exclusion criteria
-formulae. 
+For each different criteria the number of items excluded is recorded in the
+history graph in a manner defined by the right hand side of the exclusion
+criteria formulae.
 
 
 

@@ -223,6 +223,7 @@
 #'
 #' @examples
 #' library(dplyr)
+#' library(dtrackr)
 #' iris %>% comment("hello {.total} rows") %>% history() %>% print()
 print.trackr_graph = function(x, ...) {
   .label = .strata = NULL
@@ -277,6 +278,7 @@ print.trackr_graph = function(x, ...) {
 #'
 #' @examples
 #' library(dplyr)
+#' library(dtrackr)
 #' iris %>% comment("hello {.total} rows") %>% history() %>% plot()
 plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", ...) {
   graph = x
@@ -447,8 +449,8 @@ p_untrack = function(.data) {
 #' @return the .data dataframe with history graph tracking paused
 #' @export
 #' @examples
-#' library(dplyr)
-#' library(dtrackr)
+
+
 #' iris %>% track() %>% pause() %>% history()
 p_pause = function(.data) {
   old = .data %>% p_get()
@@ -713,8 +715,8 @@ p_clear = function(.data) {
 #' @export
 #'
 #' @examples
-#' library(dplyr)
-#' library(dtrackr)
+
+
 #' mtcars %>% p_copy(iris %>% comment("A comment")) %>% history()
 p_copy = function(.data, from) {
   return(.data %>% p_set(from %>% p_get()))
@@ -885,8 +887,8 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
-#' ILPD %>% track() %>% group_by(Case_or_Control) %>%
-#'   count_subgroup(Gender) %>% history()
+#' survival::cgd %>% track() %>% group_by(treat) %>%
+#'   count_subgroup(center) %>% history()
 p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgroup(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL, .maxsubgroups=.defaultMaxSupportedGroupings()) {
 
   .count = .name = NULL
@@ -928,8 +930,8 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
 #'
 #' Apply a set of filters and summarise the actions of the filter to the `dtrackr`
 #' history graph. Because of the ... filter specification, all parameters MUST BE
-#' NAMED. The filters work in an additive manner, i.e. the results excluding all
-#' things that match any of the criteria. If `na.rm = TRUE` they also remove
+#' NAMED. The filters work in an combinatorial manner, i.e. the results EXCLUDE ALL
+#' rows that match any of the criteria. If `na.rm = TRUE` they also remove
 #' anything that cannot be evaluated by any criteria.
 #'
 #' @param .data a dataframe which may be grouped
@@ -950,6 +952,8 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
 #' @param .asOffshoot do you want this comment to be an offshoot of the main
 #'   flow (default = TRUE).
 #' @param .stage a name for this step in the pathway
+#' @param .tag if you want the summary data from this step in the future then
+#'   give it a name with .tag.
 #'
 #' @return the filtered .data dataframe with the history graph updated with the
 #'   summary of excluded items as a new offshoot stage
@@ -958,11 +962,47 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' iris %>% track() %>% capture_exclusions() %>% exclude_all(
 #'       Petal.Length > 5 ~ "{.excluded} long ones",
 #'       Petal.Length < 2 ~ "{.excluded} short ones"
 #' ) %>% history()
-p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, .type="exclusion", .asOffshoot = TRUE, .stage="") {
+#'
+#'
+#' # simultaneous evaluation of criteria:
+#' data.frame(a = 1:10) %>%
+#'   track() %>%
+#'   exclude_all(
+#'     # These two criteria identify the same value and one item is excluded
+#'     a > 9 ~ "{.excluded} value > 9",
+#'     a == max(a) ~ "{.excluded} max value",
+#'   ) %>%
+#'   status() %>%
+#'   history()
+#'
+#' # the behaviour is equivalent to the inverse of dplyr's filter function:
+#' data.frame(a=1:10) %>%
+#'   dplyr::filter(a <= 9, a != max(a)) %>%
+#'   nrow()
+#'
+#' # step-wise evaluation of criteria results in a different output
+#' data.frame(a = 1:10) %>%
+#'   track() %>%
+#'   # Performing the same exclusion sequentially results in 2 items
+#'   # being excluded as the criteria no longer identify the same
+#'   # item.
+#'   exclude_all(a > 9 ~ "{.excluded} value > 9") %>%
+#'   exclude_all(a == max(a) ~ "{.excluded} max value") %>%
+#'   status() %>%
+#'   history()
+#'
+#' # the behaviour is equivalent to the inverse of dplyr's filter function:
+#' data.frame(a=1:10) %>%
+#'   dplyr::filter(a <= 9) %>%
+#'   dplyr::filter(a != max(a)) %>%
+#'   nrow()
+#'
+p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, .type="exclusion", .asOffshoot = TRUE, .stage=(if(is.null(.tag)) "" else .tag), .tag=NULL) {
   .excl = .excl.na = .retain = .strata = .message = .excluded = .filter = NULL
   .data = .data %>% .untrack()
   .env = rlang::caller_env()
@@ -1028,7 +1068,8 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 
   messages = messages %>% group_by(!!!grps) %>% filter(!(.message=="no exclusions" & dplyr::n() > 1))
   out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>%
-    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot, .excluded=excluded, .stage = .stage)
+    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot, .excluded=excluded, .stage = .stage)  %>%
+    .writeTag(.tag = .tag)
   return(out %>% .retrack())
 }
 
@@ -1059,6 +1100,8 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 #' @param .type default "inclusion": used to define formatting
 #' @param .asOffshoot do you want this comment to be an offshoot of the main
 #'   flow (default = FALSE).
+#' @param .tag if you want the summary data from this step in the future then
+#'   give it a name with .tag.
 #'
 #' @return the filtered .data dataframe with the history graph updated with the
 #'   summary of included items as a new stage
@@ -1067,11 +1110,46 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' iris %>% track() %>% group_by(Species) %>% include_any(
 #'       Petal.Length > 5 ~ "{.included} long ones",
 #'       Petal.Length < 2 ~ "{.included} short ones"
 #' ) %>% history()
-p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .type="inclusion", .asOffshoot = FALSE) {
+#'
+#' # simultaneous evaluation of criteria:
+#' data.frame(a = 1:10) %>%
+#'   track() %>%
+#'   include_any(
+#'     # These two criteria identify the same value and one item is excluded
+#'     a > 1 ~ "{.included} value > 1",
+#'     a != min(a) ~ "{.included} everything but the smallest value",
+#'   ) %>%
+#'   status() %>%
+#'   history()
+#'
+#' # the behaviour is equivalent to dplyr's filter function:
+#' data.frame(a=1:10) %>%
+#'   dplyr::filter(a > 1, a != min(a)) %>%
+#'   nrow()
+#'
+#' # step-wise evaluation of criteria results in a different output
+#' data.frame(a = 1:10) %>%
+#'   track() %>%
+#'   # Performing the same exclusion sequentially results in 2 items
+#'   # being excluded as the criteria no longer identify the same
+#'   # item.
+#'   include_any(a > 1 ~ "{.included} value > 1") %>%
+#'   include_any(a != min(a) ~ "{.included} everything but the smallest value") %>%
+#'   status() %>%
+#'   history()
+#'
+#' # the behaviour is equivalent to dplyr's filter function:
+#' data.frame(a=1:10) %>%
+#'   dplyr::filter(a > 1) %>%
+#'   dplyr::filter(a != min(a)) %>%
+#'   nrow()
+#'
+p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .type="inclusion", .asOffshoot = FALSE, .tag=NULL) {
   .incl = .incl.na = .retain = NULL
   .data = .data %>% .untrack()
   .env = rlang::caller_env()
@@ -1110,7 +1188,7 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
     messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
   }
   out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.incl, -.incl.na) %>% p_copy(.data) %>%
-    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot)
+    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot) %>% .writeTag(.tag = .tag)
   return(out %>% .retrack())
 }
 
@@ -1138,6 +1216,7 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = iris %>% group_by(Species) %>% comment("A test")
 #' tmp %>% ungroup(.messages="{.count} items in combined") %>% history()
 p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
@@ -1178,6 +1257,7 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = iris %>% group_by(Species)
 #' tmp %>% summarise(avg = mean(Petal.Length), .messages="{avg} length") %>% history()
 p_summarise = function(.data, ..., .groups=NULL, .messages = "", .headline="", .tag=NULL) {
@@ -1438,6 +1518,7 @@ p_pivot_longer = function(data,
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = iris %>% track() %>% group_by(Species, .messages="stratify by {.cols}")
 #' tmp %>% comment("{.strata}") %>% history()
 p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_default(.data), .messages = "stratify by {.cols}",  .headline=NULL, .tag=NULL, .maxgroups = .defaultMaxSupportedGroupings()) {
@@ -1507,6 +1588,7 @@ p_group_by = function(.data, ..., .add = FALSE, .drop = dplyr::group_by_drop_def
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = bind_rows(iris %>% track(), iris %>% track() %>% filter(Petal.Length > 5))
 #' tmp %>% group_by(Species) %>% distinct() %>% history()
 p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count.in-.count.out} duplicates", .headline=.defaultHeadline(), .tag=NULL) {
@@ -1556,9 +1638,16 @@ p_distinct = function(.data, .f, ..., .keep = FALSE, .messages="removing {.count
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = iris %>% track() %>% group_by(Species)
 #' tmp %>% filter(Petal.Length > 5) %>% history()
-p_filter = function(.data, ..., .preserve = FALSE, .messages="excluded {.excluded} items", .headline=.defaultHeadline(), .type = "exclusion", .asOffshoot=(.type=="exclusion"), .stage="", .tag=NULL) {
+p_filter = function(.data, ..., .preserve = FALSE,
+                    .messages="excluded {.excluded} items",
+                    .headline=.defaultHeadline(),
+                    .type = "exclusion",
+                    .asOffshoot=(.type=="exclusion"),
+                    .stage=(if(is.null(.tag)) "" else .tag),
+                    .tag=NULL) {
   .count.in = .count.out = .strata = .message = NULL
   .data = .data %>% .untrack()
   .env = rlang::caller_env()
@@ -1730,6 +1819,7 @@ p_slice_sample = function(.data, ..., n, prop, weight_by = NULL, replace = FALSE
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = iris %>% track() %>% group_by(Species)
 #' tmp %>% group_modify(
 #'       function(d,g,...) { return(tibble::tibble(x=runif(10))) },
@@ -2095,6 +2185,7 @@ is_running_in_chunk = function() {
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
 #' tmp %>% group_by(Species) %>% comment(.tag="step2") %>% flowchart()
 p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, ...) {
@@ -2216,6 +2307,7 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
+#'
 #' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
 #' dot = tmp %>% group_by(Species) %>% comment(.tag="step2") %>% p_get_as_dot()
 #' cat(dot)

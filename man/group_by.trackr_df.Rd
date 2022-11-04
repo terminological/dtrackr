@@ -63,6 +63,7 @@ using a \code{dplyr::ungroup()}. This limit is configurable with
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = iris \%>\% track() \%>\% group_by(Species, .messages="stratify by {.cols}")
 tmp \%>\% comment("{.strata}") \%>\% history()
 }

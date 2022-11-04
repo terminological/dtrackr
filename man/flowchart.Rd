@@ -22,7 +22,8 @@ flowchart(
 saved. If no extension is specified the output formats are determined by
 the \code{formats} parameter.}
 
-\item{size}{a list of length and width in inches e.g. a std_size}
+\item{size}{a named list with 2 elements, length and width in inches. A predefined set
+of standard sizes are available in the \link{std_size} object}
 
 \item{maxWidth}{a width in inches is size is not defined}
 
@@ -53,6 +54,7 @@ common.
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = iris \%>\% track() \%>\% comment(.tag = "step1") \%>\% filter(Species!="versicolor")
 tmp \%>\% group_by(Species) \%>\% comment(.tag="step2") \%>\% flowchart()
 }

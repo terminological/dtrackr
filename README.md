@@ -1,5 +1,5 @@
 
-# dtrackr: Track your Data Pipelines <a href='https://dplyr.tidyverse.org'><img src='man/figures/logo.png' align="right" height="139" /></a>
+# dtrackr: Track your Data Pipelines <a href='https://terminological.github.io/dtrackr/index.html'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -9,7 +9,7 @@
 badge](https://terminological.r-universe.dev/badges/dtrackr)](https://terminological.r-universe.dev)
 [![metacran
 downloads](https://cranlogs.r-pkg.org/badges/dtrackr)](https://cran.r-project.org/package=dtrackr)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr)
 <!-- [![DOI](https://joss.theoj.org/papers/10.21105/joss.04707/status.svg)](https://doi.org/) -->
 <!-- badges: end -->
 
@@ -141,7 +141,7 @@ or clinical trials often a requirement.
 dataset %>% flowchart()
 ```
 
-![](man/figures/README-flowchart.png?raw=true)
+<img src='man/figures/README-flowchart.png'/>
 
 And your publication ready data pipeline, with any assumptions you care
 to document, is creates in a format of your choice (as long as that
@@ -155,49 +155,3 @@ Check out the [main documentation for more
 details](https://terminological.github.io/dtrackr), and in particular
 the [getting started
 vignette](https://terminological.github.io/dtrackr/articles/dtrackr.html).
-
-## Testing and integration
-
-For testing `dtrackr` uses the `testthat` framework. It is configured to
-run both the unit tests and the functional tests in the code examples.
-
-``` r
-# assuming dtrackr has been cloned from github into the working directory 
-# location
-
-devtools::load_all()
-
-# Long list of system dependencies in Ubuntu 20.04 including all suggested 
-# dependencies:
-# librsvg2-dev libicu-dev libcurl4-openssl-dev libssl-dev libnode-dev make 
-# pandoc imagemagick libmagick++-dev gsfonts default-jdk libxml2-dev 
-# zlib1g-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev 
-# libjpeg-dev libpng-dev libtiff-dev git libgit2-dev
-
-pak::local_system_requirements("ubuntu","20.04")
-install.packages(c("here","tidyverse","devtools","testthat","pkgdown"))
-
-# Examples:
-devtools::run_examples()
-
-# automated testing with testthat (also runs all examples):
-devtools::test()
-
-# pkgdown site building (which executes all the vignettes):
-pkgdown::build_site()
-```
-
-Github workflows are enabled on this repository for continuous
-integration. These perform an `R CMD check` on code commits, which will
-run all `testthat` unit tests, run all man page examples, and build all
-the vignettes.
-
-For vignette building there are dependencies on the `tidyverse` package,
-as well as other system libraries required for vignette building with
-`pandoc`. The CI tests check the library can be installed on macOs,
-windows, and Ubuntu, with R versions 3.6.1, 4.1, 4.2 and the R
-development branch.
-
-On tagged releases, additional Github workflows are triggered by in the
-`r-universe` repository, to build binary releases on a range of
-platforms.

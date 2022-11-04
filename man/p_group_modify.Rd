@@ -51,6 +51,7 @@ is also available (if grouped) for reporting See \code{\link[dplyr:group_map]{dp
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = iris \%>\% track() \%>\% group_by(Species)
 tmp \%>\% group_modify(
       function(d,g,...) { return(tibble::tibble(x=runif(10))) },

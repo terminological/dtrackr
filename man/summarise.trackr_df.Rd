@@ -47,6 +47,7 @@ allows you to generate some summary statistics about the un-grouped data. See
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = iris \%>\% group_by(Species)
 tmp \%>\% summarise(avg = mean(Petal.Length), .messages="{avg} length") \%>\% history()
 }

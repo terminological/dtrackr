@@ -68,13 +68,12 @@ on the underlying functions.
 }
 \examples{
 library(dplyr)
-library(tidyr)
 library(dtrackr)
 # Joins across data sets
 
 # example data uses the dplyr starways data
 people = starwars \%>\% select(-films, -vehicles, -starships)
-films = starwars \%>\% select(name,films) \%>\% unnest(cols = c(films))
+films = starwars \%>\% select(name,films) \%>\% tidyr::unnest(cols = c(films))
 
 lhs = people \%>\% track() \%>\% comment("People df {.total}")
 rhs = films \%>\% track() \%>\% comment("Films df {.total}") \%>\%

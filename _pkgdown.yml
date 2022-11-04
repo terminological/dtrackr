@@ -100,13 +100,8 @@ reference:
     `GraphViz` dot format. These can be also used for non-dtrackr dot content
   contents:
   - dot2svg
-  - landscape
   - save_dot
   - std_size
-
-- title: "Datasets"
-  contents:
-  - ILPD
 
 - title: "Legacy interface"
   desc: >

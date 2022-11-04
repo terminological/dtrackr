@@ -13,23 +13,12 @@ bibliography: dtrackr.bib
 
 # CONSORT statement
 
-CONSORT diagrams are part of the requirements in reporting parallel group
-clinical trials or case control designs in observational studies. They are
-described in the updated 2010 CONSORT statement
-[@schulzCONSORT2010Statement2010]. They clarify how patients were recruited,
-selected, randomised and followed up. For observational studies an equivalent
-requirement is the STROBE statement
-[@vonelmStrengtheningReportingObservational2008]. There are other similar
-requirements for other types of study such as the TRIPOD statement that are
-applicable for multivariate models
-[@collinsTransparentReportingMultivariable2015].
+CONSORT diagrams are part of the requirements in reporting parallel group clinical trials or case control designs in observational studies. They are described in the updated 2010 CONSORT statement [@schulzCONSORT2010Statement2010]. They clarify how patients were recruited, selected, randomised and followed up. For observational studies an equivalent requirement is the STROBE statement [@vonelmStrengtheningReportingObservational2008]. There are other similar requirements for other types of study such as the TRIPOD statement that are applicable for multivariate models [@collinsTransparentReportingMultivariable2015].
 
-As we don't have to hand a randomised control trial the following example is
-more geared to reporting observational studies, and uses the Indian Liver
-Patients disease dataset [@ramanaCriticalComparativeStudy;
-@ramanaCriticalStudySelected2011; @Dua2019] as an example.
+For this demonstration we use the `cgd` data set from the `survival` package [@survival-book; @survival-package], which is from a placebo controlled trial of gamma interferon in Chronic Granulomatous Disease.
 
-```{r, include = FALSE}
+
+```{r include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -37,22 +26,18 @@ knitr::opts_chunk$set(
 
 here::i_am("vignettes/consort-example.Rmd")
 
-```
-
-```{r setup}
 library(tidyverse)
 library(dtrackr)
-
 ```
 
-The Indian liver patients data set has some clinical data on a case control
-study of patients with and without liver disease. We can use to pretend we are
-conducting an observational study.
+In this example the `treatment` column contains the intervention. 
 
-Our study criteria are as follows:
+For the analysis we are considering only the first observations for each patient, and
+our study criteria are as follows:
 
-* Entry criteria is having a total bilirubin >= 0.7 for women or >= 0.8 for men.
-* Patients must be adults aged between the ages of 18 and 80 inclusive.
+* Only patients from US based centres are considered
+* Patients must not be on steroids at inception.
+* Patients must be aged between the ages of 5 and 35 inclusive.
 
 This can be coded into the `dplyr` pipeline, with additional `dtrackr` functions:
 
@@ -61,30 +46,32 @@ This can be coded into the `dplyr` pipeline, with additional `dtrackr` functions
 old = options(
   dtrackr.strata_glue="{tolower(.value)}",
   dtrackr.strata_sep=", ",
-  dtrackr.default_message = "{.count} patients",
+  dtrackr.default_message = "{.count} records",
   dtrackr.default_headline = NULL
 )
 
-ilpd = dtrackr::ILPD %>% 
+demo_data = survival::cgd %>% 
   track() %>%
-  capture_exclusions() %>%
+  filter(enum == 1, .type="inclusion", .messages="{.count.out} first observation") %>%
   include_any(
-    Gender == "Female" & Total_Bilirubin >= 0.7 ~ "{.included} women with bili>0.7",
-    Gender == "Male" & Total_Bilirubin >= 0.8 ~ "{.included} men with bili>0.8"
+    hos.cat == "US:NIH" ~ "{.included} NIH patients",
+    hos.cat == "US:other" ~ "{.included} other US patients"
   ) %>%
-  group_by(Case_or_Control, .messages="cases versus controls") %>%
+  group_by(treat, .messages="cases versus controls") %>%
   comment() %>%
+  capture_exclusions() %>%
   exclude_all(
-    Age<18 ~ "{.excluded} subjects under 18",
-    Age>80 ~ "{.excluded} subjects over 80"
+    age<5 ~ "{.excluded} subjects under 5",
+    age>35 ~ "{.excluded} subjects over 35",
+    steroids == 1 ~ "{.excluded} on steroids at admission"
   ) %>%
   comment(.messages = "{.count} after exclusions") %>%
   status(
-    mean_bili = sprintf("%1.2f \u00B1 %1.2f",mean(Total_Bilirubin),sd(Total_Protein)),
-    mean_alb = sprintf("%1.2f \u00B1 %1.2f",mean(Albumin),sd(Albumin)),
+    mean_height = sprintf("%1.2f \u00B1 %1.2f",mean(height),sd(height)),
+    mean_weight = sprintf("%1.2f \u00B1 %1.2f",mean(weight),sd(weight)),
     .messages = c(
-      "bilirubin: {mean_bili}",
-      "albumin: {mean_alb}"
+      "average height: {mean_height}",
+      "average weight: {mean_weight}"
     )                    
   ) %>%
   ungroup(.messages = "{.count} in final data set")
@@ -93,158 +80,126 @@ ilpd = dtrackr::ILPD %>%
 options(old)
 ```
 
-With a bit of experimentation the flowchart needed for a STROBE/CONSORT
-checklist can be generated. One option to output the flowchart is `svg` which
-can then be manually formatted as required, but for publication ready output
-`pdf` is usually preferred.
+With a bit of experimentation the flowchart needed for a STROBE/CONSORT checklist can be generated. One option to output the flowchart is `svg` which can then be manually formatted as required, but for publication ready output `pdf` is usually preferred.
+
+```{r include=FALSE}
+# saving this flowchart for the JOSS paper.
+if (interactive()) demo_data %>% flowchart(filename = here::here("vignettes/joss/figure1-consort.pdf")) %>% invisible()
+```
 
 ```{r}
-# saving this flowchart for the JOSS paper.
-# ilpd %>% flowchart(filename = here::here("vignettes/joss/figure1-ilpd-consort.pdf"))
-ilpd %>% flowchart()
+demo_data %>% flowchart()
 ```
 
 # Excluded data
 
-During this pipeline, we may be keen to understand why certain data items are
-being rejected. This would enable us to examine the source data, and potentially
-correct it during the data collection process. We've used it to allow continuous
-quality checks on the data to feed back to the data curators, as we regularly
-conduct analyses. By tracking the exclusions, not only do we track the data flow
-through the pipeline we also retain all excluded items, with the reason for
-exclusion. Thus we can review excluded data and reassure ourselves that the
-exclusions are as expected. We enabled this by calling `capture_exclusions()` in
-the pipeline above. Having tracked the exclusions we can retrieve them by
-calling `excluded()` which gives a data frame with the excluded records and the
-reasons. If the exclusions happened over multiple stages as the dataframe format
-change in between then this will be held as a nested dataframe (i.e. see
-`?tidyr::nest`):
+During this pipeline, we may be keen to understand why certain data items are being rejected. This would enable us to examine the source data, and potentially correct it during the data collection process. We've used it to allow continuous quality checks on the data to feed back to the data curators, as we regularly conduct analyses. By tracking the exclusions, not only do we track the data flow through the pipeline we also retain all excluded items, with the reason for exclusion. Thus we can reassure ourselves that the exclusions are as expected. We enabled this by calling `capture_exclusions()` in the pipeline above. Having tracked the exclusions we can retrieve them by calling `excluded()` which gives a data frame with the excluded records and the reasons. If the exclusions happened over multiple stages as the dataframe format change in between then this will be held as a nested dataframe (i.e. see `?tidyr::nest`):
 
 ```{r}
 
 # here we filter out the majority of the actual content of the excluded data to focus on the 
 # metadata recovered during the exclusion.
-ilpd %>% excluded() %>% select(.stage,.message,.filter,Age, Gender)
+demo_data %>% excluded() %>% select(.stage,.message,.filter,age, steroids)
 
 ```
 
-This list may have multiple entries for a single data item, if for example
-something is excluded in any one step for more than one reason.
-
-It would be interesting to integrate this into a continuous integration
-work-flow to run automated checks on data as it is collected.
+This list may have multiple entries for a single data item, if for example something is excluded in any one step for many reasons.
 
 # Tagging the pipeline
 
-For reporting results it is useful to have the numbers from the flowchart to
-embed into the text of the results section of the write up. Here we show the
-same pipeline as above, but with 4 uses of the `.tag` system for labelling part
-of the pipeline. This captures data in a tag-value list during the pipeline, and
-retains it as metadata for later reuse.
+For reporting results it is useful to have the numbers from the flowchart to embed into the text of the results section of the write up. Here we show the same pipeline as above, but with 4 uses of the `.tag` system for labelling part of the pipeline. This captures data in a tag-value list during the pipeline, and retains it as metadata for later reuse. 
 
 ```{r}
 
-ilpd = dtrackr::ILPD %>% 
-  
-  track(.tag="initial cohort") %>%
-  #     ^^^^^^^^^^^^^^^^^^^^^
-  #     TAGS DEFINED
-  
-  capture_exclusions() %>%
+demo_data = survival::cgd %>% 
+  track(.messages = NULL) %>%
+  filter(enum == 1, .type="inclusion", .messages="{.count.out} first observation") %>%
+  comment(.tag = "initial cohort") %>%
+  #         ^^^^^^^^^^^^^^^^^^^^^
+  #         TAGS DEFINED
   
   include_any(
-    Gender == "Female" & Total_Bilirubin >= 0.7 ~ "{.included} women with bili>0.7",
-    Gender == "Male" & Total_Bilirubin >= 0.8 ~ "{.included} men with bili>0.8"
+    hos.cat == "US:NIH" ~ "{.included} NIH patients",
+    hos.cat == "US:other" ~ "{.included} other US patients"
   ) %>%
-  
-  group_by(Case_or_Control, .messages="cases versus controls") %>%
-  
+  group_by(treat, .messages="cases versus controls") %>%
+
   comment(.tag="study cohort") %>%
   #       ^^^^^^^^^^^^^^^^^^^
   #       SECOND SET OF TAGS DEFINED
   
+  capture_exclusions() %>%
   exclude_all(
-    Age<18 ~ "{.excluded} subjects under 18",
-    Age>80 ~ "{.excluded} subjects over 80"
+    age<5 ~ "{.excluded} subjects under 5",
+    age>35 ~ "{.excluded} subjects over 35",
+    steroids == 1 ~ "{.excluded} on steroids at admission"
   ) %>%
   
   comment(.messages = "{.count} after exclusions") %>%
   
   status(
-    mean_bili = sprintf("%1.2f \u00B1 %1.2f",mean(Total_Bilirubin),sd(Total_Protein)),
-    mean_alb = sprintf("%1.2f \u00B1 %1.2f",mean(Albumin),sd(Albumin)),
+    mean_height = sprintf("%1.2f \u00B1 %1.2f",mean(height),sd(height)),
+    mean_weight = sprintf("%1.2f \u00B1 %1.2f",mean(weight),sd(weight)),
     .messages = c(
-      "bilirubin: {mean_bili}",
-      "albumin: {mean_alb}"
+      "average height: {mean_height}",
+      "average weight: {mean_weight}"
     ),
     .tag = "qualifying patients"
-  # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  # THIRD SET TAGS DEFINED
+  #  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  #  THIRD SET TAGS DEFINED                    
   ) %>%
-  
   ungroup(.messages = "{.count} in final data set", .tag="final set")
   #                                                 ^^^^^^^^^^^^^^^^
   #                                                 LAST TAGS DEFINED
+
 ```
 
-The tagged data can be retrieved as follows, which will give you all tagged data
-for all 4 points in the pipeline:
+The tagged data can be retrieved as follows, which will give you all tagged data for all 4 points in the pipeline:
 
 ```{r}
-ilpd %>% tagged() %>% tidyr::unnest(.content)
+demo_data %>% tagged() %>% tidyr::unnest(.content)
 ```
 
-More often though you will want to retrieve specific values from specific points
-for the results text for example:
+More often though you will want to retrieve specific values from specific points for the results text for example:
 
 ```{r}
-initialSet = ilpd %>% tagged(.tag = "initial cohort", .glue = "{.count} patients")
-finalSet = ilpd %>% tagged(.tag = "final set", .glue = "{.count} patients")
+initialSet = demo_data %>% tagged(.tag = "initial cohort", .glue = "{.count} patients")
+finalSet = demo_data %>% tagged(.tag = "final set", .glue = "{.count} patients")
 
 # there were `r initialSet` in the study, of whom `r finalSet` met the eligibility criteria.
 ```
 
-For example there were `r initialSet` in the study, of whom `r finalSet` met the
-eligibility criteria.
+For example there were `r initialSet` in the study, of whom `r finalSet` met the eligibility criteria.
 
-More complex formatting and calculations are made possible by use of the `glue`
-specification, including those that happen on a per group basis, and we can also
-pull in values from elsewhere in our analysis.
+More complex formatting and calculations are made possible by use of the `glue` specification, including those that happen on a per group basis, and we can also pull in values from elsewhere in our analysis.
 
 ```{r}
-ilpd %>% tagged(
+demo_data %>% tagged(
     .tag = "qualifying patients", 
-    .glue = "{.strata}: {.count}/{.total} ({sprintf('%1.1f', .count/.total*100)}%) patients on {sysDate}, with a mean bilirubin of {mean_bili}", 
+    .glue = "{.strata}: {.count}/{.total} ({sprintf('%1.1f', .count/.total*100)}%) patients on {sysDate}, with a mean height of {mean_height}", 
     sysDate = Sys.Date()
     # we could have included any number of other parameters here from the global environment
   ) %>% dplyr::pull(.label)
 ```
 
-Sometimes it will be necessary to operate on all tagged content at once. This is
-possible but be aware that the content available depends somewhat on where the
-tag was set in the pipeline so not all fields will always be present (although
-`.count` and `.total` will be). The `.total` is the overall number of cases at
-that point in the pipeline. `.count` is the number of cases in each strata.
+Sometimes it will be necessary to operate on all tagged content at once. This is possible but be aware that the content available depends somewhat on where the tag was set in the pipeline so not all fields will always be present (although `.count` and `.total` will be). The `.total` is the overall number of cases at that point in the pipeline. `.count` is the number of cases in each strata.
 
 ```{r}
-ilpd %>% tagged(.glue = "{.count}/{.total} patients")
+demo_data %>% tagged(.glue = "{.count}/{.total} patients")
 ```
 
-For comparing inclusions and exclusions at different stages in the pipeline
-using tags the following example may be useful:
+For comparing inclusions and exclusions at different stages in the pipeline using tags the following example may be useful:
 
 ```{r}
-ilpd %>% 
+demo_data %>% 
   tagged() %>%   # selects only top level content
   tidyr::unnest(.content) %>% 
   dplyr::select(.tag, .total) %>% 
   dplyr::distinct() %>%
   tidyr::pivot_wider(values_from=.total, names_from=.tag) %>% 
-  glue::glue_data("
-    Out of {`initial cohort`} patients, {`study cohort`} were eligible for inclusion 
-    on the basis of their liver function tests but {`study cohort`-`qualifying patients`} 
-    were outside the age limits. This left {`final set`} patients included in the 
-    final study (i.e. overall {`initial cohort`-`final set`} were removed).")
+  glue::glue_data("Out of {`initial cohort`} patients, {`study cohort`} were eligible for inclusion on the basis of their age
+  but {`study cohort`-`qualifying patients`} were outside the age limits. 
+  This left {`final set`} patients included in the final study (i.e. overall {`initial cohort`-`final set`} were removed).")
 ```
 
 # References

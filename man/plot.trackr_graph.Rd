@@ -25,5 +25,6 @@ Plots a history graph as html
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 iris \%>\% comment("hello {.total} rows") \%>\% history() \%>\% plot()
 }

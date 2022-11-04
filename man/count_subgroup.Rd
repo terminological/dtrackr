@@ -57,6 +57,6 @@ each subgroup is added as a new stage in the flowchart.
 \examples{
 library(dplyr)
 library(dtrackr)
-ILPD \%>\% track() \%>\% group_by(Case_or_Control) \%>\%
-  count_subgroup(Gender) \%>\% history()
+survival::cgd \%>\% track() \%>\% group_by(treat) \%>\%
+  count_subgroup(center) \%>\% history()
 }

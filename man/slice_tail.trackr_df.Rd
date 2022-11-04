@@ -59,7 +59,6 @@ for more details on the underlying functions.
 }
 \examples{
 library(dplyr)
-library(tidyr)
 library(dtrackr)
 
 # an arbitrary 50 items from the iris dataframe is selected. The

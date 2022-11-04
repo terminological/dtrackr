@@ -42,7 +42,8 @@ dot2svg <- function(dot) {
 
 #' Standard paper sizes
 #'
-#' A list of standard paper sizes
+#' A list of standard paper sizes for outputting flowcharts or other dot
+#' graphs
 #'
 #' @export
 std_size = list(
@@ -53,25 +54,21 @@ std_size = list(
   third =  list(width=5.9,height=3,rot=0),
   two_third = list(width=5.9,height=6,rot=0),
   quarter = list(width=5.9,height=2,rot=0),
-  sixth = list(width=3,height=3,rot=0)
+  sixth = list(width=3,height=3,rot=0),
+  A4_landscape = list(width=11.75, height=8.25,rot=0),
+  full_landscape =  list(width=8,height=5.9,rot=0),
+  slide_16_9 = list(width=9.32,height=4.5,rot=0),
+  slide_4_3 = list(width=9.32,height=6,rot=0)
 )
-
-#' Convert page size from portrait to landscape
-#'
-#' @param size list of width and height in inches, e.g. a std_size
-#'
-#' @return a landscape size
-#' @export
-landscape = function(size) {return(list(width=size$height, height = size$width, rot=270))}
-
 
 #' Save DOT content to a file
 #'
-#' Convert a digraph in dot file to SVG and save it to an output file
+#' Convert a digraph in dot format to SVG and save it to a range of output file types
 #'
 #' @param dot a graphviz dot string
 #' @param filename the full path of the filename (minus extension for multiple formats)
-#' @param size a list of length and width in inches e.g. a std_size
+#' @param size a named list with 2 elements, length and width in inches. A predefined set
+#'   of standard sizes are available in the [dtrackr::std_size] object
 #' @param maxWidth a width in inches is size is not defined
 #' @param maxHeight a height in inches if size is not defined
 #' @param formats some of "pdf","dot","svg","png","ps"

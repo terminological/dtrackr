@@ -19,5 +19,6 @@ Print a history graph to the console
 }
 \examples{
 library(dplyr)
+library(dtrackr)
 iris \%>\% comment("hello {.total} rows") \%>\% history() \%>\% print()
 }

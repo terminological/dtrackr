@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4.9001</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/dtrackr.html">Get started</a>
 </li>
@@ -57,7 +53,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -80,7 +76,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/terminological/dtrackr/">
+  <a href="https://github.com/terminological/dtrackr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,259 +91,294 @@
 
       
 
-      </header><script src="dtrackr-options_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>dtrackr - Configuration example</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/terminological/dtrackr/blob/master/vignettes/dtrackr-options.Rmd"><code>vignettes/dtrackr-options.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/terminological/dtrackr/blob/HEAD/vignettes/dtrackr-options.Rmd" class="external-link"><code>vignettes/dtrackr-options.Rmd</code></a></small>
       <div class="hidden name"><code>dtrackr-options.Rmd</code></div>
 
     </div>
 
     
     
-<div id="global-configuration" class="section level1">
-<h1 class="hasAnchor">
-<a href="#global-configuration" class="anchor"></a>Global configuration</h1>
-<p>Most of the behaviour of <code>dtrackr</code> can be specified at the individual call level using the <code>.headline</code> and <code>.messages</code> glue specifications to define a format. Sometimes however this is annoying to do for all the stages in a flow chart and a global configuration of behaviour is desirable.</p>
-<div id="naming-conventions-for-groups" class="section level2">
-<h2 class="hasAnchor">
-<a href="#naming-conventions-for-groups" class="anchor"></a>Naming conventions for groups</h2>
-<p>One of the areas where default behaviour may be undesirable is the naming of groups. The default setting combines the group name <code>{.group}</code> and the group value <code>{.value}</code> into a concatenated colon separated string as demonstrated below:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># these are the defaults</span>
-<span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>
-  dtrackr.strata_glue<span class="op">=</span><span class="st">"{.group}:{.value}"</span>,
-  dtrackr.strata_sep<span class="op">=</span><span class="st">"; "</span>
-<span class="op">)</span>
-
-<span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Case_or_Control</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Gender</span>,.add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-    <span class="st">"{.count} patients"</span>,
-    <span class="st">"{sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="global-configuration">Global configuration<a class="anchor" aria-label="anchor" href="#global-configuration"></a>
+</h2>
+<p>Most of the behaviour of <code>dtrackr</code> can be specified at the
+individual call level using the <code>.headline</code> and
+<code>.messages</code> glue specifications to define a format. Sometimes
+however this is annoying to do for all the stages in a flow chart and a
+global configuration of behaviour is desirable.</p>
+<div class="section level3">
+<h3 id="naming-conventions-for-groups">Naming conventions for groups<a class="anchor" aria-label="anchor" href="#naming-conventions-for-groups"></a>
+</h3>
+<p>One of the areas where default behaviour may be undesirable is the
+naming of groups. The default setting combines the group name
+<code>{.group}</code> and the group value <code>{.value}</code> into a
+concatenated colon separated string as demonstrated below:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># these are the defaults</span></span>
+<span><span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>  dtrackr.strata_glue<span class="op">=</span><span class="st">"{.group}:{.value}"</span>,</span>
+<span>  dtrackr.strata_sep<span class="op">=</span><span class="st">"; "</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/cgd.html" class="external-link">cgd</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treat</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sex</span>,.add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span></span>
+<span>    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"{.count} patients"</span>,</span>
+<span>    <span class="st">"{sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
- --><!-- Title: %0 Pages: 1 --><svg width="659pt" height="260pt" viewbox="0.00 0.00 659.47 260.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 256.4)"><title>%0</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-256.4 655.4696,-256.4 655.4696,4 -4,4"></polygon><!-- 7&#45;&gt;11 --><g id="edge4" class="edge"><title>7:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M76.7912,-41.6C76.7912,-41.6 76.7912,-11 76.7912,-11 76.7912,-11 293.3044,-11 293.3044,-11"></path><polygon fill="#000000" stroke="#000000" points="293.3045,-12.7501 298.3044,-11 293.3044,-9.2501 293.3045,-12.7501"></polygon></g><!-- 8&#45;&gt;11 --><g id="edge3" class="edge"><title>8:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M305.1848,-41.6C305.1848,-41.6 305.1848,-28.5777 305.1848,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="306.9349,-28.5777 305.1848,-23.5777 303.4349,-28.5778 306.9349,-28.5777"></polygon></g><!-- 9&#45;&gt;11 --><g id="edge2" class="edge"><title>9:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M336.2868,-41.6C336.2868,-41.6 336.2868,-28.5777 336.2868,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="338.0369,-28.5777 336.2868,-23.5777 334.5369,-28.5778 338.0369,-28.5777"></polygon></g><!-- 10&#45;&gt;11 --><g id="edge1" class="edge"><title>10:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M575.7912,-41.6C575.7912,-41.6 575.7912,-11 575.7912,-11 575.7912,-11 352.0499,-11 352.0499,-11"></path><polygon fill="#000000" stroke="#000000" points="352.0499,-9.2501 347.0499,-11 352.0499,-12.7501 352.0499,-9.2501"></polygon></g><!-- 5&#45;&gt;7 --><g id="edge8" class="edge"><title>5:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M239.7912,-109C239.7912,-109 76.7912,-109 76.7912,-109 76.7912,-109 76.7912,-84.729 76.7912,-84.729"></path><polygon fill="#000000" stroke="#000000" points="78.5413,-84.7289 76.7912,-79.729 75.0413,-84.729 78.5413,-84.7289"></polygon></g><!-- 5&#45;&gt;8 --><g id="edge7" class="edge"><title>5:s-&gt;8</title>
-<path fill="none" stroke="#000000" d="M239.7912,-97.4C239.7912,-97.4 239.7912,-84.8622 239.7912,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="241.5413,-84.8622 239.7912,-79.8622 238.0413,-84.8623 241.5413,-84.8622"></polygon></g><!-- 6&#45;&gt;9 --><g id="edge6" class="edge"><title>6:s-&gt;9</title>
-<path fill="none" stroke="#000000" d="M405.7912,-97.4C405.7912,-97.4 405.7912,-84.8622 405.7912,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="407.5413,-84.8622 405.7912,-79.8622 404.0413,-84.8623 407.5413,-84.8622"></polygon></g><!-- 6&#45;&gt;10 --><g id="edge5" class="edge"><title>6:s-&gt;10</title>
-<path fill="none" stroke="#000000" d="M405.7912,-109C405.7912,-109 575.7912,-109 575.7912,-109 575.7912,-109 575.7912,-84.729 575.7912,-84.729"></path><polygon fill="#000000" stroke="#000000" points="577.5413,-84.7289 575.7912,-79.729 574.0413,-84.729 577.5413,-84.7289"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge10" class="edge"><title>3:s-&gt;5</title>
-<path fill="none" stroke="#000000" d="M239.7912,-139.2C239.7912,-139.2 239.7912,-126.1777 239.7912,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="241.5413,-126.1777 239.7912,-121.1777 238.0413,-126.1778 241.5413,-126.1777"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge9" class="edge"><title>4:s-&gt;6</title>
-<path fill="none" stroke="#000000" d="M405.7912,-139.2C405.7912,-139.2 405.7912,-126.1777 405.7912,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="407.5413,-126.1777 405.7912,-121.1777 404.0413,-126.1778 407.5413,-126.1777"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge12" class="edge"><title>2:s-&gt;3</title>
-<path fill="none" stroke="#000000" d="M276.9584,-187C276.9584,-187 276.9584,-174.4477 276.9584,-174.4477"></path><polygon fill="#000000" stroke="#000000" points="278.7085,-174.4477 276.9584,-169.4477 275.2085,-174.4478 278.7085,-174.4477"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge11" class="edge"><title>2:s-&gt;4</title>
-<path fill="none" stroke="#000000" d="M366.8468,-187C366.8468,-187 366.8468,-174.4477 366.8468,-174.4477"></path><polygon fill="#000000" stroke="#000000" points="368.5969,-174.4477 366.8468,-169.4477 365.0969,-174.4478 368.5969,-174.4477"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge13" class="edge"><title>1:s-&gt;2</title>
-<path fill="none" stroke="#000000" d="M322.7912,-228.6C322.7912,-228.6 322.7912,-215.6987 322.7912,-215.6987"></path><polygon fill="#000000" stroke="#000000" points="324.5413,-215.6987 322.7912,-210.6987 321.0413,-215.6987 324.5413,-215.6987"></polygon></g><!-- 11 --><g id="node1" class="node"><title>11</title>
-<polygon fill="#ffffff" stroke="#000000" points="346.9659,-23.4033 298.6165,-23.4033 298.6165,-.1967 346.9659,-.1967 346.9659,-23.4033"></polygon><text text-anchor="start" x="305.4544" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 items</text></g><!-- 7 --><g id="node2" class="node"><title>7</title>
-<polygon fill="#ffffff" stroke="#000000" points="153.3742,-79.6 .2082,-79.6 .2082,-41.6 153.3742,-41.6 153.3742,-79.6"></polygon><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:case; Gender:Female</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">92 patients</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">16% of the total</text></g><!-- 8 --><g id="node3" class="node"><title>8</title>
-<polygon fill="#ffffff" stroke="#000000" points="312.0394,-79.6 167.543,-79.6 167.543,-41.6 312.0394,-41.6 312.0394,-79.6"></polygon><text text-anchor="start" x="174.6672" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:case; Gender:Male</text><text text-anchor="start" x="174.6672" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">324 patients</text><text text-anchor="start" x="174.6672" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">56% of the total</text></g><!-- 9 --><g id="node4" class="node"><title>9</title>
-<polygon fill="#ffffff" stroke="#000000" points="485.9827,-79.6 325.5997,-79.6 325.5997,-41.6 485.9827,-41.6 485.9827,-79.6"></polygon><text text-anchor="start" x="332.4456" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:control; Gender:Female</text><text text-anchor="start" x="332.4456" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">50 patients</text><text text-anchor="start" x="332.4456" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">9% of the total</text></g><!-- 10 --><g id="node5" class="node"><title>10</title>
-<polygon fill="#ffffff" stroke="#000000" points="651.6484,-79.6 499.934,-79.6 499.934,-41.6 651.6484,-41.6 651.6484,-79.6"></polygon><text text-anchor="start" x="507.1128" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:control; Gender:Male</text><text text-anchor="start" x="507.1128" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">117 patients</text><text text-anchor="start" x="507.1128" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">20% of the total</text></g><!-- 5 --><g id="node6" class="node"><title>5</title>
-<polygon fill="#ffffff" stroke="#000000" points="310.8144,-121.0033 168.768,-121.0033 168.768,-97.7967 310.8144,-97.7967 310.8144,-121.0033"></polygon><text text-anchor="start" x="175.7796" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Case_or_Control, Gender</text></g><!-- 6 --><g id="node7" class="node"><title>6</title>
-<polygon fill="#ffffff" stroke="#000000" points="476.8144,-121.0033 334.768,-121.0033 334.768,-97.7967 476.8144,-97.7967 476.8144,-121.0033"></polygon><text text-anchor="start" x="341.7796" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Case_or_Control, Gender</text></g><!-- 3 --><g id="node8" class="node"><title>3</title>
-<polygon fill="#ffffff" stroke="#000000" points="286.3626,-169.2 193.2198,-169.2 193.2198,-139.2 286.3626,-139.2 286.3626,-169.2"></polygon><text text-anchor="start" x="200.006" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:case</text><text text-anchor="start" x="200.006" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">416 items</text></g><!-- 4 --><g id="node9" class="node"><title>4</title>
-<polygon fill="#ffffff" stroke="#000000" points="455.9709,-169.2 355.6115,-169.2 355.6115,-139.2 455.9709,-139.2 455.9709,-169.2"></polygon><text text-anchor="start" x="362.4516" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:control</text><text text-anchor="start" x="362.4516" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">167 items</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
-<polygon fill="#ffffff" stroke="#000000" points="378.1928,-210.6033 267.3896,-210.6033 267.3896,-187.3967 378.1928,-187.3967 378.1928,-210.6033"></polygon><text text-anchor="start" x="274.3404" y="-196.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Case_or_Control</text></g><!-- 1 --><g id="node11" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="346.9659,-252.2033 298.6165,-252.2033 298.6165,-228.9967 346.9659,-228.9967 346.9659,-252.2033"></polygon><text text-anchor="start" x="305.4544" y="-238.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 items</text></g></g></svg><div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># reset options </span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></pre></div>
-<p>In particular in situations like this where you are faceting on factors or strings, disposing of the group name may make this clearer. In the following example we only include the group value, force it to lower case, and use a comma to separate multiple facets. We have used manual override of the messages in the grouping stages, by providing a <code>.messages</code> parameter, to specify what we are faceting by in a more natural way:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># only include the group value in the description of the group</span>
-<span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>
-  dtrackr.strata_glue<span class="op">=</span><span class="st">"{tolower(.value)}"</span>,
-  dtrackr.strata_sep<span class="op">=</span><span class="st">", "</span>
-<span class="op">)</span>
-
-<span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>
-    <span class="va">Case_or_Control</span>,
-    .messages <span class="op">=</span> <span class="st">"case or control"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>
-    <span class="va">Gender</span>,
-    .add <span class="op">=</span> <span class="cn">TRUE</span>, 
-    .messages <span class="op">=</span> <span class="st">"by {tolower(.cols)}"</span> <span class="co">#.cols contains a csv string of the grouping variables</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-    <span class="st">"{.count} patients"</span>,
-    <span class="st">"{sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+ --><!-- Title: %0 Pages: 1 --><svg width="439pt" height="260pt" viewbox="0.00 0.00 439.35 260.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 256.4)"><title>%0</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-256.4 435.3472,-256.4 435.3472,4 -4,4"></polygon><!-- 7&#45;&gt;11 --><g id="edge4" class="edge"><title>7:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M51.6792,-41.6C51.6792,-41.6 51.6792,-11 51.6792,-11 51.6792,-11 191.4656,-11 191.4656,-11"></path><polygon fill="#000000" stroke="#000000" points="191.4657,-12.7501 196.4656,-11 191.4656,-9.2501 191.4657,-12.7501"></polygon></g><!-- 8&#45;&gt;11 --><g id="edge3" class="edge"><title>8:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M205.1828,-41.6C205.1828,-41.6 205.1828,-28.5777 205.1828,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="206.9329,-28.5777 205.1828,-23.5777 203.4329,-28.5778 206.9329,-28.5777"></polygon></g><!-- 9&#45;&gt;11 --><g id="edge2" class="edge"><title>9:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M236.346,-41.6C236.346,-41.6 236.346,-28.5777 236.346,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="238.0961,-28.5777 236.346,-23.5777 234.5961,-28.5778 238.0961,-28.5777"></polygon></g><!-- 10&#45;&gt;11 --><g id="edge1" class="edge"><title>10:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M385.6792,-41.6C385.6792,-41.6 385.6792,-11 385.6792,-11 385.6792,-11 250.0255,-11 250.0255,-11"></path><polygon fill="#000000" stroke="#000000" points="250.0256,-9.2501 245.0255,-11 250.0255,-12.7501 250.0256,-9.2501"></polygon></g><!-- 5&#45;&gt;7 --><g id="edge8" class="edge"><title>5:s-&gt;7</title>
+<path fill="none" stroke="#000000" d="M165.6792,-109C165.6792,-109 51.6792,-109 51.6792,-109 51.6792,-109 51.6792,-84.729 51.6792,-84.729"></path><polygon fill="#000000" stroke="#000000" points="53.4293,-84.7289 51.6792,-79.729 49.9293,-84.729 53.4293,-84.7289"></polygon></g><!-- 5&#45;&gt;8 --><g id="edge7" class="edge"><title>5:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M165.6792,-97.4C165.6792,-97.4 165.6792,-84.8622 165.6792,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="167.4293,-84.8622 165.6792,-79.8622 163.9293,-84.8623 167.4293,-84.8622"></polygon></g><!-- 6&#45;&gt;9 --><g id="edge6" class="edge"><title>6:s-&gt;9</title>
+<path fill="none" stroke="#000000" d="M276.6792,-97.4C276.6792,-97.4 276.6792,-84.8622 276.6792,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="278.4293,-84.8622 276.6792,-79.8622 274.9293,-84.8623 278.4293,-84.8622"></polygon></g><!-- 6&#45;&gt;10 --><g id="edge5" class="edge"><title>6:s-&gt;10</title>
+<path fill="none" stroke="#000000" d="M276.6792,-109C276.6792,-109 385.6792,-109 385.6792,-109 385.6792,-109 385.6792,-84.729 385.6792,-84.729"></path><polygon fill="#000000" stroke="#000000" points="387.4293,-84.7289 385.6792,-79.729 383.9293,-84.729 387.4293,-84.7289"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge10" class="edge"><title>3:s-&gt;5</title>
+<path fill="none" stroke="#000000" d="M165.6792,-139.2C165.6792,-139.2 165.6792,-126.1777 165.6792,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="167.4293,-126.1777 165.6792,-121.1777 163.9293,-126.1778 167.4293,-126.1777"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge9" class="edge"><title>4:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M276.6792,-139.2C276.6792,-139.2 276.6792,-126.1777 276.6792,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="278.4293,-126.1777 276.6792,-121.1777 274.9293,-126.1778 278.4293,-126.1777"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge12" class="edge"><title>2:s-&gt;3</title>
+<path fill="none" stroke="#000000" d="M191.6256,-187C191.6256,-187 191.6256,-174.4477 191.6256,-174.4477"></path><polygon fill="#000000" stroke="#000000" points="193.3757,-174.4477 191.6256,-169.4477 189.8757,-174.4478 193.3757,-174.4477"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge11" class="edge"><title>2:s-&gt;4</title>
+<path fill="none" stroke="#000000" d="M242.121,-187C242.121,-187 242.121,-154 242.121,-154 242.121,-154 244.1144,-154 244.1144,-154"></path><polygon fill="#000000" stroke="#000000" points="244.1144,-155.7501 249.1144,-154 244.1143,-152.2501 244.1144,-155.7501"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge13" class="edge"><title>1:s-&gt;2</title>
+<path fill="none" stroke="#000000" d="M220.6792,-228.6C220.6792,-228.6 220.6792,-215.6987 220.6792,-215.6987"></path><polygon fill="#000000" stroke="#000000" points="222.4293,-215.6987 220.6792,-210.6987 218.9293,-215.6987 222.4293,-215.6987"></polygon></g><!-- 11 --><g id="node1" class="node"><title>11</title>
+<polygon fill="#ffffff" stroke="#000000" points="244.8539,-23.4033 196.5045,-23.4033 196.5045,-.1967 244.8539,-.1967 244.8539,-23.4033"></polygon><text text-anchor="start" x="203.3424" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">203 items</text></g><!-- 7 --><g id="node2" class="node"><title>7</title>
+<polygon fill="#ffffff" stroke="#000000" points="103.5382,-79.6 -.1798,-79.6 -.1798,-41.6 103.5382,-41.6 103.5382,-79.6"></polygon><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:placebo; sex:female</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">20 patients</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">10% of the total</text></g><!-- 8 --><g id="node3" class="node"><title>8</title>
+<polygon fill="#ffffff" stroke="#000000" points="213.8677,-79.6 117.4907,-79.6 117.4907,-41.6 213.8677,-41.6 213.8677,-79.6"></polygon><text text-anchor="start" x="124.3352" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:placebo; sex:male</text><text text-anchor="start" x="124.3352" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">100 patients</text><text text-anchor="start" x="124.3352" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">49% of the total</text></g><!-- 9 --><g id="node4" class="node"><title>9</title>
+<polygon fill="#ffffff" stroke="#000000" points="325.6856,-79.6 227.6728,-79.6 227.6728,-41.6 325.6856,-41.6 325.6856,-79.6"></polygon><text text-anchor="start" x="234.676" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:rIFN-g; sex:female</text><text text-anchor="start" x="234.676" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">15 patients</text><text text-anchor="start" x="234.676" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">7% of the total</text></g><!-- 10 --><g id="node5" class="node"><title>10</title>
+<polygon fill="#ffffff" stroke="#000000" points="431.5158,-79.6 339.8426,-79.6 339.8426,-41.6 431.5158,-41.6 431.5158,-79.6"></polygon><text text-anchor="start" x="347.0112" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:rIFN-g; sex:male</text><text text-anchor="start" x="347.0112" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">68 patients</text><text text-anchor="start" x="347.0112" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">33% of the total</text></g><!-- 5 --><g id="node6" class="node"><title>5</title>
+<polygon fill="#ffffff" stroke="#000000" points="207.5263,-121.0033 123.8321,-121.0033 123.8321,-97.7967 207.5263,-97.7967 207.5263,-121.0033"></polygon><text text-anchor="start" x="131.006" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by treat, sex</text></g><!-- 6 --><g id="node7" class="node"><title>6</title>
+<polygon fill="#ffffff" stroke="#000000" points="318.5263,-121.0033 234.8321,-121.0033 234.8321,-97.7967 318.5263,-97.7967 318.5263,-121.0033"></polygon><text text-anchor="start" x="242.006" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by treat, sex</text></g><!-- 3 --><g id="node8" class="node"><title>3</title>
+<polygon fill="#ffffff" stroke="#000000" points="195.9181,-169.2 135.4403,-169.2 135.4403,-139.2 195.9181,-139.2 195.9181,-169.2"></polygon><text text-anchor="start" x="142.56" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:placebo</text><text text-anchor="start" x="142.56" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">120 items</text></g><!-- 4 --><g id="node9" class="node"><title>4</title>
+<polygon fill="#ffffff" stroke="#000000" points="304.0657,-169.2 249.2927,-169.2 249.2927,-139.2 304.0657,-139.2 304.0657,-169.2"></polygon><text text-anchor="start" x="256.236" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:rIFN-g</text><text text-anchor="start" x="256.236" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">83 items</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
+<polygon fill="#ffffff" stroke="#000000" points="254.1336,-210.6033 187.2248,-210.6033 187.2248,-187.3967 254.1336,-187.3967 254.1336,-210.6033"></polygon><text text-anchor="start" x="194.4528" y="-196.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by treat</text></g><!-- 1 --><g id="node11" class="node"><title>1</title>
+<polygon fill="#ffffff" stroke="#000000" points="244.8539,-252.2033 196.5045,-252.2033 196.5045,-228.9967 244.8539,-228.9967 244.8539,-252.2033"></polygon><text text-anchor="start" x="203.3424" y="-238.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">203 items</text></g></g></svg><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># reset options </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></code></pre></div>
+<p>In particular in situations like this where you are faceting on
+factors or strings, disposing of the group name may make this clearer.
+In the following example we only include the group value, force it to
+lower case, and use a comma to separate multiple facets. We have used
+manual override of the messages in the grouping stages, by providing a
+<code>.messages</code> parameter, to specify what we are faceting by in
+a more natural way:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># only include the group value in the description of the group</span></span>
+<span><span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>  dtrackr.strata_glue<span class="op">=</span><span class="st">"{tolower(.value)}"</span>,</span>
+<span>  dtrackr.strata_sep<span class="op">=</span><span class="st">", "</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/cgd.html" class="external-link">cgd</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treat</span>, .messages <span class="op">=</span> <span class="st">"case or control"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sex</span>,</span>
+<span>    .add <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>    .messages <span class="op">=</span> <span class="st">"by {tolower(.cols)}"</span> <span class="co">#.cols contains a csv string of the grouping variables</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span></span>
+<span>    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"{.count} patients"</span>,</span>
+<span>    <span class="st">"{sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
- --><!-- Title: %0 Pages: 1 --><svg width="326pt" height="260pt" viewbox="0.00 0.00 325.58 260.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 256.4)"><title>%0</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-256.4 321.5792,-256.4 321.5792,4 -4,4"></polygon><!-- 7&#45;&gt;11 --><g id="edge4" class="edge"><title>7:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M34.7896,-41.6C34.7896,-41.6 34.7896,-11 34.7896,-11 34.7896,-11 130.3916,-11 130.3916,-11"></path><polygon fill="#000000" stroke="#000000" points="130.3916,-12.7501 135.3916,-11 130.3916,-9.2501 130.3916,-12.7501"></polygon></g><!-- 8&#45;&gt;11 --><g id="edge3" class="edge"><title>8:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M144.516,-41.6C144.516,-41.6 144.516,-28.5777 144.516,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="146.2661,-28.5777 144.516,-23.5777 142.7661,-28.5778 146.2661,-28.5777"></polygon></g><!-- 9&#45;&gt;11 --><g id="edge2" class="edge"><title>9:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M175.8448,-41.6C175.8448,-41.6 175.8448,-28.5777 175.8448,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="177.5949,-28.5777 175.8448,-23.5777 174.0949,-28.5778 177.5949,-28.5777"></polygon></g><!-- 10&#45;&gt;11 --><g id="edge1" class="edge"><title>10:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M282.7896,-41.6C282.7896,-41.6 282.7896,-11 282.7896,-11 282.7896,-11 189.0904,-11 189.0904,-11"></path><polygon fill="#000000" stroke="#000000" points="189.0905,-9.2501 184.0904,-11 189.0904,-12.7501 189.0905,-9.2501"></polygon></g><!-- 5&#45;&gt;7 --><g id="edge8" class="edge"><title>5:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M55.4548,-97.4C55.4548,-97.4 55.4548,-84.8622 55.4548,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="57.2049,-84.8622 55.4548,-79.8622 53.7049,-84.8623 57.2049,-84.8622"></polygon></g><!-- 5&#45;&gt;8 --><g id="edge7" class="edge"><title>5:s-&gt;8</title>
-<path fill="none" stroke="#000000" d="M118.1244,-97.4C118.1244,-97.4 118.1244,-84.8622 118.1244,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="119.8745,-84.8622 118.1244,-79.8622 116.3745,-84.8623 119.8745,-84.8622"></polygon></g><!-- 6&#45;&gt;9 --><g id="edge6" class="edge"><title>6:s-&gt;9</title>
-<path fill="none" stroke="#000000" d="M200.7896,-97.4C200.7896,-97.4 200.7896,-84.8622 200.7896,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="202.5397,-84.8622 200.7896,-79.8622 199.0397,-84.8623 202.5397,-84.8622"></polygon></g><!-- 6&#45;&gt;10 --><g id="edge5" class="edge"><title>6:s-&gt;10</title>
-<path fill="none" stroke="#000000" d="M262.6244,-97.4C262.6244,-97.4 262.6244,-84.8622 262.6244,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="264.3745,-84.8622 262.6244,-79.8622 260.8745,-84.8623 264.3745,-84.8622"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge10" class="edge"><title>3:s-&gt;5</title>
-<path fill="none" stroke="#000000" d="M96.7896,-139.2C96.7896,-139.2 96.7896,-126.1777 96.7896,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="98.5397,-126.1777 96.7896,-121.1777 95.0397,-126.1778 98.5397,-126.1777"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge9" class="edge"><title>4:s-&gt;6</title>
-<path fill="none" stroke="#000000" d="M221.7896,-139.2C221.7896,-139.2 221.7896,-126.1777 221.7896,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="223.5397,-126.1777 221.7896,-121.1777 220.0397,-126.1778 223.5397,-126.1777"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge12" class="edge"><title>2:s-&gt;3</title>
-<path fill="none" stroke="#000000" d="M138.9056,-187C138.9056,-187 138.9056,-149 138.9056,-149 138.9056,-149 126.2887,-149 126.2887,-149"></path><polygon fill="#000000" stroke="#000000" points="126.2887,-147.2501 121.2887,-149 126.2886,-150.7501 126.2887,-147.2501"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge11" class="edge"><title>2:s-&gt;4</title>
-<path fill="none" stroke="#000000" d="M179.1736,-187C179.1736,-187 179.1736,-159 179.1736,-159 179.1736,-159 192.4939,-159 192.4939,-159"></path><polygon fill="#000000" stroke="#000000" points="192.494,-160.7501 197.4939,-159 192.4939,-157.2501 192.494,-160.7501"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge13" class="edge"><title>1:s-&gt;2</title>
-<path fill="none" stroke="#000000" d="M158.7896,-228.6C158.7896,-228.6 158.7896,-215.6987 158.7896,-215.6987"></path><polygon fill="#000000" stroke="#000000" points="160.5397,-215.6987 158.7896,-210.6987 157.0397,-215.6987 160.5397,-215.6987"></polygon></g><!-- 11 --><g id="node1" class="node"><title>11</title>
-<polygon fill="#ffffff" stroke="#000000" points="183.9643,-23.4033 135.6149,-23.4033 135.6149,-.1967 183.9643,-.1967 183.9643,-23.4033"></polygon><text text-anchor="start" x="142.4528" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 items</text></g><!-- 7 --><g id="node2" class="node"><title>7</title>
-<polygon fill="#ffffff" stroke="#000000" points="69.3701,-79.6 .2091,-79.6 .2091,-41.6 69.3701,-41.6 69.3701,-79.6"></polygon><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">case, female</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">92 patients</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">16% of the total</text></g><!-- 8 --><g id="node3" class="node"><title>8</title>
-<polygon fill="#ffffff" stroke="#000000" points="153.3701,-79.6 84.2091,-79.6 84.2091,-41.6 153.3701,-41.6 153.3701,-79.6"></polygon><text text-anchor="start" x="91" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">case, male</text><text text-anchor="start" x="91" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">324 patients</text><text text-anchor="start" x="91" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">56% of the total</text></g><!-- 9 --><g id="node4" class="node"><title>9</title>
-<polygon fill="#ffffff" stroke="#000000" points="234.244,-79.6 167.3352,-79.6 167.3352,-41.6 234.244,-41.6 234.244,-79.6"></polygon><text text-anchor="start" x="174.5632" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">control, female</text><text text-anchor="start" x="174.5632" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">50 patients</text><text text-anchor="start" x="174.5632" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">9% of the total</text></g><!-- 10 --><g id="node5" class="node"><title>10</title>
-<polygon fill="#ffffff" stroke="#000000" points="317.3701,-79.6 248.2091,-79.6 248.2091,-41.6 317.3701,-41.6 317.3701,-79.6"></polygon><text text-anchor="start" x="255" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">control, male</text><text text-anchor="start" x="255" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">117 patients</text><text text-anchor="start" x="255" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">20% of the total</text></g><!-- 5 --><g id="node6" class="node"><title>5</title>
-<polygon fill="#ffffff" stroke="#000000" points="152.208,-121.0033 41.3712,-121.0033 41.3712,-97.7967 152.208,-97.7967 152.208,-121.0033"></polygon><text text-anchor="start" x="48.3304" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by case_or_control, gender</text></g><!-- 6 --><g id="node7" class="node"><title>6</title>
-<polygon fill="#ffffff" stroke="#000000" points="277.208,-121.0033 166.3712,-121.0033 166.3712,-97.7967 277.208,-97.7967 277.208,-121.0033"></polygon><text text-anchor="start" x="173.3304" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by case_or_control, gender</text></g><!-- 3 --><g id="node8" class="node"><title>3</title>
-<polygon fill="#ffffff" stroke="#000000" points="120.9643,-169.2 72.6149,-169.2 72.6149,-139.2 120.9643,-139.2 120.9643,-169.2"></polygon><text text-anchor="start" x="79.4528" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">case</text><text text-anchor="start" x="79.4528" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">416 items</text></g><!-- 4 --><g id="node9" class="node"><title>4</title>
-<polygon fill="#ffffff" stroke="#000000" points="245.9643,-169.2 197.6149,-169.2 197.6149,-139.2 245.9643,-139.2 245.9643,-169.2"></polygon><text text-anchor="start" x="204.4528" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">control</text><text text-anchor="start" x="204.4528" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">167 items</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
-<polygon fill="#ffffff" stroke="#000000" points="192.2456,-210.6033 125.3336,-210.6033 125.3336,-187.3967 192.2456,-187.3967 192.2456,-210.6033"></polygon><text text-anchor="start" x="132.5624" y="-196.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">case or control</text></g><!-- 1 --><g id="node11" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="182.9643,-252.2033 134.6149,-252.2033 134.6149,-228.9967 182.9643,-228.9967 182.9643,-252.2033"></polygon><text text-anchor="start" x="141.4528" y="-238.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 items</text></g></g></svg><div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># reset options </span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></pre></div>
-<p>N.B. this setting affects the “strata” label of the group, which in turn affects the flowchart branching. If this is not unique from one group to another strange behaviours will be observed.</p>
+ --><!-- Title: %0 Pages: 1 --><svg width="324pt" height="260pt" viewbox="0.00 0.00 324.02 260.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 256.4)"><title>%0</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-256.4 320.02,-256.4 320.02,4 -4,4"></polygon><!-- 7&#45;&gt;11 --><g id="edge4" class="edge"><title>7:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M35.2304,-41.6C35.2304,-41.6 35.2304,-11 35.2304,-11 35.2304,-11 130.0276,-11 130.0276,-11"></path><polygon fill="#000000" stroke="#000000" points="130.0276,-12.7501 135.0276,-11 130.0276,-9.2501 130.0276,-12.7501"></polygon></g><!-- 8&#45;&gt;11 --><g id="edge3" class="edge"><title>8:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M144.4568,-41.6C144.4568,-41.6 144.4568,-28.5777 144.4568,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="146.2069,-28.5777 144.4568,-23.5777 142.7069,-28.5778 146.2069,-28.5777"></polygon></g><!-- 9&#45;&gt;11 --><g id="edge2" class="edge"><title>9:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M175.6158,-41.6C175.6158,-41.6 175.6158,-28.5777 175.6158,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="177.3659,-28.5777 175.6158,-23.5777 173.8659,-28.5778 177.3659,-28.5777"></polygon></g><!-- 10&#45;&gt;11 --><g id="edge1" class="edge"><title>10:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M281.2304,-41.6C281.2304,-41.6 281.2304,-11 281.2304,-11 281.2304,-11 188.6257,-11 188.6257,-11"></path><polygon fill="#000000" stroke="#000000" points="188.6257,-9.2501 183.6257,-11 188.6257,-12.7501 188.6257,-9.2501"></polygon></g><!-- 5&#45;&gt;7 --><g id="edge8" class="edge"><title>5:s-&gt;7</title>
+<path fill="none" stroke="#000000" d="M119.2304,-109C119.2304,-109 35.2304,-109 35.2304,-109 35.2304,-109 35.2304,-84.729 35.2304,-84.729"></path><polygon fill="#000000" stroke="#000000" points="36.9805,-84.7289 35.2304,-79.729 33.4805,-84.729 36.9805,-84.7289"></polygon></g><!-- 5&#45;&gt;8 --><g id="edge7" class="edge"><title>5:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M119.2304,-97.4C119.2304,-97.4 119.2304,-84.8622 119.2304,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="120.9805,-84.8622 119.2304,-79.8622 117.4805,-84.8623 120.9805,-84.8622"></polygon></g><!-- 6&#45;&gt;9 --><g id="edge6" class="edge"><title>6:s-&gt;9</title>
+<path fill="none" stroke="#000000" d="M200.2304,-97.4C200.2304,-97.4 200.2304,-84.8622 200.2304,-84.8622"></path><polygon fill="#000000" stroke="#000000" points="201.9805,-84.8622 200.2304,-79.8622 198.4805,-84.8623 201.9805,-84.8622"></polygon></g><!-- 6&#45;&gt;10 --><g id="edge5" class="edge"><title>6:s-&gt;10</title>
+<path fill="none" stroke="#000000" d="M200.2304,-109C200.2304,-109 281.2304,-109 281.2304,-109 281.2304,-109 281.2304,-84.729 281.2304,-84.729"></path><polygon fill="#000000" stroke="#000000" points="282.9805,-84.7289 281.2304,-79.729 279.4805,-84.729 282.9805,-84.7289"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge10" class="edge"><title>3:s-&gt;5</title>
+<path fill="none" stroke="#000000" d="M119.2304,-139.2C119.2304,-139.2 119.2304,-126.1777 119.2304,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="120.9805,-126.1777 119.2304,-121.1777 117.4805,-126.1778 120.9805,-126.1777"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge9" class="edge"><title>4:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M200.2304,-139.2C200.2304,-139.2 200.2304,-126.1777 200.2304,-126.1777"></path><polygon fill="#000000" stroke="#000000" points="201.9805,-126.1777 200.2304,-121.1777 198.4805,-126.1778 201.9805,-126.1777"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge12" class="edge"><title>2:s-&gt;3</title>
+<path fill="none" stroke="#000000" d="M134.7852,-187C134.7852,-187 134.7852,-174.4477 134.7852,-174.4477"></path><polygon fill="#000000" stroke="#000000" points="136.5353,-174.4477 134.7852,-169.4477 133.0353,-174.4478 136.5353,-174.4477"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge11" class="edge"><title>2:s-&gt;4</title>
+<path fill="none" stroke="#000000" d="M185.2874,-187C185.2874,-187 185.2874,-174.4477 185.2874,-174.4477"></path><polygon fill="#000000" stroke="#000000" points="187.0375,-174.4477 185.2874,-169.4477 183.5375,-174.4478 187.0375,-174.4477"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge13" class="edge"><title>1:s-&gt;2</title>
+<path fill="none" stroke="#000000" d="M159.2304,-228.6C159.2304,-228.6 159.2304,-215.6987 159.2304,-215.6987"></path><polygon fill="#000000" stroke="#000000" points="160.9805,-215.6987 159.2304,-210.6987 157.4805,-215.6987 160.9805,-215.6987"></polygon></g><!-- 11 --><g id="node1" class="node"><title>11</title>
+<polygon fill="#ffffff" stroke="#000000" points="183.4051,-23.4033 135.0557,-23.4033 135.0557,-.1967 183.4051,-.1967 183.4051,-23.4033"></polygon><text text-anchor="start" x="141.8936" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">203 items</text></g><!-- 7 --><g id="node2" class="node"><title>7</title>
+<polygon fill="#ffffff" stroke="#000000" points="70.6927,-79.6 -.2319,-79.6 -.2319,-41.6 70.6927,-41.6 70.6927,-79.6"></polygon><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">placebo, female</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">20 patients</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">10% of the total</text></g><!-- 8 --><g id="node3" class="node"><title>8</title>
+<polygon fill="#ffffff" stroke="#000000" points="153.8109,-79.6 84.6499,-79.6 84.6499,-41.6 153.8109,-41.6 153.8109,-79.6"></polygon><text text-anchor="start" x="91.4408" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">placebo, male</text><text text-anchor="start" x="91.4408" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">100 patients</text><text text-anchor="start" x="91.4408" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">49% of the total</text></g><!-- 9 --><g id="node4" class="node"><title>9</title>
+<polygon fill="#ffffff" stroke="#000000" points="232.8625,-79.6 167.5983,-79.6 167.5983,-41.6 232.8625,-41.6 232.8625,-79.6"></polygon><text text-anchor="start" x="174.6644" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">rifn-g, female</text><text text-anchor="start" x="174.6644" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">15 patients</text><text text-anchor="start" x="174.6644" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">7% of the total</text></g><!-- 10 --><g id="node5" class="node"><title>10</title>
+<polygon fill="#ffffff" stroke="#000000" points="315.8109,-79.6 246.6499,-79.6 246.6499,-41.6 315.8109,-41.6 315.8109,-79.6"></polygon><text text-anchor="start" x="253.4408" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">rifn-g, male</text><text text-anchor="start" x="253.4408" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">68 patients</text><text text-anchor="start" x="253.4408" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">33% of the total</text></g><!-- 5 --><g id="node6" class="node"><title>5</title>
+<polygon fill="#ffffff" stroke="#000000" points="147.8,-121.0033 90.6608,-121.0033 90.6608,-97.7967 147.8,-97.7967 147.8,-121.0033"></polygon><text text-anchor="start" x="97.4464" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by treat, sex</text></g><!-- 6 --><g id="node7" class="node"><title>6</title>
+<polygon fill="#ffffff" stroke="#000000" points="228.8,-121.0033 171.6608,-121.0033 171.6608,-97.7967 228.8,-97.7967 228.8,-121.0033"></polygon><text text-anchor="start" x="178.4464" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by treat, sex</text></g><!-- 3 --><g id="node8" class="node"><title>3</title>
+<polygon fill="#ffffff" stroke="#000000" points="143.4051,-169.2 95.0557,-169.2 95.0557,-139.2 143.4051,-139.2 143.4051,-169.2"></polygon><text text-anchor="start" x="101.8936" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">placebo</text><text text-anchor="start" x="101.8936" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">120 items</text></g><!-- 4 --><g id="node9" class="node"><title>4</title>
+<polygon fill="#ffffff" stroke="#000000" points="222.4574,-169.2 178.0034,-169.2 178.0034,-139.2 222.4574,-139.2 222.4574,-169.2"></polygon><text text-anchor="start" x="185.1172" y="-156" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">rifn-g</text><text text-anchor="start" x="185.1172" y="-148" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">83 items</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
+<polygon fill="#ffffff" stroke="#000000" points="192.6864,-210.6033 125.7744,-210.6033 125.7744,-187.3967 192.6864,-187.3967 192.6864,-210.6033"></polygon><text text-anchor="start" x="133.0032" y="-196.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">case or control</text></g><!-- 1 --><g id="node11" class="node"><title>1</title>
+<polygon fill="#ffffff" stroke="#000000" points="183.4051,-252.2033 135.0557,-252.2033 135.0557,-228.9967 183.4051,-228.9967 183.4051,-252.2033"></polygon><text text-anchor="start" x="141.8936" y="-238.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">203 items</text></g></g></svg><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># reset options </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></code></pre></div>
+<p>N.B. this setting affects the “strata” label of the group, which in
+turn affects the flowchart branching. If this is not unique from one
+group to another strange behaviours will be observed.</p>
 </div>
-<div id="default-text" class="section level2">
-<h2 class="hasAnchor">
-<a href="#default-text" class="anchor"></a>Default text</h2>
-<p>With the group strata label defined you can set other defaults. In the flowchart above the “583 items” labels are generated by the default message setting, and the headings for the groups by the default headline setting. In this example we change these to alter the default text.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>
-  dtrackr.strata_glue<span class="op">=</span><span class="st">"{tolower(.value)}"</span>,
-  dtrackr.strata_sep<span class="op">=</span><span class="st">", "</span>,
-  dtrackr.default_message <span class="op">=</span> <span class="st">"containing {.count} patients"</span>,
-  dtrackr.default_headline <span class="op">=</span> <span class="st">"subgroup: {.strata}"</span>
-<span class="op">)</span>
-
-<span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>
-    <span class="va">Case_or_Control</span>,
-    .messages <span class="op">=</span> <span class="st">"case or control"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>
-    <span class="va">Gender</span>,
-    .add <span class="op">=</span> <span class="cn">TRUE</span>, 
-    .messages <span class="op">=</span> <span class="st">"by gender"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-    <span class="st">"{.count} patients"</span>,
-    <span class="st">"{sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="default-text">Default text<a class="anchor" aria-label="anchor" href="#default-text"></a>
+</h3>
+<p>With the group strata label defined you can set other defaults. In
+the flowchart above the “583 items” labels are generated by the default
+message setting, and the headings for the groups by the default headline
+setting. In this example we change these to alter the default text.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>  dtrackr.strata_glue<span class="op">=</span><span class="st">"{tolower(.value)}"</span>,</span>
+<span>  dtrackr.strata_sep<span class="op">=</span><span class="st">", "</span>,</span>
+<span>  dtrackr.default_message <span class="op">=</span> <span class="st">"containing {.count} patients"</span>,</span>
+<span>  dtrackr.default_headline <span class="op">=</span> <span class="st">"subgroup: {.strata}"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/cgd.html" class="external-link">cgd</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span></span>
+<span>    <span class="va">treat</span>,</span>
+<span>    .messages <span class="op">=</span> <span class="st">"case or control"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span></span>
+<span>    <span class="va">sex</span>,</span>
+<span>    .add <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>    .messages <span class="op">=</span> <span class="st">"by gender"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span></span>
+<span>    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"{.count} patients"</span>,</span>
+<span>    <span class="st">"{sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
- --><!-- Title: %0 Pages: 1 --><svg width="439pt" height="273pt" viewbox="0.00 0.00 439.36 273.20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 269.2)"><title>%0</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-269.2 435.356,-269.2 435.356,4 -4,4"></polygon><!-- 7&#45;&gt;11 --><g id="edge4" class="edge"><title>7:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M48.5684,-48C48.5684,-48 48.5684,-15 48.5684,-15 48.5684,-15 158.1043,-15 158.1043,-15"></path><polygon fill="#000000" stroke="#000000" points="158.1044,-16.7501 163.1043,-15 158.1043,-13.2501 158.1044,-16.7501"></polygon></g><!-- 8&#45;&gt;11 --><g id="edge3" class="edge"><title>8:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M182.6212,-48C182.6212,-48 182.6212,-35.3407 182.6212,-35.3407"></path><polygon fill="#000000" stroke="#000000" points="184.3713,-35.3407 182.6212,-30.3407 180.8713,-35.3407 184.3713,-35.3407"></polygon></g><!-- 9&#45;&gt;11 --><g id="edge2" class="edge"><title>9:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M237.5708,-48C237.5708,-48 237.5708,-35.3407 237.5708,-35.3407"></path><polygon fill="#000000" stroke="#000000" points="239.3209,-35.3407 237.5708,-30.3407 235.8209,-35.3407 239.3209,-35.3407"></polygon></g><!-- 10&#45;&gt;11 --><g id="edge1" class="edge"><title>10:s-&gt;11</title>
-<path fill="none" stroke="#000000" d="M382.5684,-48C382.5684,-48 382.5684,-15 382.5684,-15 382.5684,-15 265.1127,-15 265.1127,-15"></path><polygon fill="#000000" stroke="#000000" points="265.1128,-13.2501 260.1127,-15 265.1127,-16.7501 265.1128,-13.2501"></polygon></g><!-- 5&#45;&gt;7 --><g id="edge8" class="edge"><title>5:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M156.5684,-115C156.5684,-115 48.5684,-115 48.5684,-115 48.5684,-115 48.5684,-91.2469 48.5684,-91.2469"></path><polygon fill="#000000" stroke="#000000" points="50.3185,-91.2468 48.5684,-86.2469 46.8185,-91.2469 50.3185,-91.2468"></polygon></g><!-- 5&#45;&gt;8 --><g id="edge7" class="edge"><title>5:s-&gt;8</title>
-<path fill="none" stroke="#000000" d="M156.5684,-103.8C156.5684,-103.8 156.5684,-91.2622 156.5684,-91.2622"></path><polygon fill="#000000" stroke="#000000" points="158.3185,-91.2622 156.5684,-86.2622 154.8185,-91.2623 158.3185,-91.2622"></polygon></g><!-- 6&#45;&gt;9 --><g id="edge6" class="edge"><title>6:s-&gt;9</title>
-<path fill="none" stroke="#000000" d="M267.5684,-103.8C267.5684,-103.8 267.5684,-91.2622 267.5684,-91.2622"></path><polygon fill="#000000" stroke="#000000" points="269.3185,-91.2622 267.5684,-86.2622 265.8185,-91.2623 269.3185,-91.2622"></polygon></g><!-- 6&#45;&gt;10 --><g id="edge5" class="edge"><title>6:s-&gt;10</title>
-<path fill="none" stroke="#000000" d="M267.5684,-115C267.5684,-115 382.5684,-115 382.5684,-115 382.5684,-115 382.5684,-91.2469 382.5684,-91.2469"></path><polygon fill="#000000" stroke="#000000" points="384.3185,-91.2468 382.5684,-86.2469 380.8185,-91.2469 384.3185,-91.2468"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge10" class="edge"><title>3:s-&gt;5</title>
-<path fill="none" stroke="#000000" d="M156.5684,-145.6C156.5684,-145.6 156.5684,-132.5777 156.5684,-132.5777"></path><polygon fill="#000000" stroke="#000000" points="158.3185,-132.5777 156.5684,-127.5777 154.8185,-132.5778 158.3185,-132.5777"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge9" class="edge"><title>4:s-&gt;6</title>
-<path fill="none" stroke="#000000" d="M267.5684,-145.6C267.5684,-145.6 267.5684,-132.5777 267.5684,-132.5777"></path><polygon fill="#000000" stroke="#000000" points="269.3185,-132.5777 267.5684,-127.5777 265.8185,-132.5778 269.3185,-132.5777"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge12" class="edge"><title>2:s-&gt;3</title>
-<path fill="none" stroke="#000000" d="M191.5186,-193.4C191.5186,-193.4 191.5186,-180.8477 191.5186,-180.8477"></path><polygon fill="#000000" stroke="#000000" points="193.2687,-180.8477 191.5186,-175.8477 189.7687,-180.8478 193.2687,-180.8477"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge11" class="edge"><title>2:s-&gt;4</title>
-<path fill="none" stroke="#000000" d="M232.1182,-193.4C232.1182,-193.4 232.1182,-180.8477 232.1182,-180.8477"></path><polygon fill="#000000" stroke="#000000" points="233.8683,-180.8477 232.1182,-175.8477 230.3683,-180.8478 233.8683,-180.8477"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge13" class="edge"><title>1:s-&gt;2</title>
-<path fill="none" stroke="#000000" d="M211.5684,-235.2C211.5684,-235.2 211.5684,-222.1777 211.5684,-222.1777"></path><polygon fill="#000000" stroke="#000000" points="213.3185,-222.1777 211.5684,-217.1777 209.8185,-222.1778 213.3185,-222.1777"></polygon></g><!-- 11 --><g id="node1" class="node"><title>11</title>
-<polygon fill="#ffffff" stroke="#000000" points="259.8239,-30 163.3129,-30 163.3129,0 259.8239,0 259.8239,-30"></polygon><text text-anchor="start" x="170.4408" y="-16.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: </text><text text-anchor="start" x="170.4408" y="-8.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 583 patients</text></g><!-- 7 --><g id="node2" class="node"><title>7</title>
-<polygon fill="#ffffff" stroke="#000000" points="97.2053,-86 -.0685,-86 -.0685,-48 97.2053,-48 97.2053,-86"></polygon><text text-anchor="start" x="7" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: case, female</text><text text-anchor="start" x="7" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">92 patients</text><text text-anchor="start" x="7" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">16% of the total</text></g><!-- 8 --><g id="node3" class="node"><title>8</title>
-<polygon fill="#ffffff" stroke="#000000" points="202.036,-86 111.1008,-86 111.1008,-48 202.036,-48 202.036,-86"></polygon><text text-anchor="start" x="118.3352" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: case, male</text><text text-anchor="start" x="118.3352" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">324 patients</text><text text-anchor="start" x="118.3352" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">56% of the total</text></g><!-- 9 --><g id="node4" class="node"><title>9</title>
-<polygon fill="#ffffff" stroke="#000000" points="319.8143,-86 215.3225,-86 215.3225,-48 319.8143,-48 319.8143,-86"></polygon><text text-anchor="start" x="222.4456" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: control, female</text><text text-anchor="start" x="222.4456" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">50 patients</text><text text-anchor="start" x="222.4456" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">9% of the total</text></g><!-- 10 --><g id="node5" class="node"><title>10</title>
-<polygon fill="#ffffff" stroke="#000000" points="431.1445,-86 333.9923,-86 333.9923,-48 431.1445,-48 431.1445,-86"></polygon><text text-anchor="start" x="340.7808" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: control, male</text><text text-anchor="start" x="340.7808" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">117 patients</text><text text-anchor="start" x="340.7808" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">20% of the total</text></g><!-- 5 --><g id="node6" class="node"><title>5</title>
-<polygon fill="#ffffff" stroke="#000000" points="181.1399,-127.4033 131.9969,-127.4033 131.9969,-104.1967 181.1399,-104.1967 181.1399,-127.4033"></polygon><text text-anchor="start" x="138.7836" y="-113.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by gender</text></g><!-- 6 --><g id="node7" class="node"><title>6</title>
-<polygon fill="#ffffff" stroke="#000000" points="292.1399,-127.4033 242.9969,-127.4033 242.9969,-104.1967 292.1399,-104.1967 292.1399,-127.4033"></polygon><text text-anchor="start" x="249.7836" y="-113.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by gender</text></g><!-- 3 --><g id="node8" class="node"><title>3</title>
-<polygon fill="#ffffff" stroke="#000000" points="204.8239,-175.6 108.3129,-175.6 108.3129,-145.6 204.8239,-145.6 204.8239,-175.6"></polygon><text text-anchor="start" x="115.4408" y="-162.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: case</text><text text-anchor="start" x="115.4408" y="-154.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 416 patients</text></g><!-- 4 --><g id="node9" class="node"><title>4</title>
-<polygon fill="#ffffff" stroke="#000000" points="315.8239,-175.6 219.3129,-175.6 219.3129,-145.6 315.8239,-145.6 315.8239,-175.6"></polygon><text text-anchor="start" x="226.4408" y="-162.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: control</text><text text-anchor="start" x="226.4408" y="-154.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 167 patients</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
-<polygon fill="#ffffff" stroke="#000000" points="245.0244,-217.0033 178.1124,-217.0033 178.1124,-193.7967 245.0244,-193.7967 245.0244,-217.0033"></polygon><text text-anchor="start" x="185.3412" y="-203" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">case or control</text></g><!-- 1 --><g id="node11" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="259.8239,-265.2 163.3129,-265.2 163.3129,-235.2 259.8239,-235.2 259.8239,-265.2"></polygon><text text-anchor="start" x="170.4408" y="-252" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: </text><text text-anchor="start" x="170.4408" y="-244" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 583 patients</text></g></g></svg><div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="co"># N.b. this setting includes some unwanted headlines in the ungrouped stages of</span>
-<span class="co"># the flow chart. If a headline evaluates to "" then the headline is suppressed</span>
-<span class="co"># and we can get rid of unwanted headlines. An example of doing this is as</span>
-<span class="co"># follows:</span>
-<span class="co"># options(dtrackr.default_headline = "{ifelse(.strata != '', glue::glue('subgroup: {.strata}'), '')}")</span>
-
-<span class="co"># reset options </span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></pre></div>
+ --><!-- Title: %0 Pages: 1 --><svg width="450pt" height="273pt" viewbox="0.00 0.00 450.02 273.20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 269.2)"><title>%0</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-269.2 446.0224,-269.2 446.0224,4 -4,4"></polygon><!-- 7&#45;&gt;11 --><g id="edge4" class="edge"><title>7:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M54.1268,-48C54.1268,-48 54.1268,-15 54.1268,-15 54.1268,-15 176.5681,-15 176.5681,-15"></path><polygon fill="#000000" stroke="#000000" points="176.5682,-16.7501 181.5681,-15 176.5681,-13.2501 176.5682,-16.7501"></polygon></g><!-- 8&#45;&gt;11 --><g id="edge3" class="edge"><title>8:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M202.9588,-48C202.9588,-48 202.9588,-35.3407 202.9588,-35.3407"></path><polygon fill="#000000" stroke="#000000" points="204.7089,-35.3407 202.9588,-30.3407 201.2089,-35.3407 204.7089,-35.3407"></polygon></g><!-- 9&#45;&gt;11 --><g id="edge2" class="edge"><title>9:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M258.0752,-48C258.0752,-48 258.0752,-35.3407 258.0752,-35.3407"></path><polygon fill="#000000" stroke="#000000" points="259.8253,-35.3407 258.0752,-30.3407 256.3253,-35.3407 259.8253,-35.3407"></polygon></g><!-- 10&#45;&gt;11 --><g id="edge1" class="edge"><title>10:s-&gt;11</title>
+<path fill="none" stroke="#000000" d="M396.1268,-48C396.1268,-48 396.1268,-15 396.1268,-15 396.1268,-15 283.5871,-15 283.5871,-15"></path><polygon fill="#000000" stroke="#000000" points="283.5872,-13.2501 278.5871,-15 283.5871,-16.7501 283.5872,-13.2501"></polygon></g><!-- 5&#45;&gt;7 --><g id="edge8" class="edge"><title>5:s-&gt;7</title>
+<path fill="none" stroke="#000000" d="M173.1268,-115C173.1268,-115 54.1268,-115 54.1268,-115 54.1268,-115 54.1268,-91.2469 54.1268,-91.2469"></path><polygon fill="#000000" stroke="#000000" points="55.8769,-91.2468 54.1268,-86.2469 52.3769,-91.2469 55.8769,-91.2468"></polygon></g><!-- 5&#45;&gt;8 --><g id="edge7" class="edge"><title>5:s-&gt;8</title>
+<path fill="none" stroke="#000000" d="M173.1268,-103.8C173.1268,-103.8 173.1268,-91.2622 173.1268,-91.2622"></path><polygon fill="#000000" stroke="#000000" points="174.8769,-91.2622 173.1268,-86.2622 171.3769,-91.2623 174.8769,-91.2622"></polygon></g><!-- 6&#45;&gt;9 --><g id="edge6" class="edge"><title>6:s-&gt;9</title>
+<path fill="none" stroke="#000000" d="M287.1268,-103.8C287.1268,-103.8 287.1268,-91.2622 287.1268,-91.2622"></path><polygon fill="#000000" stroke="#000000" points="288.8769,-91.2622 287.1268,-86.2622 285.3769,-91.2623 288.8769,-91.2622"></polygon></g><!-- 6&#45;&gt;10 --><g id="edge5" class="edge"><title>6:s-&gt;10</title>
+<path fill="none" stroke="#000000" d="M287.1268,-115C287.1268,-115 396.1268,-115 396.1268,-115 396.1268,-115 396.1268,-91.2469 396.1268,-91.2469"></path><polygon fill="#000000" stroke="#000000" points="397.8769,-91.2468 396.1268,-86.2469 394.3769,-91.2469 397.8769,-91.2468"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge10" class="edge"><title>3:s-&gt;5</title>
+<path fill="none" stroke="#000000" d="M173.1268,-145.6C173.1268,-145.6 173.1268,-132.5777 173.1268,-132.5777"></path><polygon fill="#000000" stroke="#000000" points="174.8769,-132.5777 173.1268,-127.5777 171.3769,-132.5778 174.8769,-132.5777"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge9" class="edge"><title>4:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M287.1268,-145.6C287.1268,-145.6 287.1268,-132.5777 287.1268,-132.5777"></path><polygon fill="#000000" stroke="#000000" points="288.8769,-132.5777 287.1268,-127.5777 285.3769,-132.5778 288.8769,-132.5777"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge12" class="edge"><title>2:s-&gt;3</title>
+<path fill="none" stroke="#000000" d="M209.077,-193.4C209.077,-193.4 209.077,-180.8477 209.077,-180.8477"></path><polygon fill="#000000" stroke="#000000" points="210.8271,-180.8477 209.077,-175.8477 207.3271,-180.8478 210.8271,-180.8477"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge11" class="edge"><title>2:s-&gt;4</title>
+<path fill="none" stroke="#000000" d="M252.2884,-193.4C252.2884,-193.4 252.2884,-180.8477 252.2884,-180.8477"></path><polygon fill="#000000" stroke="#000000" points="254.0385,-180.8477 252.2884,-175.8477 250.5385,-180.8478 254.0385,-180.8477"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge13" class="edge"><title>1:s-&gt;2</title>
+<path fill="none" stroke="#000000" d="M230.1268,-235.2C230.1268,-235.2 230.1268,-222.1777 230.1268,-222.1777"></path><polygon fill="#000000" stroke="#000000" points="231.8769,-222.1777 230.1268,-217.1777 228.3769,-222.1778 231.8769,-222.1777"></polygon></g><!-- 11 --><g id="node1" class="node"><title>11</title>
+<polygon fill="#ffffff" stroke="#000000" points="278.3823,-30 181.8713,-30 181.8713,0 278.3823,0 278.3823,-30"></polygon><text text-anchor="start" x="188.9992" y="-16.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: </text><text text-anchor="start" x="188.9992" y="-8.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 203 patients</text></g><!-- 7 --><g id="node2" class="node"><title>7</title>
+<polygon fill="#ffffff" stroke="#000000" points="108.3807,-86 -.1271,-86 -.1271,-48 108.3807,-48 108.3807,-86"></polygon><text text-anchor="start" x="7" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: placebo, female</text><text text-anchor="start" x="7" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">20 patients</text><text text-anchor="start" x="7" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">10% of the total</text></g><!-- 8 --><g id="node3" class="node"><title>8</title>
+<polygon fill="#ffffff" stroke="#000000" points="223.7109,-86 122.5427,-86 122.5427,-48 223.7109,-48 223.7109,-86"></polygon><text text-anchor="start" x="129.3352" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: placebo, male</text><text text-anchor="start" x="129.3352" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">100 patients</text><text text-anchor="start" x="129.3352" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">49% of the total</text></g><!-- 9 --><g id="node4" class="node"><title>9</title>
+<polygon fill="#ffffff" stroke="#000000" points="336.5895,-86 237.6641,-86 237.6641,-48 336.5895,-48 336.5895,-86"></polygon><text text-anchor="start" x="244.896" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: rifn-g, female</text><text text-anchor="start" x="244.896" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">15 patients</text><text text-anchor="start" x="244.896" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">7% of the total</text></g><!-- 10 --><g id="node5" class="node"><title>10</title>
+<polygon fill="#ffffff" stroke="#000000" points="441.9182,-86 350.3354,-86 350.3354,-48 441.9182,-48 441.9182,-86"></polygon><text text-anchor="start" x="357.2312" y="-72.8" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: rifn-g, male</text><text text-anchor="start" x="357.2312" y="-64.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">68 patients</text><text text-anchor="start" x="357.2312" y="-56.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">33% of the total</text></g><!-- 5 --><g id="node6" class="node"><title>5</title>
+<polygon fill="#ffffff" stroke="#000000" points="197.6983,-127.4033 148.5553,-127.4033 148.5553,-104.1967 197.6983,-104.1967 197.6983,-127.4033"></polygon><text text-anchor="start" x="155.342" y="-113.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by gender</text></g><!-- 6 --><g id="node7" class="node"><title>6</title>
+<polygon fill="#ffffff" stroke="#000000" points="311.6983,-127.4033 262.5553,-127.4033 262.5553,-104.1967 311.6983,-104.1967 311.6983,-127.4033"></polygon><text text-anchor="start" x="269.342" y="-113.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">by gender</text></g><!-- 3 --><g id="node8" class="node"><title>3</title>
+<polygon fill="#ffffff" stroke="#000000" points="221.3823,-175.6 124.8713,-175.6 124.8713,-145.6 221.3823,-145.6 221.3823,-175.6"></polygon><text text-anchor="start" x="131.9992" y="-162.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: placebo</text><text text-anchor="start" x="131.9992" y="-154.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 120 patients</text></g><!-- 4 --><g id="node9" class="node"><title>4</title>
+<polygon fill="#ffffff" stroke="#000000" points="332.935,-175.6 241.3186,-175.6 241.3186,-145.6 332.935,-145.6 332.935,-175.6"></polygon><text text-anchor="start" x="248.2228" y="-162.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: rifn-g</text><text text-anchor="start" x="248.2228" y="-154.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 83 patients</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
+<polygon fill="#ffffff" stroke="#000000" points="263.5828,-217.0033 196.6708,-217.0033 196.6708,-193.7967 263.5828,-193.7967 263.5828,-217.0033"></polygon><text text-anchor="start" x="203.8996" y="-203" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">case or control</text></g><!-- 1 --><g id="node11" class="node"><title>1</title>
+<polygon fill="#ffffff" stroke="#000000" points="278.3823,-265.2 181.8713,-265.2 181.8713,-235.2 278.3823,-235.2 278.3823,-265.2"></polygon><text text-anchor="start" x="188.9992" y="-252" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">subgroup: </text><text text-anchor="start" x="188.9992" y="-244" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">containing 203 patients</text></g></g></svg><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># N.b. this setting includes some unwanted headlines in the ungrouped stages of</span></span>
+<span><span class="co"># the flow chart. If a headline evaluates to "" then the headline is suppressed</span></span>
+<span><span class="co"># and we can get rid of unwanted headlines. An example of doing this is as</span></span>
+<span><span class="co"># follows:</span></span>
+<span><span class="co"># options(dtrackr.default_headline = "{ifelse(.strata != '', glue::glue('subgroup: {.strata}'), '')}")</span></span>
+<span></span>
+<span><span class="co"># reset options </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="subgroup-count" class="section level2">
-<h2 class="hasAnchor">
-<a href="#subgroup-count" class="anchor"></a>Subgroup count</h2>
-<p>Subgroup counts are a slightly neater way of doing this. Their default layout can be modified using <code>dtrackr.default_count_subgroup</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>
-  dtrackr.default_headline <span class="op">=</span> <span class="st">"{.strata}"</span>,
-  dtrackr.default_count_subgroup <span class="op">=</span> <span class="st">"{tolower(.name)}: {.count}/{.subtotal}"</span>
-<span class="op">)</span>
-
-<span class="fu">dtrackr</span><span class="fu">::</span><span class="va"><a href="../reference/ILPD.html">ILPD</a></span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>
-    <span class="va">Case_or_Control</span>,
-    .messages <span class="op">=</span> <span class="st">"case or control"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/count_subgroup.html">count_subgroup</a></span><span class="op">(</span>
-    <span class="va">Gender</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="subgroup-count">Subgroup count<a class="anchor" aria-label="anchor" href="#subgroup-count"></a>
+</h3>
+<p>Subgroup counts are a slightly neater way of doing this. Their
+default layout can be modified using
+<code>dtrackr.default_count_subgroup</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">old</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span></span>
+<span>  dtrackr.default_headline <span class="op">=</span> <span class="st">"{.strata}"</span>,</span>
+<span>  dtrackr.default_count_subgroup <span class="op">=</span> <span class="st">"{tolower(.name)}: {.count}/{.subtotal}"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/cgd.html" class="external-link">cgd</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span></span>
+<span>    <span class="va">treat</span>,</span>
+<span>    .messages <span class="op">=</span> <span class="st">"case or control"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/count_subgroup.html">count_subgroup</a></span><span class="op">(</span></span>
+<span>    <span class="va">sex</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
- --><!-- Title: %0 Pages: 1 --><svg width="216pt" height="219pt" viewbox="0.00 0.00 216.12 218.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 214.8)"><title>%0</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-214.8 212.1248,-214.8 212.1248,4 -4,4"></polygon><!-- 5&#45;&gt;7 --><g id="edge2" class="edge"><title>5:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M85.5094,-41.6C85.5094,-41.6 85.5094,-28.5777 85.5094,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="87.2595,-28.5777 85.5094,-23.5777 83.7595,-28.5778 87.2595,-28.5777"></polygon></g><!-- 6&#45;&gt;7 --><g id="edge1" class="edge"><title>6:s-&gt;7</title>
-<path fill="none" stroke="#000000" d="M116.7838,-41.6C116.7838,-41.6 116.7838,-28.5777 116.7838,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="118.5339,-28.5777 116.7838,-23.5777 115.0339,-28.5778 118.5339,-28.5777"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge4" class="edge"><title>3:s-&gt;5</title>
-<path fill="none" stroke="#000000" d="M46.7852,-97.6C46.7852,-97.6 46.7852,-84.9669 46.7852,-84.9669"></path><polygon fill="#000000" stroke="#000000" points="48.5353,-84.9669 46.7852,-79.9669 45.0353,-84.9669 48.5353,-84.9669"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge3" class="edge"><title>4:s-&gt;6</title>
-<path fill="none" stroke="#000000" d="M157.7852,-97.6C157.7852,-97.6 157.7852,-84.9669 157.7852,-84.9669"></path><polygon fill="#000000" stroke="#000000" points="159.5353,-84.9669 157.7852,-79.9669 156.0353,-84.9669 159.5353,-84.9669"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge6" class="edge"><title>2:s-&gt;3</title>
-<path fill="none" stroke="#000000" d="M81.0642,-145.4C81.0642,-145.4 81.0642,-132.8477 81.0642,-132.8477"></path><polygon fill="#000000" stroke="#000000" points="82.8143,-132.8477 81.0642,-127.8477 79.3143,-132.8478 82.8143,-132.8477"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge5" class="edge"><title>2:s-&gt;4</title>
-<path fill="none" stroke="#000000" d="M121.229,-145.4C121.229,-145.4 121.229,-132.8477 121.229,-132.8477"></path><polygon fill="#000000" stroke="#000000" points="122.9791,-132.8477 121.229,-127.8477 119.4791,-132.8478 122.9791,-132.8477"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge7" class="edge"><title>1:s-&gt;2</title>
-<path fill="none" stroke="#000000" d="M101.7852,-187C101.7852,-187 101.7852,-174.0987 101.7852,-174.0987"></path><polygon fill="#000000" stroke="#000000" points="103.5353,-174.0987 101.7852,-169.0987 100.0353,-174.0987 103.5353,-174.0987"></polygon></g><!-- 7 --><g id="node1" class="node"><title>7</title>
-<polygon fill="#ffffff" stroke="#000000" points="125.9599,-23.4033 77.6105,-23.4033 77.6105,-.1967 125.9599,-.1967 125.9599,-23.4033"></polygon><text text-anchor="start" x="84.4484" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 items</text></g><!-- 5 --><g id="node2" class="node"><title>5</title>
-<polygon fill="#ffffff" stroke="#000000" points="93.3566,-79.6 .2138,-79.6 .2138,-41.6 93.3566,-41.6 93.3566,-79.6"></polygon><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:case</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">female: 92/416</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">male: 324/416</text></g><!-- 6 --><g id="node3" class="node"><title>6</title>
-<polygon fill="#ffffff" stroke="#000000" points="207.9649,-79.6 107.6055,-79.6 107.6055,-41.6 207.9649,-41.6 207.9649,-79.6"></polygon><text text-anchor="start" x="114.4456" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:control</text><text text-anchor="start" x="114.4456" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">female: 50/167</text><text text-anchor="start" x="114.4456" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">male: 117/167</text></g><!-- 3 --><g id="node4" class="node"><title>3</title>
-<polygon fill="#ffffff" stroke="#000000" points="93.3566,-127.6 .2138,-127.6 .2138,-97.6 93.3566,-97.6 93.3566,-127.6"></polygon><text text-anchor="start" x="7" y="-114.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:case</text><text text-anchor="start" x="7" y="-106.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">416 items</text></g><!-- 4 --><g id="node5" class="node"><title>4</title>
-<polygon fill="#ffffff" stroke="#000000" points="207.9649,-127.6 107.6055,-127.6 107.6055,-97.6 207.9649,-97.6 207.9649,-127.6"></polygon><text text-anchor="start" x="114.4456" y="-114.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Case_or_Control:control</text><text text-anchor="start" x="114.4456" y="-106.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">167 items</text></g><!-- 2 --><g id="node6" class="node"><title>2</title>
-<polygon fill="#ffffff" stroke="#000000" points="135.2412,-169.0033 68.3292,-169.0033 68.3292,-145.7967 135.2412,-145.7967 135.2412,-169.0033"></polygon><text text-anchor="start" x="75.558" y="-155" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">case or control</text></g><!-- 1 --><g id="node7" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="125.9599,-210.6033 77.6105,-210.6033 77.6105,-187.3967 125.9599,-187.3967 125.9599,-210.6033"></polygon><text text-anchor="start" x="84.4484" y="-196.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">583 items</text></g></g></svg><div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="co"># reset options </span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></pre></div>
+ --><!-- Title: %0 Pages: 1 --><svg width="152pt" height="219pt" viewbox="0.00 0.00 151.69 218.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 214.8)"><title>%0</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-214.8 147.6852,-214.8 147.6852,4 -4,4"></polygon><!-- 5&#45;&gt;7 --><g id="edge2" class="edge"><title>5:s-&gt;7</title>
+<path fill="none" stroke="#000000" d="M57.5132,-41.6C57.5132,-41.6 57.5132,-28.5777 57.5132,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="59.2633,-28.5777 57.5132,-23.5777 55.7633,-28.5778 59.2633,-28.5777"></polygon></g><!-- 6&#45;&gt;7 --><g id="edge1" class="edge"><title>6:s-&gt;7</title>
+<path fill="none" stroke="#000000" d="M89.0074,-41.6C89.0074,-41.6 89.0074,-28.5777 89.0074,-28.5777"></path><polygon fill="#000000" stroke="#000000" points="90.7575,-28.5777 89.0074,-23.5777 87.2575,-28.5778 90.7575,-28.5777"></polygon></g><!-- 3&#45;&gt;5 --><g id="edge4" class="edge"><title>3:s-&gt;5</title>
+<path fill="none" stroke="#000000" d="M33.4544,-97.6C33.4544,-97.6 33.4544,-84.9669 33.4544,-84.9669"></path><polygon fill="#000000" stroke="#000000" points="35.2045,-84.9669 33.4544,-79.9669 31.7045,-84.9669 35.2045,-84.9669"></polygon></g><!-- 4&#45;&gt;6 --><g id="edge3" class="edge"><title>4:s-&gt;6</title>
+<path fill="none" stroke="#000000" d="M112.4544,-97.6C112.4544,-97.6 112.4544,-84.9669 112.4544,-84.9669"></path><polygon fill="#000000" stroke="#000000" points="114.2045,-84.9669 112.4544,-79.9669 110.7045,-84.9669 114.2045,-84.9669"></polygon></g><!-- 2&#45;&gt;3 --><g id="edge6" class="edge"><title>2:s-&gt;3</title>
+<path fill="none" stroke="#000000" d="M51.4004,-145.4C51.4004,-145.4 51.4004,-132.8477 51.4004,-132.8477"></path><polygon fill="#000000" stroke="#000000" points="53.1505,-132.8477 51.4004,-127.8477 49.6505,-132.8478 53.1505,-132.8477"></polygon></g><!-- 2&#45;&gt;4 --><g id="edge5" class="edge"><title>2:s-&gt;4</title>
+<path fill="none" stroke="#000000" d="M95.3464,-145.4C95.3464,-145.4 95.3464,-132.8477 95.3464,-132.8477"></path><polygon fill="#000000" stroke="#000000" points="97.0965,-132.8477 95.3464,-127.8477 93.5965,-132.8478 97.0965,-132.8477"></polygon></g><!-- 1&#45;&gt;2 --><g id="edge7" class="edge"><title>1:s-&gt;2</title>
+<path fill="none" stroke="#000000" d="M72.4544,-187C72.4544,-187 72.4544,-174.0987 72.4544,-174.0987"></path><polygon fill="#000000" stroke="#000000" points="74.2045,-174.0987 72.4544,-169.0987 70.7045,-174.0987 74.2045,-174.0987"></polygon></g><!-- 7 --><g id="node1" class="node"><title>7</title>
+<polygon fill="#ffffff" stroke="#000000" points="96.6291,-23.4033 48.2797,-23.4033 48.2797,-.1967 96.6291,-.1967 96.6291,-23.4033"></polygon><text text-anchor="start" x="55.1176" y="-9.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">203 items</text></g><!-- 5 --><g id="node2" class="node"><title>5</title>
+<polygon fill="#ffffff" stroke="#000000" points="66.8633,-79.6 .0455,-79.6 .0455,-41.6 66.8633,-41.6 66.8633,-79.6"></polygon><text text-anchor="start" x="7" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:placebo</text><text text-anchor="start" x="7" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">male: 100/120</text><text text-anchor="start" x="7" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">female: 20/120</text></g><!-- 6 --><g id="node3" class="node"><title>6</title>
+<polygon fill="#ffffff" stroke="#000000" points="143.9177,-79.6 80.9911,-79.6 80.9911,-41.6 143.9177,-41.6 143.9177,-79.6"></polygon><text text-anchor="start" x="88.2236" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:rIFN-g</text><text text-anchor="start" x="88.2236" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">male: 68/83</text><text text-anchor="start" x="88.2236" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">female: 15/83</text></g><!-- 3 --><g id="node4" class="node"><title>3</title>
+<polygon fill="#ffffff" stroke="#000000" points="63.6933,-127.6 3.2155,-127.6 3.2155,-97.6 63.6933,-97.6 63.6933,-127.6"></polygon><text text-anchor="start" x="10.3352" y="-114.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:placebo</text><text text-anchor="start" x="10.3352" y="-106.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">120 items</text></g><!-- 4 --><g id="node5" class="node"><title>4</title>
+<polygon fill="#ffffff" stroke="#000000" points="139.8409,-127.6 85.0679,-127.6 85.0679,-97.6 139.8409,-97.6 139.8409,-127.6"></polygon><text text-anchor="start" x="92.0112" y="-114.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">treat:rIFN-g</text><text text-anchor="start" x="92.0112" y="-106.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">83 items</text></g><!-- 2 --><g id="node6" class="node"><title>2</title>
+<polygon fill="#ffffff" stroke="#000000" points="105.9104,-169.0033 38.9984,-169.0033 38.9984,-145.7967 105.9104,-145.7967 105.9104,-169.0033"></polygon><text text-anchor="start" x="46.2272" y="-155" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">case or control</text></g><!-- 1 --><g id="node7" class="node"><title>1</title>
+<polygon fill="#ffffff" stroke="#000000" points="96.6291,-210.6033 48.2797,-210.6033 48.2797,-187.3967 96.6291,-187.3967 96.6291,-210.6033"></polygon><text text-anchor="start" x="55.1176" y="-196.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">203 items</text></g></g></svg><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># reset options </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="exclusions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#exclusions" class="anchor"></a>Exclusions</h2>
-<p>Elsewhere we discuss the possibility of capturing excluded items for debugging. This behaviour can be added to any pipeline with the <code><a href="../reference/capture_exclusions.html">capture_exclusions()</a></code> function. Alternatively it can be globally enabled with the following option. Usual caveats about performance apply.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.exclusions<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="exclusions">Exclusions<a class="anchor" aria-label="anchor" href="#exclusions"></a>
+</h3>
+<p>Elsewhere we discuss the possibility of capturing excluded items for
+debugging. This behaviour can be added to any pipeline with the
+<code><a href="../reference/capture_exclusions.html">capture_exclusions()</a></code> function. Alternatively it can be
+globally enabled with the following option. Usual caveats about
+performance apply.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>dtrackr.exclusions<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="reporting-exclusions-which-do-nothing" class="section level2">
-<h2 class="hasAnchor">
-<a href="#reporting-exclusions-which-do-nothing" class="anchor"></a>Reporting exclusions which do nothing</h2>
-<p>Sometimes in a pipeline we have a exclusion criteria which is not triggered, or is not triggered for a particular subgroup. In this case the default is not to show the zero items that were excluded. However sometimes it is reassuring to know that an filter was applied even if it results in nothing:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.show_zero_exclusions<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="reporting-exclusions-which-do-nothing">Reporting exclusions which do nothing<a class="anchor" aria-label="anchor" href="#reporting-exclusions-which-do-nothing"></a>
+</h3>
+<p>Sometimes in a pipeline we have a exclusion criteria which is not
+triggered, or is not triggered for a particular subgroup. In this case
+the default is not to show the zero items that were excluded. However
+sometimes it is reassuring to know that an filter was applied even if it
+results in nothing:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>dtrackr.show_zero_exclusions<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="maximum-groupings" class="section level2">
-<h2 class="hasAnchor">
-<a href="#maximum-groupings" class="anchor"></a>Maximum groupings</h2>
-<p>In <code><a href="../reference/count_subgroup.html">count_subgroup()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> statements there can be a large number of items generated if a particular grouping variable has a lot of possible values. This can cause performance issues and legibility issues for the resulting graph and is usually a result of an interim stage of the data pipeline where grouping is used to do fine scale summarisation operation (e.g. a <code>dataset %&gt;% group_by(nearly_unique_id) %&gt;% filter(row_number()==1)</code> or a timeseries where things need to be aggregated by date, and the data is quickly ungrouped (e.g. <code>timeseries %&gt;% group_by(date) %&gt;% summarise(count = n())</code>). The most number of groups that <code>dtrackr</code> will attempt to keep track of is configurable but defaults to 16:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>dtrackr.max_supported_groupings <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></pre></div>
+<div class="section level3">
+<h3 id="maximum-groupings">Maximum groupings<a class="anchor" aria-label="anchor" href="#maximum-groupings"></a>
+</h3>
+<p>In <code><a href="../reference/count_subgroup.html">count_subgroup()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>
+statements there can be a large number of items generated if a
+particular grouping variable has a lot of possible values. This can
+cause performance issues and legibility issues for the resulting graph
+and is usually a result of an interim stage of the data pipeline where
+grouping is used to do fine scale summarisation operation (e.g. a
+<code>dataset %&gt;% group_by(nearly_unique_id) %&gt;% filter(row_number()==1)</code>
+or a timeseries where things need to be aggregated by date, and the data
+is quickly ungrouped (e.g.
+<code>timeseries %&gt;% group_by(date) %&gt;% summarise(count = n())</code>).
+The most number of groups that <code>dtrackr</code> will attempt to keep
+track of is configurable but defaults to 16:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>dtrackr.max_supported_groupings <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -363,11 +394,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Robert Challen.</p>
+  <p></p>
+<p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -375,6 +408,8 @@
 
   
 
+
+  
 
   </body>
 </html>

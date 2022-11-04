@@ -48,7 +48,6 @@ underlying function details.
 }
 \examples{
 library(dplyr)
-library(tidyr)
 library(dtrackr)
 
 # Set operations

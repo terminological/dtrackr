@@ -15,7 +15,7 @@ plans there. Offers of help are always welcome.
 
 If you are reporting an issue please could you try and reproduce it using one of
 the data sets we've used in the vignettes (e.g. iris, diamonds, mtcars,
-dtrackr::ILPD ) or include the data set in your issue.
+survival::cgd ) or include the data set in your issue.
 
 If you can also tell us exactly what text you expect to see in the flowchart
 that isn't there, that would be helpful.
@@ -25,7 +25,48 @@ of what you've done (read more about [pull requests](http://help.github.com/pull
 
 ## Testing
 
-We'd love some help with better test cases. 
+We'd love some help with better test cases.
+
+For testing `dtrackr` uses the `testthat` framework. It is configured to run both
+the unit tests and the functional tests in the code examples.
+
+```R
+# assuming dtrackr has been cloned from github into the working directory 
+# location
+
+devtools::load_all()
+
+# Long list of system dependencies in Ubuntu 20.04 including all suggested 
+# dependencies:
+# librsvg2-dev libicu-dev libcurl4-openssl-dev libssl-dev libnode-dev make 
+# pandoc imagemagick libmagick++-dev gsfonts default-jdk libxml2-dev 
+# zlib1g-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev 
+# libjpeg-dev libpng-dev libtiff-dev git libgit2-dev
+
+pak::local_system_requirements("ubuntu","20.04")
+install.packages(c("here","tidyverse","devtools","testthat","pkgdown"))
+
+# Examples:
+devtools::run_examples()
+
+# automated testing with testthat (also runs all examples):
+devtools::test()
+
+# pkgdown site building (which executes all the vignettes):
+pkgdown::build_site()
+```
+
+Github workflows are enabled on this repository for continuous integration. 
+These perform an `R CMD check` on code commits, which will run all `testthat`
+unit tests, run all man page examples, and build all the vignettes.
+
+For vignette building there are dependencies on the `tidyverse` package, 
+as well as other system libraries required for vignette building with `pandoc`.
+The CI tests check the library can be installed on macOs, windows, and Ubuntu, 
+with R versions 3.6.1, 4.1, 4.2 and the R development branch.
+
+On tagged releases, additional Github workflows are triggered by in the 
+`r-universe` repository, to build binary releases on a range of platforms.
 
 ## Code of Conduct
 
@@ -40,7 +81,7 @@ orientation.
 
 ### Our Standards
 
-Examples of behavior that contributes to creating a positive environment
+Examples of behaviour that contributes to creating a positive environment
 include:
 
 * Using welcoming and inclusive language

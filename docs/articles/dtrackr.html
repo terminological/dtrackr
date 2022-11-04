@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4.9001</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/dtrackr.html">Get started</a>
 </li>
@@ -57,7 +53,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -80,7 +76,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/terminological/dtrackr/">
+  <a href="https://github.com/terminological/dtrackr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,85 +91,131 @@
 
       
 
-      </header><script src="dtrackr_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>dtrackr - Basic operations</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/terminological/dtrackr/blob/master/vignettes/dtrackr.Rmd"><code>vignettes/dtrackr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/terminological/dtrackr/blob/HEAD/vignettes/dtrackr.Rmd" class="external-link"><code>vignettes/dtrackr.Rmd</code></a></small>
       <div class="hidden name"><code>dtrackr.Rmd</code></div>
 
     </div>
 
     
     
-<div id="tracking-data-provenance" class="section level1">
-<h1 class="hasAnchor">
-<a href="#tracking-data-provenance" class="anchor"></a>Tracking data provenance</h1>
-<p>When wrangling complex data sets into a form suitable for analysis there may be many steps where transformations and filtering of the data is performed in a data pipeline. At each stage we want to reassure ourselves that if we have removed data we have done so for the right reasons, and for scientific publication we need to communicate what processing the data has undergone, and whether the data processing unevenly affects the groups we wish to compare. In frequently updated analyses this must be automated.</p>
-<p><code>dtrackr</code> provides a generic capability that can address this and other problems. By extending the normal data manipulation functions provided by <code>dplyr</code>, we allow operations on a dataframe to be recorded as metadata, as the dataframe passes through a data pipeline, in a “history graph”. We can export the history graph as a flowchart which helps with documentation, and makes accurate reporting in the scientific literature simpler.</p>
-<p>Tracking the data through the pipeline also allows us a way to capture where and why data is being excluded, and see both a visual summary and a detailed line list of exclusions. This can help with identifying and rectifying data quality issues.</p>
-<p>In the situation where data is analysed interactively, as pipeline code is being created, tracking the history of a dataframe, and visualising it, allows us to identify if data has been manipulated in the way we intend, and helps debug pipeline code, or uncover unsupported assumptions about the data.</p>
-<p>There are other places where tracking data provenance could also help, by visualising the steps an individual data item takes through a pipeline we can compare different data, such as new versions of data sets, and quickly validate our data pipeline for use with new data.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># devtools::load_all()</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</span>
-<span class="co">#&gt; ✔ ggplot2 3.3.5     ✔ purrr   0.3.4</span>
-<span class="co">#&gt; ✔ tibble  3.1.6     ✔ dplyr   1.0.9</span>
-<span class="co">#&gt; ✔ tidyr   1.2.0     ✔ stringr 1.4.1</span>
-<span class="co">#&gt; ✔ readr   2.0.2     ✔ forcats 0.5.1</span>
-<span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
-<span class="co">#&gt; ✖ dplyr::filter() masks stats::filter()</span>
-<span class="co">#&gt; ✖ dplyr::lag()    masks stats::lag()</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://terminological.github.io/dtrackr/index.html">dtrackr</a></span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'dtrackr'</span>
-<span class="co">#&gt; The following objects are masked from 'package:dplyr':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     add_tally, bind_cols, bind_rows</span>
-<span class="co">#&gt; The following object is masked from 'package:stats':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     filter</span>
-<span class="co">#&gt; The following object is masked from 'package:utils':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     history</span>
-<span class="co">#&gt; The following object is masked from 'package:base':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     comment</span></pre></div>
+<div class="section level2">
+<h2 id="tracking-data-provenance">Tracking data provenance<a class="anchor" aria-label="anchor" href="#tracking-data-provenance"></a>
+</h2>
+<p>When wrangling complex data sets into a form suitable for analysis
+there may be many steps where transformations and filtering of the data
+is performed in a data pipeline. At each stage we want to reassure
+ourselves that if we have removed data we have done so for the right
+reasons, and for scientific publication we need to communicate what
+processing the data has undergone, and whether the data processing
+unevenly affects the groups we wish to compare. In frequently updated
+analyses this must be automated.</p>
+<p><code>dtrackr</code> provides a generic capability that can address
+this and other problems. By extending the normal data manipulation
+functions provided by <code>dplyr</code>, we allow operations on a
+dataframe to be recorded as metadata, as the dataframe passes through a
+data pipeline, in a “history graph”. We can export the history graph as
+a flowchart which helps with documentation, and makes accurate reporting
+in the scientific literature simpler.</p>
+<p>Tracking the data through the pipeline also allows us a way to
+capture where and why data is being excluded, and see both a visual
+summary and a detailed line list of exclusions. This can help with
+identifying and rectifying data quality issues.</p>
+<p>In the situation where data is analysed interactively, as pipeline
+code is being created, tracking the history of a dataframe, and
+visualising it, allows us to identify if data has been manipulated in
+the way we intend, and helps debug pipeline code, or uncover unsupported
+assumptions about the data.</p>
+<p>There are other places where tracking data provenance could also
+help, by visualising the steps an individual data item takes through a
+pipeline we can compare different data, such as new versions of data
+sets, and quickly validate our data pipeline for use with new data.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span> ─────────────────────────────────────── tidyverse 1.3.2 ──</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2</span> 3.3.6      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr  </span> 0.3.4 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble </span> 3.1.8      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr  </span> 1.0.10</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr  </span> 1.2.1      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr</span> 1.4.1 </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr  </span> 2.1.2      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats</span> 0.5.2 </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://terminological.github.io/dtrackr/index.html" class="external-link">dtrackr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dtrackr'</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:dplyr':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     add_tally, bind_cols, bind_rows</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:utils':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     history</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     comment</span></span></code></pre></div>
 </div>
-<div id="basic-operation---comments-and-stratification" class="section level1">
-<h1 class="hasAnchor">
-<a href="#basic-operation---comments-and-stratification" class="anchor"></a>Basic operation - comments and stratification</h1>
-<p>The main documentation for data pipelines is provided by the <code>comment</code> function. This (and all other functions) uses a <code>glue</code> package specification to define the comment text. This glue specification can use a range of variables to describe the data as it passes through the pipeline. Firstly it can use any global variables such as <code>filename</code> in this example. Secondly the <code>.count</code> variable is the number of rows in the current group. Thirdly the <code>.strata</code> variable is defined to be a description of the group(s) we are currently in, but in grouped data the grouping variables (in this case <code>Species</code>) can also be used. Finally the <code>.total</code> variable returns the whole size of the ungrouped data-set.</p>
-<p>Comments can either be a single <code>.headline</code> or a list of <code>.messages</code>. Setting either of these to "" disables them for a given comment. As in the example, thanks to <code>glue</code>, any expression can be evaluated in the messages but be warned, debugging them is hard. If an error in the glue spec is present <code>dtrackr</code> will try and tell you what is the problem was and what variables should have been available for the glue spec. (N.B. A common mistake is to use <code>.message</code> rather than <code>.messages</code> when providing a glue spec.)</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># devtools::load_all()</span>
-<span class="va">filename</span> <span class="op">=</span> <span class="st">"~/tmp/iris.csv"</span>
-<span class="co"># this is just a pretend example</span>
-<span class="co"># iris = read.csv(filename)</span>
-
-
-<span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span>
-    .headline <span class="op">=</span> <span class="st">"Iris data:"</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"loaded from \"{filename}\""</span>,
-      <span class="st">"starts with {.count} items"</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span>
-    .headline <span class="op">=</span> <span class="st">"{.strata}"</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-    <span class="st">"In {Species}"</span>,
-    <span class="st">"there are {.count} items"</span>,
-    <span class="st">"that is {sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span>,
-    .tag <span class="op">=</span> <span class="st">"note1"</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"Final data has {.total} items"</span>, .tag<span class="op">=</span><span class="st">"note2"</span><span class="op">)</span> <span class="op">%&gt;%</span>  
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="basic-operation---comments-and-stratification">Basic operation - comments and stratification<a class="anchor" aria-label="anchor" href="#basic-operation---comments-and-stratification"></a>
+</h2>
+<p>The main documentation for data pipelines is provided by the
+<code>comment</code> function. This (and all other functions) uses a
+<code>glue</code> package specification to define the comment text. This
+glue specification can use a range of variables to describe the data as
+it passes through the pipeline. Firstly it can use any global variables
+such as <code>filename</code> in this example. Secondly the
+<code>.count</code> variable is the number of rows in the current group.
+Thirdly the <code>.strata</code> variable is defined to be a description
+of the group(s) we are currently in, but in grouped data the grouping
+variables (in this case <code>Species</code>) can also be used. Finally
+the <code>.total</code> variable returns the whole size of the ungrouped
+data-set.</p>
+<p>Comments can either be a single <code>.headline</code> or a list of
+<code>.messages</code>. Setting either of these to “” disables them for
+a given comment. As in the example, thanks to <code>glue</code>, any
+expression can be evaluated in the messages but be warned, debugging
+them is hard. If an error in the glue spec is present
+<code>dtrackr</code> will try and tell you what is the problem was and
+what variables should have been available for the glue spec. (N.B. A
+common mistake is to use <code>.message</code> rather than
+<code>.messages</code> when providing a glue spec.)</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
+<span><span class="va">filename</span> <span class="op">=</span> <span class="st">"~/tmp/iris.csv"</span></span>
+<span><span class="co"># this is just a pretend example</span></span>
+<span><span class="co"># iris = read.csv(filename)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span></span>
+<span>    .headline <span class="op">=</span> <span class="st">"Iris data:"</span>,</span>
+<span>    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"loaded from \"{filename}\""</span>,</span>
+<span>      <span class="st">"starts with {.count} items"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span></span>
+<span>    .headline <span class="op">=</span> <span class="st">"{.strata}"</span>,</span>
+<span>    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"In {Species}"</span>,</span>
+<span>    <span class="st">"there are {.count} items"</span>,</span>
+<span>    <span class="st">"that is {sprintf('%1.0f',.count/.total*100)}% of the total"</span><span class="op">)</span>,</span>
+<span>    .tag <span class="op">=</span> <span class="st">"note1"</span></span>
+<span>    <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"Final data has {.total} items"</span>, .tag<span class="op">=</span><span class="st">"note2"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>  </span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="315pt" height="235pt" viewbox="0.00 0.00 315.14 234.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 230.8)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-230.8 311.1416,-230.8 311.1416,4 -4,4"></polygon><!-- 6&#45;&gt;7 --><g id="edge1" class="edge"><title>6:s-&gt;7</title>
@@ -193,23 +235,31 @@
 <polygon fill="#ffffff" stroke="#000000" points="192.9717,-170.6033 114.1699,-170.6033 114.1699,-147.3967 192.9717,-147.3967 192.9717,-170.6033"></polygon><text text-anchor="start" x="121.1204" y="-156.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 1 --><g id="node7" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="209.0916,-226.8 98.05,-226.8 98.05,-188.8 209.0916,-188.8 209.0916,-226.8"></polygon><text text-anchor="start" x="105.0604" y="-213.6" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Iris data:</text><text text-anchor="start" x="105.0604" y="-205.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">loaded from "~/tmp/iris.csv"</text><text text-anchor="start" x="105.0604" y="-197.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g></g></svg>
 </div>
-<div id="status---further-analysis-in-the-workflow" class="section level1">
-<h1 class="hasAnchor">
-<a href="#status---further-analysis-in-the-workflow" class="anchor"></a>Status - Further analysis in the workflow</h1>
-<p>In the middle of a pipeline you may wish to document something about the data that is more complex than the simple counts. <code>comment</code> has a more sophisticated counterpart <code>status</code>. <code>status</code> is essentially a <code>dplyr</code> summarisation step which is connected to a <code>glue</code> specification output, that is recorded in the data frame history. In plain English this means you can do an arbitrary summarisation and put the result into the flowchart, without interrupting the data flow, for example:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-
-<span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/status.html">status</a></span><span class="op">(</span>
-    petalMean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,
-    petalSd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,
-    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-    <span class="st">"In {Species} the petals are"</span>,
-    <span class="st">"on average {petalMean} \u00B1 {petalSd} cms wide"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"ends with {.total} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="status---further-analysis-in-the-workflow">Status - Further analysis in the workflow<a class="anchor" aria-label="anchor" href="#status---further-analysis-in-the-workflow"></a>
+</h2>
+<p>In the middle of a pipeline you may wish to document something about
+the data that is more complex than the simple counts.
+<code>comment</code> has a more sophisticated counterpart
+<code>status</code>. <code>status</code> is essentially a
+<code>dplyr</code> summarisation step which is connected to a
+<code>glue</code> specification output, that is recorded in the data
+frame history. In plain English this means you can do an arbitrary
+summarisation and put the result into the flowchart, without
+interrupting the data flow, for example:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/status.html">status</a></span><span class="op">(</span></span>
+<span>    petalMean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    petalSd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%1.1f"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"In {Species} the petals are"</span>,</span>
+<span>    <span class="st">"on average {petalMean} \u00B1 {petalSd} cms wide"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"ends with {.total} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="414pt" height="171pt" viewbox="0.00 0.00 413.59 170.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 166.8)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-166.8 409.5864,-166.8 409.5864,4 -4,4"></polygon><!-- 3&#45;&gt;6 --><g id="edge3" class="edge"><title>3:s-&gt;6</title>
@@ -225,17 +275,23 @@
 <polygon fill="#ffffff" stroke="#000000" points="265.3803,-79.6 140.2061,-79.6 140.2061,-41.6 265.3803,-41.6 265.3803,-79.6"></polygon><text text-anchor="start" x="147" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:versicolor</text><text text-anchor="start" x="147" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In versicolor the petals are</text><text text-anchor="start" x="147" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 1.3 ± 0.2 cms wide</text></g><!-- 5 --><g id="node4" class="node"><title>5</title>
 <polygon fill="#ffffff" stroke="#000000" points="405.3803,-79.6 280.2061,-79.6 280.2061,-41.6 405.3803,-41.6 405.3803,-79.6"></polygon><text text-anchor="start" x="287" y="-66.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:virginica</text><text text-anchor="start" x="287" y="-58.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">In virginica the petals are</text><text text-anchor="start" x="287" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">on average 2.0 ± 0.3 cms wide</text></g><!-- 2 --><g id="node5" class="node"><title>2</title>
 <polygon fill="#ffffff" stroke="#000000" points="242.1941,-121.0033 163.3923,-121.0033 163.3923,-97.7967 242.1941,-97.7967 242.1941,-121.0033"></polygon><text text-anchor="start" x="170.3428" y="-107" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 1 --><g id="node6" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="246.1909,-162.6033 159.3955,-162.6033 159.3955,-139.3967 246.1909,-139.3967 246.1909,-162.6033"></polygon><text text-anchor="start" x="166.3444" y="-148.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g></g></svg><p>A frequent use case for a more detailed description is to have a subgroup count within a flowchart. This is different enough to have its own function <code><a href="../reference/count_subgroup.html">count_subgroup()</a></code>. This works best for factor subgroup columns but other data will be converted to a factor automatically. As this uses glue specifications a modified formatted output is also possible as in this example, where the subgroup percentages are calculated to 1 decimal place.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">diamonds</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">cut</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/count_subgroup.html">count_subgroup</a></span><span class="op">(</span>
-    <span class="va">color</span>,
-    .messages <span class="op">=</span> <span class="st">"colour {.name}: {sprintf('%1.1f%%', {.count}/{.subtotal}*100)}"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<polygon fill="#ffffff" stroke="#000000" points="246.1909,-162.6033 159.3955,-162.6033 159.3955,-139.3967 246.1909,-139.3967 246.1909,-162.6033"></polygon><text text-anchor="start" x="166.3444" y="-148.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g></g></svg><p>A frequent use case for a more detailed description is to have a
+subgroup count within a flowchart. This is different enough to have its
+own function <code><a href="../reference/count_subgroup.html">count_subgroup()</a></code>. This works best for factor
+subgroup columns but other data will be converted to a factor
+automatically. As this uses glue specifications a modified formatted
+output is also possible as in this example, where the subgroup
+percentages are calculated to 1 decimal place.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">diamonds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cut</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/count_subgroup.html">count_subgroup</a></span><span class="op">(</span></span>
+<span>    <span class="va">color</span>,</span>
+<span>    .messages <span class="op">=</span> <span class="st">"colour {.name}: {sprintf('%1.1f%%', {.count}/{.subtotal}*100)}"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="419pt" height="211pt" viewbox="0.00 0.00 419.35 210.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 206.8)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-206.8 415.3488,-206.8 415.3488,4 -4,4"></polygon><!-- 3&#45;&gt;8 --><g id="edge5" class="edge"><title>3:s-&gt;8</title>
@@ -259,21 +315,34 @@
 <polygon fill="#ffffff" stroke="#000000" points="236.2937,-161.0033 175.0551,-161.0033 175.0551,-137.7967 236.2937,-137.7967 236.2937,-161.0033"></polygon><text text-anchor="start" x="182.1148" y="-147" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by cut</text></g><!-- 1 --><g id="node8" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="234.244,-202.6033 177.1048,-202.6033 177.1048,-179.3967 234.244,-179.3967 234.244,-202.6033"></polygon><text text-anchor="start" x="183.8904" y="-188.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">53940 items</text></g></g></svg>
 </div>
-<div id="filtering-exclusions-and-inclusions" class="section level1">
-<h1 class="hasAnchor">
-<a href="#filtering-exclusions-and-inclusions" class="anchor"></a>Filtering, exclusions and inclusions</h1>
-<p>Documenting the data set is only useful if you can also manipulate it, and one part of this is including and excluding things we don’t want. The standard <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter</a></code> approach works for this, and we can use the before and after <code>.count.in</code> and <code>.count.out</code>, and the difference between the two <code>.excluded</code> to document what the result was.</p>
-<p>In this example we exclude items that are more than one standard deviation above the mean. The default message (<code>.messages = "excluded {.excluded} items"</code>) has been left as is which simply returns how many things have been excluded. With no customization the goal is for the pipeline to look as much as possible like a <code>dplyr</code> pipeline and it should be possible to take a normal <code>dplyr</code> pipeline and insert <code><a href="../reference/track.html">track()</a></code> at the front and <code><a href="../reference/flowchart.html">flowchart()</a></code> at the end to get a documented pipeline.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-
-<span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="filtering-exclusions-and-inclusions">Filtering, exclusions and inclusions<a class="anchor" aria-label="anchor" href="#filtering-exclusions-and-inclusions"></a>
+</h2>
+<p>Documenting the data set is only useful if you can also manipulate
+it, and one part of this is including and excluding things we don’t
+want. The standard <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter</a></code> approach works for this,
+and we can use the before and after <code>.count.in</code> and
+<code>.count.out</code>, and the difference between the two
+<code>.excluded</code> to document what the result was.</p>
+<p>In this example we exclude items that are more than one standard
+deviation above the mean. The default message
+(<code>.messages = "excluded {.excluded} items"</code>) has been left as
+is which simply returns how many things have been excluded. With no
+customization the goal is for the pipeline to look as much as possible
+like a <code>dplyr</code> pipeline and it should be possible to take a
+normal <code>dplyr</code> pipeline and insert <code><a href="../reference/track.html">track()</a></code> at
+the front and <code><a href="../reference/flowchart.html">flowchart()</a></code> at the end to get a documented
+pipeline.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
+<span>    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="354pt" height="121pt" viewbox="0.00 0.00 354.46 121.20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 117.2)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-117.2 350.4572,-117.2 350.4572,4 -4,4"></polygon><!-- 2&#45;&gt;6 --><g id="edge1" class="edge"><title>2:s-&gt;6</title>
@@ -287,31 +356,54 @@
 <polygon fill="#cccccc" stroke="#000000" points="346.464,-71.6 272.4368,-71.6 272.4368,-41.6 346.464,-41.6 346.464,-71.6"></polygon><text text-anchor="start" x="279.4436" y="-58.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:setosa</text><text text-anchor="start" x="279.4436" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">excluded 9 items</text></g><!-- 4 --><g id="node4" class="node"><title>4</title>
 <polygon fill="#cccccc" stroke="#000000" points="258.8441,-71.6 180.0567,-71.6 180.0567,-41.6 258.8441,-41.6 258.8441,-71.6"></polygon><text text-anchor="start" x="187.0036" y="-58.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:versicolor</text><text text-anchor="start" x="187.0036" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">excluded 5 items</text></g><!-- 5 --><g id="node5" class="node"><title>5</title>
 <polygon fill="#cccccc" stroke="#000000" points="166.464,-71.6 92.4368,-71.6 92.4368,-41.6 166.464,-41.6 166.464,-71.6"></polygon><text text-anchor="start" x="99.4436" y="-58.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="8.00" fill="#000000">Species:virginica</text><text text-anchor="start" x="99.4436" y="-50.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">excluded 6 items</text></g><!-- 1 --><g id="node6" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="63.6251,-113.0033 15.2757,-113.0033 15.2757,-89.7967 63.6251,-89.7967 63.6251,-113.0033"></polygon><text text-anchor="start" x="22.1136" y="-99" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg><p>This is useful but the reason for exclusion is not as clear as we would like, and this does not scale particularly well to multiple criteria, which are typical of the filters needed to massage real life data. For this we have written <code>exclude_all</code> which takes multiple criteria and applies them in a step-wise manner, summarising at each step. Rather than the logical expression expected by <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter</a></code> we provide matching criteria as a formula relating the filtering criteria on the left hand side, to the glue specification on the right hand side (a trick inspired by <code><a href="https://dplyr.tidyverse.org/reference/case_when.html">dplyr::case_when()</a></code>’s syntax). This is very much slower than <code>filter</code> but gives fine control over the output.</p>
-<p>The logic of <code><a href="../reference/exclude_all.html">exclude_all()</a></code> is reversed compared to <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>. In <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> only items for which the filtering criteria is TRUE are INCLUDED. In this example there are no missing values, however the behaviour of the <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> when the criteria cannot be evaluated and <code>NA</code> values are generated is to exclude them.</p>
-<p>In <code><a href="../reference/exclude_all.html">exclude_all()</a></code> there can be multiple criteria and ALL items that match any of the criteria are EXCLUDED. If a particular criteria cannot be evaluated for a data item teh behaviour of <code><a href="../reference/exclude_all.html">exclude_all()</a></code> is controlled by the <code>na.rm</code> parameter. This defaults to FALSE which means that any values that cannot be evaluated are <strong>NOT</strong> excluded.</p>
-<p>For each different criteria the number of items excluded is recorded in the history graph in a manner defined by the right hand side of the exclusion criteria formulae.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-
-<span class="va">dataset1</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
-    <span class="va">Species</span><span class="op">==</span><span class="st">"versicolor"</span> <span class="op">~</span> <span class="st">"removing {.excluded} versicolor"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD wider than the mean"</span>,
-    <span class="va">Petal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD longer than the mean"</span>,
-    <span class="va">Sepal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD wider than the mean"</span>,
-    <span class="va">Sepal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD longer than the mean"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"ends with {.total} items"</span><span class="op">)</span>
-
-<span class="va">dataset1</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<polygon fill="#ffffff" stroke="#000000" points="63.6251,-113.0033 15.2757,-113.0033 15.2757,-89.7967 63.6251,-89.7967 63.6251,-113.0033"></polygon><text text-anchor="start" x="22.1136" y="-99" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg><p>This is useful but the reason for exclusion is not as clear as we
+would like, and this does not scale particularly well to multiple
+criteria, which are typical of the filters needed to massage real life
+data. For this we have written <code>exclude_all</code> which takes
+multiple criteria and applies them in parallel, combining the result at
+the end, after documenting their individual effects. Rather than the
+logical expression expected by <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter</a></code> we provide
+matching criteria as a formula relating the filtering criteria on the
+left hand side, to the glue specification on the right hand side (a
+trick inspired by <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">dplyr::case_when()</a></code>’s syntax). This is
+very much slower than <code>filter</code> but gives fine control over
+the output.</p>
+<p>The logic of <code><a href="../reference/exclude_all.html">exclude_all()</a></code> is reversed compared to
+<code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter()</a></code>. In <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code> only items for
+which the filtering criteria is TRUE are INCLUDED. In this example there
+are no missing values, however the behaviour of the
+<code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code> when the criteria cannot be evaluated and
+<code>NA</code> values are generated is to exclude them.</p>
+<p>In <code><a href="../reference/exclude_all.html">exclude_all()</a></code> there can be multiple criteria and ALL
+items that match any of the criteria are EXCLUDED. If a particular
+criteria cannot be evaluated for a data item the behaviour of
+<code><a href="../reference/exclude_all.html">exclude_all()</a></code> is controlled by the <code>na.rm</code>
+parameter. This defaults to FALSE which means that any values that
+cannot be evaluated are <strong>NOT</strong> excluded.</p>
+<p>For each different criteria the number of items excluded is recorded
+in the history graph in a manner defined by the right hand side of the
+exclusion criteria formulae.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">dataset1</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span></span>
+<span>    <span class="va">Species</span><span class="op">==</span><span class="st">"versicolor"</span> <span class="op">~</span> <span class="st">"removing {.excluded} versicolor"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span></span>
+<span>    <span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD wider than the mean"</span>,</span>
+<span>    <span class="va">Petal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with petals &gt; 1 SD longer than the mean"</span>,</span>
+<span>    <span class="va">Sepal.Width</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD wider than the mean"</span>,</span>
+<span>    <span class="va">Sepal.Length</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.excluded} with sepals &gt; 1 SD longer than the mean"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"ends with {.total} items"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dataset1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="568pt" height="318pt" viewbox="0.00 0.00 568.48 318.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 314)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-314 564.4808,-314 564.4808,4 -4,4"></polygon><!-- 11&#45;&gt;12 --><g id="edge1" class="edge"><title>11:s-&gt;12</title>
@@ -338,31 +430,37 @@
 <polygon fill="#ffffff" stroke="#000000" points="232.4133,-226.6033 153.6115,-226.6033 153.6115,-203.3967 232.4133,-203.3967 232.4133,-226.6033"></polygon><text text-anchor="start" x="160.562" y="-212.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 2 --><g id="node10" class="node"><title>2</title>
 <polygon fill="#ffffff" stroke="#000000" points="236.4101,-268.2033 149.6147,-268.2033 149.6147,-244.9967 236.4101,-244.9967 236.4101,-268.2033"></polygon><text text-anchor="start" x="156.5636" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g><!-- 3 --><g id="node11" class="node"><title>3</title>
 <polygon fill="#cccccc" stroke="#000000" points="345.4631,-268.2033 250.5617,-268.2033 250.5617,-244.9967 345.4631,-244.9967 345.4631,-268.2033"></polygon><text text-anchor="start" x="257.7876" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">removing 50 versicolor</text></g><!-- 1 --><g id="node12" class="node"><title>1</title>
-<polygon fill="#ffffff" stroke="#000000" points="217.1871,-309.8033 168.8377,-309.8033 168.8377,-286.5967 217.1871,-286.5967 217.1871,-309.8033"></polygon><text text-anchor="start" x="175.6756" y="-295.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg><p>Exclusions produced like this are additive and the items may be excluded by more than one exclusion criteria, and the list of exclusion counts won’t necessarily add up to an exclusion total.</p>
-<p>Sometimes inclusion criteria are more important. For this we use <code>include_any</code> which works in a similar manner but INCLUDING items which match ANY of the supplied criteria, essentially combining the criteria with a logical OR operation, and in this case resulting in very different result from our previous example.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-
-<span class="va">dataset2</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
-    <span class="va">Species</span><span class="op">==</span><span class="st">"versicolor"</span> <span class="op">~</span> <span class="st">"{.included} versicolor"</span>,
-    <span class="va">Species</span><span class="op">==</span><span class="st">"setosa"</span> <span class="op">~</span> <span class="st">"{.included} setosa"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="co">#mutate(Species = forcats::fct_drop(Species)) %&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD wider than the mean"</span>,
-    <span class="va">Petal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD longer than the mean"</span>,
-    <span class="va">Sepal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD wider than the mean"</span>,
-    <span class="va">Sepal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD longer than the mean"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"ends with {.total} items"</span><span class="op">)</span>
-  
-<span class="va">dataset2</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<polygon fill="#ffffff" stroke="#000000" points="217.1871,-309.8033 168.8377,-309.8033 168.8377,-286.5967 217.1871,-286.5967 217.1871,-309.8033"></polygon><text text-anchor="start" x="175.6756" y="-295.8" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg><p>Exclusions produced like this are additive and the items may be
+excluded by more than one exclusion criteria, and the list of exclusion
+counts won’t necessarily add up to an exclusion total.</p>
+<p>Sometimes inclusion criteria are more important. For this we use
+<code>include_any</code> which works in a similar manner but INCLUDING
+items which match ANY of the supplied criteria, essentially combining
+the criteria with a logical OR operation, and in this case resulting in
+very different result from our previous example.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">dataset2</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"starts with {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span></span>
+<span>    <span class="va">Species</span><span class="op">==</span><span class="st">"versicolor"</span> <span class="op">~</span> <span class="st">"{.included} versicolor"</span>,</span>
+<span>    <span class="va">Species</span><span class="op">==</span><span class="st">"setosa"</span> <span class="op">~</span> <span class="st">"{.included} setosa"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co">#mutate(Species = forcats::fct_drop(Species)) %&gt;%</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/include_any.html">include_any</a></span><span class="op">(</span></span>
+<span>    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD wider than the mean"</span>,</span>
+<span>    <span class="va">Petal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Petal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with petals &lt;= 1 SD longer than the mean"</span>,</span>
+<span>    <span class="va">Sepal.Width</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD wider than the mean"</span>,</span>
+<span>    <span class="va">Sepal.Length</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">Sepal.Length</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{.included} with sepals &lt;= 1 SD longer than the mean"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"{Species} now has {.count} items"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"ends with {.total} items"</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">dataset2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="370pt" height="435pt" viewbox="0.00 0.00 370.06 434.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 430.8)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-430.8 366.0552,-430.8 366.0552,4 -4,4"></polygon><!-- 11&#45;&gt;12 --><g id="edge1" class="edge"><title>11:s-&gt;12</title>
@@ -391,37 +489,42 @@
 <polygon fill="#ffffff" stroke="#000000" points="224.4253,-385.0033 137.6299,-385.0033 137.6299,-361.7967 224.4253,-361.7967 224.4253,-385.0033"></polygon><text text-anchor="start" x="144.5788" y="-371" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">starts with 150 items</text></g><!-- 1 --><g id="node12" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="205.2023,-426.6033 156.8529,-426.6033 156.8529,-403.3967 205.2023,-403.3967 205.2023,-426.6033"></polygon><text text-anchor="start" x="163.6908" y="-412.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g></g></svg>
 </div>
-<div id="excluded-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#excluded-data" class="anchor"></a>Excluded data</h1>
-<p>When considering a data pipeline it is sometimes important to know what has been excluded and at what stage. This can help for debugging or for addressing data quality issues. <code>dtrackr</code> can collect all data excluded at the same time as the history graph, along with a record of when in the pipeline and why an item was excluded. This behaviour is enabled by the <code><a href="../reference/capture_exclusions.html">capture_exclusions()</a></code> flag.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-
-<span class="va">tmp</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
-    <span class="va">Petal.Length</span> <span class="op">&gt;</span> <span class="fl">5.8</span> <span class="op">~</span> <span class="st">"{.excluded} long ones"</span>,
-    <span class="va">Petal.Length</span> <span class="op">&lt;</span> <span class="fl">1.3</span> <span class="op">~</span> <span class="st">"{.excluded} short ones"</span>,
-    .stage <span class="op">=</span> <span class="st">"petal length exclusion"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>
-    <span class="va">Sepal.Length</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="fl">0.05</span><span class="op">)</span>,
-    .messages<span class="op">=</span><span class="st">"removing {.count.in-.count.out} with sepals &lt; q 0.05"</span>,
-    .type <span class="op">=</span> <span class="st">"comment"</span>,
-    .stage <span class="op">=</span> <span class="st">"sepal length exclusion"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fl">0.2</span> <span class="op">~</span> <span class="st">"{.excluded} narrow ones"</span>,
-    <span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fl">2.1</span> <span class="op">~</span> <span class="st">"{.excluded} wide ones"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span>
-
-
-<span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="section level2">
+<h2 id="excluded-data">Excluded data<a class="anchor" aria-label="anchor" href="#excluded-data"></a>
+</h2>
+<p>When considering a data pipeline it is sometimes important to know
+what has been excluded and at what stage. This can help for debugging or
+for addressing data quality issues. <code>dtrackr</code> can collect all
+data excluded at the same time as the history graph, along with a record
+of when in the pipeline and why an item was excluded. This behaviour is
+enabled by the <code><a href="../reference/capture_exclusions.html">capture_exclusions()</a></code> flag.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">tmp</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/capture_exclusions.html">capture_exclusions</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span></span>
+<span>    <span class="va">Petal.Length</span> <span class="op">&gt;</span> <span class="fl">5.8</span> <span class="op">~</span> <span class="st">"{.excluded} long ones"</span>,</span>
+<span>    <span class="va">Petal.Length</span> <span class="op">&lt;</span> <span class="fl">1.3</span> <span class="op">~</span> <span class="st">"{.excluded} short ones"</span>,</span>
+<span>    .stage <span class="op">=</span> <span class="st">"petal length exclusion"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
+<span>    <span class="va">Sepal.Length</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="fl">0.05</span><span class="op">)</span>,</span>
+<span>    .messages<span class="op">=</span><span class="st">"removing {.count.in-.count.out} with sepals &lt; q 0.05"</span>,</span>
+<span>    .type <span class="op">=</span> <span class="st">"comment"</span>,</span>
+<span>    .stage <span class="op">=</span> <span class="st">"sepal length exclusion"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/exclude_all.html">exclude_all</a></span><span class="op">(</span></span>
+<span>    <span class="va">Petal.Width</span> <span class="op">&lt;</span> <span class="fl">0.2</span> <span class="op">~</span> <span class="st">"{.excluded} narrow ones"</span>,</span>
+<span>    <span class="va">Petal.Width</span> <span class="op">&gt;</span> <span class="fl">2.1</span> <span class="op">~</span> <span class="st">"{.excluded} wide ones"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"leaving {.count}"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generated by graphviz version 2.40.1 (20161225.0304)
  --><!-- Title: %0 Pages: 1 --><svg width="549pt" height="276pt" viewbox="0.00 0.00 549.35 276.40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 272.4)"><title>%0</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-272.4 545.3516,-272.4 545.3516,4 -4,4"></polygon><!-- 8&#45;&gt;14 --><g id="edge3" class="edge"><title>8:s-&gt;14</title>
@@ -455,133 +558,147 @@
 <polygon fill="#ffffff" stroke="#000000" points="272.7497,-175.4033 193.9479,-175.4033 193.9479,-152.1967 272.7497,-152.1967 272.7497,-175.4033"></polygon><text text-anchor="start" x="200.8984" y="-161.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">stratify by Species</text></g><!-- 3 --><g id="node14" class="node"><title>3</title>
 <polygon fill="#ffffff" stroke="#000000" points="260.7529,-217.0033 205.9447,-217.0033 205.9447,-193.7967 260.7529,-193.7967 260.7529,-217.0033"></polygon><text text-anchor="start" x="212.8968" y="-203" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">leaving 133</text></g><!-- 1 --><g id="node15" class="node"><title>1</title>
 <polygon fill="#ffffff" stroke="#000000" points="257.5235,-263.4033 209.1741,-263.4033 209.1741,-240.1967 257.5235,-240.1967 257.5235,-263.4033"></polygon><text text-anchor="start" x="216.012" y="-249.4" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">150 items</text></g><!-- 2 --><g id="node16" class="node"><title>2</title>
-<polygon fill="#cccccc" stroke="#000000" points="331.1483,-268.5006 271.5493,-268.5006 271.5493,-235.0994 331.1483,-235.0994 331.1483,-268.5006"></polygon><text text-anchor="start" x="278.4492" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">13 long ones</text><text text-anchor="start" x="278.4492" y="-244.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">4 short ones</text></g></g></svg><p>Give the previous data pipeline we can identify the items that were excluded, the stage of the pipeline at which they were excluded and details of the code that resulted in them being excluded.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/excluded.html">excluded</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 40 × 9</span>
-<span class="co">#&gt;    .stage     .strata .message Sepal.Length Sepal.Width Petal.Length Petal.Width</span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;   &lt;glue&gt;   &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;      </span>
-<span class="co">#&gt;  1 petal len… ""      13 long… 6.3          3.3         6            2.5        </span>
-<span class="co">#&gt;  2 petal len… ""      13 long… 7.1          3           5.9          2.1        </span>
-<span class="co">#&gt;  3 petal len… ""      13 long… 7.6          3           6.6          2.1        </span>
-<span class="co">#&gt;  4 petal len… ""      13 long… 7.3          2.9         6.3          1.8        </span>
-<span class="co">#&gt;  5 petal len… ""      13 long… 7.2          3.6         6.1          2.5        </span>
-<span class="co">#&gt;  6 petal len… ""      13 long… 7.7          3.8         6.7          2.2        </span>
-<span class="co">#&gt;  7 petal len… ""      13 long… 7.7          2.6         6.9          2.3        </span>
-<span class="co">#&gt;  8 petal len… ""      13 long… 7.7          2.8         6.7          2          </span>
-<span class="co">#&gt;  9 petal len… ""      13 long… 7.2          3.2         6            1.8        </span>
-<span class="co">#&gt; 10 petal len… ""      13 long… 7.4          2.8         6.1          1.9        </span>
-<span class="co">#&gt; # … with 30 more rows, and 2 more variables: Species &lt;chr&gt;, .filter &lt;chr&gt;</span></pre></div>
+<polygon fill="#cccccc" stroke="#000000" points="331.1483,-268.5006 271.5493,-268.5006 271.5493,-235.0994 331.1483,-235.0994 331.1483,-268.5006"></polygon><text text-anchor="start" x="278.4492" y="-254.2" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">13 long ones</text><text text-anchor="start" x="278.4492" y="-244.6" font-family="Helvetica,sans-Serif" font-size="8.00" fill="#000000">4 short ones</text></g></g></svg><p>Give the previous data pipeline we can identify the items that were
+excluded, the stage of the pipeline at which they were excluded and
+details of the code that resulted in them being excluded.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/excluded.html">excluded</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 40 × 9</span></span></span>
+<span><span class="co">#&gt;    .stage        .strata .mess…¹ Sepal…² Sepal…³ Petal…⁴ Petal…⁵ Species .filter</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;glue&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> petal length… <span style="color: #949494;">""</span>      13 lon… 6.3     3.3     6       2.5     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.1     3       5.9     2.1     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.6     3       6.6     2.1     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.3     2.9     6.3     1.8     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.2     3.6     6.1     2.5     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.7     3.8     6.7     2.2     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.7     2.6     6.9     2.3     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.7     2.8     6.7     2       virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.2     3.2     6       1.8     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> petal length… <span style="color: #949494;">""</span>      13 lon… 7.4     2.8     6.1     1.9     virgin… Petal.…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 30 more rows, and abbreviated variable names ¹​.message, ²​Sepal.Length,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ³​Sepal.Width, ⁴​Petal.Length, ⁵​Petal.Width</span></span></span></code></pre></div>
 </div>
-<div id="advanced-handling-of-the-history-graph-" class="section level1">
-<h1 class="hasAnchor">
-<a href="#advanced-handling-of-the-history-graph-" class="anchor"></a>Advanced handling of the history graph.</h1>
-<p>The history graph is a stored as an attribute on a tracked dataframe. The contents of this attribute is a list of dataframes including an edge list and node list. These can be imported into other graph processing packages, and visualised in different ways. Alternatively they could be used for automated testing of data pipelines, for example.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/p_get.html">p_get</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="co"># the nodes, .id is a graph unique identifier</span>
-<span class="va">tmp2</span><span class="op">$</span><span class="va">nodes</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Rows: 16</span>
-<span class="co">#&gt; Columns: 6</span>
-<span class="co">#&gt; $ .id     &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16</span>
-<span class="co">#&gt; $ .rank   &lt;dbl&gt; 1, 1, 2, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6</span>
-<span class="co">#&gt; $ .strata &lt;chr&gt; "", "", "", "", "Species:setosa", "Species:versicolor", "Speci…</span>
-<span class="co">#&gt; $ .label  &lt;chr&gt; "150 items&lt;BR ALIGN='LEFT'/&gt;", "13 long ones&lt;BR ALIGN='LEFT'/&gt;…</span>
-<span class="co">#&gt; $ .type   &lt;chr&gt; "info", "exclusion", "info", "stratify", "comment", "comment",…</span>
-<span class="co">#&gt; $ .stage  &lt;chr&gt; "", "petal length exclusion", "", "", "sepal length exclusion"…</span>
-
-<span class="co"># the edges, .to and .from are foreign keys for .id</span>
-<span class="va">tmp2</span><span class="op">$</span><span class="va">edges</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Rows: 15</span>
-<span class="co">#&gt; Columns: 5</span>
-<span class="co">#&gt; $ .to          &lt;dbl&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16</span>
-<span class="co">#&gt; $ .from        &lt;dbl&gt; 1, 1, 3, 4, 4, 4, 5, 6, 7, 8, 9, 10, 8, 9, 10</span>
-<span class="co">#&gt; $ .rel         &lt;chr&gt; "exclusion", "info", "stratify", "comment", "comment", "c…</span>
-<span class="co">#&gt; $ .strata      &lt;chr&gt; "", "", "", "Species:setosa", "Species:versicolor", "Spec…</span>
-<span class="co">#&gt; $ .strata.prev &lt;chr&gt; "", "", "", "", "", "", "Species:setosa", "Species:versic…</span></pre></div>
-<p>The <code>GraphViz</code> language provides many options for formatting the flowchart. Rather than try and provide an interface for them, we have gone for sane defaults. If you want to change this or use a different layout engine the <code>GraphViz</code> output can be retrieved and edited directly. Alternatively if the output you need is different, rendered SVG output can be edited but hand.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/p_get_as_dot.html">p_get_as_dot</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; digraph {</span>
-<span class="co">#&gt;      graph [layout = 'dot',</span>
-<span class="co">#&gt;         splines='ortho',</span>
-<span class="co">#&gt;         rankdir = 'TB',</span>
-<span class="co">#&gt;         outputorder = 'edgesfirst',</span>
-<span class="co">#&gt;         bgcolor = 'white',</span>
-<span class="co">#&gt;         ranksep = '0.25',</span>
-<span class="co">#&gt;         nodesep = '0.2',</span>
-<span class="co">#&gt;         newrank='true']</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     node [fontname = 'Helvetica',</span>
-<span class="co">#&gt;         fontsize = '8',</span>
-<span class="co">#&gt;         shape='box',</span>
-<span class="co">#&gt;         fixedsize = 'false',</span>
-<span class="co">#&gt;         margin = '0.1,0.1',</span>
-<span class="co">#&gt;         width = '0',</span>
-<span class="co">#&gt;         height = '0',</span>
-<span class="co">#&gt;         style = 'filled',</span>
-<span class="co">#&gt;         color = 'black',</span>
-<span class="co">#&gt;         fontcolor = 'black',</span>
-<span class="co">#&gt;         labeljust='l']</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     edge [fontname = 'Helvetica',</span>
-<span class="co">#&gt;         fontsize = '8',</span>
-<span class="co">#&gt;         len = '0.5',</span>
-<span class="co">#&gt;         color = 'black',</span>
-<span class="co">#&gt;         arrowsize = '0.5']</span>
-<span class="co">#&gt;     </span>
-<span class="co">#&gt; { rank='same';</span>
-<span class="co">#&gt; '14' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 39&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
-<span class="co">#&gt; '15' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 47&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span>
-<span class="co">#&gt; '16' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 24&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; { rank='same';</span>
-<span class="co">#&gt; '8' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 43&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
-<span class="co">#&gt; '9' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 47&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span>
-<span class="co">#&gt; '10' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 35&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
-<span class="co">#&gt; '11' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;4 narrow ones&lt;BR ALIGN='LEFT'/&gt;0 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='grey80'];</span>
-<span class="co">#&gt; '12' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;0 narrow ones&lt;BR ALIGN='LEFT'/&gt;0 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='grey80'];</span>
-<span class="co">#&gt; '13' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;0 narrow ones&lt;BR ALIGN='LEFT'/&gt;11 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='grey80'];</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; { rank='same';</span>
-<span class="co">#&gt; '5' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 3 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
-<span class="co">#&gt; '6' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 3 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span>
-<span class="co">#&gt; '7' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 2 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; { rank='same';</span>
-<span class="co">#&gt; '4' [label=&lt;stratify by Species&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; { rank='same';</span>
-<span class="co">#&gt; '3' [label=&lt;leaving 133&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; { rank='same';</span>
-<span class="co">#&gt; '1' [label=&lt;150 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
-<span class="co">#&gt; '2' [label=&lt;13 long ones&lt;BR ALIGN='LEFT'/&gt;4 short ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='grey80'];</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; '10' -&gt; '16' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '9' -&gt; '15' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '8' -&gt; '14' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '10' -&gt; '13' [tailport='e',weight='1']</span>
-<span class="co">#&gt; '9' -&gt; '12' [tailport='e',weight='1']</span>
-<span class="co">#&gt; '8' -&gt; '11' [tailport='e',weight='1']</span>
-<span class="co">#&gt; '7' -&gt; '10' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '6' -&gt; '9' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '5' -&gt; '8' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '4' -&gt; '7' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '4' -&gt; '6' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '4' -&gt; '5' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '3' -&gt; '4' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '1' -&gt; '3' [tailport='s',weight='100']</span>
-<span class="co">#&gt; '1' -&gt; '2' [tailport='e',weight='1']</span>
-<span class="co">#&gt; }</span></pre></div>
+<div class="section level2">
+<h2 id="advanced-handling-of-the-history-graph-">Advanced handling of the history graph.<a class="anchor" aria-label="anchor" href="#advanced-handling-of-the-history-graph-"></a>
+</h2>
+<p>The history graph is a stored as an attribute on a tracked dataframe.
+The contents of this attribute is a list of dataframes including an edge
+list and node list. These can be imported into other graph processing
+packages, and visualised in different ways. Alternatively they could be
+used for automated testing of data pipelines, for example.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/p_get.html">p_get</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># the nodes, .id is a graph unique identifier</span></span>
+<span><span class="va">tmp2</span><span class="op">$</span><span class="va">nodes</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 16</span></span>
+<span><span class="co">#&gt; Columns: 6</span></span>
+<span><span class="co">#&gt; $ .id     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16</span></span>
+<span><span class="co">#&gt; $ .rank   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1, 1, 2, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6</span></span>
+<span><span class="co">#&gt; $ .strata <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "", "", "", "", "Species:setosa", "Species:versicolor", "Speci…</span></span>
+<span><span class="co">#&gt; $ .label  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "150 items&lt;BR ALIGN='LEFT'/&gt;", "13 long ones&lt;BR ALIGN='LEFT'/&gt;…</span></span>
+<span><span class="co">#&gt; $ .type   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "info", "exclusion", "info", "stratify", "comment", "comment",…</span></span>
+<span><span class="co">#&gt; $ .stage  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "", "petal length exclusion", "", "", "sepal length exclusion"…</span></span>
+<span></span>
+<span><span class="co"># the edges, .to and .from are foreign keys for .id</span></span>
+<span><span class="va">tmp2</span><span class="op">$</span><span class="va">edges</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 15</span></span>
+<span><span class="co">#&gt; Columns: 5</span></span>
+<span><span class="co">#&gt; $ .to          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16</span></span>
+<span><span class="co">#&gt; $ .from        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1, 1, 3, 4, 4, 4, 5, 6, 7, 8, 9, 10, 8, 9, 10</span></span>
+<span><span class="co">#&gt; $ .rel         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "exclusion", "info", "stratify", "comment", "comment", "c…</span></span>
+<span><span class="co">#&gt; $ .strata      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "", "", "", "Species:setosa", "Species:versicolor", "Spec…</span></span>
+<span><span class="co">#&gt; $ .strata.prev <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "", "", "", "", "", "", "Species:setosa", "Species:versic…</span></span></code></pre></div>
+<p>The <code>GraphViz</code> language provides many options for
+formatting the flowchart. Rather than try and provide an interface for
+them, we have gone for sane defaults. If you want to change this or use
+a different layout engine the <code>GraphViz</code> output can be
+retrieved and edited directly. Alternatively if the output you need is
+different, rendered SVG output can be edited but hand.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/p_get_as_dot.html">p_get_as_dot</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; digraph {</span></span>
+<span><span class="co">#&gt;      graph [layout = 'dot',</span></span>
+<span><span class="co">#&gt;         splines='ortho',</span></span>
+<span><span class="co">#&gt;         rankdir = 'TB',</span></span>
+<span><span class="co">#&gt;         outputorder = 'edgesfirst',</span></span>
+<span><span class="co">#&gt;         bgcolor = 'white',</span></span>
+<span><span class="co">#&gt;         ranksep = '0.25',</span></span>
+<span><span class="co">#&gt;         nodesep = '0.2',</span></span>
+<span><span class="co">#&gt;         newrank='true']</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     node [fontname = 'Helvetica',</span></span>
+<span><span class="co">#&gt;         fontsize = '8',</span></span>
+<span><span class="co">#&gt;         shape='box',</span></span>
+<span><span class="co">#&gt;         fixedsize = 'false',</span></span>
+<span><span class="co">#&gt;         margin = '0.1,0.1',</span></span>
+<span><span class="co">#&gt;         width = '0',</span></span>
+<span><span class="co">#&gt;         height = '0',</span></span>
+<span><span class="co">#&gt;         style = 'filled',</span></span>
+<span><span class="co">#&gt;         color = 'black',</span></span>
+<span><span class="co">#&gt;         fontcolor = 'black',</span></span>
+<span><span class="co">#&gt;         labeljust='l']</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     edge [fontname = 'Helvetica',</span></span>
+<span><span class="co">#&gt;         fontsize = '8',</span></span>
+<span><span class="co">#&gt;         len = '0.5',</span></span>
+<span><span class="co">#&gt;         color = 'black',</span></span>
+<span><span class="co">#&gt;         arrowsize = '0.5']</span></span>
+<span><span class="co">#&gt;     </span></span>
+<span><span class="co">#&gt; { rank='same';</span></span>
+<span><span class="co">#&gt; '14' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 39&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '15' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 47&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '16' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 24&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; { rank='same';</span></span>
+<span><span class="co">#&gt; '8' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 43&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '9' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 47&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '10' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;leaving 35&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '11' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;4 narrow ones&lt;BR ALIGN='LEFT'/&gt;0 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='grey80'];</span></span>
+<span><span class="co">#&gt; '12' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;0 narrow ones&lt;BR ALIGN='LEFT'/&gt;0 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='grey80'];</span></span>
+<span><span class="co">#&gt; '13' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;0 narrow ones&lt;BR ALIGN='LEFT'/&gt;11 wide ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='grey80'];</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; { rank='same';</span></span>
+<span><span class="co">#&gt; '5' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 3 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '6' [label=&lt;&lt;B&gt;Species:versicolor&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 3 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:versicolor',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '7' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;removing 2 with sepals &amp;lt; q 0.05&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; { rank='same';</span></span>
+<span><span class="co">#&gt; '4' [label=&lt;stratify by Species&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; { rank='same';</span></span>
+<span><span class="co">#&gt; '3' [label=&lt;leaving 133&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; { rank='same';</span></span>
+<span><span class="co">#&gt; '1' [label=&lt;150 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span></span>
+<span><span class="co">#&gt; '2' [label=&lt;13 long ones&lt;BR ALIGN='LEFT'/&gt;4 short ones&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='grey80'];</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; '10' -&gt; '16' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '9' -&gt; '15' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '8' -&gt; '14' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '10' -&gt; '13' [tailport='e',weight='1']</span></span>
+<span><span class="co">#&gt; '9' -&gt; '12' [tailport='e',weight='1']</span></span>
+<span><span class="co">#&gt; '8' -&gt; '11' [tailport='e',weight='1']</span></span>
+<span><span class="co">#&gt; '7' -&gt; '10' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '6' -&gt; '9' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '5' -&gt; '8' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '4' -&gt; '7' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '4' -&gt; '6' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '4' -&gt; '5' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '3' -&gt; '4' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '1' -&gt; '3' [tailport='s',weight='100']</span></span>
+<span><span class="co">#&gt; '1' -&gt; '2' [tailport='e',weight='1']</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
-<div id="combined-data-flows" class="section level1">
-<h1 class="hasAnchor">
-<a href="#combined-data-flows" class="anchor"></a>Combined data flows</h1>
-<p>Data sets that undergo different processing may be joined into a single dataset. This is supported in <code>dtrackr</code> and demonstrated in the “joining-pipelines” vignette.</p>
+<div class="section level2">
+<h2 id="combined-data-flows">Combined data flows<a class="anchor" aria-label="anchor" href="#combined-data-flows"></a>
+</h2>
+<p>Data sets that undergo different processing may be joined into a
+single dataset. This is supported in <code>dtrackr</code> and
+demonstrated in the “joining-pipelines” vignette.</p>
 </div>
   </div>
 
@@ -596,11 +713,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Robert Challen.</p>
+  <p></p>
+<p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -608,6 +727,8 @@
 
   
 
+
+  
 
   </body>
 </html>

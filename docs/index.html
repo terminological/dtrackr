@@ -29,6 +29,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -41,18 +43,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.4.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.4.9001</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/dtrackr.html">Get started</a>
 </li>
@@ -60,7 +56,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -83,7 +79,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/terminological/dtrackr/">
+  <a href="https://github.com/terminological/dtrackr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -100,191 +96,163 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="dtrackr-track-your-data-pipelines-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#dtrackr-track-your-data-pipelines-" class="anchor"></a>dtrackr: Track your Data Pipelines <a href="https://dplyr.tidyverse.org"><img src="reference/figures/logo.png" align="right" height="139"></a>
+<div class="section level1">
+<div class="page-header"><h1 id="dtrackr-track-your-data-pipelines-">dtrackr: Track your Data Pipelines <a href="https://terminological.github.io/dtrackr/index.html" class="external-link"><img src="reference/figures/logo.png" align="right" height="139"></a>
+<a class="anchor" aria-label="anchor" href="#dtrackr-track-your-data-pipelines-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>Accurate documentation of a data pipeline is a first step to reproducibility, and a flow chart describing the steps taken to prepare data is a useful part of this documentation. In analyses that rely on data that is frequently updated, documenting a data flow by copying and pasting row counts into flowcharts in PowerPoint becomes quickly tedious. With interactive data analysis, and particularly using RMarkdown, code execution sometimes happens in a non-linear fashion, and this can lead to, at best, confusion and at worst erroneous analysis. Basing such documentation on what the code does when executed sequentially can be inaccurate when the data has being analysed interactively.</p>
 <p>The goal of <code>dtrackr</code> is to take away this pain by instrumenting and monitoring a dataframe through a <code>dplyr</code> pipeline, creating a step-by-step summary of the important parts of the wrangling as it actually happened to the dataframe, right into dataframe metadata itself. This metadata can be used to generate documentation as a flowchart, and allows both a quick overview of the data and also a visual check of the actual data processing.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>In general use <code>dtrackr</code> is expected to be installed alongside the <code>tidyverse</code> set of packages. It is recommended to install <code>tidyverse</code> first.</p>
 <p>Binary packages of <code>dtrackr</code> are available on CRAN and r-universe for <code>macOS</code> and <code>Windows</code>. <code>dtrackr</code> can be installed from source on Linux. <code>dtrackr</code> has been tested on R versions 3.6, 4.0, 4.1 and 4.2.</p>
-<p>You can install the released version of <code>dtrackr</code> from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"dtrackr"</span><span class="op">)</span></pre></div>
-<div id="system-dependencies-for-installation-from-source" class="section level3">
-<h3 class="hasAnchor">
-<a href="#system-dependencies-for-installation-from-source" class="anchor"></a>System dependencies for installation from source</h3>
+<p>You can install the released version of <code>dtrackr</code> from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"dtrackr"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="system-dependencies-for-installation-from-source">System dependencies for installation from source<a class="anchor" aria-label="anchor" href="#system-dependencies-for-installation-from-source"></a>
+</h3>
 <p>For installation from source on in Linux, <code>dtrackr</code> has required transitive dependencies on a few system libraries. These can be installed with the following commands:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Ubuntu 20.04 and other debian based distributions:</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">sudo</span> apt-get install libcurl4-openssl-dev libssl-dev librsvg2-dev \</span>
-<span id="cb2-3"><a href="#cb2-3"></a>  libicu-dev libnode-dev libpng-dev libjpeg-dev libpoppler-cpp-dev</span>
-<span id="cb2-4"><a href="#cb2-4"></a></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co"># Centos 8</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="fu">sudo</span> dnf install libcurl-devel openssl-devel librsvg2-devel \</span>
-<span id="cb2-7"><a href="#cb2-7"></a>  libicu-devel libpng-devel libjpeg-turbo-devel poppler-devel</span>
-<span id="cb2-8"><a href="#cb2-8"></a></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># for other linux distributions I suggest using the R pak library:</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># install.packages("pak")</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="co"># pak::pkg_system_requirements("dtrackr")</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="co"># N.B. There are additional suggested R package dependencies on </span></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="co"># the `tidyverse` and `rstudioapi` packages which have a longer set of dependencies. </span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co"># We suggest you install them individually first if required.</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ubuntu 20.04 and other debian based distributions:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install libcurl4-openssl-dev libssl-dev librsvg2-dev <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  libicu-dev libnode-dev libpng-dev libjpeg-dev libpoppler-cpp-dev</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Centos 8</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dnf install libcurl-devel openssl-devel librsvg2-devel <span class="dt">\</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  libicu-devel libpng-devel libjpeg-turbo-devel poppler-devel</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># for other linux distributions I suggest using the R pak library:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pak")</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># pak::pkg_system_requirements("dtrackr")</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># N.B. There are additional suggested R package dependencies on </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># the `tidyverse` and `rstudioapi` packages which have a longer set of dependencies. </span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># We suggest you install them individually first if required.</span></span></code></pre></div>
 </div>
-<div id="alternative-versions-of-dtrackr" class="section level3">
-<h3 class="hasAnchor">
-<a href="#alternative-versions-of-dtrackr" class="anchor"></a>Alternative versions of <code>dtrackr</code>
+<div class="section level3">
+<h3 id="alternative-versions-of-dtrackr">Alternative versions of <code>dtrackr</code>
+<a class="anchor" aria-label="anchor" href="#alternative-versions-of-dtrackr"></a>
 </h3>
 <p>Early release versions are available on the <code>r-universe</code>. This will typically be more up to date than CRAN.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># Enable repository from terminological</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-  terminological <span class="op">=</span> <span class="st">'https://terminological.r-universe.dev'</span>,
-  CRAN <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># Download and install dtrackr in R</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'dtrackr'</span><span class="op">)</span></pre></div>
-<p>The unstable development version is available from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"terminological/dtrackr"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Enable repository from terminological</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  terminological <span class="op">=</span> <span class="st">'https://terminological.r-universe.dev'</span>,</span>
+<span>  CRAN <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Download and install dtrackr in R</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'dtrackr'</span><span class="op">)</span></span></code></pre></div>
+<p>The unstable development version is available from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"terminological/dtrackr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="example-usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example-usage" class="anchor"></a>Example usage</h2>
-<p>Suppose we are constructing a data set with out initial input being the <code>iris</code> data. Our analysis depends on some <code>cutOff</code> parameter and we want to prepare a stratified data set that excludes flowers with narrow petals, and those with the biggest petals of each Species. With <code>dtrackr</code> we can mix regular <code>dplyr</code> commands with additional <code>dtrackr</code> commands such as <code>comment</code> and <code>status</code>, and an enhanced implementation of <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter</a></code>, called <code>exclude_all</code>, and <code>include_any</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># a pipeline parameter</span>
-<span class="va">cutOff</span> <span class="op">=</span> <span class="fl">3</span>
-
-<span class="co"># the pipeline</span>
-<span class="va">dataset</span> <span class="op">=</span> <span class="va">iris</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>
-    short <span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&lt;</span><span class="va">cutOff</span><span class="op">)</span>, 
-    long<span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&gt;=</span><span class="va">cutOff</span><span class="op">)</span>, 
-    .messages<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"consisting of {short} short sepal &lt;{cutOff}"</span>,<span class="st">"and {long} long sepal &gt;={cutOff}"</span><span class="op">)</span>
-  <span class="op">)</span>  <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/exclude_all.html">exclude_all</a></span><span class="op">(</span>
-    <span class="va">Petal.Width</span><span class="op">&lt;</span><span class="fl">0.3</span> <span class="op">~</span> <span class="st">"excluding {.excluded} with narrow petals"</span>,
-    <span class="va">Petal.Width</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"and {.excluded} outlier"</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"test message"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} of type {Species}"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} together with cutOff {cutOff}"</span><span class="op">)</span> </pre></div>
+<div class="section level2">
+<h2 id="example-usage">Example usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
+</h2>
+<p>Suppose we are constructing a data set with out initial input being the <code>iris</code> data. Our analysis depends on some <code>cutOff</code> parameter and we want to prepare a stratified data set that excludes flowers with narrow petals, and those with the biggest petals of each Species. With <code>dtrackr</code> we can mix regular <code>dplyr</code> commands with additional <code>dtrackr</code> commands such as <code>comment</code> and <code>status</code>, and an enhanced implementation of <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter</a></code>, called <code>exclude_all</code>, and <code>include_any</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># a pipeline parameter</span></span>
+<span><span class="va">cutOff</span> <span class="op">=</span> <span class="fl">3</span></span>
+<span></span>
+<span><span class="co"># the pipeline</span></span>
+<span><span class="va">dataset</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span></span>
+<span>    short <span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&lt;</span><span class="va">cutOff</span><span class="op">)</span>, </span>
+<span>    long<span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&gt;=</span><span class="va">cutOff</span><span class="op">)</span>, </span>
+<span>    .messages<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"consisting of {short} short sepal &lt;{cutOff}"</span>,<span class="st">"and {long} long sepal &gt;={cutOff}"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>  <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/exclude_all.html">exclude_all</a></span><span class="op">(</span></span>
+<span>    <span class="va">Petal.Width</span><span class="op">&lt;</span><span class="fl">0.3</span> <span class="op">~</span> <span class="st">"excluding {.excluded} with narrow petals"</span>,</span>
+<span>    <span class="va">Petal.Width</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Petal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="st">"and {.excluded} outlier"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"test message"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} of type {Species}"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} together with cutOff {cutOff}"</span><span class="op">)</span> </span></code></pre></div>
 <p>Having prepared our dataset we conduct our analysis, and want to write it up and prepare it for submission. As a key part of documenting the data pipeline a visual summary is useful, and for bio-medical journals or clinical trials often a requirement.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">dataset</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-<p><img src="reference/figures/README-flowchart.png?raw=true"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dataset</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="reference/flowchart.html">flowchart</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-flowchart.png"></p>
 <p>And your publication ready data pipeline, with any assumptions you care to document, is creates in a format of your choice (as long as that choice is one of <code>pdf</code>, <code>png</code>, <code>svg</code> or <code>ps</code>), ready for submission to Nature.</p>
 <p>This is a trivial example, but the more complex the pipeline, the bigger benefit you will get.</p>
-<p>Check out the <a href="https://terminological.github.io/dtrackr">main documentation for more details</a>, and in particular the <a href="https://terminological.github.io/dtrackr/articles/dtrackr.html">getting started vignette</a>.</p>
-</div>
-<div id="testing-and-integration" class="section level2">
-<h2 class="hasAnchor">
-<a href="#testing-and-integration" class="anchor"></a>Testing and integration</h2>
-<p>For testing <code>dtrackr</code> uses the <code>testthat</code> framework. It is configured to run both the unit tests and the functional tests in the code examples.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="co"># assuming dtrackr has been cloned from github into the working directory </span>
-<span class="co"># location</span>
-
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html">load_all</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="co"># Long list of system dependencies in Ubuntu 20.04 including all suggested </span>
-<span class="co"># dependencies:</span>
-<span class="co"># librsvg2-dev libicu-dev libcurl4-openssl-dev libssl-dev libnode-dev make </span>
-<span class="co"># pandoc imagemagick libmagick++-dev gsfonts default-jdk libxml2-dev </span>
-<span class="co"># zlib1g-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev </span>
-<span class="co"># libjpeg-dev libpng-dev libtiff-dev git libgit2-dev</span>
-
-<span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/local_system_requirements.html">local_system_requirements</a></span><span class="op">(</span><span class="st">"ubuntu"</span>,<span class="st">"20.04"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"here"</span>,<span class="st">"tidyverse"</span>,<span class="st">"devtools"</span>,<span class="st">"testthat"</span>,<span class="st">"pkgdown"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Examples:</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/run_examples.html">run_examples</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="co"># automated testing with testthat (also runs all examples):</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html">test</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="co"># pkgdown site building (which executes all the vignettes):</span>
-<span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-<p>Github workflows are enabled on this repository for continuous integration. These perform an <code>R CMD check</code> on code commits, which will run all <code>testthat</code> unit tests, run all man page examples, and build all the vignettes.</p>
-<p>For vignette building there are dependencies on the <code>tidyverse</code> package, as well as other system libraries required for vignette building with <code>pandoc</code>. The CI tests check the library can be installed on macOs, windows, and Ubuntu, with R versions 3.6.1, 4.1, 4.2 and the R development branch.</p>
-<p>On tagged releases, additional Github workflows are triggered by in the <code>r-universe</code> repository, to build binary releases on a range of platforms.</p>
+<p>Check out the <a href="https://terminological.github.io/dtrackr" class="external-link">main documentation for more details</a>, and in particular the <a href="https://terminological.github.io/dtrackr/articles/dtrackr.html" class="external-link">getting started vignette</a>.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=dtrackr">https://​cloud.r-project.org/​package=dtrackr</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/terminological/dtrackr/">https://​github.com/​terminological/​dtrackr/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/terminological/dtrackr/issues">https://​github.com/​terminological/​dtrackr/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=dtrackr" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/terminological/dtrackr/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/terminological/dtrackr/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 </ul>
 </div>
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing dtrackr</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Robert Challen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5504-7768" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html#citation">Citing dtrackr</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/terminological/dtrackr/actions"><img src="https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://zenodo.org/badge/latestdoi/335974323"><img src="https://zenodo.org/badge/335974323.svg" alt="DOI"></a></li>
-<li><a href="https://terminological.r-universe.dev"><img src="https://terminological.r-universe.dev/badges/dtrackr" alt="dtrackr status badge"></a></li>
-<li><a href="https://cran.r-project.org/package=dtrackr"><img src="https://cranlogs.r-pkg.org/badges/dtrackr" alt="metacran downloads"></a></li>
-<li><a href="https://cran.r-project.org/package=dtrackr"><img src="https://www.r-pkg.org/badges/version/dtrackr" alt="CRAN_Status_Badge"></a></li>
+<li>Robert Challen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5504-7768" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/terminological/dtrackr/actions" class="external-link"><img src="https://github.com/terminological/dtrackr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://zenodo.org/badge/latestdoi/335974323" class="external-link"><img src="https://zenodo.org/badge/335974323.svg" alt="DOI"></a></li>
+<li><a href="https://terminological.r-universe.dev" class="external-link"><img src="https://terminological.r-universe.dev/badges/dtrackr" alt="dtrackr status badge"></a></li>
+<li><a href="https://cran.r-project.org/package=dtrackr" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/dtrackr" alt="metacran downloads"></a></li>
+<li><a href="https://cran.r-project.org/package=dtrackr" class="external-link"><img src="https://www.r-pkg.org/badges/version/dtrackr" alt="CRAN_Status_Badge"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Robert Challen.</p>
+  <p></p>
+<p>Developed by Robert Challen.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -292,6 +260,8 @@
 
   
 
+
+  
 
   </body>
 </html>

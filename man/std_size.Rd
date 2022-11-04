@@ -5,12 +5,13 @@
 \alias{std_size}
 \title{Standard paper sizes}
 \format{
-An object of class \code{list} of length 8.
+An object of class \code{list} of length 12.
 }
 \usage{
 std_size
 }
 \description{
-A list of standard paper sizes
+A list of standard paper sizes for outputting flowcharts or other dot
+graphs
 }
 \keyword{datasets}

@@ -46,6 +46,7 @@ grouped) for reporting See \code{\link[dplyr:distinct]{dplyr::distinct()}}.
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = bind_rows(iris \%>\% track(), iris \%>\% track() \%>\% filter(Petal.Length > 5))
 tmp \%>\% group_by(Species) \%>\% distinct() \%>\% history()
 }

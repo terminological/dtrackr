@@ -73,8 +73,6 @@ in which case they behave just like a \code{comment()} See \code{\link[dplyr:mut
 }
 \examples{
 library(dplyr)
-library(tidyselect)
-library(tidyr)
 library(dtrackr)
 
 # mutate and other functions are unitary operations that generally change
@@ -111,7 +109,7 @@ iris \%>\%
   track() \%>\%
   group_by(Species) \%>\%
   select(
-    starts_with("Sepal"),
+    tidyselect::starts_with("Sepal"),
     .messages="{.cols}",
     .headline="Output columns from select:") \%>\%
   history()
@@ -121,7 +119,7 @@ iris \%>\%
   track() \%>\%
   group_by(Species) \%>\%
   relocate(
-    starts_with("Sepal"),
+    tidyselect::starts_with("Sepal"),
     .after=Species,
     .messages="{.cols}",
     .headline="Order of columns from relocate:") \%>\%

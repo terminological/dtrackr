@@ -48,19 +48,20 @@ test_that("more complex status works", {
 })
 
 test_that("subgroup counts work", {
-  g = ILPD %>%
+  g = survival::cgd %>%
+    p_track() %>%
     p_comment() %>%
-    p_group_by(Case_or_Control) %>%
+    p_group_by(treat) %>%
     p_comment() %>%
     p_count_subgroup(
-        .subgroup = Gender,
+        .subgroup = sex,
         .messages="{.name}: {.count}/{.subtotal}",
-        .headline="{Case_or_Control}: {.subtotal}/{.total}"
+        .headline="{treat}: {.subtotal}/{.total}"
     ) %>%
     p_comment() %>%
     p_get()
   testthat::expect_true(
-    g %>% graphContains("case: 416/583","Female: 92/416") &
-    g %>% graphContains("control: 167/583","Male: 117/167")
+    g %>% graphContains("placebo: 120/203","female: 20/120") &
+    g %>% graphContains("rIFN-g: 83/203","male: 68/83")
   )
 })

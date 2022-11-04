@@ -26,6 +26,7 @@ a representation of the history graph in \code{Graphviz} dot format.
 \examples{
 library(dplyr)
 library(dtrackr)
+
 tmp = iris \%>\% track() \%>\% comment(.tag = "step1") \%>\% filter(Species!="versicolor")
 dot = tmp \%>\% group_by(Species) \%>\% comment(.tag="step2") \%>\% p_get_as_dot()
 cat(dot)

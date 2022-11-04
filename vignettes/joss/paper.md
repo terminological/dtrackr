@@ -28,28 +28,35 @@ package ecosystem [@wickhamWelcomeTidyverse2019a] provide the infrastructure to
 assemble, clean and filter data prior to statistical analysis. Manual
 documentation of the steps taken in the data pipeline and the provenance of data
 is a cumbersome and error prone task which may restrict reproducibility.
-`dtrackr` is a thin wrapper around a subset of the standard `tidyverse` data manipulation
-tools that allows automatic tracking the processing steps applied to a data set,
+`dtrackr` is a wrapper around a subset of the standard `tidyverse` data manipulation
+tools that allows automatic tracking of the processing steps applied to a data set,
 prior to statistical analysis. It allows early detection and reporting of data
-quality problems, and automatically documents a set of data transformations as a
+quality problems, and automatically documents a pipeline of data transformations as a
 flowchart in a format suitable for scientific publication, including, but not
 limited to CONSORT diagrams [@schulzCONSORT2010Statement2010].
 
-`dtrackr` if first and foremost a utility to accelerate and improve research by
-facilitating documentation, thus supporting extraction of knowledge from data sets,
-and the execution of research by helping identify data quality issues. The
+`dtrackr` is first and foremost a utility to accelerate and improve research by
+facilitating documentation, supporting extraction of knowledge from data
+sets, and the execution of research by helping identify data quality issues. The
 general capability however fits into a broader context of other provenance or
-data pipeline research. This includes initiatives such as `C2Metadata` [@alterCapturingDataProvenance2021;
-@pimentelSurveyCollectingManaging2019], which focus on a language independent representation of a data
-pipeline, and R packages such as 
-`targets` [@landauTargetsPackageDynamic2021] which focus on documenting
-pipeline code, and managing the execution of a pipeline. `dtrackr` takes a more
-data oriented approach, which could be complementary, in which we remain
-agnostic to the design of a data pipeline. We capture the transformations
-applied to data alongside the data itself, along with documentation of the data
-state as it was transformed. The approach of `dtrackr` is analogous to a `git`
-commit history for dataframes, and there is potential synergy with emerging
-versioned databases such as `dolt` [@DoltGitData2022; @rossDoltrClientDolt2022].
+data pipeline research. This includes initiatives such as `C2Metadata`
+[@alterCapturingDataProvenance2021], which focus on a language independent
+representation of a data pipeline, and R packages such as `targets`
+[@landauTargetsPackageDynamic2021] which focus on documenting pipeline code, and
+managing the execution of a pipeline, or `RDataTracker` which focusses on tracking
+the execution of a arbitrary R script [@lerner_using_2018]. `dtrackr` takes a more data oriented
+approach, which could be complementary, in which we remain agnostic to the
+detail of a data pipeline script or nature of its execution, but capture a subset 
+of the transformations applied to data alongside the data itself, thereby 
+documenting the data state as it is being manipulated. This is achieved by overriding 
+the execution of `dplyr` pipeline functions and 
+results in a retrospective record of provenance [@pimentelSurveyCollectingManaging2019].
+`dtrackr` also has the ability to insert secondary analysis as annotations into the pipeline, and
+allows control over what information is collected, ultimately with a view to producing
+simple human readable output.
+The approach of `dtrackr` is analogous to a `git` commit history
+for dataframes, and there is potential synergy with emerging versioned databases
+such as `dolt` [@DoltGitData2022; @rossDoltrClientDolt2022].
 
 # Statement of need
 
@@ -100,11 +107,11 @@ history includes a complete record of any data quality issues that lead to
 excluded records. The history is a directed graph which can be expressed in the
 commonly used `GraphViz` language [@gansnerOpenGraphVisualization2000] and may
 be visualised as a flowchart such as in \autoref{fig:figure1}; this uses the
-Indian Liver Patients disease (ILPD) data set [@ramanaCriticalComparativeStudy;
-@ramanaCriticalStudySelected2011; @Dua2019] as an example of an observational
+Chronic Granulamatous Disease dataset from the `survival` package 
+[@survival-book; @survival-package] as an example of a parallel group
 study and produces a STROBE like flowchart.
 
-![An example flowchart derived directly from a simple analysis of the ILPD dataset demonstrating use of `dtrackr` to generate the key parts of a STROBE or CONSORT diagram. \label{fig:figure1}](figure1-ilpd-consort.pdf)
+![An example flowchart derived directly from a simple analysis of the Chronic Granulomatous Disease dataset demonstrating use of `dtrackr` to generate the key parts of a STROBE or CONSORT diagram. \label{fig:figure1}](figure1-consort.pdf)
 
 `dtrackr` was originally conceptualized during an analysis I undertook of the
 severity of the Alpha variant of SARS-CoV-2 [@challenRiskMortalityPatients2021],
