@@ -1166,12 +1166,22 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
   for(filter in filters) {
     glueSpec = rlang::f_rhs(filter)
     filt = rlang::f_lhs(filter)
-    out = out %>% dplyr::group_modify(function(d,g,...) {
-      d %>%
-        dplyr::mutate(.incl = rlang::eval_tidy(filt,data = d, env=.env)) %>%
+    # out = out %>% dplyr::group_modify(function(d,g,...) {
+    #   d %>%
+    #     dplyr::mutate(.incl = rlang::eval_tidy(filt, data = d, env=.env)) %>%
+    #     dplyr::mutate(.incl.na = ifelse(is.na(.incl),!na.rm,.incl)) %>%
+    #     dplyr::mutate(.retain = .retain | .incl.na)
+    # })
+    # Fix for github issue #26. I didn't want to do this in a group_modify as it loses the grouped
+    # columns (which I could have reassembled with the g parameter). Instead I am doing this
+    # in a standard mutate using the dplyr::cur_data_all. This behaviour is demonstrated here:
+    # iris %>% group_by(Species) %>% filter(rlang::eval_tidy( quo(Petal.Width==max(Petal.Width)), data = cur_data_all()))
+    # where the result should be 5 long with entries for each Species.
+    out = out %>%
+        dplyr::mutate(.incl = rlang::eval_tidy(filt, data = dplyr::cur_data_all(), env=.env)) %>%
         dplyr::mutate(.incl.na = ifelse(is.na(.incl),!na.rm,.incl)) %>%
         dplyr::mutate(.retain = .retain | .incl.na)
-    })
+
     tmp = out %>%
       dplyr::summarise(
         .count = dplyr::n(),
@@ -1935,12 +1945,15 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
   x = x %>% .untrack()
   y = y %>% .untrack()
   #.env = environment()
-  if (is.null(names(by))) {
-    .keys = paste0(by, collapse = ",")
+  if (is.null(by)) {
+    # Fix of #25 - the natural join when columns are not specified
+    .keys = paste0(intersect(colnames(x),colnames(y)), collapse = ", ")
+  } else if (is.null(names(by))) {
+    .keys = paste0(by, collapse = ", ")
   } else {
     .keys = paste0(
       ifelse(names(by) != "", paste(names(by),by,sep="="),by),
-      collapse=","
+      collapse=", "
     )
   }
   .count.lhs = nrow(x)
@@ -2165,7 +2178,8 @@ is_running_in_chunk = function() {
 #' together in which case an attempt is made to determine which parts are
 #' common.
 #'
-#' @param .data the tracked dataframes
+#' @param .data the tracked dataframe(s) either as a single dataframe or as a
+#'   list of dataframes.
 #' @param ... other params passed onto either `p_get_as_dot()`, notable ones are
 #'   `fill` (background colour e.g. 'lightgrey'), `fontsize` (in points),
 #'   `colour` (font colour)
@@ -2190,18 +2204,21 @@ is_running_in_chunk = function() {
 #' tmp %>% group_by(Species) %>% comment(.tag="step2") %>% flowchart()
 p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, ...) {
 
-  if("trackr_df" %in% class(.data)) .data = list(.data)
+  # make sure .data is a list of dataframes
+  if(is.data.frame(.data)) .data = list(.data)
   mergedGraph=.emptyGraph()
+
+  if(!any(sapply(.data, .isTracked))) stop("None of the inputs is a tracked data frame. Did you forget to call dtrackr::track()")
+  if(!all(sapply(.data, .isTracked))) rlang::warn("Some of the inputs are not tracked data frames. These will be ignored.", .frequency = "always")
+
   for(item in .data) {
     if ("trackr_df" %in% class(item)) {
       mergedGraph = .mergeGraphs(mergedGraph, item %>% p_get())
-    } else {
-      rlang::warn(".data is not a tracked dataframe. Did you forget to call dtrackr::track()?", .frequency = "always")
     }
   }
 
   # if we are knitting and the output is not HTML we will need the image
-  # saved somewhere as a png and pdf.Also if output if github markdown
+  # saved somewhere as a png and pdf. Also if output if github markdown
   # Also if we are viewing the image in the console and the user requested the png
   if(
     (is_knitting() && !(knitr::is_html_output()))

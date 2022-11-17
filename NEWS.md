@@ -49,7 +49,6 @@ transmute, ungroup
 * Print and plot S3 methods for history graph. 
 * Vignette fixes. 
 * Non breaking changes to API so bumping to new minor version for CRAN submission.
-* (Version to stay unstable until CRAN submission complete)
 
 # dtrackr 0.2.5
 
@@ -67,6 +66,11 @@ dtrackr Coverage: 83.60%,
 R/dot.R: 78.12%,
 R/dtrackr.R: 84.08%) mostly through examples
 * improved error handling and reporting in mutate functions.
-* issues: documentation results in examples tests running multiple times.
-* TODO: (next version) exclusions in joins. 
-* Logo.
+* bug #25 & #26 fixes: 
+* Logo and documentation fixes.
+
+* issues: re-use of documentation results in examples tests running multiple times.
+* TODO: (next version) exclusions in joins
+* TODO: (next version) better support for long format tables
+* TODO: (future version) column level tracking (prototyped in 0.2.5)
+

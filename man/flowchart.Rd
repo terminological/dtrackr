@@ -16,7 +16,8 @@ flowchart(
 )
 }
 \arguments{
-\item{.data}{the tracked dataframes}
+\item{.data}{the tracked dataframe(s) either as a single dataframe or as a
+list of dataframes.}
 
 \item{filename}{a filename which will be where the formatted flowcharts are
 saved. If no extension is specified the output formats are determined by
