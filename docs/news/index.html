@@ -67,15 +67,48 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.0.9000" id="dtrackr-0109000---pre-release-github-version">dtrackr 0.1.0.9000 - pre-release github version<a class="anchor" aria-label="anchor" href="#dtrackr-0109000---pre-release-github-version"></a></h2>
-<ul><li>Initial package features complete</li>
-<li>Dplyr like for like functionality supporting - add_count, add_tally, anti_join, arrange, bind_rows, comment, distinct, exclude_all, filter, full_join, group_by, group_modify, inner_join, left_join, mutate, pivot_longer, pivot_wider, relocate, rename, rename_with, right_join, select, semi_join, summarise, transmute, ungroup</li>
-<li>add a comment into the history (stratified by grouping),</li>
-<li>add a status into the history (stratified by grouping),</li>
-<li>apply exclusion and inclusion filters including stratified commentary</li>
-<li>merge histories of joining data frames</li>
-<li>export history as dot graphviz graph</li>
-<li>render history graph to SVG, PNG, PDF, DOT or PS formats</li>
+<h2 class="page-header" data-toc-text="0.2.5" id="dtrackr-025">dtrackr 0.2.5<a class="anchor" aria-label="anchor" href="#dtrackr-025"></a></h2>
+<ul><li>updates following JOSS review.</li>
+<li>bug fix for group_by not checking pause status before warning that pause required.</li>
+<li>documentation improvements - full review of all documentation. Additional context to function reference to draw attention to supported dplyr operations</li>
+<li>added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and missing set operations functions.</li>
+<li>re-factored mutate style operations, regression tested</li>
+<li>automated testing for new methods, and full testing for slice, set ops, and mutate style functions with new example code.</li>
+<li>expanded test coverage ( covr::package_coverage(type=“all”): dtrackr Coverage: 83.60%, R/dot.R: 78.12%, R/dtrackr.R: 84.08%) mostly through examples</li>
+<li>improved error handling and reporting in mutate functions.</li>
+<li>bug <a href="https://github.com/terminological/dtrackr/issues/25" class="external-link">#25</a> &amp; <a href="https://github.com/terminological/dtrackr/issues/26" class="external-link">#26</a> fixes (see github)</li>
+<li>Logo and documentation fixes and improvements.</li>
+<li>outstanding issues:</li>
+<li>re-use of documentation results in examples tests running multiple times.</li>
+<li>TODO: (next version) exclusions in joins</li>
+<li>TODO: (next version) better support for long format tables</li>
+<li>TODO: (future version) column level tracking (prototyped in 0.2.5)</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.4" id="dtrackr-024">dtrackr 0.2.4<small>2022-07-05</small><a class="anchor" aria-label="anchor" href="#dtrackr-024"></a></h2>
+<ul><li>second round fixes for CRAN. Improved examples in documentation.</li>
+<li>Print and plot S3 methods for history graph.</li>
+<li>Vignette fixes.</li>
+<li>Non breaking changes to API so bumping to new minor version for CRAN submission.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.3" id="dtrackr-023">dtrackr 0.2.3<a class="anchor" aria-label="anchor" href="#dtrackr-023"></a></h2>
+<ul><li>documentation updates &amp; JOSS paper</li>
+<li>fix for fix for multiple names join columns bug.</li>
+<li>ungroup() change to fit with dplyr::ungroup API.</li>
+<li>fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.2" id="dtrackr-022">dtrackr 0.2.2<a class="anchor" aria-label="anchor" href="#dtrackr-022"></a></h2>
+<ul><li>new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.</li>
+<li>fix for multiple names join columns bug.</li>
+<li>bug fixes and extended github workflows.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.1" id="dtrackr-021">dtrackr 0.2.1<a class="anchor" aria-label="anchor" href="#dtrackr-021"></a></h2>
+<ul><li>minor bug fixes for grouping</li>
+<li>support for tagging pipeline with a piece of data for later retrieval to support e.g. for counts within abstract</li>
+<li>support for tidyselect syntax in group by</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="dtrackr-020">dtrackr 0.2.0<a class="anchor" aria-label="anchor" href="#dtrackr-020"></a></h2>
@@ -86,47 +119,15 @@
 <li>switch warnings to rlang::warn etc.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.1" id="dtrackr-021">dtrackr 0.2.1<a class="anchor" aria-label="anchor" href="#dtrackr-021"></a></h2>
-<ul><li>minor bug fixes for grouping</li>
-<li>support for tagging pipeline with a piece of data for later retrieval to support e.g. for counts within abstract</li>
-<li>support for tidyselect syntax in group by</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.2" id="dtrackr-022">dtrackr 0.2.2<a class="anchor" aria-label="anchor" href="#dtrackr-022"></a></h2>
-<ul><li>new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.</li>
-<li>fix for multiple names join columns bug.</li>
-<li>bug fixes and extended github workflows.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.3" id="dtrackr-023">dtrackr 0.2.3<a class="anchor" aria-label="anchor" href="#dtrackr-023"></a></h2>
-<ul><li>documentation updates &amp; JOSS paper</li>
-<li>fix for fix for multiple names join columns bug.</li>
-<li>ungroup() change to fit with dplyr::ungroup API.</li>
-<li>fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.4" id="dtrackr-024">dtrackr 0.2.4<small>2022-07-05</small><a class="anchor" aria-label="anchor" href="#dtrackr-024"></a></h2>
-<ul><li>second round fixes for CRAN. Improved examples in documentation.</li>
-<li>Print and plot S3 methods for history graph.</li>
-<li>Vignette fixes.</li>
-<li>Non breaking changes to API so bumping to new minor version for CRAN submission.</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.5" id="dtrackr-025">dtrackr 0.2.5<a class="anchor" aria-label="anchor" href="#dtrackr-025"></a></h2>
-<ul><li><p>incubating - pending JOSS review.</p></li>
-<li><p>bug fix for group_by not checking pause status before warning that pause required.</p></li>
-<li><p>documentation improvements - full review of all documentation. Additional context to function reference to draw attention to supported dplyr operations</p></li>
-<li><p>added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and missing set operations functions.</p></li>
-<li><p>re-factored mutate style operations, regression tested</p></li>
-<li><p>automated testing for new methods, and full testing for slice, set ops, and mutate style functions with new example code.</p></li>
-<li><p>expanded test coverage ( covr::package_coverage(type=“all”): dtrackr Coverage: 83.60%, R/dot.R: 78.12%, R/dtrackr.R: 84.08%) mostly through examples</p></li>
-<li><p>improved error handling and reporting in mutate functions.</p></li>
-<li><p>bug <a href="https://github.com/terminological/dtrackr/issues/25" class="external-link">#25</a> &amp; <a href="https://github.com/terminological/dtrackr/issues/26" class="external-link">#26</a> fixes:</p></li>
-<li><p>Logo and documentation fixes.</p></li>
-<li><p>issues: re-use of documentation results in examples tests running multiple times.</p></li>
-<li><p>TODO: (next version) exclusions in joins</p></li>
-<li><p>TODO: (next version) better support for long format tables</p></li>
-<li><p>TODO: (future version) column level tracking (prototyped in 0.2.5)</p></li>
+<h2 class="page-header" data-toc-text="0.1.0.9000" id="dtrackr-0109000---pre-release-github-version">dtrackr 0.1.0.9000 - pre-release github version<a class="anchor" aria-label="anchor" href="#dtrackr-0109000---pre-release-github-version"></a></h2>
+<ul><li>Initial package features complete</li>
+<li>Dplyr like for like functionality supporting - add_count, add_tally, anti_join, arrange, bind_rows, comment, distinct, exclude_all, filter, full_join, group_by, group_modify, inner_join, left_join, mutate, pivot_longer, pivot_wider, relocate, rename, rename_with, right_join, select, semi_join, summarise, transmute, ungroup</li>
+<li>add a comment into the history (stratified by grouping),</li>
+<li>add a status into the history (stratified by grouping),</li>
+<li>apply exclusion and inclusion filters including stratified commentary</li>
+<li>merge histories of joining data frames</li>
+<li>export history as dot graphviz graph</li>
+<li>render history graph to SVG, PNG, PDF, DOT or PS formats</li>
 </ul></div>
   </div>
 

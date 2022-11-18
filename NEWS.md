@@ -1,5 +1,63 @@
 # NEWS
 
+# dtrackr 0.2.5
+
+* updates following JOSS review.
+* bug fix for group_by not checking pause status before warning that pause required.
+* documentation improvements - full review of all documentation. Additional
+context to function reference to draw attention to supported dplyr operations 
+* added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and 
+missing set operations functions. 
+* re-factored mutate style operations, regression tested
+* automated testing for new methods, and full testing for slice, set ops, and mutate style
+functions with new example code.
+* expanded test coverage ( covr::package_coverage(type="all"):
+dtrackr Coverage: 83.60%,
+R/dot.R: 78.12%,
+R/dtrackr.R: 84.08%) mostly through examples
+* improved error handling and reporting in mutate functions.
+* bug #25 & #26 fixes (see github) 
+* Logo and documentation fixes and improvements.
+* outstanding issues: 
+* re-use of documentation results in examples tests running multiple times.
+* TODO: (next version) exclusions in joins
+* TODO: (next version) better support for long format tables
+* TODO: (future version) column level tracking (prototyped in 0.2.5)
+
+# dtrackr 0.2.4
+
+* second round fixes for CRAN. Improved examples in documentation. 
+* Print and plot S3 methods for history graph. 
+* Vignette fixes. 
+* Non breaking changes to API so bumping to new minor version for CRAN submission.
+
+# dtrackr 0.2.3
+
+* documentation updates & JOSS paper
+* fix for fix for multiple names join columns bug.
+* ungroup()  change to fit with dplyr::ungroup API.
+* fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.
+
+# dtrackr 0.2.2
+
+* new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.
+* fix for multiple names join columns bug.
+* bug fixes and extended github workflows.
+
+# dtrackr 0.2.1
+
+* minor bug fixes for grouping
+* support for tagging pipeline with a piece of data for later retrieval to support e.g. for counts within abstract
+* support for tidyselect syntax in group by
+
+# dtrackr 0.2.0
+
+* track excluded items with debugging info
+* allow across syntax in most situations (except group_by)
+* support pausing and unpausing of the dataframe tracking
+* preventing massive group_by groups if large numbers of very small groups are selected (e.g. part of a group_by() %>% mutate())
+* switch warnings to rlang::warn etc.
+
 # dtrackr 0.1.0.9000 - pre-release github version
 
 * Initial package features complete
@@ -15,62 +73,3 @@ transmute, ungroup
 * merge histories of joining data frames
 * export history as dot graphviz graph
 * render history graph to SVG, PNG, PDF, DOT or PS formats
-
-# dtrackr 0.2.0
-
-* track excluded items with debugging info
-* allow across syntax in most situations (except group_by)
-* support pausing and unpausing of the dataframe tracking
-* preventing massive group_by groups if large numbers of very small groups are selected (e.g. part of a group_by() %>% mutate())
-* switch warnings to rlang::warn etc.
-
-# dtrackr 0.2.1
-
-* minor bug fixes for grouping
-* support for tagging pipeline with a piece of data for later retrieval to support e.g. for counts within abstract
-* support for tidyselect syntax in group by
-
-# dtrackr 0.2.2
-
-* new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.
-* fix for multiple names join columns bug.
-* bug fixes and extended github workflows.
-
-# dtrackr 0.2.3
-
-* documentation updates & JOSS paper
-* fix for fix for multiple names join columns bug.
-* ungroup()  change to fit with dplyr::ungroup API.
-* fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.
-
-# dtrackr 0.2.4
-
-* second round fixes for CRAN. Improved examples in documentation. 
-* Print and plot S3 methods for history graph. 
-* Vignette fixes. 
-* Non breaking changes to API so bumping to new minor version for CRAN submission.
-
-# dtrackr 0.2.5
-
-* incubating - pending JOSS review.
-* bug fix for group_by not checking pause status before warning that pause required.
-* documentation improvements - full review of all documentation. Additional
-context to function reference to draw attention to supported dplyr operations 
-* added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and 
-missing set operations functions. 
-* re-factored mutate style operations, regression tested
-* automated testing for new methods, and full testing for slice, set ops, and mutate style
-functions with new example code.
-* expanded test coverage ( covr::package_coverage(type="all"):
-dtrackr Coverage: 83.60%,
-R/dot.R: 78.12%,
-R/dtrackr.R: 84.08%) mostly through examples
-* improved error handling and reporting in mutate functions.
-* bug #25 & #26 fixes: 
-* Logo and documentation fixes.
-
-* issues: re-use of documentation results in examples tests running multiple times.
-* TODO: (next version) exclusions in joins
-* TODO: (next version) better support for long format tables
-* TODO: (future version) column level tracking (prototyped in 0.2.5)
-
