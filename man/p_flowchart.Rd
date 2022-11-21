@@ -19,7 +19,7 @@ p_flowchart(
 \item{.data}{the tracked dataframe(s) either as a single dataframe or as a
 list of dataframes.}
 
-\item{filename}{a filename which will be where the formatted flowcharts are
+\item{filename}{a file name which will be where the formatted flowcharts are
 saved. If no extension is specified the output formats are determined by
 the \code{formats} parameter.}
 
@@ -30,20 +30,20 @@ of standard sizes are available in the \link{std_size} object}
 
 \item{maxHeight}{a height in inches if size is not defined}
 
-\item{formats}{some of "pdf","dot","svg","png","ps"}
+\item{formats}{some of \code{pdf},\code{dot},\code{svg},\code{png},\code{ps}}
 
 \item{defaultToHTML}{if the correct output format is not easy to determine
-from the context, default providing HTML (TRUE) or to embedding the PNG (FALSE)}
+from the context, default providing \code{HTML} (TRUE) or to embedding the \code{PNG} (FALSE)}
 
-\item{...}{other params passed onto either \code{p_get_as_dot()}, notable ones are
-\code{fill} (background colour e.g. 'lightgrey'), \code{fontsize} (in points),
+\item{...}{other parameters passed onto either \code{p_get_as_dot()}, notable ones are
+\code{fill} (background colour e.g. \code{lightgrey}), \code{fontsize} (in points),
 \code{colour} (font colour)}
 }
 \value{
 the nature of the flowchart output depends on the context in which
 the function is called. It will be some form of browse-able html output if
-called from an interactive session or a PNG/PDG link if in knitr and
-knitting latex or word type outputs, if filename is specified the output
+called from an interactive session or a \code{PNG}/\code{PDF} link if in \code{knitr} and
+knitting latex or word type outputs, if file name is specified the output
 will also be saved at the given location.
 }
 \description{

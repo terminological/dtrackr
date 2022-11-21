@@ -10,12 +10,12 @@ p_get(.data)
 \item{.data}{a dataframe which may be grouped}
 }
 \value{
-the history graph. This is a list, of class trackr_graph, containing the following named items:
+the history graph. This is a list, of class \code{trackr_graph}, containing the following named items:
 \itemize{
 \item excluded - the data items that have been excluded thus far as a nested dataframe
 \item tags - a dataframe of tag-value pairs containing the summary of the data at named points in the data flow (see \code{\link[=tagged]{tagged()}})
 \item nodes - a dataframe of the nodes of the flow chart
-\item edges - an edgelist (as a dataframe) of the relationships between the nodes in the flow chart
+\item edges - an edge list (as a dataframe) of the relationships between the nodes in the flow chart
 \item head - the current most recent nodes added into the graph as a dataframe.
 }
 

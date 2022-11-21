@@ -10,21 +10,21 @@ Github actions environments
 
 ## R CMD check results
 There were no ERRORs or WARNINGs or NOTEs. 
-(see https://github.com/terminological/dtrackr/actions for details)
-
-── dtrackr 0.2.3: OK
-
-  Build ID:   dtrackr_0.2.3.tar.gz-20b3f099c3e649f9b5ce94daae5ad779
-  Platform:   macOS 10.13.6 High Sierra, R-release, CRAN's setup
-  Submitted:  1m 46.5s ago
-  Build time: 1m 42s
-
+(see https://github.com/terminological/dtrackr/actions/runs/3491658284 for details)
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package.
 
 ## Other info
+
+## This Version 0.2.5
+
+Resubmission following JOSS code review. Major changes described in NEWS.md. 
+Some additional functionality but mainly improvements in documentation, and test
+coverage.
+
+### Previous version 0.2.4
 
 The project is hosted on github - https://github.com/terminological/dtrackr
 This is a re-submission of an as-yet unpublished package correcting the following issues:
@@ -35,11 +35,13 @@ This is a re-submission of an as-yet unpublished package correcting the followin
      - DONE.
 * Please single quote software names in the Description field. 
      - DONE.
-* Please change http --> https, add trailing slashes, or follow moved content as appropriate. 
+* Please change http --> https, add trailing slashes, or follow moved content as
+appropriate.
      - DONE.
 * The title field should be in title case. 
      - DONE.
-* The Description field should not start with the package name, 'This package' or similar. Please fix and resubmit. 
+* The Description field should not start with the package name, 'This package'
+or similar. Please fix and resubmit.
      - DONE.
 * additionally fixed some typos.
 

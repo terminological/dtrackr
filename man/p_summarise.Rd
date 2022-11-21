@@ -19,7 +19,7 @@ p_summarise(
 \item{...}{a set of dplyr summary expressions.}
 
 \item{.groups}{\itemize{
-\item Experimental lifecycle Grouping structure of the result.
+\item Experimental life-cycle: Grouping structure of the result.
 }}
 
 \item{.messages}{a set of glue specs. The glue code can use any summary

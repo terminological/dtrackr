@@ -86,7 +86,7 @@ variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 give it a name with .tag.}
 }
 \value{
-the data dataframe result of the tidyr::pivot_wider function but with
+the data dataframe result of the \code{tidyr::pivot_wider} function but with
 a history graph updated with a \code{.message} if requested.
 }
 \description{

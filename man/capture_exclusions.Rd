@@ -9,10 +9,14 @@ capture_exclusions(.data, .capture = TRUE)
 \arguments{
 \item{.data}{a tracked dataframe}
 
-\item{.capture}{Should we capture exclusions (things removed from the data set). This is useful for debugging data issues but comes at a significant cost. Defaults to the value of \code{getOption("dtrackr.exclusions")} or \code{FALSE}.}
+\item{.capture}{Should we capture exclusions (things removed from the data
+set). This is useful for debugging data issues but comes at a significant
+cost. Defaults to the value of \code{getOption("dtrackr.exclusions")} or
+\code{FALSE}.}
 }
 \value{
-the .data dataframe with the exclusions flag set (or cleared if \code{.capture=FALSE}).
+the .data dataframe with the exclusions flag set (or cleared if
+\code{.capture=FALSE}).
 }
 \description{
 Start capturing exclusions on a tracked dataframe.

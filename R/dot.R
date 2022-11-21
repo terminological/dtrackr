@@ -1,9 +1,9 @@
 
-#' Convert Graphviz dot content to a SVG
+#' Convert `Graphviz` dot content to a SVG
 #'
-#' Convert a graphviz dot digraph as string to SVG as string
+#' Convert a `graphviz` dot digraph as string to `SVG` as string
 #'
-#' @param dot a graphviz dot string
+#' @param dot a `graphviz` dot string
 #'
 #' @return the SVG as a string
 #' @export
@@ -76,13 +76,13 @@ std_size = list(
 #'
 #' Convert a digraph in dot format to SVG and save it to a range of output file types
 #'
-#' @param dot a graphviz dot string
-#' @param filename the full path of the filename (minus extension for multiple formats)
+#' @param dot a `graphviz` dot string
+#' @param filename the full path of the file name (minus extension for multiple formats)
 #' @param size a named list with 2 elements, length and width in inches. A predefined set
 #'   of standard sizes are available in the [dtrackr::std_size] object
 #' @param maxWidth a width in inches is size is not defined
 #' @param maxHeight a height in inches if size is not defined
-#' @param formats some of "pdf","dot","svg","png","ps"
+#' @param formats some of `pdf`,`dot`,`svg`,`png`,`ps`
 #' @param ... ignored
 #'
 #' @return a list with items `paths` with the absolute paths of the saved files as a named list, and `svg` as the SVG string of the rendered dot file.

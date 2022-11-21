@@ -6,15 +6,15 @@
 * bug fix for group_by not checking pause status before warning that pause required.
 * documentation improvements - full review of all documentation. Additional
 context to function reference to draw attention to supported dplyr operations 
-* added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and 
+* added `nest_join.tracked_df` S3 method, added `slice*.tracked_df` functions, and 
 missing set operations functions. 
 * re-factored mutate style operations, regression tested
 * automated testing for new methods, and full testing for slice, set ops, and mutate style
 functions with new example code.
-* expanded test coverage ( covr::package_coverage(type="all"):
-dtrackr Coverage: 83.60%,
-R/dot.R: 78.12%,
-R/dtrackr.R: 84.08%) mostly through examples
+* expanded test coverage ( `covr::package_coverage(type="all"` ):
+`dtrackr` Coverage: 83.60%,
+`R/dot.R`: 78.12%,
+`R/dtrackr.R`: 84.08%) mostly through examples
 * improved error handling and reporting in mutate functions.
 * bug #25 & #26 fixes (see github) 
 * Logo and documentation fixes and improvements.
@@ -35,12 +35,12 @@ R/dtrackr.R: 84.08%) mostly through examples
 
 * documentation updates & JOSS paper
 * fix for fix for multiple names join columns bug.
-* ungroup()  change to fit with dplyr::ungroup API.
+* `ungroup()`  change to fit with `dplyr::ungroup` API.
 * fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.
 
 # dtrackr 0.2.2
 
-* new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.
+* new feature of subgroup counts for determining size of subgroups in grouped (or un-grouped) flowchart.
 * fix for multiple names join columns bug.
 * bug fixes and extended github workflows.
 

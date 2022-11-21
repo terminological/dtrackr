@@ -107,7 +107,7 @@ history includes a complete record of any data quality issues that lead to
 excluded records. The history is a directed graph which can be expressed in the
 commonly used `GraphViz` language [@gansnerOpenGraphVisualization2000] and may
 be visualised as a flowchart such as in \autoref{fig:figure1}; this uses the
-Chronic Granulamatous Disease dataset from the `survival` package 
+Chronic Granulomatous Disease dataset from the `survival` package 
 [@survival-book; @survival-package] as an example of a parallel group
 study and produces a STROBE like flowchart.
 

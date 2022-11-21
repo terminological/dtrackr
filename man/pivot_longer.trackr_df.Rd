@@ -118,7 +118,7 @@ variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 give it a name with .tag.}
 }
 \value{
-the result of the tidyr::pivot_wider but with a history graph
+the result of the \code{tidyr::pivot_longer} but with a history graph
 updated.
 }
 \description{

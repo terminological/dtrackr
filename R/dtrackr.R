@@ -394,12 +394,21 @@ plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", 
 #' Start tracking the dtrackr history graph
 #'
 #' @param .data a dataframe which may be grouped
-#' @param .messages a character vector of glue specifications. A glue specification can refer to any grouping variables of .data, or any variables defined in the calling environment, the \{.total\} variable which is the count of all rows,
-#' the \{.count\} variable which is the count of rows in the current group and the \{.strata\} which describes the current group. Defaults to the value of `getOption("dtrackr.default_message")`.
-#' @param .headline a glue specification which can refer to grouping variables of .data, or any variables defined in the calling environment, or the \{.total\} variable which is nrow(.data), or \{.strata\} a summary of the current group. Defaults to the value of getOption("dtrackr.default_headline").
-#' @param .tag if you want the summary data from this step in the future then give it a name with .tag.
+#' @param .messages a character vector of glue specifications. A glue
+#'   specification can refer to any grouping variables of .data, or any
+#'   variables defined in the calling environment, the \{.total\} variable which
+#'   is the count of all rows, the \{.count\} variable which is the count of
+#'   rows in the current group and the \{.strata\} which describes the current
+#'   group. Defaults to the value of `getOption("dtrackr.default_message")`.
+#' @param .headline a glue specification which can refer to grouping variables
+#'   of .data, or any variables defined in the calling environment, or the
+#'   \{.total\} variable which is `nrow(.data)`, or \{.strata\} a summary of the
+#'   current group. Defaults to the value of `getOption("dtrackr.default_headline")`.
+#' @param .tag if you want the summary data from this step in the future then
+#'   give it a name with .tag.
 #'
-#' @return the .data dataframe with additional history graph metadata, to allow tracking.
+#' @return the .data dataframe with additional history graph metadata, to allow
+#'   tracking.
 #' @export
 #'
 #' @examples
@@ -489,9 +498,13 @@ p_resume = function(.data) {
 #' Start capturing exclusions on a tracked dataframe.
 #'
 #' @param .data a tracked dataframe
-#' @param .capture Should we capture exclusions (things removed from the data set). This is useful for debugging data issues but comes at a significant cost. Defaults to the value of `getOption("dtrackr.exclusions")` or `FALSE`.
+#' @param .capture Should we capture exclusions (things removed from the data
+#'   set). This is useful for debugging data issues but comes at a significant
+#'   cost. Defaults to the value of `getOption("dtrackr.exclusions")` or
+#'   `FALSE`.
 #'
-#' @return the .data dataframe with the exclusions flag set (or cleared if `.capture=FALSE`).
+#' @return the .data dataframe with the exclusions flag set (or cleared if
+#'   `.capture=FALSE`).
 #' @export
 #'
 #' @examples
@@ -519,11 +532,11 @@ p_capture_exclusions = function(.data, .capture=TRUE) {
 #'
 #' @param .data a dataframe which may be grouped
 #'
-#' @return the history graph. This is a list, of class trackr_graph, containing the following named items:
+#' @return the history graph. This is a list, of class `trackr_graph`, containing the following named items:
 #' * excluded - the data items that have been excluded thus far as a nested dataframe
 #' * tags - a dataframe of tag-value pairs containing the summary of the data at named points in the data flow (see [tagged()])
 #' * nodes - a dataframe of the nodes of the flow chart
-#' * edges - an edgelist (as a dataframe) of the relationships between the nodes in the flow chart
+#' * edges - an edge list (as a dataframe) of the relationships between the nodes in the flow chart
 #' * head - the current most recent nodes added into the graph as a dataframe.
 #'
 #' The format of this data may grow over time but these fields are unlikely to be changed.
@@ -758,7 +771,8 @@ p_count_if = function(..., na.rm = TRUE) {
 #'   description of the group
 #' @param .headline a glue specification which can refer to grouping variables
 #'   of .data, or any variables defined in the calling environment, or the
-#'   \{.total\} variable which is nrow(.data)and \{.strata\}
+#'   \{.total\} variable (which is `nrow(.data)`) and \{.strata\} which is a
+#'   description of the grouping
 #' @param .type one of "info","...,"exclusion": used to define formatting
 #' @param .asOffshoot do you want this comment to be an offshoot of the main
 #'   flow (default = FALSE).
@@ -806,8 +820,8 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #' Because of the ... summary specification parameters MUST BE NAMED.
 #'
 #' @param .data a dataframe which may be grouped
-#' @param ... any normal dplyr::summarise specification, e.g. count=n() or
-#'   av=mean(x) etc.
+#' @param ... any normal dplyr::summarise specification, e.g. `count=n()` or
+#'   `av=mean(x)`, etcetera.
 #' @param .messages a character vector of glue specifications. A glue
 #'   specification can refer to the summary outputs, any grouping variables of
 #'   .data, the \{.strata\}, or any variables defined in the calling environment
@@ -865,7 +879,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #' @param .data a dataframe which may be grouped
 #' @param .subgroup a column with a small number of levels (e.g. a factor)
 #' @param ... additional parameters will be passed to `factor(subgroup,...)` to
-#'   control levels, ordering, etc.
+#'   control levels, ordering, etcetera.
 #' @param .messages a character vector of glue specifications. A glue
 #'   specification can refer to anything from the calling environment and \{.name\}
 #'   for the subgroup name, \{.count\} for the subgroup count, \{.subtotal\} for the
@@ -1256,7 +1270,7 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #' @param .headline a headline glue spec. The glue code can use any summary
 #'   variable defined in the ... parameter, or any global variable, or
 #'   \{.strata\}
-#' @param .groups	- Experimental lifecycle Grouping structure of the result.
+#' @param .groups	- Experimental life-cycle: Grouping structure of the result.
 #' @param .tag if you want the summary data from this step in the future then
 #'   give it a name with .tag.
 #'
@@ -1415,7 +1429,7 @@ p_arrange = function(.data, ...,  .by_group = FALSE, .messages = "", .headline =
 #' @param .tag if you want the summary data from this step in the future then
 #'   give it a name with .tag.
 #'
-#' @return the data dataframe result of the tidyr::pivot_wider function but with
+#' @return the data dataframe result of the `tidyr::pivot_wider` function but with
 #'   a history graph updated with a `.message` if requested.
 #' @export
 p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), names_prefix = "",
@@ -1457,7 +1471,7 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), n
 #' @param .tag if you want the summary data from this step in the future then
 #'   give it a name with .tag.
 #'
-#' @return the result of the tidyr::pivot_wider but with a history graph
+#' @return the result of the `tidyr::pivot_longer` but with a history graph
 #'   updated.
 #' @export
 p_pivot_longer = function(data,
@@ -2180,20 +2194,20 @@ is_running_in_chunk = function() {
 #'
 #' @param .data the tracked dataframe(s) either as a single dataframe or as a
 #'   list of dataframes.
-#' @param ... other params passed onto either `p_get_as_dot()`, notable ones are
-#'   `fill` (background colour e.g. 'lightgrey'), `fontsize` (in points),
+#' @param ... other parameters passed onto either `p_get_as_dot()`, notable ones are
+#'   `fill` (background colour e.g. `lightgrey`), `fontsize` (in points),
 #'   `colour` (font colour)
-#' @param filename a filename which will be where the formatted flowcharts are
+#' @param filename a file name which will be where the formatted flowcharts are
 #'   saved. If no extension is specified the output formats are determined by
 #'   the `formats` parameter.
 #' @inheritParams save_dot
 #' @param defaultToHTML if the correct output format is not easy to determine
-#'   from the context, default providing HTML (TRUE) or to embedding the PNG (FALSE)
+#'   from the context, default providing `HTML` (TRUE) or to embedding the `PNG` (FALSE)
 #'
 #' @return the nature of the flowchart output depends on the context in which
 #'   the function is called. It will be some form of browse-able html output if
-#'   called from an interactive session or a PNG/PDG link if in knitr and
-#'   knitting latex or word type outputs, if filename is specified the output
+#'   called from an interactive session or a `PNG`/`PDF` link if in `knitr` and
+#'   knitting latex or word type outputs, if file name is specified the output
 #'   will also be saved at the given location.
 #' @export
 #' @examples

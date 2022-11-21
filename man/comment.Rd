@@ -24,7 +24,8 @@ description of the group}
 
 \item{.headline}{a glue specification which can refer to grouping variables
 of .data, or any variables defined in the calling environment, or the
-\{.total\} variable which is nrow(.data)and \{.strata\}}
+\{.total\} variable (which is \code{nrow(.data)}) and \{.strata\} which is a
+description of the grouping}
 
 \item{.type}{one of "info","...,"exclusion": used to define formatting}
 

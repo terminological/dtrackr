@@ -15,9 +15,9 @@ save_dot(
 )
 }
 \arguments{
-\item{dot}{a graphviz dot string}
+\item{dot}{a \code{graphviz} dot string}
 
-\item{filename}{the full path of the filename (minus extension for multiple formats)}
+\item{filename}{the full path of the file name (minus extension for multiple formats)}
 
 \item{size}{a named list with 2 elements, length and width in inches. A predefined set
 of standard sizes are available in the \link{std_size} object}
@@ -26,7 +26,7 @@ of standard sizes are available in the \link{std_size} object}
 
 \item{maxHeight}{a height in inches if size is not defined}
 
-\item{formats}{some of "pdf","dot","svg","png","ps"}
+\item{formats}{some of \code{pdf},\code{dot},\code{svg},\code{png},\code{ps}}
 
 \item{...}{ignored}
 }
