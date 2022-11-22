@@ -10,66 +10,27 @@ Github actions environments
 
 ## R CMD check results
 There were no ERRORs or WARNINGs or NOTEs. 
-(see https://github.com/terminological/dtrackr/actions/runs/3491658284 for details)
+(see https://github.com/terminological/dtrackr/actions/runs/3491658284 for 
+details)
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
 ## Downstream dependencies
-There are currently no downstream dependencies for this package.
+There are currently no downstream dependencies for this package in CRAN.
 
 ## Other info
+This version 0.2.5 updates previous CRAN release 0.2.4
 
-## This Version 0.2.5
+Updates following JOSS code review, detailed changes described in NEWS.md. 
 
-Resubmission following JOSS code review. Major changes described in NEWS.md. 
-Some additional functionality but mainly improvements in documentation, and test
-coverage.
+* Mainly improvements in documentation, test coverage, examples, and supporting 
+documentation such as contributor statements. 
+* Some additional functionality but no breaking changes in existing functions 
+or configuration. 
+* Changes in documentation have resulted in additional `Suggests` dependencies 
+on CRAN packages.
+* Updated maintainer email to longer term stable email address. URLs in 
+DESCRIPTION updated to point to github source.
+* There are some spelling issues that arise from documentation inherited from 
+`dplyr`and `tidyr` equivalent functions, that would need to be fixed upstream.
 
-### Previous version 0.2.4
-
-The project is hosted on github - https://github.com/terminological/dtrackr
-This is a re-submission of an as-yet unpublished package correcting the following issues:
-
-29th June 2022
-
-* Please only ship the CRAN template for the MIT license. 
-     - DONE.
-* Please single quote software names in the Description field. 
-     - DONE.
-* Please change http --> https, add trailing slashes, or follow moved content as
-appropriate.
-     - DONE.
-* The title field should be in title case. 
-     - DONE.
-* The Description field should not start with the package name, 'This package'
-or similar. Please fix and resubmit.
-     - DONE.
-* additionally fixed some typos.
-
-1st July 2022
-
-* Please do not start the description with "This package", package name,
-title or "R package for". 
-     - DONE.
-* Please write your full name into the LICENCE file. -> instead of Rob,
-write Robert. 
-     - DONE.
-* Please add \value to .Rd files regarding exported methods and explain
-the functions results in the documentation. Please write about the
-structure of the output (class) and also what the output means. (If a
-function does not return a value, please document that too, e.g.
-\value{No return value, called for side effects} or similar). 
-Missing Rd-tags in up to 13 .Rd files,  ...)
-     - DONE. APOLS - THOUGHT THESE WOULD BE PICKED UP FROM THE DPLYR DOCUMENTATION. HAVE ALSO 
-FULLY REVIEWED REST OF DOCUMENTATION AND MADE EXAMPLES CLEARER.
-* Please ensure that your functions do not write by default or in your
-examples/vignettes/tests in the user's home filespace. 
-     - DONE. I THINK THERE WERE TWO EXAMPLES OF THIS WHICH HAVE BEEN COMMENTED OUT.
-* Please always make sure to reset to user's options(), working directory
-or par() after you changed it in examples and vignettes and demos. 
-     - DONE.
-
-4th July 2022
-
-* I think you missed to add the \value in one of your .Rd files. Please 
-also add it there as you did in the others.
-     - DONE. APOLOGIES OLD VERSION OF DEVTOOLS GENERATED FILE. 
+Many thanks.
