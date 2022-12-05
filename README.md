@@ -10,7 +10,7 @@ badge](https://terminological.r-universe.dev/badges/dtrackr)](https://terminolog
 [![metacran
 downloads](https://cranlogs.r-pkg.org/badges/dtrackr)](https://cran.r-project.org/package=dtrackr)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr)
-[![codecov](https://codecov.io/gh/terminological/dtrackr/branch/main/graph/badge.svg?token=FR1SBH82D3)](https://codecov.io/gh/terminological/dtrackr)
+[![codecov](https://codecov.io/gh/terminological/dtrackr/branch/main/graph/badge.svg?token=FR1SBH82D3)](https://app.codecov.io/gh/terminological/dtrackr)
 [![status](https://joss.theoj.org/papers/47d093cc95dae17d546046bc5ac87475/status.svg)](https://joss.theoj.org/papers/47d093cc95dae17d546046bc5ac87475)
 <!-- [![DOI](https://joss.theoj.org/papers/10.21105/joss.04707/status.svg)](https://doi.org/) -->
 <!-- badges: end -->
