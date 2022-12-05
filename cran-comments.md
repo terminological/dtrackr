@@ -20,6 +20,13 @@ There are currently no downstream dependencies for this package in CRAN.
 ## Other info
 This version 0.2.5 updates previous CRAN release 0.2.4
 
+Resubmitted after problem detected with URLs and DOI.
+* Looks like 2 false positives due to delay in automated testing completing and
+Zenodo URL being assigned.
+* Updated URL: https://terminological.github.io/dtrackr to 
+https://terminological.github.io/dtrackr/ in readme README.md 
+(fixed missing trailing slash)
+
 Updates following JOSS code review, detailed changes described in NEWS.md. 
 
 * Mainly improvements in documentation, test coverage, examples, and supporting 

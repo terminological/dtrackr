@@ -154,6 +154,6 @@ This is a trivial example, but the more complex the pipeline, the bigger
 benefit you will get.
 
 Check out the [main documentation for more
-details](https://terminological.github.io/dtrackr), and in particular
+details](https://terminological.github.io/dtrackr/), and in particular
 the [getting started
 vignette](https://terminological.github.io/dtrackr/articles/dtrackr.html).
