@@ -21,11 +21,11 @@ There are currently no downstream dependencies for this package in CRAN.
 This version 0.2.5 updates previous CRAN release 0.2.4
 
 Resubmitted after problem detected with URLs and DOI.
-* Looks like 2 false positives due to delay in automated testing completing and
-Zenodo URL being assigned.
 * Updated URL: https://terminological.github.io/dtrackr to 
 https://terminological.github.io/dtrackr/ in readme README.md 
 (fixed missing trailing slash)
+* Manually fixed auto-generated codecov badge.
+* Removed project level zenodo DOI as triggering a invalid DOI from CRAN
 
 Updates following JOSS code review, detailed changes described in NEWS.md. 
 
