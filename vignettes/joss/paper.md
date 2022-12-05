@@ -12,9 +12,9 @@ authors:
     orcid: 0000-0002-5504-7768
     affiliation: "1, 2"
 affiliations:
- - name: Engineering Mathematics, University of Bristol, Bristol, UK
+ - name: Engineering Mathematics, University of Bristol, Bristol, United Kingdom
    index: 1
- - name: College of Engineering, Mathematics and Physical Sciences, University of Exeter, Devon, UK
+ - name: College of Engineering, Mathematics and Physical Sciences, University of Exeter, Devon, United Kingdom
    index: 2
 date: 4 October 2022
 bibliography: ../dtrackr.bib
@@ -22,7 +22,7 @@ bibliography: ../dtrackr.bib
 
 # Summary
 
-An accurate statement of the provenance of data is essential in bio-medical
+An accurate statement of the provenance of data is essential in biomedical
 research. Powerful data manipulation tools available in the `tidyverse` R
 package ecosystem [@wickhamWelcomeTidyverse2019a] provide the infrastructure to
 assemble, clean and filter data prior to statistical analysis. Manual
@@ -84,7 +84,7 @@ results, or conditional branching data pipelines, can result in the current
 state of a processed data set becoming decoupled from the code that is designed
 to generate them.
 
-To surface these issues bio-medical journal articles are usually required to
+To surface these issues biomedical journal articles are usually required to
 report data manipulation to an agreed standard. For example, CONSORT diagrams
 are part of the requirements in reporting parallel group clinical trials. They
 are described in the updated 2010 CONSORT statement
@@ -121,7 +121,7 @@ Bristol [@hyamsIncidenceCommunityAcquired2022], and a comparative analysis of
 the severity of the SARS-CoV-2 Omicron variant, versus the Delta variant against
 a range of hospital outcomes [@hyamsSeverityOmicron5292022].
 
-Although the specific example presented here is in the bio-medical domain,
+Although the specific example presented here is in the biomedical domain,
 tracking the provenance of data is a much broader issue, and we anticipate there
 are many other applications for `dtrackr`.
 
