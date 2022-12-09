@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5.9000</span>
       </span>
     </div>
 
@@ -279,7 +279,7 @@
         <td><p>Set operations</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="s-function-extensions-in-other-packages">S3 function extensions in other packages <a href="#s-function-extensions-in-other-packages" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p><code>dtrackr</code> support for functions from other tidyverse packages is evolving. The focus is on functions that take a dataframe as input and produce a dataframe as output, and naturally fit within a data pipeline. <code>pivot_longer()</code> and <code>pivot_wider()</code> are good examples which are already implemented. Tracking of <code>nest()</code> and <code>unnest()</code> is not yet implemented (but this does not stop you from using these functions in a pipeline), and <code>purrr</code> functions such as <code>map_df()</code>, <code>map_dfc()</code>, <code>map_dfr()</code>, <code>pmap()</code>, <code>pmap_dfr()</code>, <code>pmap_dfc()</code> are potential candidates for future implementation, as are functions that acquire data such as those from the <code>readr</code> package.</p>
+          <p class="section-desc"></p><p><code>dtrackr</code> support for functions from other tidyverse packages is evolving. The focus is on functions that take a dataframe as input and produce a dataframe as output, and naturally fit within a data pipeline. <code>pivot_longer()</code> and <code>pivot_wider()</code> are good examples which are already implemented. Tracking of <code><a href="../reference/nest.html">nest()</a></code> and <code><a href="../reference/unnest.html">unnest()</a></code> is not yet implemented (but this does not stop you from using these functions in a pipeline), and <code>purrr</code> functions such as <code>map_df()</code>, <code>map_dfc()</code>, <code>map_dfr()</code>, <code>pmap()</code>, <code>pmap_dfr()</code>, <code>pmap_dfc()</code> are potential candidates for future implementation, as are functions that acquire data such as those from the <code>readr</code> package.</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="pivot_longer.trackr_df.html">pivot_longer(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
@@ -289,6 +289,14 @@
           <p><code><a href="pivot_wider.trackr_df.html">pivot_wider(<i>&lt;trackr_df&gt;</i>)</a></code> </p>
         </td>
         <td><p>Reshaping data using <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">tidyr::pivot_wider</a></code></p></td>
+      </tr><tr><td>
+          <p><code><a href="nest.html">nest()</a></code> </p>
+        </td>
+        <td><p>Nesting data using <code><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">tidyr::nest</a></code></p></td>
+      </tr><tr><td>
+          <p><code><a href="unnest.html">unnest()</a></code> </p>
+        </td>
+        <td><p>Reshaping data using <code><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">tidyr::unnest</a></code></p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="dot-graph-rendering-">Dot graph rendering. <a href="#dot-graph-rendering-" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Rendering of a <code>dtrackr</code> history once converted to <code>GraphViz</code> dot format. These can be also used for non-dtrackr dot content</p>
@@ -296,7 +304,7 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="dot2svg.html">dot2svg()</a></code> </p>
         </td>
-        <td><p>Convert Graphviz dot content to a SVG</p></td>
+        <td><p>Convert <code>Graphviz</code> dot content to a SVG</p></td>
       </tr><tr><td>
           <p><code><a href="save_dot.html">save_dot()</a></code> </p>
         </td>
@@ -418,6 +426,10 @@
         </td>
         <td><p>dplyr modifying operations</p></td>
       </tr><tr><td>
+          <p><code><a href="p_nest.html">p_nest()</a></code> </p>
+        </td>
+        <td><p>Nesting data using <code><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">tidyr::nest</a></code></p></td>
+      </tr><tr><td>
           <p><code><a href="p_nest_join.html">p_nest_join()</a></code> </p>
         </td>
         <td><p>Nest join</p></td>
@@ -525,6 +537,10 @@
           <p><code><a href="p_union_all.html">p_union_all()</a></code> </p>
         </td>
         <td><p>Set operations</p></td>
+      </tr><tr><td>
+          <p><code><a href="p_unnest.html">p_unnest()</a></code> </p>
+        </td>
+        <td><p>Reshaping data using <code><a href="https://tidyr.tidyverse.org/reference/nest.html" class="external-link">tidyr::unnest</a></code></p></td>
       </tr><tr><td>
           <p><code><a href="p_untrack.html">p_untrack()</a></code> </p>
         </td>

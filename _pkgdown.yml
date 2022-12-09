@@ -93,6 +93,8 @@ reference:
   contents:
   - pivot_longer.trackr_df
   - pivot_wider.trackr_df
+  - nest
+  - unnest
 
 - title: "Dot graph rendering."
   desc: >

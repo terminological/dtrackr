@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5.9000</span>
       </span>
     </div>
 
@@ -86,11 +86,11 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>dot</dt>
-<dd><p>a graphviz dot string</p></dd>
+<dd><p>a <code>graphviz</code> dot string</p></dd>
 
 
 <dt>filename</dt>
-<dd><p>the full path of the filename (minus extension for multiple formats)</p></dd>
+<dd><p>the full path of the file name (minus extension for multiple formats)</p></dd>
 
 
 <dt>size</dt>
@@ -107,7 +107,7 @@ of standard sizes are available in the <a href="std_size.html">std_size</a> obje
 
 
 <dt>formats</dt>
-<dd><p>some of "pdf","dot","svg","png","ps"</p></dd>
+<dd><p>some of <code>pdf</code>,<code>dot</code>,<code>svg</code>,<code>png</code>,<code>ps</code></p></dd>
 
 
 <dt>...</dt>
@@ -126,16 +126,16 @@ of standard sizes are available in the <a href="std_size.html">std_size</a> obje
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">save_dot</span><span class="op">(</span><span class="st">"digraph {A-&gt;B}"</span>,<span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$dot</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpKzPVzw/file131b13329c4f.dot"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpssZO9c/file115c4f6d98bf.dot"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$png</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpKzPVzw/file131b13329c4f.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpssZO9c/file115c4f6d98bf.png"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$pdf</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpKzPVzw/file131b13329c4f.pdf"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpssZO9c/file115c4f6d98bf.pdf"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$svg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpKzPVzw/file131b13329c4f.svg"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpssZO9c/file115c4f6d98bf.svg"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $svg</span>

@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5.9000</span>
       </span>
     </div>
 
@@ -166,7 +166,7 @@
 <span><span class="va">dataset</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span></span>
 <span>    short <span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&lt;</span><span class="va">cutOff</span><span class="op">)</span>, </span>
 <span>    long<span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&gt;=</span><span class="va">cutOff</span><span class="op">)</span>, </span>
@@ -178,7 +178,7 @@
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"test message"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} of type {Species}"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} together with cutOff {cutOff}"</span><span class="op">)</span> </span></code></pre></div>
 <p>Having prepared our dataset we conduct our analysis, and want to write it up and prepare it for submission. As a key part of documenting the data pipeline a visual summary is useful, and for bio-medical journals or clinical trials often a requirement.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
