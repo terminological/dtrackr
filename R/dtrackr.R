@@ -127,6 +127,8 @@
     capture = current$capture,
     tags = current$tags
   )
+  #TODO: better way of doing a copy operation of tracker_graph
+  class(new) = c("trackr_graph",class(new))
   new$nodes = current$nodes %>% dplyr::bind_rows(nodes)
   #TODO: investigate .rel here. I think it should be more to do with .asOffshoot than defined by .type
   newEdges = current$head %>%
@@ -248,7 +250,12 @@ print.trackr_graph = function(x, ...) {
   if (is.null(graph$excluded)) {
     excluded = "<not capturing exclusions>"
   } else {
-    excluded = sum(sapply(graph$excluded$.excluded, nrow ), na.rm = TRUE)
+    listOfDf = graph$excluded$.excluded
+    if (length(listOfDf) > 0) {
+      excluded = sum(sapply(listOfDf, nrow ), na.rm = TRUE)
+    } else {
+      excluded = 0
+    }
   }
 
   tmp = c(
@@ -731,8 +738,16 @@ p_clear = function(.data) {
 
 
 #' mtcars %>% p_copy(iris %>% comment("A comment")) %>% history()
-p_copy = function(.data, from) {
-  return(.data %>% p_set(from %>% p_get()))
+p_copy = function(.data, from, preserve_others = FALSE) {
+  tmp = .data %>% p_set(from %>% p_get())
+  if (preserve_others) {
+    old_attr = setdiff(
+      names(attributes(from)),
+      # these structural attributes are from dplyr group
+      c(names(attributes(tmp)),"row.names","names","groups")
+    tmp = tmp %>% magrittr::set_attributes(attributes(from)[old_attr])
+  }
+  return(tmp)
 }
 
 ## User operations ----
@@ -1453,7 +1468,7 @@ p_pivot_wider = function(data, id_cols = NULL, names_from = as.symbol("name"), n
     ...
   )
   # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
-  out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="pivot_wider", .tag=.tag)
+  out = out %>% p_copy(.data, preserve_others = TRUE) %>% .comment(.messages, .headline = .headline, .type="pivot_wider", .tag=.tag)
   return(out %>% .retrack())
 }
 
@@ -1504,7 +1519,75 @@ p_pivot_longer = function(data,
     values_transform = values_transform,
     ...
   )
-  out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="pivot_longer", .tag=.tag)
+  out = out %>% p_copy(.data, preserve_others = TRUE) %>% .comment(.messages, .headline = .headline, .type="pivot_longer", .tag=.tag)
+  return(out %>% .retrack())
+}
+
+#' Reshaping data using `tidyr::unnest`
+#'
+#' A drop in replacement for [tidyr::unnest()] which optionally takes a
+#' message and headline to store in the history graph.
+#' @seealso tidyr::unnest()
+#'
+#' @inheritParams tidyr::unnest
+#' @param .messages a set of glue specs. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .headline a headline glue spec. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .tag if you want the summary data from this step in the future then
+#'   give it a name with .tag.
+#'
+#' @return the data dataframe result of the `tidyr::unnest` function but with
+#'   a history graph updated with a `.message` if requested.
+#' @export
+p_unnest = function(data, cols, ..., keep_empty = FALSE, ptype = NULL,
+  names_sep = NULL, names_repair = "check_unique", .drop = deprecated(),
+  .id = deprecated(), .sep = deprecated(), .preserve = deprecated(),
+  .messages = "", .headline = "", .tag=NULL) {
+
+  .data = data %>% .untrack()
+  out = .data %>% tidyr::unnest(
+    cols,
+    ...,
+    keep_empty = keep_empty,
+    ptype = ptype,
+    names_sep = names_sep,
+    names_repair = names_repair,
+    .drop = .drop,
+    .id = .id,
+    .sep = .sep,
+    .preserve = .preserve
+  )
+  # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
+  out = out %>% p_copy(.data, preserve_others = TRUE) %>% .comment(.messages, .headline = .headline, .type="unnest", .tag=.tag)
+  return(out %>% .retrack())
+}
+
+#' Nesting data using `tidyr::nest`
+#'
+#' A drop in replacement for [tidyr::nest()] which optionally takes a
+#' message and headline to store in the history graph.
+#' @seealso tidyr::nest()
+#'
+#' @inheritParams  tidyr::nest
+#' @param .messages a set of glue specs. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .headline a headline glue spec. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .tag if you want the summary data from this step in the future then
+#'   give it a name with .tag.
+#'
+#' @return the result of the `tidyr::nest` but with a history graph
+#'   updated.
+#' @export
+p_nest = function(
+    .data, ..., .names_sep = NULL, .key = NULL,
+    .messages = "", .headline = "", .tag=NULL) {
+  .data = .data %>% .untrack()
+  out = .data %>% tidyr::nest(
+    ..., .names_sep = .names_sep, .key = .key
+  )
+  out = out %>% p_copy(.data, preserve_others = TRUE) %>% .comment(.messages, .headline = .headline, .type="nest", .tag=.tag)
   return(out %>% .retrack())
 }
 
@@ -2536,16 +2619,6 @@ rename_with.trackr_df <- p_rename_with
 #' @importFrom dplyr arrange
 arrange.trackr_df <- p_arrange
 
-#' @inherit p_pivot_wider
-#' @export
-#' @importFrom tidyr pivot_wider
-pivot_wider.trackr_df <- p_pivot_wider
-
-#' @inherit p_pivot_longer
-#' @export
-#' @importFrom tidyr pivot_longer
-pivot_longer.trackr_df <- p_pivot_longer
-
 #' @inherit p_group_by
 #' @export
 #' @importFrom dplyr group_by
@@ -2678,3 +2751,27 @@ bind_cols <- p_bind_cols
 #' @inherit p_add_tally
 #' @export
 add_tally <- p_add_tally
+
+
+# Tidyr bindings ----
+# Nest and unnest are not generics
+
+#' @inherit p_nest
+#' @export
+#' @importFrom tidyr nest
+nest <- p_nest
+
+#' @inherit p_unnest
+#' @export
+#' @importFrom tidyr unnest
+unnest <- p_unnest
+
+#' @inherit p_pivot_wider
+#' @export
+#' @importFrom tidyr pivot_wider
+pivot_wider.trackr_df <- p_pivot_wider
+
+#' @inherit p_pivot_longer
+#' @export
+#' @importFrom tidyr pivot_longer
+pivot_longer.trackr_df <- p_pivot_longer
