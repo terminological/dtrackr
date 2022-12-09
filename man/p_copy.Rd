@@ -4,7 +4,7 @@
 \alias{p_copy}
 \title{Copy the dtrackr history graph from one dataframe to another}
 \usage{
-p_copy(.data, from)
+p_copy(.data, from, preserve_others = FALSE)
 }
 \arguments{
 \item{.data}{a dataframe which may be grouped}

@@ -744,8 +744,8 @@ p_copy = function(.data, from, preserve_others = FALSE) {
     old_attr = setdiff(
       names(attributes(from)),
       # these structural attributes are from dplyr group
-      c(names(attributes(tmp)),"row.names","names","groups")
-    tmp = tmp %>% magrittr::set_attributes(attributes(from)[old_attr])
+      c(names(attributes(tmp)),"row.names","names","groups"))
+    tmp = tmp %>% magrittr::set_attributes( attributes(from)[old_attr] )
   }
   return(tmp)
 }
