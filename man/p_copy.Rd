@@ -19,4 +19,5 @@ Copy the dtrackr history graph from one dataframe to another
 }
 \examples{
 mtcars \%>\% p_copy(iris \%>\% comment("A comment")) \%>\% history()
+iris \%>\% dtrackr::p_copy( iris \%>\% track("blah") \%>\% magrittr::set_attr("test","value"),preserve_others = TRUE ) \%>\% attributes()
 }

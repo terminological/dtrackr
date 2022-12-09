@@ -12,10 +12,6 @@ p_unnest(
   ptype = NULL,
   names_sep = NULL,
   names_repair = "check_unique",
-  .drop = deprecated(),
-  .id = deprecated(),
-  .sep = deprecated(),
-  .preserve = deprecated(),
   .messages = "",
   .headline = "",
   .tag = NULL
@@ -79,17 +75,6 @@ names. Must be one of the following options:
 
 See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for more details on these terms and the
 strategies used to enforce them.}
-
-\item{.drop, .preserve}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}:
-all list-columns are now preserved; If there are any that you
-don't want in the output use \code{select()} to remove them prior to
-unnesting.}
-
-\item{.id}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}:
-convert \code{df \%>\% unnest(x, .id = "id")} to \verb{df \%>\% mutate(id = names(x)) \%>\% unnest(x))}.}
-
-\item{.sep}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}:
-use \code{names_sep} instead.}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, or \{.strata\}. Defaults to nothing.}

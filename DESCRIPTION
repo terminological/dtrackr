@@ -29,7 +29,8 @@ Imports:
     purrr,
     base64enc,
     pdftools,
-    png
+    png,
+    lifecycle
 Suggests: 
     here,
     knitr,

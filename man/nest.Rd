@@ -8,7 +8,6 @@ nest(
   .data,
   ...,
   .names_sep = NULL,
-  .key = NULL,
   .messages = "",
   .headline = "",
   .tag = NULL
@@ -39,9 +38,6 @@ together the outer and the inner column names, separated by \code{names_sep}. In
 \code{nest()}, the new inner names will have the outer names + \code{names_sep}
 automatically stripped. This makes \code{names_sep} roughly symmetric between
 nesting and unnesting.}
-
-\item{.key}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}:
-No longer needed because of the new \code{new_col = c(col1, col2, col3)} syntax.}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, or \{.strata\}. Defaults to nothing.}

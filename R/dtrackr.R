@@ -738,6 +738,7 @@ p_clear = function(.data) {
 
 
 #' mtcars %>% p_copy(iris %>% comment("A comment")) %>% history()
+#' iris %>% dtrackr::p_copy( iris %>% track("blah") %>% magrittr::set_attr("test","value"),preserve_others = TRUE ) %>% attributes()
 p_copy = function(.data, from, preserve_others = FALSE) {
   tmp = .data %>% p_set(from %>% p_get())
   if (preserve_others) {
@@ -745,7 +746,7 @@ p_copy = function(.data, from, preserve_others = FALSE) {
       names(attributes(from)),
       # these structural attributes are from dplyr group
       c(names(attributes(tmp)),"row.names","names","groups"))
-    tmp = tmp %>% magrittr::set_attributes( attributes(from)[old_attr] )
+    tmp = tmp %>% magrittr::set_attributes( c(attributes(tmp), attributes(from)[old_attr] ) )
   }
   return(tmp)
 }
@@ -1541,22 +1542,17 @@ p_pivot_longer = function(data,
 #'   a history graph updated with a `.message` if requested.
 #' @export
 p_unnest = function(data, cols, ..., keep_empty = FALSE, ptype = NULL,
-  names_sep = NULL, names_repair = "check_unique", .drop = deprecated(),
-  .id = deprecated(), .sep = deprecated(), .preserve = deprecated(),
+  names_sep = NULL, names_repair = "check_unique",
   .messages = "", .headline = "", .tag=NULL) {
 
   .data = data %>% .untrack()
   out = .data %>% tidyr::unnest(
-    cols,
+    cols = {{cols}},
     ...,
     keep_empty = keep_empty,
     ptype = ptype,
     names_sep = names_sep,
-    names_repair = names_repair,
-    .drop = .drop,
-    .id = .id,
-    .sep = .sep,
-    .preserve = .preserve
+    names_repair = names_repair
   )
   # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
   out = out %>% p_copy(.data, preserve_others = TRUE) %>% .comment(.messages, .headline = .headline, .type="unnest", .tag=.tag)
@@ -1581,11 +1577,11 @@ p_unnest = function(data, cols, ..., keep_empty = FALSE, ptype = NULL,
 #'   updated.
 #' @export
 p_nest = function(
-    .data, ..., .names_sep = NULL, .key = NULL,
+    .data, ..., .names_sep = NULL,
     .messages = "", .headline = "", .tag=NULL) {
   .data = .data %>% .untrack()
   out = .data %>% tidyr::nest(
-    ..., .names_sep = .names_sep, .key = .key
+    ..., .names_sep = .names_sep
   )
   out = out %>% p_copy(.data, preserve_others = TRUE) %>% .comment(.messages, .headline = .headline, .type="nest", .tag=.tag)
   return(out %>% .retrack())
