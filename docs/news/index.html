@@ -71,10 +71,10 @@
 <ul><li>updates following JOSS review.</li>
 <li>bug fix for group_by not checking pause status before warning that pause required.</li>
 <li>documentation improvements - full review of all documentation. Additional context to function reference to draw attention to supported dplyr operations</li>
-<li>added nest_join.tracked_df S3 method, added slice*.tracked_df functions, and missing set operations functions.</li>
+<li>added <code>nest_join.tracked_df</code> S3 method, added <code>slice*.tracked_df</code> functions, and missing set operations functions.</li>
 <li>re-factored mutate style operations, regression tested</li>
 <li>automated testing for new methods, and full testing for slice, set ops, and mutate style functions with new example code.</li>
-<li>expanded test coverage ( covr::package_coverage(type=“all”): dtrackr Coverage: 83.60%, R/dot.R: 78.12%, R/dtrackr.R: 84.08%) mostly through examples</li>
+<li>expanded test coverage ( <code>covr::package_coverage(type="all"</code> ): <code>dtrackr</code> Coverage: 83.60%, <code>R/dot.R</code>: 78.12%, <code>R/dtrackr.R</code>: 84.08%) mostly through examples</li>
 <li>improved error handling and reporting in mutate functions.</li>
 <li>bug <a href="https://github.com/terminological/dtrackr/issues/25" class="external-link">#25</a> &amp; <a href="https://github.com/terminological/dtrackr/issues/26" class="external-link">#26</a> fixes (see github)</li>
 <li>Logo and documentation fixes and improvements.</li>
@@ -95,12 +95,13 @@
 <h2 class="page-header" data-toc-text="0.2.3" id="dtrackr-023">dtrackr 0.2.3<a class="anchor" aria-label="anchor" href="#dtrackr-023"></a></h2>
 <ul><li>documentation updates &amp; JOSS paper</li>
 <li>fix for fix for multiple names join columns bug.</li>
-<li>ungroup() change to fit with dplyr::ungroup API.</li>
+<li>
+<code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup()</a></code> change to fit with <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">dplyr::ungroup</a></code> API.</li>
 <li>fixed url redirects, DESCRIPTION file issues and switched to LICENSE file template, for CRAN submission.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.2" id="dtrackr-022">dtrackr 0.2.2<a class="anchor" aria-label="anchor" href="#dtrackr-022"></a></h2>
-<ul><li>new feature of subgroup counts for determining size of subgroups in grouped (or ungrouped) flowchart.</li>
+<ul><li>new feature of subgroup counts for determining size of subgroups in grouped (or un-grouped) flowchart.</li>
 <li>fix for multiple names join columns bug.</li>
 <li>bug fixes and extended github workflows.</li>
 </ul></div>

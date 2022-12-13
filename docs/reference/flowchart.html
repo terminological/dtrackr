@@ -98,7 +98,7 @@ list of dataframes.</p></dd>
 
 
 <dt>filename</dt>
-<dd><p>a filename which will be where the formatted flowcharts are
+<dd><p>a file name which will be where the formatted flowcharts are
 saved. If no extension is specified the output formats are determined by
 the <code>formats</code> parameter.</p></dd>
 
@@ -117,17 +117,17 @@ of standard sizes are available in the <a href="std_size.html">std_size</a> obje
 
 
 <dt>formats</dt>
-<dd><p>some of "pdf","dot","svg","png","ps"</p></dd>
+<dd><p>some of <code>pdf</code>,<code>dot</code>,<code>svg</code>,<code>png</code>,<code>ps</code></p></dd>
 
 
 <dt>defaultToHTML</dt>
 <dd><p>if the correct output format is not easy to determine
-from the context, default providing HTML (TRUE) or to embedding the PNG (FALSE)</p></dd>
+from the context, default providing <code>HTML</code> (TRUE) or to embedding the <code>PNG</code> (FALSE)</p></dd>
 
 
 <dt>...</dt>
-<dd><p>other params passed onto either <code><a href="p_get_as_dot.html">p_get_as_dot()</a></code>, notable ones are
-<code>fill</code> (background colour e.g. 'lightgrey'), <code>fontsize</code> (in points),
+<dd><p>other parameters passed onto either <code><a href="p_get_as_dot.html">p_get_as_dot()</a></code>, notable ones are
+<code>fill</code> (background colour e.g. <code>lightgrey</code>), <code>fontsize</code> (in points),
 <code>colour</code> (font colour)</p></dd>
 
 </dl></div>
@@ -137,8 +137,8 @@ from the context, default providing HTML (TRUE) or to embedding the PNG (FALSE)<
 
 <p>the nature of the flowchart output depends on the context in which
 the function is called. It will be some form of browse-able html output if
-called from an interactive session or a PNG/PDG link if in knitr and
-knitting latex or word type outputs, if filename is specified the output
+called from an interactive session or a <code>PNG</code>/<code>PDF</code> link if in <code>knitr</code> and
+knitting latex or word type outputs, if file name is specified the output
 will also be saved at the given location.</p>
     </div>
 
