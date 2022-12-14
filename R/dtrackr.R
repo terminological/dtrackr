@@ -1403,7 +1403,7 @@ p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inheritParams dplyr::rename_with
 #' @export
 p_rename_with = function(.data, .fn, .cols = tidyselect::everything(), ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::rename_with, .data, .fn = .fn, .cols = .cols, ..., .messages=.messages, .headline = .headline, .type="rename_with", .tag=.tag)
+  .doMutate(dplyr::rename_with, .data, .fn = .fn, .cols = {{ .cols }}, ..., .messages=.messages, .headline = .headline, .type="rename_with", .tag=.tag)
 }
 
 #' @inherit p_mutate
