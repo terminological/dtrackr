@@ -1953,7 +1953,7 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 
 ### Joins ----
 
-.doJoin = function(joinFunction, x, y, by, copy, suffix, ..., .messages, .headline) {
+.doJoin = function(joinFunction, x, y, by, copy, ..., .messages, .headline) {
 
   mergedGraph = .mergeGraphs(x %>% p_get(), y %>% p_get())
   x = x %>% .untrack()
@@ -1972,7 +1972,7 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
   }
   .count.lhs = nrow(x)
   .count.rhs = nrow(y)
-  out = joinFunction(x, y, by=by, copy=copy, suffix=suffix, ...)
+  out = joinFunction(x, y, by=by, copy=copy, ...)
   .count.out = nrow(out)
   out = out %>% p_set(mergedGraph) %>% .comment(.messages, .headline = .headline, .type="combine")
   return(out %>% .retrack())
