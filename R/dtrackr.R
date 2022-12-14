@@ -2015,7 +2015,7 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 #' @export
 #' @example inst/examples/join-examples.R
 p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Inner join by {.keys}") {
-  .doJoin(dplyr::inner_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::inner_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Left join
@@ -2039,7 +2039,7 @@ p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ...,
 #' @export
 #' @example inst/examples/join-examples.R
 p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Left join by {.keys}") {
-  .doJoin(dplyr::left_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::left_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Right join
@@ -2063,7 +2063,7 @@ p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , 
 #' @export
 #' @example inst/examples/join-examples.R
 p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Right join by {.keys}") {
-  .doJoin(dplyr::right_join, x=x, y=y, by=by, copy=copy,suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::right_join, x=x, y=y, by=by, copy=copy,suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Full join
@@ -2087,7 +2087,7 @@ p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ...,
 #' @export
 #' @example inst/examples/join-examples.R
 p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Full join by {.keys}") {
-  .doJoin(dplyr::full_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::full_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Semi join
