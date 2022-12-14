@@ -930,7 +930,7 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
   # .headline is a single glue spec
   tmpHead = .summaryToNodesDf(
     # we need to make tmp unique here (on a per group basis)
-    tmp %>% select(-c(.name, .count, .subgroup)) %>% distinct(),
+    tmp %>% select(-c(.name, .count, all_of(.subgroup))) %>% distinct(),
     .headline,.isHeader=TRUE, .type = .type, .env=.env)
 
   # .messages is a load of glue specs
