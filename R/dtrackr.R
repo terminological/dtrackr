@@ -937,7 +937,7 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
   # .headline is a single glue spec
   tmpHead = .summaryToNodesDf(
     # we need to make tmp unique here (on a per group basis)
-    tmp %>% select(-c(.name, .count, .subgroup)) %>% distinct(),
+    tmp %>% select(-c(.name, .count, all_of(.subgroup))) %>% distinct(),
     .headline,.isHeader=TRUE, .type = .type, .env=.env)
 
   # .messages is a load of glue specs
@@ -1410,7 +1410,7 @@ p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inheritParams dplyr::rename_with
 #' @export
 p_rename_with = function(.data, .fn, .cols = tidyselect::everything(), ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::rename_with, .data, .fn = .fn, .cols = .cols, ..., .messages=.messages, .headline = .headline, .type="rename_with", .tag=.tag)
+  .doMutate(dplyr::rename_with, .data, .fn = .fn, .cols = {{ .cols }}, ..., .messages=.messages, .headline = .headline, .type="rename_with", .tag=.tag)
 }
 
 #' @inherit p_mutate
@@ -1960,7 +1960,7 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 
 ### Joins ----
 
-.doJoin = function(joinFunction, x, y, by, copy, suffix, ..., .messages, .headline) {
+.doJoin = function(joinFunction, x, y, by, copy, ..., .messages, .headline) {
 
   mergedGraph = .mergeGraphs(x %>% p_get(), y %>% p_get())
   x = x %>% .untrack()
@@ -1979,7 +1979,7 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
   }
   .count.lhs = nrow(x)
   .count.rhs = nrow(y)
-  out = joinFunction(x, y, by=by, copy=copy, suffix=suffix, ...)
+  out = joinFunction(x, y, by=by, copy=copy, ...)
   .count.out = nrow(out)
   out = out %>% p_set(mergedGraph) %>% .comment(.messages, .headline = .headline, .type="combine")
   return(out %>% .retrack())
@@ -2022,7 +2022,7 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 #' @export
 #' @example inst/examples/join-examples.R
 p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Inner join by {.keys}") {
-  .doJoin(dplyr::inner_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::inner_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Left join
@@ -2046,7 +2046,7 @@ p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ...,
 #' @export
 #' @example inst/examples/join-examples.R
 p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Left join by {.keys}") {
-  .doJoin(dplyr::left_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::left_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Right join
@@ -2070,7 +2070,7 @@ p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , 
 #' @export
 #' @example inst/examples/join-examples.R
 p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Right join by {.keys}") {
-  .doJoin(dplyr::right_join, x=x, y=y, by=by, copy=copy,suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::right_join, x=x, y=y, by=by, copy=copy,suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Full join
@@ -2094,7 +2094,7 @@ p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ...,
 #' @export
 #' @example inst/examples/join-examples.R
 p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Full join by {.keys}") {
-  .doJoin(dplyr::full_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
+  .doJoin(dplyr::full_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
 }
 
 #' Semi join
