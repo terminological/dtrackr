@@ -2,6 +2,8 @@
 
 ## Low level functions ----
 
+# determine whether a continuous variable is in fact discrete and can be treated
+# as such
 .is.discrete = function(.data, .cutoff=10) {
   .data <- stats::na.omit(.data)
   return(length(unique(.data)) <= .cutoff | is.factor(.data))
@@ -14,6 +16,7 @@
   return(.summaryToNodesDf(g, .glue, .isHeader, .type, .env))
 }
 
+# summarise the dataframe and create a stratificiation
 .taggedData = function(.data, ...) {
   .data = .data %>% .untrack()
   total = nrow(.data %>% dplyr::ungroup())
@@ -30,6 +33,10 @@
   .data %>% p_set(current)
 }
 
+# given a summary of the current state of the dataframe in the pipeline doGlue
+# executes the glue function and returns the glue output as a vector. This
+# checks for a few commonly occuring situations such as incorrect length resulting
+# from the glue spec acting in a vectorised way.
 .doGlue = function(g,.glue,.env) {
   tmp = tryCatch(
     glue::glue_data(g,.glue,.envir=.env),
