@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -67,8 +67,23 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.0" id="dtrackr-030">dtrackr 0.3.0<a class="anchor" aria-label="anchor" href="#dtrackr-030"></a></h2>
+<ul><li>Updating release in preparation for <code>dplyr</code> version 1.1.0</li>
+<li>Fix problems detected with URLs and DOI.</li>
+<li>Updated URL: <a href="https://terminological.github.io/dtrackr" class="external-link uri">https://terminological.github.io/dtrackr</a> to <a href="https://terminological.github.io/dtrackr/" class="external-link uri">https://terminological.github.io/dtrackr/</a> in readme README.md (fixed missing trailing slash)</li>
+<li>Manually fixed auto-generated codecov badge.</li>
+<li>Removed project level Zenodo DOI as triggering a invalid DOI from CRAN</li>
+<li>Updated maintainer email to longer term stable email address. URLs in</li>
+<li>DESCRIPTION updated to point to github source.</li>
+<li>There are some spelling issues that arise from documentation inherited from <code>dplyr</code>and <code>tidyr</code> equivalent functions, that would need to be fixed upstream.</li>
+<li>Documentation inherited from dplyr may be inconsistent until dplyr release.</li>
+<li>TODO: (next version) exclusions in joins</li>
+<li>TODO: (next version) better support for long format tables</li>
+<li>TODO: (future version) column level tracking (prototyped in 0.2.5)</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.5" id="dtrackr-025">dtrackr 0.2.5<a class="anchor" aria-label="anchor" href="#dtrackr-025"></a></h2>
-<ul><li>updates following JOSS review.</li>
+<ul><li>updates following JOSS review: changes in documentation have resulted in additional <code>Suggests</code> dependencies on CRAN packages.</li>
 <li>bug fix for group_by not checking pause status before warning that pause required.</li>
 <li>documentation improvements - full review of all documentation. Additional context to function reference to draw attention to supported dplyr operations</li>
 <li>added <code>nest_join.tracked_df</code> S3 method, added <code>slice*.tracked_df</code> functions, and missing set operations functions.</li>
@@ -80,9 +95,6 @@
 <li>Logo and documentation fixes and improvements.</li>
 <li>outstanding issues:</li>
 <li>re-use of documentation results in examples tests running multiple times.</li>
-<li>TODO: (next version) exclusions in joins</li>
-<li>TODO: (next version) better support for long format tables</li>
-<li>TODO: (future version) column level tracking (prototyped in 0.2.5)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.4" id="dtrackr-024">dtrackr 0.2.4<small>2022-07-05</small><a class="anchor" aria-label="anchor" href="#dtrackr-024"></a></h2>

@@ -30,7 +30,8 @@ for the subgroup name, \{.count\} for the subgroup count, \{.subtotal\} for the
 current grouping count and \{.total\} for the whole count}
 
 \item{.headline}{a glue specification which can refer to grouping variables
-of .data, or any variables defined in the calling environment}
+of .data, \{.subtotal\} for the current grouping count, or any variables
+defined in the calling environment}
 
 \item{.type}{one of "info","exclusion": used to define formatting}
 

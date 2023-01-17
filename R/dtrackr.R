@@ -892,7 +892,8 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #'   for the subgroup name, \{.count\} for the subgroup count, \{.subtotal\} for the
 #'   current grouping count and \{.total\} for the whole count
 #' @param .headline a glue specification which can refer to grouping variables
-#'   of .data, or any variables defined in the calling environment
+#'   of .data, \{.subtotal\} for the current grouping count, or any variables
+#'   defined in the calling environment
 #' @param .type one of "info","exclusion": used to define formatting
 #' @param .asOffshoot do you want this comment to be an offshoot of the main
 #'   flow (default = FALSE).
@@ -937,7 +938,7 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
   # .headline is a single glue spec
   tmpHead = .summaryToNodesDf(
     # we need to make tmp unique here (on a per group basis)
-    tmp %>% select(-c(.name, .count, all_of(.subgroup))) %>% distinct(),
+    tmp %>% dplyr::select(-c(.name, .count, tidyselect::all_of(.subgroup))) %>% dplyr::distinct(),
     .headline,.isHeader=TRUE, .type = .type, .env=.env)
 
   # .messages is a load of glue specs
@@ -1497,7 +1498,7 @@ p_pivot_longer = function(data,
                           ..., .messages = "", .headline = "", .tag=NULL) {
   .data = data %>% .untrack()
   out = .data %>% tidyr::pivot_longer(
-    cols = cols,
+    cols = {{cols}},
     names_to = names_to,
     names_prefix = names_prefix,
     names_sep = names_sep,
@@ -2000,6 +2001,8 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 # where inversion_of_by is a named vector with names and values swapped round.
 
 
+.keep_default = formals(dplyr::inner_join)[["keep"]]
+
 #' Inner joins
 #'
 #' Mutating joins behave as `dplyr` joins, except the history graph of the two
@@ -2020,9 +2023,9 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 #' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
-#' @example inst/examples/join-examples.R
-p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Inner join by {.keys}") {
-  .doJoin(dplyr::inner_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., .messages = .messages, .headline = .headline, multiple = "all")
+#' @example inst/examples/inner-join-examples.R
+p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ..., keep = .keep_default, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Inner join by {.keys}") {
+  .doJoin(dplyr::inner_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., .messages = .messages, .headline = .headline)
 }
 
 #' Left join
@@ -2044,9 +2047,9 @@ p_inner_join = function(x, y, by = NULL, copy=FALSE,  suffix=c(".x", ".y"), ...,
 #' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
-#' @example inst/examples/join-examples.R
-p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Left join by {.keys}") {
-  .doJoin(dplyr::left_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
+#' @example inst/examples/left-join-examples.R
+p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , keep = .keep_default, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Left join by {.keys}") {
+  .doJoin(dplyr::left_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
 }
 
 #' Right join
@@ -2068,9 +2071,9 @@ p_left_join = function(x, y, by = NULL, copy=FALSE, suffix=c(".x", ".y"), ... , 
 #' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
-#' @example inst/examples/join-examples.R
-p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Right join by {.keys}") {
-  .doJoin(dplyr::right_join, x=x, y=y, by=by, copy=copy,suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
+#' @example inst/examples/full-join-examples.R
+p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = .keep_default, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Right join by {.keys}") {
+  .doJoin(dplyr::right_join, x=x, y=y, by=by, copy=copy,suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
 }
 
 #' Full join
@@ -2092,9 +2095,9 @@ p_right_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ...,
 #' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
-#' @example inst/examples/join-examples.R
-p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = FALSE, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Full join by {.keys}") {
-  .doJoin(dplyr::full_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline, multiple = "all")
+#' @example inst/examples/full-join-examples.R
+p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., keep = .keep_default, .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Full join by {.keys}") {
+  .doJoin(dplyr::full_join, x=x, y=y, by=by, copy=copy, suffix=suffix, ..., keep = keep, .messages = .messages, .headline = .headline)
 }
 
 #' Semi join
@@ -2116,7 +2119,7 @@ p_full_join = function(x, y,  by = NULL, copy=FALSE, suffix=c(".x", ".y"), ..., 
 #' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
-#' @example inst/examples/join-examples.R
+#' @example inst/examples/semi-join-examples.R
 p_semi_join = function(x, y,  by = NULL, copy=FALSE, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in intersection"), .headline="Semi join by {.keys}") {
   .doJoin(dplyr::semi_join, x=x, y=y, by=by, copy=copy, ..., .messages = .messages, .headline = .headline)
 }
@@ -2140,7 +2143,7 @@ p_semi_join = function(x, y,  by = NULL, copy=FALSE, ..., .messages = c("{.count
 #' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
-#' @example inst/examples/join-examples.R
+#' @example inst/examples/anti-join-examples.R
 p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} not matched"), .headline="Semi join by {.keys}") {
   .doJoin(dplyr::anti_join, x=x, y=y, by=by, copy=copy, ..., .messages = .messages, .headline = .headline)
 }
@@ -2164,8 +2167,8 @@ p_anti_join = function(x, y,  by = NULL, copy=FALSE,  ..., .messages = c("{.coun
 #' @return the join of the two dataframes with the history graph updated.
 #'
 #' @export
-#' @example inst/examples/join-examples.R
-p_nest_join = function(x, y,  by = NULL, copy=FALSE, keep=FALSE,  ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} matched"), .headline="Nest join by {.keys}") {
+#' @example inst/examples/nest-join-examples.R
+p_nest_join = function(x, y,  by = NULL, copy=FALSE, keep=.keep_default,  ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} matched"), .headline="Nest join by {.keys}") {
   .doJoin(dplyr::nest_join, x=x, y=y, by=by, copy=copy, keep = keep, ..., .messages = .messages, .headline = .headline)
 }
 
@@ -2223,7 +2226,7 @@ is_running_in_chunk = function() {
 #'
 #' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
 #' tmp %>% group_by(Species) %>% comment(.tag="step2") %>% flowchart()
-p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, ...) {
+p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, landscape = size$rot!=0, ...) {
 
   # make sure .data is a list of dataframes
   if(is.data.frame(.data)) .data = list(.data)
@@ -2259,10 +2262,10 @@ p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = 
   outgraph = mergedGraph %>% .graph2dot(...)
 
   if (!identical(filename,NULL)) {
-    tmp = outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight, formats = formats)
+    tmp = outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight, formats = formats, landscape = landscape, ...)
     svg = tmp$svg
   } else {
-    svg = dot2svg(outgraph)
+    svg = dot2svg(outgraph) %>% .scale_svg(maxWidth=maxWidth, maxHeight=maxHeight, landscape = landscape)
   }
 
   # Decide on the output format

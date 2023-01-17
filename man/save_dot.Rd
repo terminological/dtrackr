@@ -11,27 +11,35 @@ save_dot(
   maxWidth = size$width,
   maxHeight = size$height,
   formats = c("dot", "png", "pdf", "svg"),
+  landscape = size$rot != 0,
   ...
 )
 }
 \arguments{
 \item{dot}{a \code{graphviz} dot string}
 
-\item{filename}{the full path of the file name (minus extension for multiple formats)}
+\item{filename}{the full path of the file name (minus extension for multiple
+formats)}
 
-\item{size}{a named list with 2 elements, length and width in inches. A predefined set
-of standard sizes are available in the \link{std_size} object}
+\item{size}{a named list with 3 elements, length and width in inches and
+rotation. A predefined set of standard sizes are available in the
+\link{std_size} object.}
 
-\item{maxWidth}{a width in inches is size is not defined}
+\item{maxWidth}{a width (on the paper) in inches if \code{size} is not defined}
 
-\item{maxHeight}{a height in inches if size is not defined}
+\item{maxHeight}{a height (on the paper) in inches if \code{size} is not defined}
 
 \item{formats}{some of \code{pdf},\code{dot},\code{svg},\code{png},\code{ps}}
+
+\item{landscape}{rotate the output by 270 degrees into a landscape format.
+\code{maxWidth} and \code{maxHeight} still apply and refer to the paper width to fit
+the flowchart into after rotation. (you might need to flip width and height)}
 
 \item{...}{ignored}
 }
 \value{
-a list with items \code{paths} with the absolute paths of the saved files as a named list, and \code{svg} as the SVG string of the rendered dot file.
+a list with items \code{paths} with the absolute paths of the saved files
+as a named list, and \code{svg} as the SVG string of the rendered dot file.
 }
 \description{
 Convert a digraph in dot format to SVG and save it to a range of output file types

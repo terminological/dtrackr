@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -79,6 +79,7 @@
 <span>  maxWidth <span class="op">=</span> <span class="va">size</span><span class="op">$</span><span class="va">width</span>,</span>
 <span>  maxHeight <span class="op">=</span> <span class="va">size</span><span class="op">$</span><span class="va">height</span>,</span>
 <span>  formats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dot"</span>, <span class="st">"png"</span>, <span class="st">"pdf"</span>, <span class="st">"svg"</span><span class="op">)</span>,</span>
+<span>  landscape <span class="op">=</span> <span class="va">size</span><span class="op">$</span><span class="va">rot</span> <span class="op">!=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -90,24 +91,32 @@
 
 
 <dt>filename</dt>
-<dd><p>the full path of the file name (minus extension for multiple formats)</p></dd>
+<dd><p>the full path of the file name (minus extension for multiple
+formats)</p></dd>
 
 
 <dt>size</dt>
-<dd><p>a named list with 2 elements, length and width in inches. A predefined set
-of standard sizes are available in the <a href="std_size.html">std_size</a> object</p></dd>
+<dd><p>a named list with 3 elements, length and width in inches and
+rotation. A predefined set of standard sizes are available in the
+<a href="std_size.html">std_size</a> object.</p></dd>
 
 
 <dt>maxWidth</dt>
-<dd><p>a width in inches is size is not defined</p></dd>
+<dd><p>a width (on the paper) in inches if <code>size</code> is not defined</p></dd>
 
 
 <dt>maxHeight</dt>
-<dd><p>a height in inches if size is not defined</p></dd>
+<dd><p>a height (on the paper) in inches if <code>size</code> is not defined</p></dd>
 
 
 <dt>formats</dt>
 <dd><p>some of <code>pdf</code>,<code>dot</code>,<code>svg</code>,<code>png</code>,<code>ps</code></p></dd>
+
+
+<dt>landscape</dt>
+<dd><p>rotate the output by 270 degrees into a landscape format.
+<code>maxWidth</code> and <code>maxHeight</code> still apply and refer to the paper width to fit
+the flowchart into after rotation. (you might need to flip width and height)</p></dd>
 
 
 <dt>...</dt>
@@ -118,7 +127,8 @@ of standard sizes are available in the <a href="std_size.html">std_size</a> obje
     <h2>Value</h2>
     
 
-<p>a list with items <code>paths</code> with the absolute paths of the saved files as a named list, and <code>svg</code> as the SVG string of the rendered dot file.</p>
+<p>a list with items <code>paths</code> with the absolute paths of the saved files
+as a named list, and <code>svg</code> as the SVG string of the rendered dot file.</p>
     </div>
 
     <div id="ref-examples">
@@ -126,20 +136,20 @@ of standard sizes are available in the <a href="std_size.html">std_size</a> obje
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">save_dot</span><span class="op">(</span><span class="st">"digraph {A-&gt;B}"</span>,<span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$dot</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp6ZKWjp/file5d79159658a0.dot"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpQh6fvs/filed1187b6a95b2.dot"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$png</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp6ZKWjp/file5d79159658a0.png"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpQh6fvs/filed1187b6a95b2.png"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$pdf</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp6ZKWjp/file5d79159658a0.pdf"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpQh6fvs/filed1187b6a95b2.pdf"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $paths$svg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmp6ZKWjp/file5d79159658a0.svg"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpQh6fvs/filed1187b6a95b2.svg"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $svg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;\n&lt;!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"&gt;\n&lt;!-- Generated by graphviz version 2.40.1 (20161225.0304)\n --&gt;\n&lt;!-- Title: %0 Pages: 1 --&gt;\n&lt;svg width=\"62pt\" height=\"116pt\"\n viewBox=\"0.00 0.00 62.00 116.00\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"&gt;\n&lt;g id=\"graph0\" class=\"graph\" transform=\"scale(1 1) rotate(0) translate(4 112)\"&gt;\n&lt;title&gt;%0&lt;/title&gt;\n&lt;polygon fill=\"#ffffff\" stroke=\"transparent\" points=\"-4,4 -4,-112 58,-112 58,4 -4,4\"/&gt;\n&lt;!-- A --&gt;\n&lt;g id=\"node1\" class=\"node\"&gt;\n&lt;title&gt;A&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-90\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-85.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;A&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- B --&gt;\n&lt;g id=\"node2\" class=\"node\"&gt;\n&lt;title&gt;B&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-18\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-13.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;B&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- A&amp;#45;&amp;gt;B --&gt;\n&lt;g id=\"edge1\" class=\"edge\"&gt;\n&lt;title&gt;A&amp;#45;&amp;gt;B&lt;/title&gt;\n&lt;path fill=\"none\" stroke=\"#000000\" d=\"M27,-71.8314C27,-64.131 27,-54.9743 27,-46.4166\"/&gt;\n&lt;polygon fill=\"#000000\" stroke=\"#000000\" points=\"30.5001,-46.4132 27,-36.4133 23.5001,-46.4133 30.5001,-46.4132\"/&gt;\n&lt;/g&gt;\n&lt;/g&gt;\n&lt;/svg&gt;\n"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;\n&lt;!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"&gt;\n&lt;!-- Generated by graphviz version 2.40.1 (20161225.0304)\n --&gt;\n&lt;!-- Title: %0 Pages: 1 --&gt;\n&lt;svg width=\"62.000pt\" height=\"116.000pt\"\n viewBox=\"0 0 62.000 116.000\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"&gt;\n&lt;g id=\"graph0\" class=\"graph\" transform=\"scale(1.000 1.000) rotate(0) translate(4 112.000)\"&gt;\n&lt;title&gt;%0&lt;/title&gt;\n&lt;polygon fill=\"#ffffff\" stroke=\"transparent\" points=\"-4,4 -4,-112 58,-112 58,4 -4,4\"/&gt;\n&lt;!-- A --&gt;\n&lt;g id=\"node1\" class=\"node\"&gt;\n&lt;title&gt;A&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-90\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-85.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;A&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- B --&gt;\n&lt;g id=\"node2\" class=\"node\"&gt;\n&lt;title&gt;B&lt;/title&gt;\n&lt;ellipse fill=\"none\" stroke=\"#000000\" cx=\"27\" cy=\"-18\" rx=\"27\" ry=\"18\"/&gt;\n&lt;text text-anchor=\"middle\" x=\"27\" y=\"-13.8\" font-family=\"Times,serif\" font-size=\"14.00\" fill=\"#000000\"&gt;B&lt;/text&gt;\n&lt;/g&gt;\n&lt;!-- A&amp;#45;&amp;gt;B --&gt;\n&lt;g id=\"edge1\" class=\"edge\"&gt;\n&lt;title&gt;A&amp;#45;&amp;gt;B&lt;/title&gt;\n&lt;path fill=\"none\" stroke=\"#000000\" d=\"M27,-71.8314C27,-64.131 27,-54.9743 27,-46.4166\"/&gt;\n&lt;polygon fill=\"#000000\" stroke=\"#000000\" points=\"30.5001,-46.4132 27,-36.4133 23.5001,-46.4133 30.5001,-46.4132\"/&gt;\n&lt;/g&gt;\n&lt;/g&gt;\n&lt;/svg&gt;\n"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

@@ -18,26 +18,18 @@ details)
 There are currently no downstream dependencies for this package in CRAN.
 
 ## Other info
-This version 0.2.5 updates previous CRAN release 0.2.4
+This version 0.3.0 updates previous CRAN release 0.2.4
 
-Resubmitted after problem detected with URLs and DOI.
-* Updated URL: https://terminological.github.io/dtrackr to 
-https://terminological.github.io/dtrackr/ in readme README.md 
-(fixed missing trailing slash)
-* Manually fixed auto-generated codecov badge.
-* Removed project level zenodo DOI as triggering a invalid DOI from CRAN
+Version 0.3.0 includes updates to 
+* prepare for dplyr 1.1.0 version release at end of Jan.
+* work around anomalous behaviour of upstream bug in rsvg
+* Updates following JOSS code review, primarily in documentation although some 
+API updates
 
-Updates following JOSS code review, detailed changes described in NEWS.md. 
+detailed changes described in NEWS.md
 
-* Mainly improvements in documentation, test coverage, examples, and supporting 
-documentation such as contributor statements. 
-* Some additional functionality but no breaking changes in existing functions 
-or configuration. 
-* Changes in documentation have resulted in additional `Suggests` dependencies 
-on CRAN packages.
-* Updated maintainer email to longer term stable email address. URLs in 
-DESCRIPTION updated to point to github source.
-* There are some spelling issues that arise from documentation inherited from 
-`dplyr`and `tidyr` equivalent functions, that would need to be fixed upstream.
+Version 0.2.5 got rejected as my maintainer email has changed. I have sent an
+email on 10:20 on 19th Decemeber to CRAN-submissions@R-project.org from the old
+maintainer address (rc538@exeter.ac.uk) explaining the change.
 
 Many thanks.

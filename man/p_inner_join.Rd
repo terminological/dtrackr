@@ -11,6 +11,7 @@ p_inner_join(
   copy = FALSE,
   suffix = c(".x", ".y"),
   ...,
+  keep = .keep_default,
   .messages = c("{.count.lhs} on LHS", "{.count.rhs} on RHS",
     "{.count.out} in linked set"),
   .headline = "Inner join by {.keys}"
@@ -50,6 +51,9 @@ Should be a character vector of length 2.}
 
 \item{...}{Other parameters passed onto methods.}
 
+\item{keep}{Should the join keys from both \code{x} and \code{y} be preserved in the
+output?}
+
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, \{.keys\} for the joining columns, \{.count.lhs\},
 \{.count.rhs\}, \{.count.out\} for the input and output dataframes sizes
@@ -88,43 +92,6 @@ join \%>\% history() \%>\% print()
 nrow(join)
 # Display the tracked graph (not run in examples)
 # join \%>\% flowchart()
-
-# Left join
-join = lhs \%>\% left_join(rhs, by="name") \%>\% comment("joined {.total}")
-# See what the history of the graph is:
-join \%>\% history()
-nrow(join)
-
-# Full join
-join = lhs \%>\% full_join(rhs, by="name") \%>\% comment("joined {.total}")
-# See what the history of the graph is:
-join \%>\% history()
-nrow(join)
-
-# Semi join
-join = lhs \%>\% semi_join(rhs, by="name") \%>\% comment("joined {.total}")
-# See what the history of the graph is:
-join \%>\% history()
-nrow(join)
-
-# Anti join
-join = lhs \%>\% anti_join(rhs, by="name") \%>\% comment("joined {.total}")
-# See what the history of the graph is:
-join \%>\% history()
-nrow(join)
-
-# Nest join
-join = lhs \%>\% nest_join(rhs, by="name") \%>\% comment("joined {.total}")
-# See what the history of the graph is:
-join \%>\% history()
-nrow(join)
-
-
-
-
-
-
-
 }
 \seealso{
 dplyr::inner_join()

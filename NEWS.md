@@ -1,8 +1,27 @@
 # NEWS
 
+# dtrackr 0.3.0
+
+* Updating release in preparation for `dplyr` version 1.1.0
+* Fix problems detected with URLs and DOI.
+* Updated URL: https://terminological.github.io/dtrackr to 
+https://terminological.github.io/dtrackr/ in readme README.md 
+(fixed missing trailing slash)
+* Manually fixed auto-generated codecov badge.
+* Removed project level Zenodo DOI as triggering a invalid DOI from CRAN
+* Updated maintainer email to longer term stable email address. URLs in 
+* DESCRIPTION updated to point to github source.
+* There are some spelling issues that arise from documentation inherited from 
+`dplyr`and `tidyr` equivalent functions, that would need to be fixed upstream.
+* Documentation inherited from dplyr may be inconsistent until dplyr release.
+* TODO: (next version) exclusions in joins
+* TODO: (next version) better support for long format tables
+* TODO: (future version) column level tracking (prototyped in 0.2.5)
+
 # dtrackr 0.2.5
 
-* updates following JOSS review.
+* updates following JOSS review: changes in documentation have resulted in
+additional `Suggests` dependencies on CRAN packages.
 * bug fix for group_by not checking pause status before warning that pause required.
 * documentation improvements - full review of all documentation. Additional
 context to function reference to draw attention to supported dplyr operations 
@@ -20,9 +39,6 @@ functions with new example code.
 * Logo and documentation fixes and improvements.
 * outstanding issues: 
 * re-use of documentation results in examples tests running multiple times.
-* TODO: (next version) exclusions in joins
-* TODO: (next version) better support for long format tables
-* TODO: (future version) column level tracking (prototyped in 0.2.5)
 
 # dtrackr 0.2.4
 

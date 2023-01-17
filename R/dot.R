@@ -66,8 +66,8 @@ std_size = list(
   two_third = list(width=5.9,height=6,rot=0),
   quarter = list(width=5.9,height=2,rot=0),
   sixth = list(width=3,height=3,rot=0),
-  A4_landscape = list(width=11.75, height=8.25,rot=0),
-  full_landscape =  list(width=8,height=5.9,rot=0),
+  A4_landscape = list(width=8.25, height=11.75,rot=270),
+  full_landscape =  list(width=5.9,height=8,rot=270),
   slide_16_9 = list(width=9.32,height=4.5,rot=0),
   slide_4_3 = list(width=9.32,height=6,rot=0)
 )
@@ -77,26 +77,31 @@ std_size = list(
 #' Convert a digraph in dot format to SVG and save it to a range of output file types
 #'
 #' @param dot a `graphviz` dot string
-#' @param filename the full path of the file name (minus extension for multiple formats)
-#' @param size a named list with 2 elements, length and width in inches. A predefined set
-#'   of standard sizes are available in the [dtrackr::std_size] object
-#' @param maxWidth a width in inches is size is not defined
-#' @param maxHeight a height in inches if size is not defined
+#' @param filename the full path of the file name (minus extension for multiple
+#'   formats)
+#' @param size a named list with 3 elements, length and width in inches and
+#'   rotation. A predefined set of standard sizes are available in the
+#'   [dtrackr::std_size] object.
+#' @param maxWidth a width (on the paper) in inches if `size` is not defined
+#' @param maxHeight a height (on the paper) in inches if `size` is not defined
 #' @param formats some of `pdf`,`dot`,`svg`,`png`,`ps`
+#' @param landscape rotate the output by 270 degrees into a landscape format.
+#'   `maxWidth` and `maxHeight` still apply and refer to the paper width to fit
+#'   the flowchart into after rotation. (you might need to flip width and height)
 #' @param ... ignored
 #'
-#' @return a list with items `paths` with the absolute paths of the saved files as a named list, and `svg` as the SVG string of the rendered dot file.
+#' @return a list with items `paths` with the absolute paths of the saved files
+#'   as a named list, and `svg` as the SVG string of the rendered dot file.
 #' @export
 #'
 #' @examples
 #' save_dot("digraph {A->B}",tempfile())
-save_dot = function(dot, filename, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), ...) {
+save_dot = function(dot, filename, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), landscape = size$rot!=0, ...) {
 
   tmp = filename %>% fs::path_ext()
   if(tmp %in% c("dot","png","pdf","svg","ps")) formats=tmp
   filename = filename %>% fs::path_ext_remove()
-
-  fname = function(extn) normalizePath(filename %>% fs::path_ext_set(extn),mustWork = FALSE)
+  fname = function(extn, suffix = NULL) normalizePath(paste0(c(filename,suffix),collapse="_") %>% fs::path_ext_set(extn),mustWork = FALSE)
 
   if ("dot" %in% formats) {
     # message("saving dot to: ",fname("dot"))
@@ -105,73 +110,52 @@ save_dot = function(dot, filename, size = std_size$half, maxWidth = size$width, 
   }
 
   svg = dot %>% dot2svg()
-  defaultWidth = (svg %>% stringr::str_match("width=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
-  defaultHeight = (svg %>% stringr::str_match("height=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
-  aspectRatio = defaultWidth / defaultHeight
-  widthIn = min(maxWidth,maxHeight*aspectRatio,defaultWidth/72)
-  heightIn = min(maxHeight,maxWidth/aspectRatio,defaultHeight/72)
-
-  # resize = function(dpi) {
-  #   svg %>%
-  #     stringr::str_replace_all("width=\"([0-9]*)pt\"", sprintf("width=\"%1.0fpt\"", widthIn*dpi)) %>%
-  #     stringr::str_replace_all("height=\"([0-9]*)pt\"", sprintf("height=\"%1.0fpt\"", heightIn*dpi)) # %>%
-  #     # stringr::str_replace_all("viewBox=\"[^\"]+\"", sprintf("viewBox=\"0.00 0.00 %1.2f %1.2f\"", widthIn*dpi, heightIn*dpi))
-  # }
+  svg = svg %>% .scale_svg(maxWidth, maxHeight, landscape)
 
   if ("pdf" %in% formats) {
     svg %>% charToRaw() %>% rsvg::rsvg_pdf(
-      file = fname("pdf"),
-      width = widthIn*72,
-      height = heightIn*72
+      file = fname("pdf")
     )
     try(
       grDevices::embedFonts(fname("pdf")),
       silent=TRUE
     );
-    # if (rot!=0 & rlang::is_installed("staplr")) {
-    #   staplr::rotate_pdf(page_rotation = rot,
-    #     input_filepath = fname("pdf"),
-    #     output_filepath = fname("pdf"),
-    #     overwrite = TRUE)
-    # }
   }
 
   if ("png" %in% formats) {
+
+    # this is written to pdf first then converted to png and I think this
+    # was also done because of a difference in PDF and PNG scaling in rsvg
+    # versions prior to 2.4.0, In 2.4.0 this was changed for PNG but to make it
+    # easy we are sticking with this and scaling the SVG printing to PDF
+    # and rescaling the PDF to PNG at 300 dpi.
+
     if (!fs::file_exists(fname("pdf"))) {
       tmp = tempfile()
-      svg %>% charToRaw() %>% rsvg::rsvg_pdf(file = tmp,
-         width = widthIn*72,
-         height = heightIn*72)
+      svg %>% charToRaw() %>% rsvg::rsvg_pdf(file = tmp)
     } else {
       tmp = fname("pdf")
     }
     pdftools::pdf_render_page(tmp,page = 1,dpi=300) %>%
       png::writePNG(fname("png"))
-    # if (rot != 0 & rlang::is_installed("magick")) {
-    #   magick::image_rotate(
-    #     magick::image_read(
-    #       fname("png")
-    #     )
-    #     ,rot
-    #   ) %>% magick::image_write(
-    #     fname("png")
-    #   )
-    # }
   }
 
   if ("svg" %in% formats) {
-    svg %>% charToRaw() %>% rsvg::rsvg_svg(
-      file = fname("svg"),
-      width = widthIn*72,
-      height = heightIn*72
-    )
+
+    # With this approach we don't need to "render" the SVG
+    # but that then requires the correct fonts are available on the
+    # rendering system. RSVG will convert fonts to glphs and remove this dependency
+    # but at the cost of preventing further editing.
+    svg %>% writeChar(fname("svg"))
+    # svg %>% charToRaw() %>% rsvg::rsvg_svg(
+    #   file = fname("svg")
+    # )
+
   }
 
   if ("ps" %in% formats) {
     svg %>% charToRaw() %>% rsvg::rsvg_ps(
-        file = fname("ps"),
-        width = widthIn*72,
-        height = heightIn*72
+        file = fname("ps")
     )
   }
 
@@ -186,4 +170,43 @@ save_dot = function(dot, filename, size = std_size$half, maxWidth = size$width, 
 }
 
 
+.scale_svg = function(svg, maxWidth = NULL, maxHeight=NULL, landscape=FALSE, dpi = 72) {
 
+  defaultWidth = (svg %>% stringr::str_match("width=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
+  defaultHeight = (svg %>% stringr::str_match("height=\"([0-9]*)pt\""))[1,2] %>% as.numeric()
+
+  if (is.null(maxWidth)) maxWidth = (if (landscape) defaultHeight else defaultWidth)/72
+  if (is.null(maxHeight)) maxHeight = (if (landscape) defaultWidth else defaultHeight)/72
+
+  # Calculate a minimum scale based on xscale and yscale then apply that to
+  # both X and Y. Then rotating things using svg. the origin of rotation requries
+  # a translation (which is on the original scale of the image)
+  # The small transform offsets are needed to align the content to the viewport
+  dpi = 72
+  if (landscape) {
+    scale = min(1, maxHeight*72/defaultWidth, maxWidth*72/defaultHeight) * dpi/72
+    targetWidth = defaultWidth*scale
+    targetHeight = defaultHeight*scale
+    transform=sprintf("scale(%1.3f %1.3f) rotate(270) translate(-%1.3f %1.3f)", scale,scale, defaultWidth-4, defaultHeight-4)
+    viewBox=sprintf("0 0 %1.3f %1.3f", targetHeight, targetWidth)
+    width=sprintf("%1.3fpt", targetHeight)
+    height=sprintf("%1.3fpt", targetWidth)
+  } else {
+    scale = min(1, maxWidth*72/defaultWidth, maxHeight*72/defaultHeight) * dpi/72
+    targetWidth = defaultWidth*scale
+    targetHeight = defaultHeight*scale
+    transform=sprintf("scale(%1.3f %1.3f) rotate(0) translate(4 %1.3f)", scale, scale, defaultHeight-4)
+    viewBox=sprintf("0 0 %1.3f %1.3f", targetWidth, targetHeight)
+    width=sprintf("%1.3fpt", targetWidth)
+    height=sprintf("%1.3fpt", targetHeight)
+  }
+
+  # perform all scaling within the SVG
+  svg = svg %>%
+    stringr::str_replace_all("width=\"([0-9]*)pt\"", sprintf("width=\"%s\"", width)) %>%
+    stringr::str_replace_all("height=\"([0-9]*)pt\"", sprintf("height=\"%s\"", height)) %>%
+    stringr::str_replace_all("viewBox=\"[^\"]+\"", sprintf("viewBox=\"%s\"", viewBox)) %>%
+    stringr::str_replace_all("transform=\"[^\"]+\"", sprintf("transform=\"%s\"", transform))
+
+  return(svg)
+}
