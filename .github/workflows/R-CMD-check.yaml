@@ -22,12 +22,25 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04, r: '4.1.0'}
-          - {os: macOS-11, r: '4.1.0'}
-          - {os: windows-2022, r: '4.1.0'}
-          - {os: ubuntu-20.04, r: '3.6.1'}
-          - {os: ubuntu-20.04, r: '4.2.0'}
-          - {os: ubuntu-18.04, r: 'devel', http-user-agent: 'release'}
+          # - {os: ubuntu-20.04, r: '4.1.0'}
+          # - {os: macOS-11, r: '4.1.0'}
+          # - {os: windows-2022, r: '4.1.0'}
+          # - {os: ubuntu-20.04, r: '3.6.1'}
+          # - {os: ubuntu-20.04, r: '4.2.0'}
+          # - {os: ubuntu-18.04, r: 'devel', http-user-agent: 'release'}
+
+          - {os: macOS-latest,   r: 'release'}
+
+          - {os: windows-latest, r: 'release'}
+          # Use 3.6 to trigger usage of RTools35
+          # - {os: windows-latest, r: '3.6'}
+
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest,   r: 'oldrel-2'}
+          # - {os: ubuntu-latest,   r: 'oldrel-3'}
+          # - {os: ubuntu-latest,   r: 'oldrel-4'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
