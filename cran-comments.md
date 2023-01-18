@@ -1,16 +1,17 @@
 ## Test environments
 
 Github actions environments
-* ubuntu-20-04 with R 4.1.0
-* ubuntu-20-04 with R 3.6.1
-* ubuntu-20-04 with R 4.2.0
-* macOS-11 with R 4.1.0
-* windows-2022 with R 4.1.0
-* ubuntu-18.04 with R r-devel
+
+* os: macOS-latest,   r: 'release'
+* os: windows-latest, r: 'release'
+* os: ubuntu-latest,   r: 'devel'
+* os: ubuntu-latest,   r: 'release'
+* os: ubuntu-latest,   r: 'oldrel-1'
+* os: ubuntu-latest,   r: 'oldrel-2'
 
 ## R CMD check results
 There were no ERRORs or WARNINGs or NOTEs. 
-(see https://github.com/terminological/dtrackr/actions/runs/3491658284 for 
+(see https://github.com/terminological/dtrackr/actions/ for 
 details)
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 

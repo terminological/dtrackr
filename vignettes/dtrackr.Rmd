@@ -334,7 +334,7 @@ The `GraphViz` language provides many options for formatting the flowchart.
 Rather than try and provide an interface for them, we have gone for sane
 defaults. If you want to change this or use a different layout engine the
 `GraphViz` output can be retrieved and edited directly. Alternatively if the 
-output you need is different, rendered SVG output can be edited but hand.
+output you need is different, rendered SVG output can be edited by hand.
 
 ```{r}
 cat(tmp %>% p_get_as_dot())
