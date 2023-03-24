@@ -19,10 +19,10 @@ details)
 There are currently no downstream dependencies for this package in CRAN.
 
 ## Other info
-This version 0.3.0 updates previous CRAN release 0.2.4
+This version 0.4.0 updates previous CRAN release 0.2.4
 
-Version 0.3.0 includes updates to 
-* prepare for dplyr 1.1.0 version release at end of Jan.
+Version 0.4.0 includes updates to 
+* respond to dplyr 1.1.0 version release at end of Jan.
 * work around anomalous behaviour of upstream bug in rsvg
 * Updates following JOSS code review, primarily in documentation although some 
 API updates
