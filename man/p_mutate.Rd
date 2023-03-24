@@ -11,17 +11,11 @@ p_mutate(.data, ..., .messages = "", .headline = "", .tag = NULL)
 lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{...}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Name-value pairs.
-The name gives the name of the column in the output.
-
-The value can be:
-\itemize{
-\item A vector of length 1, which will be recycled to the correct length.
-\item A vector the same length as the current group (or the whole data frame
-if ungrouped).
-\item \code{NULL}, to remove the column.
-\item A data frame or tibble, to create multiple columns in the output.
-}}
+\item{...}{
+  Arguments passed on to \code{\link[dplyr:mutate]{dplyr::mutate}}
+  \describe{
+    \item{\code{}}{}
+  }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, \{.new_cols\} or \{.dropped_cols\} for changes to
@@ -45,7 +39,7 @@ act in the normal way. mutates / selects / rename generally don't add
 anything in documentation so the default behaviour is to miss these out of
 the history. This can be overridden with the .messages, or .headline values
 in which case they behave just like a \code{comment()} See \code{\link[dplyr:mutate]{dplyr::mutate()}},
-\code{\link[dplyr:count]{dplyr::add_count()}}, \code{\link[dplyr:count]{dplyr::add_tally()}}, \code{\link[dplyr:mutate]{dplyr::transmute()}},
+\code{\link[dplyr:count]{dplyr::add_count()}}, \code{\link[dplyr:count]{dplyr::add_tally()}}, \code{\link[dplyr:transmute]{dplyr::transmute()}},
 \code{\link[dplyr:select]{dplyr::select()}}, \code{\link[dplyr:relocate]{dplyr::relocate()}}, \code{\link[dplyr:rename]{dplyr::rename()}}
 \code{\link[dplyr:rename]{dplyr::rename_with()}}, \code{\link[dplyr:arrange]{dplyr::arrange()}} for more details.
 }
@@ -67,95 +61,6 @@ iris \%>\%
          .messages="{.new_cols}",
          .headline="Extra columns from mutate:") \%>\%
   history()
-
-# transmute
-# Here we do the same for a transmute()
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  transmute(
-    sepal.w = Sepal.Width-1,
-    sepal.l = Sepal.Length+1,
-    .messages="{.new_cols}",
-    .headline="New columns from transmute:") \%>\%
-  history()
-
-# select
-# The output of the select verb (here using tidyselect syntax) can be captured
-# and here all column names are being reported with the .cols variable.
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  select(
-    tidyselect::starts_with("Sepal"),
-    .messages="{.cols}",
-    .headline="Output columns from select:") \%>\%
-  history()
-
-# relocate, this shows how the columns can be reordered
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  relocate(
-    tidyselect::starts_with("Sepal"),
-    .after=Species,
-    .messages="{.cols}",
-    .headline="Order of columns from relocate:") \%>\%
-  history()
-
-# rename can show us which columns are new and which have been
-# removed (with .dropped_cols)
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  rename(
-    Stamen.Width = Sepal.Width,
-    Stamen.Length = Sepal.Length,
-    .messages=c("added {.new_cols}","dropped {.dropped_cols}"),
-    .headline="Renamed columns:") \%>\%
-  history()
-
-# rename_with uses a function
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  rename_with(
-    .fn = toupper,
-    .messages="{.new_cols}",
-    .headline="Renamed columns:") \%>\%
-  history()
-
-# arrange
-# In this case we sort the data descending and show the first value
-# is the same as the maximum value.
-iris \%>\%
-  track() \%>\%
-  arrange(
-    desc(Petal.Width),
-    .messages="{.count} items, columns: {.cols}",
-    .headline="Reordered dataframe:") \%>\%
-  history()
-
-# add_count
-# adding in a count or tally column as a new column
-iris \%>\%
-  track() \%>\%
-  add_count(Species, name="new_count_total",
-            .messages="{.new_cols}",
-            # .messages="{.cols}",
-            .headline="New columns from add_count:") \%>\%
-  history()
-
-# add_tally
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  dtrackr::add_tally(wt=Petal.Length, name="new_tally_total",
-            .messages="{.new_cols}",
-            .headline="New columns from add_tally:") \%>\%
-  history()
-
-
 
 }
 \seealso{

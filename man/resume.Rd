@@ -2,18 +2,35 @@
 % Please edit documentation in R/dtrackr.R
 \name{resume}
 \alias{resume}
-\title{Resume tracking the dataframe. This may reset the grouping of the tracked data}
+\title{Resume tracking the data frame.}
 \usage{
-resume(.data)
+resume(.data, ...)
 }
 \arguments{
 \item{.data}{a tracked dataframe}
+
+\item{...}{
+  Arguments passed on to \code{\link[=p_group_by]{p_group_by}}
+  \describe{
+    \item{\code{.messages}}{a set of glue specs. The glue code can use any global
+variable, or \{.cols\} which is the columns that are being grouped by.}
+    \item{\code{.headline}}{a headline glue spec. The glue code can use any global
+variable, or \{.cols\}.}
+    \item{\code{.tag}}{if you want the summary data from this step in the future then
+give it a name with .tag.}
+    \item{\code{.maxgroups}}{the maximum number of subgroups allowed before the tracking
+is paused.}
+  }}
 }
 \value{
-the .data dataframe with history graph tracking resumed
+the .data data frame with history graph tracking resumed
 }
 \description{
-Resume tracking the dataframe. This may reset the grouping of the tracked data
+This may reset the grouping of the tracked data if the grouping structure
+has changed since the data frame was paused. If you try and resume tracking a
+data frame with too many groups (as defined by \code{options("dtrackr.max_supported_groupings"=XX)})
+then the resume will fail and the data frame will still be paused. This can
+be overridden by specifying a value for the \code{.maxgroups} parameter.
 }
 \examples{
 library(dplyr)

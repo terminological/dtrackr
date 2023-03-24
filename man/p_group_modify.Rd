@@ -6,9 +6,7 @@
 \usage{
 p_group_modify(
   .data,
-  .f,
   ...,
-  .keep = FALSE,
   .messages = NULL,
   .headline = .defaultHeadline(),
   .type = "modify",
@@ -16,15 +14,26 @@ p_group_modify(
 )
 }
 \arguments{
-\item{.data}{a dataframe which may be grouped}
+\item{.data}{A grouped tibble}
 
-\item{.f}{a function as expected by dplyr::group_modify e.g.
-function(d,g,...) { ...do something with d and return a dataframe... }}
+\item{...}{
+  Arguments passed on to \code{\link[dplyr:group_map]{dplyr::group_modify}}
+  \describe{
+    \item{\code{.f}}{A function or formula to apply to each group.
 
-\item{...}{additional parameters for .f.}
+If a \strong{function}, it is used as is. It should have at least 2 formal arguments.
 
-\item{.keep}{are the grouping variables kept in d, or split out to g (the
-default)}
+If a \strong{formula}, e.g. \code{~ head(.x)}, it is converted to a function.
+
+In the formula, you can use
+\itemize{
+\item \code{.} or \code{.x} to refer to the subset of rows of \code{.tbl}
+for the given group
+\item \code{.y} to refer to the key, a one row tibble with one column per grouping variable
+that identifies the group
+}}
+    \item{\code{.keep}}{are the grouping variables kept in \code{.x}}
+  }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.strata\},\{.count.in\},and \{.count.out\}}

@@ -7,8 +7,6 @@
 p_group_by(
   .data,
   ...,
-  .add = FALSE,
-  .drop = dplyr::group_by_drop_default(.data),
   .messages = "stratify by {.cols}",
   .headline = NULL,
   .tag = NULL,
@@ -16,21 +14,24 @@ p_group_by(
 )
 }
 \arguments{
-\item{.data}{a dataframe which may be grouped}
+\item{.data}{A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
+more details.}
 
-\item{...}{a set of dplyr column expressions.}
-
-\item{.add}{When \code{FALSE}, the default, \code{group_by()} will
+\item{...}{
+  Arguments passed on to \code{\link[dplyr:group_by]{dplyr::group_by}}
+  \describe{
+    \item{\code{.add}}{When \code{FALSE}, the default, \code{group_by()} will
 override existing groups. To add to the existing groups, use
 \code{.add = TRUE}.
 
 This argument was previously called \code{add}, but that prevented
 creating a new grouping variable called \code{add}, and conflicts with
 our naming conventions.}
-
-\item{.drop}{Drop groups formed by factor levels that don't appear in the
+    \item{\code{.drop}}{Drop groups formed by factor levels that don't appear in the
 data? The default is \code{TRUE} except when \code{.data} has been previously
 grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{group_by_drop_default()}} for details.}
+  }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.cols\} which is the columns that are being grouped by.}

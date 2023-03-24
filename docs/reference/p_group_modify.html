@@ -22,7 +22,7 @@ is also available (if grouped) for reporting See dplyr::group_modify()."><meta p
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -84,9 +84,7 @@ is also available (if grouped) for reporting See <code><a href="https://dplyr.ti
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_group_modify</span><span class="op">(</span></span>
 <span>  <span class="va">.data</span>,</span>
-<span>  <span class="va">.f</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  .keep <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .messages <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .headline <span class="op">=</span> <span class="fu">.defaultHeadline</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  .type <span class="op">=</span> <span class="st">"modify"</span>,</span>
@@ -97,21 +95,25 @@ is also available (if grouped) for reporting See <code><a href="https://dplyr.ti
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>.data</dt>
-<dd><p>a dataframe which may be grouped</p></dd>
-
-
-<dt>.f</dt>
-<dd><p>a function as expected by dplyr::group_modify e.g.
-function(d,g,...)  ...do something with d and return a dataframe...</p></dd>
+<dd><p>A grouped tibble</p></dd>
 
 
 <dt>...</dt>
-<dd><p>additional parameters for .f.</p></dd>
+<dd><p>Arguments passed on to <code><a href="https://dplyr.tidyverse.org/reference/group_map.html" class="external-link">dplyr::group_modify</a></code></p><dl><dt><code>.f</code></dt>
+<dd><p>A function or formula to apply to each group.</p>
+<p>If a <strong>function</strong>, it is used as is. It should have at least 2 formal arguments.</p>
+<p>If a <strong>formula</strong>, e.g. <code>~ head(.x)</code>, it is converted to a function.</p>
+<p>In the formula, you can use</p><ul><li><p><code>.</code> or <code>.x</code> to refer to the subset of rows of <code>.tbl</code>
+for the given group</p></li>
+<li><p><code>.y</code> to refer to the key, a one row tibble with one column per grouping variable
+that identifies the group</p></li>
+</ul></dd>
 
+    <dt><code>.keep</code></dt>
+<dd><p>are the grouping variables kept in <code>.x</code></p></dd>
 
-<dt>.keep</dt>
-<dd><p>are the grouping variables kept in d, or split out to g (the
-default)</p></dd>
+  
+</dl></dd>
 
 
 <dt>.messages</dt>
@@ -176,7 +178,7 @@ give it a name with .tag.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

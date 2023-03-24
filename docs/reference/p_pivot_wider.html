@@ -18,7 +18,7 @@ message and headline to store in the history graph."><meta property="og:image" c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -74,23 +74,7 @@ message and headline to store in the history graph.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_pivot_wider</span><span class="op">(</span></span>
-<span>  <span class="va">data</span>,</span>
-<span>  id_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  names_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"name"</span><span class="op">)</span>,</span>
-<span>  names_prefix <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  names_sep <span class="op">=</span> <span class="st">"_"</span>,</span>
-<span>  names_glue <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  names_sort <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  names_repair <span class="op">=</span> <span class="st">"check_unique"</span>,</span>
-<span>  values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.symbol</a></span><span class="op">(</span><span class="st">"value"</span><span class="op">)</span>,</span>
-<span>  values_fill <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  values_fn <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  .messages <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  .headline <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  .tag <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_pivot_wider</span><span class="op">(</span><span class="va">data</span>, <span class="va">...</span>, .messages <span class="op">=</span> <span class="st">""</span>, .headline <span class="op">=</span> <span class="st">""</span>, .tag <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -99,15 +83,26 @@ message and headline to store in the history graph.</p>
 <dd><p>A data frame to pivot.</p></dd>
 
 
-<dt>id_cols</dt>
+<dt>...</dt>
+<dd><p>Arguments passed on to <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">tidyr::pivot_wider</a></code></p><dl><dt><code>id_cols</code></dt>
 <dd><p>&lt;<code><a href="https://tidyr.tidyverse.org/reference/tidyr_tidy_select.html" class="external-link">tidy-select</a></code>&gt; A set of columns that
-uniquely identifies each observation. Defaults to all columns in <code>data</code>
-except for the columns specified in <code>names_from</code> and <code>values_from</code>.
-Typically used when you have redundant variables, i.e. variables whose
-values are perfectly correlated with existing variables.</p></dd>
+uniquely identify each observation. Typically used when you have
+redundant variables, i.e. variables whose values are perfectly correlated
+with existing variables.</p>
+<p>Defaults to all columns in <code>data</code> except for the columns specified through
+<code>names_from</code> and <code>values_from</code>. If a tidyselect expression is supplied, it
+will be evaluated on <code>data</code> after removing the columns specified through
+<code>names_from</code> and <code>values_from</code>.</p></dd>
 
+    <dt><code>id_expand</code></dt>
+<dd><p>Should the values in the <code>id_cols</code> columns be expanded by
+<code><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">expand()</a></code> before pivoting? This results in more rows, the output will
+contain a complete expansion of all possible values in <code>id_cols</code>. Implicit
+factor levels that aren't represented in the data will become explicit.
+Additionally, the row values corresponding to the expanded <code>id_cols</code> will
+be sorted.</p></dd>
 
-<dt>names_from, values_from</dt>
+    <dt><code>names_from,values_from</code></dt>
 <dd><p>&lt;<code><a href="https://tidyr.tidyverse.org/reference/tidyr_tidy_select.html" class="external-link">tidy-select</a></code>&gt; A pair of
 arguments describing which column (or columns) to get the name of the
 output column (<code>names_from</code>), and which column (or columns) to get the
@@ -115,46 +110,56 @@ cell values from (<code>values_from</code>).</p>
 <p>If <code>values_from</code> contains multiple values, the value will be added to the
 front of the output column.</p></dd>
 
-
-<dt>names_prefix</dt>
+    <dt><code>names_prefix</code></dt>
 <dd><p>String added to the start of every variable name. This is
 particularly useful if <code>names_from</code> is a numeric vector and you want to
 create syntactic variable names.</p></dd>
 
-
-<dt>names_sep</dt>
+    <dt><code>names_sep</code></dt>
 <dd><p>If <code>names_from</code> or <code>values_from</code> contains multiple
 variables, this will be used to join their values together into a single
 string to use as a column name.</p></dd>
 
-
-<dt>names_glue</dt>
+    <dt><code>names_glue</code></dt>
 <dd><p>Instead of <code>names_sep</code> and <code>names_prefix</code>, you can supply
 a glue specification that uses the <code>names_from</code> columns (and special
 <code>.value</code>) to create custom column names.</p></dd>
 
-
-<dt>names_sort</dt>
+    <dt><code>names_sort</code></dt>
 <dd><p>Should the column names be sorted? If <code>FALSE</code>, the default,
 column names are ordered by first appearance.</p></dd>
 
+    <dt><code>names_vary</code></dt>
+<dd><p>When <code>names_from</code> identifies a column (or columns) with
+multiple unique values, and multiple <code>values_from</code> columns are provided,
+in what order should the resulting column names be combined?</p><ul><li><p><code>"fastest"</code> varies <code>names_from</code> values fastest, resulting in a column
+naming scheme of the form: <code>value1_name1, value1_name2, value2_name1, value2_name2</code>. This is the default.</p></li>
+<li><p><code>"slowest"</code> varies <code>names_from</code> values slowest, resulting in a column
+naming scheme of the form: <code>value1_name1, value2_name1, value1_name2, value2_name2</code>.</p></li>
+</ul></dd>
 
-<dt>names_repair</dt>
+    <dt><code>names_expand</code></dt>
+<dd><p>Should the values in the <code>names_from</code> columns be expanded
+by <code><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">expand()</a></code> before pivoting? This results in more columns, the output
+will contain column names corresponding to a complete expansion of all
+possible values in <code>names_from</code>. Implicit factor levels that aren't
+represented in the data will become explicit. Additionally, the column
+names will be sorted, identical to what <code>names_sort</code> would produce.</p></dd>
+
+    <dt><code>names_repair</code></dt>
 <dd><p>What happens if the output has invalid column names?
 The default, <code>"check_unique"</code> is to error if the columns are duplicated.
 Use <code>"minimal"</code> to allow duplicates in the output, or <code>"unique"</code> to
 de-duplicated by adding numeric suffixes. See <code><a href="https://vctrs.r-lib.org/reference/vec_as_names.html" class="external-link">vctrs::vec_as_names()</a></code>
 for more options.</p></dd>
 
-
-<dt>values_fill</dt>
+    <dt><code>values_fill</code></dt>
 <dd><p>Optionally, a (scalar) value that specifies what each
 <code>value</code> should be filled in with when missing.</p>
 <p>This can be a named list if you want to apply different fill values to
 different value columns.</p></dd>
 
-
-<dt>values_fn</dt>
+    <dt><code>values_fn</code></dt>
 <dd><p>Optionally, a function applied to the value in each cell
 in the output. You will typically use this when the combination of
 <code>id_cols</code> and <code>names_from</code> columns does not uniquely identify an
@@ -162,9 +167,20 @@ observation.</p>
 <p>This can be a named list if you want to apply different aggregations
 to different <code>values_from</code> columns.</p></dd>
 
+    <dt><code>unused_fn</code></dt>
+<dd><p>Optionally, a function applied to summarize the values from
+the unused columns (i.e. columns not identified by <code>id_cols</code>,
+<code>names_from</code>, or <code>values_from</code>).</p>
+<p>The default drops all unused columns from the result.</p>
+<p>This can be a named list if you want to apply different aggregations
+to different unused columns.</p>
+<p><code>id_cols</code> must be supplied for <code>unused_fn</code> to be useful, since otherwise
+all unspecified columns will be considered <code>id_cols</code>.</p>
+<p>This is similar to grouping by the <code>id_cols</code> then summarizing the
+unused columns using <code>unused_fn</code>.</p></dd>
 
-<dt>...</dt>
-<dd><p>Additional arguments passed on to methods.</p></dd>
+  
+</dl></dd>
 
 
 <dt>.messages</dt>
@@ -206,7 +222,7 @@ a history graph updated with a <code>.message</code> if requested.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

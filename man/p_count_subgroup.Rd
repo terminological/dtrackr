@@ -21,8 +21,7 @@ p_count_subgroup(
 
 \item{.subgroup}{a column with a small number of levels (e.g. a factor)}
 
-\item{...}{additional parameters will be passed to \code{factor(subgroup,...)} to
-control levels, ordering, etcetera.}
+\item{...}{passed to \verb{base::factor(subgroup values, ...)} to allow reordering of levels etc.}
 
 \item{.messages}{a character vector of glue specifications. A glue
 specification can refer to anything from the calling environment and \{.name\}

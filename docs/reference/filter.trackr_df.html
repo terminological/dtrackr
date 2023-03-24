@@ -22,7 +22,7 @@ available (if grouped) for reporting. See dplyr::filter()."><meta property="og:i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -86,7 +86,6 @@ available (if grouped) for reporting. See <code><a href="https://dplyr.tidyverse
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>  <span class="va">.data</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  .preserve <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  .messages <span class="op">=</span> <span class="st">"excluded {.excluded} items"</span>,</span>
 <span>  .headline <span class="op">=</span> <span class="fu">.defaultHeadline</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  .type <span class="op">=</span> <span class="st">"exclusion"</span>,</span>
@@ -99,17 +98,16 @@ available (if grouped) for reporting. See <code><a href="https://dplyr.tidyverse
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>.data</dt>
-<dd><p>a dataframe which may be grouped</p></dd>
+<dd><p>A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See <em>Methods</em>, below, for
+more details.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>the filter criteria</p></dd>
-
-
-<dt>.preserve</dt>
-<dd><p>Relevant when the <code>.data</code> input is grouped.
-If <code>.preserve = FALSE</code> (the default), the grouping structure
-is recalculated based on the resulting data, otherwise the grouping is kept as is.</p></dd>
+<dd><p>&lt;<code><a href="https://dplyr.tidyverse.org/reference/dplyr_data_masking.html" class="external-link">data-masking</a></code>&gt; Expressions that return a
+logical value, and are defined in terms of the variables in <code>.data</code>.
+If multiple expressions are included, they are combined with the <code>&amp;</code> operator.
+Only rows for which all conditions evaluate to <code>TRUE</code> are kept.</p></dd>
 
 
 <dt>.messages</dt>
@@ -163,7 +161,9 @@ give it a name with <code>.tag</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tags defined: &lt;none&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> items excluded so far: &lt;not capturing exclusions&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> last entry / entries:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └ "stratify by Species"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:setosa]: "stratify by Species"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:versicolor]: "stratify by Species"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> └ [Species:virginica]: "stratify by Species"</span>
 </code></pre></div>
     </div>
   </div>
@@ -178,7 +178,7 @@ give it a name with <code>.tag</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

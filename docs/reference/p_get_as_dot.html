@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -141,11 +141,12 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         arrowsize = '0.5']</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> { rank='same';</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '5' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;50 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '6' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;50 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '6' [label=&lt;&lt;B&gt;Species:setosa&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;50 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '7' [label=&lt;&lt;B&gt;Species:virginica&lt;/B&gt;&lt;BR ALIGN='LEFT'/&gt;50 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> { rank='same';</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '4' [label=&lt;stratify by Species&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '4' [label=&lt;stratify by Species&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:setosa',fillcolor='white'];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '5' [label=&lt;stratify by Species&lt;BR ALIGN='LEFT'/&gt;&gt;,group='Species:virginica',fillcolor='white'];</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> { rank='same';</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '2' [label=&lt;150 items&lt;BR ALIGN='LEFT'/&gt;&gt;,group='',fillcolor='white'];</span>
@@ -156,8 +157,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '5' -&gt; '7' [tailport='s',weight='100']</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '4' -&gt; '6' [tailport='s',weight='100']</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> '4' -&gt; '5' [tailport='s',weight='100']</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> '2' -&gt; '5' [tailport='s',weight='100']</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '2' -&gt; '4' [tailport='s',weight='100']</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '2' -&gt; '3' [tailport='e',weight='1']</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> '1' -&gt; '2' [tailport='s',weight='100']</span>
@@ -176,7 +178,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

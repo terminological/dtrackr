@@ -25,3 +25,11 @@ test_that("Issue #26 fixed", {
   testthat::expect_equal(actual2,expected)
   testthat::expect_equal(actual,expected)
 })
+
+
+test_that("Issue #33 fixed", {
+  # distinct was using the wrong function signature and not passing it on properly
+  correct = mtcars %>% dplyr::distinct(carb) %>% dim()
+  was_wrong = mtcars %>% dtrackr::track() %>% dtrackr::p_distinct(carb) %>% dim()
+  testthat::expect_equal(correct, was_wrong)
+})

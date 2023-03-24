@@ -27,7 +27,7 @@ dplyr::group_by().'><meta property="og:image" content="/logo.png"><!-- mathjax -
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -96,8 +96,6 @@ using a <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" clas
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span></span>
 <span>  <span class="va">.data</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  .add <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  .drop <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by_drop_default.html" class="external-link">group_by_drop_default</a></span><span class="op">(</span><span class="va">.data</span><span class="op">)</span>,</span>
 <span>  .messages <span class="op">=</span> <span class="st">"stratify by {.cols}"</span>,</span>
 <span>  .headline <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .tag <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -108,26 +106,18 @@ using a <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" clas
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>.data</dt>
-<dd><p>a dataframe which may be grouped</p></dd>
+<dd><p>A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See <em>Methods</em>, below, for
+more details.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>a set of dplyr column expressions.</p></dd>
-
-
-<dt>.add</dt>
-<dd><p>When <code>FALSE</code>, the default, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code> will
-override existing groups. To add to the existing groups, use
-<code>.add = TRUE</code>.</p>
-<p>This argument was previously called <code>add</code>, but that prevented
-creating a new grouping variable called <code>add</code>, and conflicts with
-our naming conventions.</p></dd>
-
-
-<dt>.drop</dt>
-<dd><p>Drop groups formed by factor levels that don't appear in the
-data? The default is <code>TRUE</code> except when <code>.data</code> has been previously
-grouped with <code>.drop = FALSE</code>. See <code><a href="https://dplyr.tidyverse.org/reference/group_by_drop_default.html" class="external-link">group_by_drop_default()</a></code> for details.</p></dd>
+<dd><p>In <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>, variables or computations to group by.
+Computations are always done on the ungrouped data frame.
+To perform computations on the grouped data, you need to use
+a separate <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> step before the <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>.
+Computations are not allowed in <code><a href="https://dplyr.tidyverse.org/reference/nest_by.html" class="external-link">nest_by()</a></code>.
+In <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup()</a></code>, variables to remove from the grouping.</p></dd>
 
 
 <dt>.messages</dt>
@@ -190,7 +180,7 @@ is paused.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

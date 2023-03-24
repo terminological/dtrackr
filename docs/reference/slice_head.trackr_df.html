@@ -21,7 +21,7 @@ for more details on the underlying functions."><meta property="og:image" content
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -84,8 +84,6 @@ for more details on the underlying functions.</p>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span></span>
 <span>  <span class="va">.data</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  <span class="va">n</span>,</span>
-<span>  <span class="va">prop</span>,</span>
 <span>  .messages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"{.count.in} before"</span>, <span class="st">"{.count.out} after"</span><span class="op">)</span>,</span>
 <span>  .headline <span class="op">=</span> <span class="st">"slice data"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -105,19 +103,7 @@ values.</p>
 <p>Provide either positive values to keep, or negative values to drop.
 The values provided must be either all positive or all negative.
 Indices beyond the number of rows in the input are silently ignored.</p>
-<p>For <code>slice_helpers()</code>, these arguments are passed on to methods.</p></dd>
-
-
-<dt>n, prop</dt>
-<dd><p>Provide either <code>n</code>, the number of rows, or <code>prop</code>, the
-proportion of rows to select. If neither are supplied, <code>n = 1</code> will be
-used.</p>
-<p>If a negative value of <code>n</code> or <code>prop</code> is provided, the specified number or
-proportion of rows will be removed.</p>
-<p>If <code>n</code> is greater than the number of rows in the group (or <code>prop &gt; 1</code>),
-the result will be silently truncated to the group size. If the
-<code>prop</code>ortion of a group size does not yield an integer number of rows, the
-absolute value of <code>prop*nrow(.data)</code> is rounded down.</p></dd>
+<p>For <code>slice_*()</code>, these arguments are passed on to methods.</p></dd>
 
 
 <dt>.messages</dt>
@@ -148,16 +134,6 @@ respectively.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://terminological.github.io/dtrackr/index.html" class="external-link">dtrackr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># an arbitrary 50 items from the iris dataframe is selected. The</span></span></span>
-<span class="r-in"><span><span class="co"># history is tracked</span></span></span>
-<span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">51</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="history.html">history</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dtrackr history:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> number of flowchart steps: 2 (approx)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tags defined: &lt;none&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> items excluded so far: &lt;not capturing exclusions&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> last entry / entries:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └ "slice data", "150 before", "50 after"</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the first 50% of the data frame, is taken and the history tracked</span></span></span>
 <span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>prop<span class="op">=</span><span class="fl">0.5</span>,.messages<span class="op">=</span><span class="st">"{.count.out} / {.count.in}"</span>,</span></span>
@@ -175,7 +151,7 @@ respectively.</p></dd>
 <span class="r-in"><span><span class="co"># The last 100 items:</span></span></span>
 <span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_tail</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">100</span>,.messages<span class="op">=</span><span class="st">"{.count.out} / {.count.in}"</span>,</span></span>
-<span class="r-in"><span>             .headline<span class="op">=</span><span class="st">"Last {n}"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>             .headline<span class="op">=</span><span class="st">"Last 100"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="history.html">history</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dtrackr history:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> number of flowchart steps: 3 (approx)</span>
@@ -185,61 +161,6 @@ respectively.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:setosa]: "Last 100", "50 / 50"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:versicolor]: "Last 100", "50 / 50"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └ [Species:virginica]: "Last 100", "50 / 50"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Subset the data by the maximum of a given value</span></span></span>
-<span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>prop<span class="op">=</span><span class="fl">0.5</span>, order_by <span class="op">=</span> <span class="va">Sepal.Width</span>,</span></span>
-<span class="r-in"><span>            .messages<span class="op">=</span><span class="st">"{.count.out} / {.count.in} = {prop} (with ties)"</span>,</span></span>
-<span class="r-in"><span>            .headline<span class="op">=</span><span class="st">"Widest 50% Sepals"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="history.html">history</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dtrackr history:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> number of flowchart steps: 3 (approx)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tags defined: &lt;none&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> items excluded so far: &lt;not capturing exclusions&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> last entry / entries:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:setosa]: "Widest 50% Sepals", "31 / 50 = 0.5 (with ties)"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:versicolor]: "Widest 50% Sepals", "29 / 50 = 0.5 (with ties)"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └ [Species:virginica]: "Widest 50% Sepals", "29 / 50 = 0.5 (with ties)"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The narrowest 25% of the iris data set by group can be calculated in the</span></span></span>
-<span class="r-in"><span><span class="co"># slice_min() function. Recording this is a matter of tracking and</span></span></span>
-<span class="r-in"><span><span class="co"># using glue specs.</span></span></span>
-<span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_min</a></span><span class="op">(</span>prop<span class="op">=</span><span class="fl">0.25</span>, order_by <span class="op">=</span> <span class="va">Sepal.Width</span>,</span></span>
-<span class="r-in"><span>            .messages<span class="op">=</span><span class="st">"{.count.out} / {.count.in} (with ties)"</span>,</span></span>
-<span class="r-in"><span>            .headline<span class="op">=</span><span class="st">"narrowest {sprintf('%1.0f',prop*100)}% {Species}"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="history.html">history</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dtrackr history:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> number of flowchart steps: 3 (approx)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tags defined: &lt;none&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> items excluded so far: &lt;not capturing exclusions&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> last entry / entries:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:setosa]: "narrowest 25% setosa", "12 / 50 (with ties)"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:versicolor]: "narrowest 25% versicolor", "13 / 50 (with ties)"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └ [Species:virginica]: "narrowest 25% virginica", "19 / 50 (with ties)"</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># In this example the iris dataframe is resampled 100 times with replacement</span></span></span>
-<span class="r-in"><span><span class="co"># within each group and the</span></span></span>
-<span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_sample</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">100</span>, replace<span class="op">=</span><span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>               .messages<span class="op">=</span><span class="st">"{.count.out} / {.count.in} = {n}"</span>,</span></span>
-<span class="r-in"><span>               .headline<span class="op">=</span><span class="st">"100 {Species}"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="history.html">history</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dtrackr history:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> number of flowchart steps: 3 (approx)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tags defined: &lt;none&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> items excluded so far: &lt;not capturing exclusions&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> last entry / entries:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:setosa]: "100 setosa", "100 / 50 = 100"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ├ [Species:versicolor]: "100 versicolor", "100 / 50 = 100"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> └ [Species:virginica]: "100 virginica", "100 / 50 = 100"</span>
 </code></pre></div>
     </div>
   </div>
@@ -254,7 +175,7 @@ respectively.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

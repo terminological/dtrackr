@@ -7,8 +7,6 @@
 p_slice_tail(
   .data,
   ...,
-  n,
-  prop,
   .messages = c("{.count.in} before", "{.count.out} after"),
   .headline = "slice data"
 )
@@ -18,26 +16,20 @@ p_slice_tail(
 lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{...}{For \code{slice()}: <\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Integer row
-values.
-
-Provide either positive values to keep, or negative values to drop.
-The values provided must be either all positive or all negative.
-Indices beyond the number of rows in the input are silently ignored.
-
-For \code{slice_helpers()}, these arguments are passed on to methods.}
-
-\item{n, prop}{Provide either \code{n}, the number of rows, or \code{prop}, the
+\item{...}{
+  Arguments passed on to \code{\link[dplyr:slice]{dplyr::slice_tail}}
+  \describe{
+    \item{\code{n,prop}}{Provide either \code{n}, the number of rows, or \code{prop}, the
 proportion of rows to select. If neither are supplied, \code{n = 1} will be
-used.
+used. If \code{n} is greater than the number of rows in the group
+(or \code{prop > 1}), the result will be silently truncated to the group size.
+\code{prop} will be rounded towards zero to generate an integer number of
+rows.
 
-If a negative value of \code{n} or \code{prop} is provided, the specified number or
-proportion of rows will be removed.
-
-If \code{n} is greater than the number of rows in the group (or \code{prop > 1}),
-the result will be silently truncated to the group size. If the
-\code{prop}ortion of a group size does not yield an integer number of rows, the
-absolute value of \code{prop*nrow(.data)} is rounded down.}
+A negative value of \code{n} or \code{prop} will be subtracted from the group
+size. For example, \code{n = -2} with a group of 5 rows will select 5 - 2 = 3
+rows; \code{prop = -0.25} with 8 rows will select 8 * (1 - 0.25) = 6 rows.}
+  }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, \{.count.in\}, \{.count.out\} for the input and output dataframes
@@ -61,10 +53,6 @@ for more details on the underlying functions.
 library(dplyr)
 library(dtrackr)
 
-# an arbitrary 50 items from the iris dataframe is selected. The
-# history is tracked
-iris \%>\% track() \%>\% slice(51:100) \%>\% history()
-
 # the first 50\% of the data frame, is taken and the history tracked
 iris \%>\% track() \%>\% group_by(Species) \%>\%
   slice_head(prop=0.5,.messages="{.count.out} / {.count.in}",
@@ -74,38 +62,7 @@ iris \%>\% track() \%>\% group_by(Species) \%>\%
 # The last 100 items:
 iris \%>\% track() \%>\% group_by(Species) \%>\%
   slice_tail(n=100,.messages="{.count.out} / {.count.in}",
-             .headline="Last {n}") \%>\%
-  history()
-
-# Subset the data by the maximum of a given value
-iris \%>\% track() \%>\% group_by(Species) \%>\%
-  slice_max(prop=0.5, order_by = Sepal.Width,
-            .messages="{.count.out} / {.count.in} = {prop} (with ties)",
-            .headline="Widest 50\% Sepals") \%>\%
-  history()
-
-
-# The narrowest 25\% of the iris data set by group can be calculated in the
-# slice_min() function. Recording this is a matter of tracking and
-# using glue specs.
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  slice_min(prop=0.25, order_by = Sepal.Width,
-            .messages="{.count.out} / {.count.in} (with ties)",
-            .headline="narrowest {sprintf('\%1.0f',prop*100)}\% {Species}") \%>\%
-  history()
-
-
-
-# In this example the iris dataframe is resampled 100 times with replacement
-# within each group and the
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  slice_sample(n=100, replace=TRUE,
-               .messages="{.count.out} / {.count.in} = {n}",
-               .headline="100 {Species}") \%>\%
+             .headline="Last 100") \%>\%
   history()
 }
 \seealso{

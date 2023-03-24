@@ -2,18 +2,25 @@
 % Please edit documentation in R/dtrackr.R
 \name{pause}
 \alias{pause}
-\title{Pause tracking the dataframe}
+\title{Pause tracking the data frame.}
 \usage{
-pause(.data)
+pause(.data, auto = FALSE)
 }
 \arguments{
 \item{.data}{a tracked dataframe}
+
+\item{auto}{if \code{TRUE} the tracking will resume automatically when the
+number of groups has fallen to a sensible level (default is \code{FALSE})?}
 }
 \value{
 the .data dataframe with history graph tracking paused
 }
 \description{
-Pause tracking the dataframe
+Pausing tracking of a data frame may be required if an operation is about to
+be performed that creates a lot of groupings or that you otherwise don't
+want to pollute the history graph (e.g. maybe selecting something using
+an anti-join). Once paused the history is not updated until a \code{resume()} is
+called, or when the data frame is ungrouped (if \code{auto} is enabled).
 }
 \examples{
 iris \%>\% track() \%>\% pause() \%>\% history()

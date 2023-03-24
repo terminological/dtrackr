@@ -21,7 +21,7 @@ dplyr::summarise()."><meta property="og:image" content="/logo.png"><!-- mathjax 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -80,29 +80,42 @@ allows you to generate some summary statistics about the un-grouped data. See
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_summarise</span><span class="op">(</span></span>
-<span>  <span class="va">.data</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  .groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .messages <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  .headline <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  .tag <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_summarise</span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .messages <span class="op">=</span> <span class="st">""</span>, .headline <span class="op">=</span> <span class="st">""</span>, .tag <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>.data</dt>
-<dd><p>a dataframe which may be grouped</p></dd>
+<dd><p>A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See <em>Methods</em>, below, for
+more details.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>a set of dplyr summary expressions.</p></dd>
+<dd><p>Arguments passed on to <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise</a></code></p><dl><dt><code>.by</code></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>&lt;<code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">tidy-select</a></code>&gt; Optionally, a selection of columns to
+group by for just this operation, functioning as an alternative to <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>. For
+details and examples, see <a href="https://dplyr.tidyverse.org/reference/dplyr_by.html" class="external-link">?dplyr_by</a>.</p></dd>
 
+    <dt><code>.groups</code></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a> Grouping structure of the
+result.</p><ul><li><p>"drop_last": dropping the last level of grouping. This was the
+only supported option before version 1.0.0.</p></li>
+<li><p>"drop": All levels of grouping are dropped.</p></li>
+<li><p>"keep": Same grouping structure as <code>.data</code>.</p></li>
+<li><p>"rowwise": Each row is its own group.</p></li>
+</ul><p>When <code>.groups</code> is not specified, it is chosen
+based on the number of rows of the results:</p><ul><li><p>If all the results have 1 row, you get "drop_last".</p></li>
+<li><p>If the number of rows varies, you get "keep" (note that returning a
+variable number of rows was deprecated in favor of <code><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe()</a></code>, which
+also unconditionally drops all levels of grouping).</p></li>
+</ul><p>In addition, a message informs you of that choice, unless the result is ungrouped,
+the option "dplyr.summarise.inform" is set to <code>FALSE</code>,
+or when <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise()</a></code> is called from a function in a package.</p></dd>
 
-<dt>.groups</dt>
-<dd><ul><li><p>Experimental life-cycle: Grouping structure of the result.</p></li>
-</ul></dd>
+  
+</dl></dd>
 
 
 <dt>.messages</dt>
@@ -161,7 +174,7 @@ the summarise operation as a new stage</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

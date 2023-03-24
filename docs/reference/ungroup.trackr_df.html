@@ -20,7 +20,7 @@ See dplyr::ungroup()."><meta property="og:image" content="/logo.png"><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -91,11 +91,16 @@ See <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="e
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>a dataframe which may be grouped (why not .data?)</p></dd>
+<dd><p>A <code><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl()</a></code></p></dd>
 
 
 <dt>...</dt>
-<dd><p>passed to dplyr::ungroup()</p></dd>
+<dd><p>In <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>, variables or computations to group by.
+Computations are always done on the ungrouped data frame.
+To perform computations on the grouped data, you need to use
+a separate <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate()</a></code> step before the <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by()</a></code>.
+Computations are not allowed in <code><a href="https://dplyr.tidyverse.org/reference/nest_by.html" class="external-link">nest_by()</a></code>.
+In <code><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup()</a></code>, variables to remove from the grouping.</p></dd>
 
 
 <dt>.messages</dt>
@@ -152,7 +157,7 @@ updated showing the ungroup operation as a new stage.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -6,9 +6,7 @@
 \usage{
 \method{group_modify}{trackr_df}(
   .data,
-  .f,
   ...,
-  .keep = FALSE,
   .messages = NULL,
   .headline = .defaultHeadline(),
   .type = "modify",
@@ -16,15 +14,9 @@
 )
 }
 \arguments{
-\item{.data}{a dataframe which may be grouped}
+\item{.data}{A grouped tibble}
 
-\item{.f}{a function as expected by dplyr::group_modify e.g.
-function(d,g,...) { ...do something with d and return a dataframe... }}
-
-\item{...}{additional parameters for .f.}
-
-\item{.keep}{are the grouping variables kept in d, or split out to g (the
-default)}
+\item{...}{Additional arguments passed on to \code{.f}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.strata\},\{.count.in\},and \{.count.out\}}

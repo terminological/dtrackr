@@ -11,7 +11,7 @@ rhs = films %>% track() %>% comment("Films df {.total}") %>%
   comment("a test comment")
 
 # Left join
-join = lhs %>% left_join(rhs, by="name") %>% comment("joined {.total}")
+join = lhs %>% left_join(rhs, by="name", multiple = "all") %>% comment("joined {.total}")
 # See what the history of the graph is:
 join %>% history()
 nrow(join)

@@ -6,11 +6,7 @@
 \usage{
 p_slice_min(
   .data,
-  order_by,
   ...,
-  n,
-  prop,
-  with_ties = TRUE,
   .messages = c("{.count.in} before", "{.count.out} after"),
   .headline = "slice data"
 )
@@ -20,32 +16,30 @@ p_slice_min(
 lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{order_by}{Variable or function of variables to order by.}
-
-\item{...}{For \code{slice()}: <\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Integer row
-values.
-
-Provide either positive values to keep, or negative values to drop.
-The values provided must be either all positive or all negative.
-Indices beyond the number of rows in the input are silently ignored.
-
-For \code{slice_helpers()}, these arguments are passed on to methods.}
-
-\item{n, prop}{Provide either \code{n}, the number of rows, or \code{prop}, the
+\item{...}{
+  Arguments passed on to \code{\link[dplyr:slice]{dplyr::slice_min}}
+  \describe{
+    \item{\code{n,prop}}{Provide either \code{n}, the number of rows, or \code{prop}, the
 proportion of rows to select. If neither are supplied, \code{n = 1} will be
-used.
+used. If \code{n} is greater than the number of rows in the group
+(or \code{prop > 1}), the result will be silently truncated to the group size.
+\code{prop} will be rounded towards zero to generate an integer number of
+rows.
 
-If a negative value of \code{n} or \code{prop} is provided, the specified number or
-proportion of rows will be removed.
-
-If \code{n} is greater than the number of rows in the group (or \code{prop > 1}),
-the result will be silently truncated to the group size. If the
-\code{prop}ortion of a group size does not yield an integer number of rows, the
-absolute value of \code{prop*nrow(.data)} is rounded down.}
-
-\item{with_ties}{Should ties be kept together? The default, \code{TRUE},
+A negative value of \code{n} or \code{prop} will be subtracted from the group
+size. For example, \code{n = -2} with a group of 5 rows will select 5 - 2 = 3
+rows; \code{prop = -0.25} with 8 rows will select 8 * (1 - 0.25) = 6 rows.}
+    \item{\code{order_by}}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Variable or function
+of variables to order by. To order by multiple variables, wrap them in a
+data frame or tibble.}
+    \item{\code{with_ties}}{Should ties be kept together? The default, \code{TRUE},
 may return more rows than you request. Use \code{FALSE} to ignore ties,
 and return the first \code{n} rows.}
+    \item{\code{na_rm}}{Should missing values in \code{order_by} be removed from the result?
+If \code{FALSE}, \code{NA} values are sorted to the end (like in \code{\link[dplyr:arrange]{arrange()}}), so
+they will only be included if there are insufficient non-missing values to
+reach \code{n}/\code{prop}.}
+  }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, \{.count.in\}, \{.count.out\} for the input and output dataframes
@@ -69,21 +63,6 @@ for more details on the underlying functions.
 library(dplyr)
 library(dtrackr)
 
-# an arbitrary 50 items from the iris dataframe is selected. The
-# history is tracked
-iris \%>\% track() \%>\% slice(51:100) \%>\% history()
-
-# the first 50\% of the data frame, is taken and the history tracked
-iris \%>\% track() \%>\% group_by(Species) \%>\%
-  slice_head(prop=0.5,.messages="{.count.out} / {.count.in}",
-             .headline="First {sprintf('\%1.0f',prop*100)}\%") \%>\%
-  history()
-
-# The last 100 items:
-iris \%>\% track() \%>\% group_by(Species) \%>\%
-  slice_tail(n=100,.messages="{.count.out} / {.count.in}",
-             .headline="Last {n}") \%>\%
-  history()
 
 # Subset the data by the maximum of a given value
 iris \%>\% track() \%>\% group_by(Species) \%>\%
@@ -104,17 +83,6 @@ iris \%>\%
             .headline="narrowest {sprintf('\%1.0f',prop*100)}\% {Species}") \%>\%
   history()
 
-
-
-# In this example the iris dataframe is resampled 100 times with replacement
-# within each group and the
-iris \%>\%
-  track() \%>\%
-  group_by(Species) \%>\%
-  slice_sample(n=100, replace=TRUE,
-               .messages="{.count.out} / {.count.in} = {n}",
-               .headline="100 {Species}") \%>\%
-  history()
 }
 \seealso{
 dplyr::slice_min()

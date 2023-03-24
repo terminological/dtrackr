@@ -23,7 +23,7 @@ underlying function details."><meta property="og:image" content="/logo.png"><!--
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -77,42 +77,20 @@ underlying function details."><meta property="og:image" content="/logo.png"><!--
     <p>These perform set operations on tracked dataframes. It merges the history
 of 2 (or more) dataframes and combines the rows (or columns). It calculates the total number of
 resulting rows as {.count.out} in other terms it performs exactly the same
-operation as the equivalent <code>dplyr</code> operation. See <code><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">dplyr::bind_rows()</a></code>,
-<code><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">dplyr::bind_cols()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/reexports.html" class="external-link">dplyr::intersect()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/reexports.html" class="external-link">dplyr::union()</a></code>,
-<code><a href="https://dplyr.tidyverse.org/reference/reexports.html" class="external-link">dplyr::setdiff()</a></code>,<code><a href="https://dplyr.tidyverse.org/reference/reexports.html" class="external-link">dplyr::intersect()</a></code>, or <code><a href="https://dplyr.tidyverse.org/reference/setops.html" class="external-link">dplyr::union_all()</a></code> for the
+operation as the equivalent <code>dplyr</code> operation. See <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">dplyr::bind_rows()</a></code>,
+<code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">dplyr::bind_cols()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/setops.html" class="external-link">dplyr::intersect()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/setops.html" class="external-link">dplyr::union()</a></code>,
+<code><a href="https://dplyr.tidyverse.org/reference/setops.html" class="external-link">dplyr::setdiff()</a></code>,<code><a href="https://dplyr.tidyverse.org/reference/setops.html" class="external-link">dplyr::intersect()</a></code>, or <code><a href="https://dplyr.tidyverse.org/reference/setops.html" class="external-link">dplyr::union_all()</a></code> for the
 underlying function details.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_bind_rows</span><span class="op">(</span></span>
-<span>  <span class="va">...</span>,</span>
-<span>  .id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .messages <span class="op">=</span> <span class="st">"{.count.out} in union"</span>,</span>
-<span>  .headline <span class="op">=</span> <span class="st">"Union"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_bind_rows</span><span class="op">(</span><span class="va">...</span>, .messages <span class="op">=</span> <span class="st">"{.count.out} in union"</span>, .headline <span class="op">=</span> <span class="st">"Union"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>...</dt>
-<dd><p>Data frames to combine.</p>
-<p>Each argument can either be a data frame, a list that could be a data
-frame, or a list of data frames.</p>
-<p>When row-binding, columns are matched by name, and any missing
-columns will be filled with NA.</p>
-<p>When column-binding, rows are matched by position, so all data
-frames must have the same number of rows. To match by value, not
-position, see <a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">mutate-joins</a>.</p></dd>
-
-
-<dt>.id</dt>
-<dd><p>Data frame identifier.</p>
-<p>When <code>.id</code> is supplied, a new column of identifiers is
-created to link each row to its original data frame. The labels
-are taken from the named arguments to <code><a href="bind_rows.html">bind_rows()</a></code>. When a
-list of data frames is supplied, the labels are taken from the
-names of the list. If no names are found a numeric sequence is
-used instead.</p></dd>
+<dd><p>a collection of tracked data frames to combine</p></dd>
 
 
 <dt>.messages</dt>
@@ -129,7 +107,7 @@ variable, or {.count.out}</p></dd>
     <h2>Value</h2>
     
 
-<p>the logical union of the dataframes with the history graph updated.</p>
+<p>the dplyr output with the history graph updated.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -243,7 +221,7 @@ variable, or {.count.out}</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

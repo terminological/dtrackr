@@ -4,75 +4,10 @@
 \alias{pivot_wider.trackr_df}
 \title{Reshaping data using \code{tidyr::pivot_wider}}
 \usage{
-\method{pivot_wider}{trackr_df}(
-  data,
-  id_cols = NULL,
-  names_from = as.symbol("name"),
-  names_prefix = "",
-  names_sep = "_",
-  names_glue = NULL,
-  names_sort = FALSE,
-  names_repair = "check_unique",
-  values_from = as.symbol("value"),
-  values_fill = NULL,
-  values_fn = NULL,
-  ...,
-  .messages = "",
-  .headline = "",
-  .tag = NULL
-)
+\method{pivot_wider}{trackr_df}(data, ..., .messages = "", .headline = "", .tag = NULL)
 }
 \arguments{
 \item{data}{A data frame to pivot.}
-
-\item{id_cols}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A set of columns that
-uniquely identifies each observation. Defaults to all columns in \code{data}
-except for the columns specified in \code{names_from} and \code{values_from}.
-Typically used when you have redundant variables, i.e. variables whose
-values are perfectly correlated with existing variables.}
-
-\item{names_from, values_from}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A pair of
-arguments describing which column (or columns) to get the name of the
-output column (\code{names_from}), and which column (or columns) to get the
-cell values from (\code{values_from}).
-
-If \code{values_from} contains multiple values, the value will be added to the
-front of the output column.}
-
-\item{names_prefix}{String added to the start of every variable name. This is
-particularly useful if \code{names_from} is a numeric vector and you want to
-create syntactic variable names.}
-
-\item{names_sep}{If \code{names_from} or \code{values_from} contains multiple
-variables, this will be used to join their values together into a single
-string to use as a column name.}
-
-\item{names_glue}{Instead of \code{names_sep} and \code{names_prefix}, you can supply
-a glue specification that uses the \code{names_from} columns (and special
-\code{.value}) to create custom column names.}
-
-\item{names_sort}{Should the column names be sorted? If \code{FALSE}, the default,
-column names are ordered by first appearance.}
-
-\item{names_repair}{What happens if the output has invalid column names?
-The default, \code{"check_unique"} is to error if the columns are duplicated.
-Use \code{"minimal"} to allow duplicates in the output, or \code{"unique"} to
-de-duplicated by adding numeric suffixes. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}
-for more options.}
-
-\item{values_fill}{Optionally, a (scalar) value that specifies what each
-\code{value} should be filled in with when missing.
-
-This can be a named list if you want to apply different fill values to
-different value columns.}
-
-\item{values_fn}{Optionally, a function applied to the value in each cell
-in the output. You will typically use this when the combination of
-\code{id_cols} and \code{names_from} columns does not uniquely identify an
-observation.
-
-This can be a named list if you want to apply different aggregations
-to different \code{values_from} columns.}
 
 \item{...}{Additional arguments passed on to methods.}
 

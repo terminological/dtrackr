@@ -7,7 +7,6 @@
 \method{filter}{trackr_df}(
   .data,
   ...,
-  .preserve = FALSE,
   .messages = "excluded {.excluded} items",
   .headline = .defaultHeadline(),
   .type = "exclusion",
@@ -17,13 +16,14 @@
 )
 }
 \arguments{
-\item{.data}{a dataframe which may be grouped}
+\item{.data}{A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
+more details.}
 
-\item{...}{the filter criteria}
-
-\item{.preserve}{Relevant when the \code{.data} input is grouped.
-If \code{.preserve = FALSE} (the default), the grouping structure
-is recalculated based on the resulting data, otherwise the grouping is kept as is.}
+\item{...}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Expressions that return a
+logical value, and are defined in terms of the variables in \code{.data}.
+If multiple expressions are included, they are combined with the \code{&} operator.
+Only rows for which all conditions evaluate to \code{TRUE} are kept.}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.strata\},\{.count.in\},and \{.count.out\}}

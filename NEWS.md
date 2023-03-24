@@ -1,5 +1,16 @@
 # NEWS
 
+# dtrackr 0.4.0
+
+* Updating release following `dplyr` version 1.1.0 an changes in new versions of
+`tidyr`
+* More use of @inheritDotParams to decouple from upstream APIs
+* fix for #33
+* Fix for RSVG scaling inconsistency / rotation issues.
+* TODO: (next version) exclusions in joins
+* TODO: (next version) better support for long format tables
+* TODO: (future version) column level tracking (prototyped in 0.2.5)
+
 # dtrackr 0.3.0
 
 * Updating release in preparation for `dplyr` version 1.1.0
@@ -14,9 +25,6 @@ https://terminological.github.io/dtrackr/ in readme README.md
 * There are some spelling issues that arise from documentation inherited from 
 `dplyr`and `tidyr` equivalent functions, that would need to be fixed upstream.
 * Documentation inherited from dplyr may be inconsistent until dplyr release.
-* TODO: (next version) exclusions in joins
-* TODO: (next version) better support for long format tables
-* TODO: (future version) column level tracking (prototyped in 0.2.5)
 
 # dtrackr 0.2.5
 

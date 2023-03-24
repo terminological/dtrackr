@@ -7,8 +7,6 @@
 \method{group_by}{trackr_df}(
   .data,
   ...,
-  .add = FALSE,
-  .drop = dplyr::group_by_drop_default(.data),
   .messages = "stratify by {.cols}",
   .headline = NULL,
   .tag = NULL,
@@ -16,21 +14,16 @@
 )
 }
 \arguments{
-\item{.data}{a dataframe which may be grouped}
+\item{.data}{A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
+more details.}
 
-\item{...}{a set of dplyr column expressions.}
-
-\item{.add}{When \code{FALSE}, the default, \code{group_by()} will
-override existing groups. To add to the existing groups, use
-\code{.add = TRUE}.
-
-This argument was previously called \code{add}, but that prevented
-creating a new grouping variable called \code{add}, and conflicts with
-our naming conventions.}
-
-\item{.drop}{Drop groups formed by factor levels that don't appear in the
-data? The default is \code{TRUE} except when \code{.data} has been previously
-grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{group_by_drop_default()}} for details.}
+\item{...}{In \code{group_by()}, variables or computations to group by.
+Computations are always done on the ungrouped data frame.
+To perform computations on the grouped data, you need to use
+a separate \code{mutate()} step before the \code{group_by()}.
+Computations are not allowed in \code{nest_by()}.
+In \code{ungroup()}, variables to remove from the grouping.}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.cols\} which is the columns that are being grouped by.}

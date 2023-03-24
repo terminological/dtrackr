@@ -7,7 +7,6 @@
 p_filter(
   .data,
   ...,
-  .preserve = FALSE,
   .messages = "excluded {.excluded} items",
   .headline = .defaultHeadline(),
   .type = "exclusion",
@@ -17,13 +16,22 @@ p_filter(
 )
 }
 \arguments{
-\item{.data}{a dataframe which may be grouped}
+\item{.data}{A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
+more details.}
 
-\item{...}{the filter criteria}
+\item{...}{
+  Arguments passed on to \code{\link[dplyr:filter]{dplyr::filter}}
+  \describe{
+    \item{\code{.by}}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\item{.preserve}{Relevant when the \code{.data} input is grouped.
+<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optionally, a selection of columns to
+group by for just this operation, functioning as an alternative to \code{\link[dplyr:group_by]{group_by()}}. For
+details and examples, see \link[dplyr:dplyr_by]{?dplyr_by}.}
+    \item{\code{.preserve}}{Relevant when the \code{.data} input is grouped.
 If \code{.preserve = FALSE} (the default), the grouping structure
 is recalculated based on the resulting data, otherwise the grouping is kept as is.}
+  }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.strata\},\{.count.in\},and \{.count.out\}}

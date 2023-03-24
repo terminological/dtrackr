@@ -6,4 +6,6 @@ library(dtrackr)
 #
 # })
 
-test_examples(path = "../..")
+if (identical(Sys.getenv("NOT_CRAN"), "true")) {
+  test_examples(path = "../..")
+}

@@ -4,34 +4,10 @@
 \alias{p_bind_rows}
 \title{Set operations}
 \usage{
-p_bind_rows(
-  ...,
-  .id = NULL,
-  .messages = "{.count.out} in union",
-  .headline = "Union"
-)
+p_bind_rows(..., .messages = "{.count.out} in union", .headline = "Union")
 }
 \arguments{
-\item{...}{Data frames to combine.
-
-Each argument can either be a data frame, a list that could be a data
-frame, or a list of data frames.
-
-When row-binding, columns are matched by name, and any missing
-columns will be filled with NA.
-
-When column-binding, rows are matched by position, so all data
-frames must have the same number of rows. To match by value, not
-position, see \link[dplyr]{mutate-joins}.}
-
-\item{.id}{Data frame identifier.
-
-When \code{.id} is supplied, a new column of identifiers is
-created to link each row to its original data frame. The labels
-are taken from the named arguments to \code{bind_rows()}. When a
-list of data frames is supplied, the labels are taken from the
-names of the list. If no names are found a numeric sequence is
-used instead.}
+\item{...}{a collection of tracked data frames to combine}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.count.out\}}
@@ -40,15 +16,15 @@ variable, or \{.count.out\}}
 \{.count.out\}}
 }
 \value{
-the logical union of the dataframes with the history graph updated.
+the dplyr output with the history graph updated.
 }
 \description{
 These perform set operations on tracked dataframes. It merges the history
 of 2 (or more) dataframes and combines the rows (or columns). It calculates the total number of
 resulting rows as \{.count.out\} in other terms it performs exactly the same
-operation as the equivalent \code{dplyr} operation. See \code{\link[dplyr:bind]{dplyr::bind_rows()}},
-\code{\link[dplyr:bind]{dplyr::bind_cols()}}, \code{\link[dplyr:reexports]{dplyr::intersect()}}, \code{\link[dplyr:reexports]{dplyr::union()}},
-\code{\link[dplyr:reexports]{dplyr::setdiff()}},\code{\link[dplyr:reexports]{dplyr::intersect()}}, or \code{\link[dplyr:setops]{dplyr::union_all()}} for the
+operation as the equivalent \code{dplyr} operation. See \code{\link[dplyr:bind_rows]{dplyr::bind_rows()}},
+\code{\link[dplyr:bind_cols]{dplyr::bind_cols()}}, \code{\link[dplyr:setops]{dplyr::intersect()}}, \code{\link[dplyr:setops]{dplyr::union()}},
+\code{\link[dplyr:setops]{dplyr::setdiff()}},\code{\link[dplyr:setops]{dplyr::intersect()}}, or \code{\link[dplyr:setops]{dplyr::union_all()}} for the
 underlying function details.
 }
 \examples{

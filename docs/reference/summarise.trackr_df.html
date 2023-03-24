@@ -21,7 +21,7 @@ dplyr::summarise()."><meta property="og:image" content="/logo.png"><!-- mathjax 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -81,29 +81,24 @@ allows you to generate some summary statistics about the un-grouped data. See
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for trackr_df</span></span>
-<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>  <span class="va">.data</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  .groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .messages <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  .headline <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  .tag <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="va">.data</span>, <span class="va">...</span>, .messages <span class="op">=</span> <span class="st">""</span>, .headline <span class="op">=</span> <span class="st">""</span>, .tag <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>.data</dt>
-<dd><p>a dataframe which may be grouped</p></dd>
+<dd><p>A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See <em>Methods</em>, below, for
+more details.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>a set of dplyr summary expressions.</p></dd>
-
-
-<dt>.groups</dt>
-<dd><ul><li><p>Experimental life-cycle: Grouping structure of the result.</p></li>
-</ul></dd>
+<dd><p>&lt;<code><a href="https://dplyr.tidyverse.org/reference/dplyr_data_masking.html" class="external-link">data-masking</a></code>&gt; Name-value pairs of summary
+functions. The name will be the name of the variable in the result.</p>
+<p>The value can be:</p><ul><li><p>A vector of length 1, e.g. <code>min(x)</code>, <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n()</a></code>, or <code>sum(is.na(y))</code>.</p></li>
+<li><p>A data frame, to add multiple columns from a single expression.</p></li>
+</ul><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Returning values with size 0 or &gt;1 was
+deprecated as of 1.1.0. Please use <code><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe()</a></code> for this instead.</p></dd>
 
 
 <dt>.messages</dt>
@@ -162,7 +157,7 @@ the summarise operation as a new stage</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -4,23 +4,24 @@
 \alias{summarise.trackr_df}
 \title{Summarise a data set}
 \usage{
-\method{summarise}{trackr_df}(
-  .data,
-  ...,
-  .groups = NULL,
-  .messages = "",
-  .headline = "",
-  .tag = NULL
-)
+\method{summarise}{trackr_df}(.data, ..., .messages = "", .headline = "", .tag = NULL)
 }
 \arguments{
-\item{.data}{a dataframe which may be grouped}
+\item{.data}{A data frame, data frame extension (e.g. a tibble), or a
+lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
+more details.}
 
-\item{...}{a set of dplyr summary expressions.}
+\item{...}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Name-value pairs of summary
+functions. The name will be the name of the variable in the result.
 
-\item{.groups}{\itemize{
-\item Experimental life-cycle: Grouping structure of the result.
-}}
+The value can be:
+\itemize{
+\item A vector of length 1, e.g. \code{min(x)}, \code{n()}, or \code{sum(is.na(y))}.
+\item A data frame, to add multiple columns from a single expression.
+}
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Returning values with size 0 or >1 was
+deprecated as of 1.1.0. Please use \code{\link[dplyr:reframe]{reframe()}} for this instead.}
 
 \item{.messages}{a set of glue specs. The glue code can use any summary
 variable defined in the ... parameter, or any global variable, or

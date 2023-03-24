@@ -182,13 +182,18 @@ demo_data %>% tagged(
   ) %>% dplyr::pull(.label)
 ```
 
-Sometimes it will be necessary to operate on all tagged content at once. This is possible but be aware that the content available depends somewhat on where the tag was set in the pipeline so not all fields will always be present (although `.count` and `.total` will be). The `.total` is the overall number of cases at that point in the pipeline. `.count` is the number of cases in each strata.
+Sometimes it will be necessary to operate on all tagged content at once. This is
+possible but be aware that the content available depends somewhat on where the
+tag was set in the pipeline so not all fields will always be present (although
+`.count` and `.total` will be). The `.total` is the overall number of cases at
+that point in the pipeline. `.count` is the number of cases in each strata.
 
 ```{r}
 demo_data %>% tagged(.glue = "{.count}/{.total} patients")
 ```
 
-For comparing inclusions and exclusions at different stages in the pipeline using tags the following example may be useful:
+For comparing inclusions and exclusions at different stages in the pipeline
+using tags the following example may be useful:
 
 ```{r}
 demo_data %>% 
@@ -200,6 +205,37 @@ demo_data %>%
   glue::glue_data("Out of {`initial cohort`} patients, {`study cohort`} were eligible for inclusion on the basis of their age
   but {`study cohort`-`qualifying patients`} were outside the age limits. 
   This left {`final set`} patients included in the final study (i.e. overall {`initial cohort`-`final set`} were removed).")
+```
+
+# Reusable functions 
+
+Composing `dtrackr` inclusion and exclusion criteria into functions lets you
+reuse them across different studies, but to be useful these functions need to be
+parameterised. As `dtrackr` already uses formulae as part of the input to
+construct the formulae for `dtrackr` from a helper function requires injection
+support, using `rlang::inject()`. This is an advanced R topic but the following
+example gives a sense of what is possible.
+
+```{r}
+
+# This is a reusable function to restrict ages
+age_restrict = function(df, age_col, min_age = 18, max_age = 65) {
+  age_col = rlang::ensym(age_col)
+  message = sprintf("{.included} between\n%d and %d years", min_age, max_age)
+  dtrackr::include_any(df,
+    # injection support for parameters must be made explicit using
+    # rlang::inject in any functions using include_any or exclude_all
+    rlang::inject(min_age <= !!age_col & max_age >= !!age_col ~ !!message)
+  )
+}
+
+survival::cgd %>% 
+  # the `age` column is in 
+  age_restrict(age, max_age = 30) %>%
+  # demonstrating that this works in 2 stages
+  age_restrict(age, min_age = 20) %>% 
+  flowchart()
+
 ```
 
 # References
