@@ -826,14 +826,14 @@ p_count_if = function(..., na.rm = TRUE) {
 #' iris %>% track() %>% comment("hello {.total} rows") %>% history()
 p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL) {
   .envir = rlang::caller_env()
-  .comment(.data, .messages, .headline, .type, .asOffshoot, .tag, .envir)
+  .data %>%
+    .comment(.messages, .headline, .type, .asOffshoot, .tag, .envir) %>%
+    .retrack()
 }
 
 # backend for comment
 .comment = function(.data, .messages, .headline,  .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL, .envir = rlang::caller_env()) {
   if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
-
-  .data = .data %>% .untrack()
 
   .envir$.total = nrow(.data)
   # .headline is a single glue spec
@@ -843,7 +843,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
   .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot) %>% .writeTag(.tag = .tag)
 
-  return(.data %>% .retrack())
+  return(.data)
 }
 
 #' Add a summary to the dtrackr history graph
@@ -1301,7 +1301,7 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
     out = out %>% p_resume()
   }
 
-  out = out %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise", .tag=.tag)
+  out = suppressWarnings(out %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise", .tag=.tag))
 
   return(out)
 }
@@ -1584,31 +1584,37 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
   dots = rlang::enexprs(...)
   .add = isTRUE(dots$.add)
 
-  if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup()
+  if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup(.messages=NULL,.headline=NULL)
   # TODO: putting in a special hidden node type
   if(is.null(.messages) & is.null(.headline)) stop("group_by .messages cannot be NULL, or else there is nothing to attach the other nodes to.")
 
+  old = .data %>% p_get()
   .data = .data %>% .untrack()
 
   tmp = .data %>% dplyr::group_by(...)
-  # figure out final grouping - only for the strata label though
+  # figure out what final grouping will be and get future groups
   col =  tmp %>% dplyr::groups()
   .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
 
-  # check the size of the final grouping
+  # check the size of the future grouping
   final_groups = tmp %>% dplyr::n_groups()
 
   if (final_groups <= .maxgroups ) {
     # A small grouping.
-    tmp = tmp %>% p_copy(.data)
+    # We proceed with the original ungrouped data frame
     # check to see if we should auto resume
     if (.isPaused(.data,auto = TRUE)) {
       if (!getOption("dtrackr.silent",FALSE)) {
         rlang::inform("Automatically resuming tracking.",.frequency = "always")
       }
-      tmp = tmp %>% p_resume()
+      old$paused = NULL
+      .data = .data %>% p_set(old)
     }
-    tmp = tmp %>% .comment(.messages, .headline = .headline, .type="stratify", .tag=.tag)
+
+    #
+    tmp2 = .data %>%
+      .comment(.messages, .headline = .headline, .type="stratify", .tag=.tag) %>%
+      dplyr::group_by(...)
 
   } else {
 
@@ -1618,16 +1624,19 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
       # resume.
       if (!getOption("dtrackr.silent",FALSE)) {
         rlang::inform(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "always")
-        rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'. To continue tracking use ungroup() then dtrackr::resume() once groupings have become a bit more manageable",.frequency = "once",.frequency_id = "maxgrp")
+        rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'.",.frequency = "once",.frequency_id = "maxgrp")
+        rlang::inform(paste0("Tracking will resume once the number of groups has gone back below ",.defaultMaxSupportedGroupings(),"."),.frequency = "once",.frequency_id = "maxgrp")
       }
-      tmp = .data %>% dplyr::group_by(...) %>% p_copy(.data) %>% p_pause(auto = TRUE)
+      old$paused = "auto"
+      tmp2 = .data %>% dplyr::group_by(...) %>% p_set(old)
     } else {
-      tmp = .data %>% dplyr::group_by(...) %>% p_copy(.data)
+      # As it was originally paused just do the grouping without updating the graph.
+      tmp2 = .data %>% dplyr::group_by(...)
     }
 
   }
 
-  return(tmp %>% .retrack())
+  return(tmp2 %>% .retrack())
 
 }
 

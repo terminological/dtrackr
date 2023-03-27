@@ -1,5 +1,11 @@
 # NEWS
 
+# dtrackr 0.4.1
+
+* Regression bug fix in group by that results in multiple group by nodes.
+* improved testing of group by
+* removal of extraneous ungroup node when rearranging grouping structure.
+
 # dtrackr 0.4.0
 
 * Updating release following `dplyr` version 1.1.0 an changes in new versions of

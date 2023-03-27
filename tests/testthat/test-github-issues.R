@@ -2,7 +2,11 @@ library(tidyverse)
 library(dtrackr)
 
 graphContains = function(g, .strata, .message) {
-  return(g$nodes %>% filter(.strata==.strata,.label %>% str_detect(paste0("(^|>)",fixed(.message),"<"))) %>% nrow() > 0)
+  return(g$nodes %>% filter(.strata==.strata, .label %>% str_detect(paste0("(^|>)",fixed(.message),"<"))) %>% nrow() > 0)
+}
+
+graphContainsExactly = function(g, .strata, .message, .count) {
+  return(g$nodes %>% filter(.strata==.strata, .label %>% str_detect(paste0("(^|>)",fixed(.message),"<"))) %>% nrow() == .count)
 }
 
 
