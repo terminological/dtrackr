@@ -277,8 +277,8 @@ print.trackr_graph = function(x, ...) {
     "last entry / entries:",
     last
   )
-  if (isTRUE(graph$paused)) {
-   tmp = c(tmp,"TRACKING IS PAUSED")
+  if (!is.null(graph$paused)) {
+   tmp = c(tmp,sprintf("TRACKING IS PAUSED (%s)",graph$paused))
   }
   cat(tmp,sep = "\n")
 }
