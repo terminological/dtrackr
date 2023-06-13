@@ -7,7 +7,7 @@
 flowchart(
   .data,
   filename = NULL,
-  size = std_size$half,
+  size = std_size$full,
   maxWidth = size$width,
   maxHeight = size$height,
   formats = c("dot", "png", "pdf", "svg"),

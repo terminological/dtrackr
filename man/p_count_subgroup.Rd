@@ -21,12 +21,15 @@ p_count_subgroup(
 
 \item{.subgroup}{a column with a small number of levels (e.g. a factor)}
 
-\item{...}{passed to \verb{base::factor(subgroup values, ...)} to allow reordering of levels etc.}
+\item{...}{passed to \verb{base::factor(subgroup values, ...)} to allow reordering
+of levels etc.}
 
 \item{.messages}{a character vector of glue specifications. A glue
-specification can refer to anything from the calling environment and \{.name\}
-for the subgroup name, \{.count\} for the subgroup count, \{.subtotal\} for the
-current grouping count and \{.total\} for the whole count}
+specification can refer to anything from the calling environment,
+{.subgroup} for the subgroup column name and \{.name\} for the subgroup
+column value, \{.count\} for the subgroup column count, \{.subtotal\} for
+the current stratification grouping count and \{.total\} for the whole
+dataset count}
 
 \item{.headline}{a glue specification which can refer to grouping variables
 of .data, \{.subtotal\} for the current grouping count, or any variables
@@ -37,12 +40,13 @@ defined in the calling environment}
 \item{.asOffshoot}{do you want this comment to be an offshoot of the main
 flow (default = FALSE).}
 
-\item{.tag}{if you want to use the summary data from this step in the future then
-give it a name with .tag.}
+\item{.tag}{if you want to use the summary data from this step in the future
+then give it a name with .tag.}
 
-\item{.maxsubgroups}{the maximum number of discrete values allowed in .subgroup is
-configurable with \code{options("dtrackr.max_supported_groupings"=XX)}. The
-default is 16. Large values produce unwieldy flow charts.}
+\item{.maxsubgroups}{the maximum number of discrete values allowed in
+.subgroup is configurable with
+\code{options("dtrackr.max_supported_groupings"=XX)}. The default is 16. Large
+values produce unwieldy flow charts.}
 }
 \value{
 the same .data dataframe with the history graph updated with a

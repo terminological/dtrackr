@@ -105,13 +105,26 @@
   return(.data)
 }
 
+# checks if a the start of 2 string vectors match.
+# this help tell if we should nest grouping strata.
+# vec_x = c("abc","bc","","def","de")
+# vec_c = c("A","","","ef","def")
+# .start_overlaps(vec_x, vec_c)
+# expect T,T,T,F,T
+.start_overlaps = function(vec_x, vec_c) {
+  lengths = pmin(stringr::str_length(vec_x),stringr::str_length(vec_c))
+  v1 = stringr::str_sub(tolower(vec_x),start = 0,end=lengths)
+  v2 = stringr::str_sub(tolower(vec_c),start = 0,end=lengths)
+  return(v1==v2)
+}
+
 # assumes a properly constructed node df and puts it into the graph this function does not need to check .data versus .df. .df will have a .message and a .strata column
 # .stage lets us give a stage a name: TODO, expose this in the API.
 .writeMessagesToNode = function(.data, .df, .asOffshoot, .excluded = NULL, .stage="") {
 
   if (.isPaused(.data)) return(.data)
   # this must be to prevent some kind of scoping issue
-  .message = .strata = .isHeader = .type = .id = .strata.prev = NULL
+  .message = .strata = .isHeader = .type = .id = .strata.prev = .rank = .from = NULL
   stage=.stage
   # now we need to assemble the messages into a single formatted label per strata.
   # THIS IS WHERE THE LABEL FORMATTING OCCURS
@@ -136,8 +149,14 @@
   currentRank = max(current$nodes$.rank,0)
   currentMaxId = max(current$nodes$.id,0)
   if(.asOffshoot) {
+    # TODO: an invisible node to woudl be required to make this consistent
+    # this needs a bit of rearchitecting to allow more control of head port and
+    # this feels like the wrong place to do this. This logic should be in graphToDot and this
+    # shoudl be a more abstract representation.
+    # nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
     nodes=tmp %>% dplyr::mutate(.rank=currentRank, .id=dplyr::row_number()+currentMaxId)
   } else {
+    #nodes=tmp %>% dplyr::mutate(.rank=currentRank+2, .id=dplyr::row_number()+currentMaxId)
     nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
   }
   new = list(
@@ -147,11 +166,25 @@
   )
   new$nodes = current$nodes %>% dplyr::bind_rows(nodes)
   #TODO: investigate .rel here. I think it should be more to do with .asOffshoot than defined by .type
+  #TODO: if the current$head nodes have a offshoot flag then bring them in on an edge which has a headport
+  # browser()
   newEdges = current$head %>%
-    dplyr::left_join(
-      nodes %>% dplyr::select(.to = .id, .rel = .type, .strata), by=character(),suffix=c(".prev","")
+    dplyr::select(.from, .strata.prev = .strata) %>%
+    dplyr::cross_join(
+      nodes %>% dplyr::select(.to = .id, .rel = .type, .strata)
     ) %>%
-    dplyr::filter(.strata == "" | .strata.prev == "" | .strata == .strata.prev | ifelse(.strata.prev == "",TRUE,.strata %>% stringr::str_starts(stringr::fixed(.strata.prev))) | ifelse(.strata == "",TRUE,.strata.prev %>% stringr::str_starts(stringr::fixed(.strata))))
+    dplyr::filter(
+      # TODO: need to check this and think about another way to do it.
+      # realistically depending on the .strata value here is only going to
+      # work in certain common situations. As soon as custom .strata descriptions
+      # appear this is going to fall apart.
+      .start_overlaps(.strata, .strata.prev)
+      # .strata == "" |
+      #   .strata.prev == "" |
+      #   .strata == .strata.prev |
+      #   .strata %>% stringr::str_starts(stringr::fixed(ifelse(.strata.prev=="","**!!**",.strata.prev))) |
+      #   .strata.prev %>% stringr::str_starts(stringr::fixed(ifelse(.strata=="","**!!**",.strata)))
+    )
   # somehow we would like to detect case where a .strata is missing from this newEdges set
   new$edges = current$edges %>% dplyr::bind_rows(newEdges)
 
@@ -178,11 +211,15 @@
 
 
 
+
 # takes two data history graphs and merges them
 .mergeGraphs = function(.graph1, .graph2) {
-  .id = .from = .to = NULL
+
+  if (.isGraphPaused(.graph1)) return(.graph1) # save the effort of calculating if this is paused but this should
+  .id = .from = .to = .rank = NULL
   # first remove overlapping nodes:
   # these might happen if the pipeline started the same and then split, and is now being rejoined.
+  sharedNodes = .graph1$nodes %>% dplyr::semi_join(.graph2$nodes, by=c(".id",".strata",".rank",".label",".type"))
   .graph2$nodes = .graph2$nodes %>% dplyr::anti_join(.graph1$nodes, by=c(".id",".strata",".rank",".label",".type"))
   idsToChange = .graph2$nodes %>% dplyr::pull(.id)
   if (length(idsToChange) > 0) {
@@ -213,8 +250,16 @@
   # ranks.
   # potentially complex. If two graphs are different streams of same process then we want to preserve rank
   # if two processes are totally separate trying to rank them together is potentially bad.
-  # graph1Rank = max(graph1$nodes$.rank)
-  # rankOffset = graph1Rank - max(graph2$nodes$.rank)
+  graph1Rank = max(c(.graph1$nodes$.rank,0))
+  rankOffset = graph1Rank - max(c(.graph2$nodes$.rank,0))
+  if (rankOffset < 0) {
+    # second graph longer than first - best to ignore this as otherwise ranking is a mess
+    # As this is a negative quantity graph2 is longer so we are increasing rank of graph1 to fit
+    # update nodes that are not part of shared graph
+    .graph1$nodes = .graph1$nodes %>% dplyr::mutate(.rank = ifelse(.id %in% sharedNodes$.id ,.rank, .rank-rankOffset))
+  } else {
+    .graph2$nodes = .graph2$nodes %>% dplyr::mutate(.rank = .rank-rankOffset)
+  }
   # we can merge the data now.
   out = list(
     nodes = dplyr::bind_rows(.graph1$nodes,.graph2$nodes),
@@ -344,7 +389,11 @@ plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", 
 }
 
 .isPaused = function(.data, auto=FALSE) {
-  tmp = p_get(.data)[["paused"]]
+  .isGraphPaused(p_get(.data),auto)
+}
+
+.isGraphPaused = function(.graph, auto = FALSE) {
+  tmp = .graph[["paused"]]
   if (is.null(tmp)) return(FALSE) # not paused
   if (is.logical(tmp)) return(tmp) # support legacy
   if (auto) {
@@ -453,7 +502,7 @@ p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadlin
   tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = "info", .envir=.envir)))
   .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag = .tag)
   .data = .retrack(.data)
-  if(.defaultExclusions()) {
+  if(.defaultExclusions() & getOption("dtrackr.verbose",FALSE)) {
     rlang::inform("dtrackr is capturing exclusions [getOption('dtrackr.exclusions') is TRUE]",.frequency = "always")
     .data = .data %>% p_capture_exclusions()
   }
@@ -917,22 +966,26 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #'
 #' @param .data a dataframe which may be grouped
 #' @param .subgroup a column with a small number of levels (e.g. a factor)
-#' @param ... passed to `base::factor(subgroup values, ...)` to allow reordering of levels etc.
+#' @param ... passed to `base::factor(subgroup values, ...)` to allow reordering
+#'   of levels etc.
 #' @param .messages a character vector of glue specifications. A glue
-#'   specification can refer to anything from the calling environment and \{.name\}
-#'   for the subgroup name, \{.count\} for the subgroup count, \{.subtotal\} for the
-#'   current grouping count and \{.total\} for the whole count
+#'   specification can refer to anything from the calling environment,
+#'   {.subgroup} for the subgroup column name and \{.name\} for the subgroup
+#'   column value, \{.count\} for the subgroup column count, \{.subtotal\} for
+#'   the current stratification grouping count and \{.total\} for the whole
+#'   dataset count
 #' @param .headline a glue specification which can refer to grouping variables
 #'   of .data, \{.subtotal\} for the current grouping count, or any variables
 #'   defined in the calling environment
 #' @param .type one of "info","exclusion": used to define formatting
 #' @param .asOffshoot do you want this comment to be an offshoot of the main
 #'   flow (default = FALSE).
-#' @param .tag if you want to use the summary data from this step in the future then
-#'   give it a name with .tag.
-#' @param .maxsubgroups the maximum number of discrete values allowed in .subgroup is
-#'   configurable with `options("dtrackr.max_supported_groupings"=XX)`. The
-#'   default is 16. Large values produce unwieldy flow charts.
+#' @param .tag if you want to use the summary data from this step in the future
+#'   then give it a name with .tag.
+#' @param .maxsubgroups the maximum number of discrete values allowed in
+#'   .subgroup is configurable with
+#'   `options("dtrackr.max_supported_groupings"=XX)`. The default is 16. Large
+#'   values produce unwieldy flow charts.
 #'
 #' @return the same .data dataframe with the history graph updated with a
 #'   subgroup count as a new stage
@@ -1064,6 +1117,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
     rlang::warn("No exclusions defined on p_exclude_all.",.frequency = "always")
     return(.data %>% .retrack())
   }
+  if (any(!is.na(names(filters)))) stop("exclusion criteria contains a named variable. You have probably used a `=` when you meant a `==`")
   .envir$.total = nrow(.data)
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type=.type, .envir=.envir)
   #TODO: can we get rid of this?:
@@ -1079,8 +1133,14 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
     filtStr = paste0(sapply(deparse(filt),trimws),collapse=" ")
     out = out %>% #dplyr::group_modify(function(d,g,...) {
       #d %>%
-       # dplyr::mutate(.excl = rlang::eval_tidy(filt,data = d, env=.envir)) %>%
-        dplyr::mutate(.excl = rlang::eval_tidy(filt, data = dplyr::cur_data_all(), env=.envir)) %>%
+      # dplyr::mutate(.excl = rlang::eval_tidy(filt,data = d, env=.envir)) %>%
+      # dplyr::mutate(.excl = rlang::eval_tidy(filt, data = dplyr::cur_data_all(), env=.envir)) %>%
+        dplyr::mutate(.excl = rlang::eval_tidy(filt, data=dplyr::cur_group() %>% dplyr::cross_join(dplyr::pick(dplyr::everything())), env=.envir))
+    if (!is.logical(out$.excl)) {
+      rlang::warn(paste0("exclusion criteria does not result in a logical value: ", rlang::as_label(filt)),.frequency = "once",.frequency_id = rlang::as_label(filt))
+      out = out %>% mutate(.excl = as.logical(.excl))
+    }
+    out = out %>%
         dplyr::mutate(.excl.na = ifelse(is.na(.excl),na.rm,.excl)) %>%
         dplyr::mutate(.retain = .retain & !.excl.na)
     #})
@@ -1125,6 +1185,8 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
     .writeTag(.tag = .tag)
   return(out %>% .retrack())
 }
+
+
 
 #' Include any items matching a criteria
 #'
@@ -1211,6 +1273,7 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
     rlang::warn("No inclusions defined on p_include_any.",.frequency = "always")
     return(.data %>% .retrack())
   }
+  if (any(!is.na(names(filters)))) stop("inclusion criteria contains a named variable. You have probably used a `=` when you meant a `==`")
   .envir$.total = nrow(.data)
   tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type=.type, .envir=.envir)
   messages = .dataToNodesDf(.data,.glue = "inclusions:",.isHeader=FALSE,.type=.type,.envir = .envir)
@@ -1228,12 +1291,24 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
     # Fix for github issue #26. I didn't want to do this in a group_modify as it loses the grouped
     # columns (which I could have reassembled with the g parameter). Instead I am doing this
     # in a standard mutate using the dplyr::cur_data_all. This behaviour is demonstrated here:
-    # iris %>% group_by(Species) %>% filter(rlang::eval_tidy( quo(Petal.Width==max(Petal.Width)), data = cur_data_all()))
+    # iris %>% group_by(Species) %>% filter(rlang::eval_tidy( quo(Species == "setosa" & Petal.Width==max(Petal.Width)), data = cur_data_all()))
+    # iris %>% group_by(Species) %>% mutate( sel = rlang::eval_tidy( quo(Species == "setosa" & Petal.Width==max(Petal.Width)))) %>% filter(sel)
     # where the result should be 5 long with entries for each Species.
+    # out = out %>%
+    #     dplyr::mutate(.incl = rlang::eval_tidy(filt, data = dplyr::cur_data_all(), env=.envir)) %>%
+    #     dplyr::mutate(.incl.na = ifelse(is.na(.incl),!na.rm,.incl)) %>%
+    #     dplyr::mutate(.retain = .retain | .incl.na)
+    # and then they deprecated cur_data_all with no replacement
     out = out %>%
-        dplyr::mutate(.incl = rlang::eval_tidy(filt, data = dplyr::cur_data_all(), env=.envir)) %>%
-        dplyr::mutate(.incl.na = ifelse(is.na(.incl),!na.rm,.incl)) %>%
-        dplyr::mutate(.retain = .retain | .incl.na)
+      dplyr::mutate(.incl = rlang::eval_tidy(filt, data=dplyr::cur_group() %>% dplyr::cross_join(dplyr::pick(dplyr::everything())), env=.envir))
+
+    if (!is.logical(out$.incl)) {
+      rlang::warn(paste0("inclusion criteria does not result in a logical value: ", rlang::as_label(filt)),.frequency = "once",.frequency_id = rlang::as_label(filt))
+      out = out %>% mutate(.incl = as.logical(.incl))
+    }
+    out = out %>%
+      dplyr::mutate(.incl.na = ifelse(is.na(.incl),!na.rm,.incl)) %>%
+      dplyr::mutate(.retain = .retain | .incl.na)
 
     tmp = out %>%
       dplyr::summarise(
@@ -1295,7 +1370,7 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
     .retrack()
 
   if (.isPaused(x,auto = TRUE)) {
-    if (!getOption("dtrackr.silent",FALSE)) {
+    if (getOption("dtrackr.verbose",FALSE)) {
       rlang::inform("Automatically resuming tracking.",.frequency = "always")
     }
     out = out %>% p_resume()
@@ -1505,8 +1580,6 @@ p_arrange = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 p_pivot_wider = function(
     data, ..., .messages = "", .headline = "", .tag=NULL
 ) {
-  names_from <- rlang::enquo(names_from)
-  values_from <- rlang::enquo(values_from)
   .data = data %>% .untrack()
   out = .data %>% tidyr::pivot_wider(...)
   # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
@@ -1584,9 +1657,15 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
   dots = rlang::enexprs(...)
   .add = isTRUE(dots$.add)
 
-  if(!.add & dplyr::is.grouped_df(.data)) .data = .data %>% ungroup(.messages=NULL,.headline=NULL)
-  # TODO: putting in a special hidden node type
-  if(is.null(.messages) & is.null(.headline)) stop("group_by .messages cannot be NULL, or else there is nothing to attach the other nodes to.")
+  if(!.add & dplyr::is.grouped_df(.data) & !.isPaused(.data)) {
+    # If the data is tracking then in order to regroup the data we need to
+    # create a node without a grouping otherwise the graph will be confusing.
+    # TODO: putting in a special hidden node type
+    # TODO: in theory detecting a result of a superset of columns could also work
+    .data = .data %>% ungroup(.messages=NULL,.headline=NULL)
+  }
+
+  if(is.null(.messages) & is.null(.headline)) stop("In a dtrackr pipeline group_by `.messages` cannot be NULL, or else there is no flowchart step to continue.")
 
   old = .data %>% p_get()
   .data = .data %>% .untrack()
@@ -1604,8 +1683,8 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
     # We proceed with the original ungrouped data frame
     # check to see if we should auto resume
     if (.isPaused(.data,auto = TRUE)) {
-      if (!getOption("dtrackr.silent",FALSE)) {
-        rlang::inform("Automatically resuming tracking.",.frequency = "always")
+      if (getOption("dtrackr.verbose",FALSE)) {
+        rlang::inform("Automatically resuming tracking.", .frequency = "always")
       }
       old$paused = NULL
       .data = .data %>% p_set(old)
@@ -1622,7 +1701,7 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
     if (!.isPaused(.data)) {
       # if the input is not already paused we pause it with a flag to allow auto
       # resume.
-      if (!getOption("dtrackr.silent",FALSE)) {
+      if (getOption("dtrackr.verbose",FALSE)) {
         rlang::inform(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "always")
         rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'.",.frequency = "once",.frequency_id = "maxgrp")
         rlang::inform(paste0("Tracking will resume once the number of groups has gone back below ",.defaultMaxSupportedGroupings(),"."),.frequency = "once",.frequency_id = "maxgrp")
@@ -2293,7 +2372,7 @@ is_running_in_chunk = function() {
 #'
 #' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
 #' tmp %>% group_by(Species) %>% comment(.tag="step2") %>% flowchart()
-p_flowchart = function(.data, filename = NULL, size = std_size$half, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, landscape = size$rot!=0, ...) {
+p_flowchart = function(.data, filename = NULL, size = std_size$full, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, landscape = size$rot!=0, ...) {
 
   # make sure .data is a list of dataframes
   if(is.data.frame(.data)) .data = list(.data)

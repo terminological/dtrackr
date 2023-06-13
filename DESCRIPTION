@@ -1,6 +1,6 @@
 Package: dtrackr
 Title: Track your Data Pipelines
-Version: 0.4.1.9000
+Version: 0.4.3
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -14,7 +14,7 @@ Description: Track and
 License: MIT + file LICENSE
 Language: en-GB
 Imports: 
-    dplyr,
+    dplyr (>= 1.1.0),
     glue,
     htmltools,
     magrittr,

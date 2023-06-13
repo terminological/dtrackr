@@ -10,7 +10,7 @@ add_tally(x, ..., .messages = "", .headline = "", .tag = NULL)
 \item{x}{A data frame, data frame extension (e.g. a tibble), or a
 lazy data frame (e.g. from dbplyr or dtplyr).}
 
-\item{...}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Name-value pairs.
+\item{...}{<\code{\link[rlang:args_data_masking]{data-masking}}> Name-value pairs.
 The name gives the name of the column in the output.
 
 The value can be:

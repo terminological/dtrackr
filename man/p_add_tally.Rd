@@ -13,7 +13,7 @@ lazy data frame (e.g. from dbplyr or dtplyr).}
 \item{...}{
   Arguments passed on to \code{\link[dplyr:count]{dplyr::add_tally}}
   \describe{
-    \item{\code{wt}}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Frequency weights.
+    \item{\code{wt}}{<\code{\link[rlang:args_data_masking]{data-masking}}> Frequency weights.
 Can be \code{NULL} or a variable:
 \itemize{
 \item If \code{NULL} (the default), counts the number of rows in each group.

@@ -207,3 +207,12 @@ to 16:
 ```R
 options(dtrackr.max_supported_groupings = 16)
 ```
+
+## Verbose output
+
+Various messages about what `dtrackr` is doing are produced but suppressed by 
+default. They can be enabled with the following flag.
+
+```R
+options(dtrackr.verbose=TRUE)
+```

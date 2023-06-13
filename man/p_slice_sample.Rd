@@ -29,9 +29,9 @@ rows.
 A negative value of \code{n} or \code{prop} will be subtracted from the group
 size. For example, \code{n = -2} with a group of 5 rows will select 5 - 2 = 3
 rows; \code{prop = -0.25} with 8 rows will select 8 * (1 - 0.25) = 6 rows.}
-    \item{\code{weight_by}}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Sampling weights.
-This must evaluate to a vector of non-negative numbers the same length as
-the input. Weights are automatically standardised to sum to 1.}
+    \item{\code{weight_by}}{<\code{\link[rlang:args_data_masking]{data-masking}}> Sampling
+weights. This must evaluate to a vector of non-negative numbers the same
+length as the input. Weights are automatically standardised to sum to 1.}
     \item{\code{replace}}{Should sampling be performed with (\code{TRUE}) or without
 (\code{FALSE}, the default) replacement.}
   }}

@@ -16,8 +16,8 @@
 lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{...}{For \code{slice()}: <\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Integer row
-values.
+\item{...}{For \code{slice()}: <\code{\link[rlang:args_data_masking]{data-masking}}>
+Integer row values.
 
 Provide either positive values to keep, or negative values to drop.
 The values provided must be either all positive or all negative.

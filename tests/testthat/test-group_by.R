@@ -29,11 +29,14 @@ test_that("group by works", {
   },regexp = "Must group by variables found in `.data`")
 
   expect_message({
+    opt = options(dtrackr.verbose=TRUE)
     iris %>%
       dtrackr::track() %>%
       group_by(across(ends_with("Length"))) %>%
       summarise(across(ends_with("Width"), mean )) %>%
+      dtrackr::comment("test") %>%
       dtrackr::flowchart()
+    options(opt)
   },regexp = "This group_by\\(\\) has created more than the maximum number of supported groupings")
 })
 

@@ -20,7 +20,7 @@ each subgroup is added as a new stage in the flowchart."><meta property="og:imag
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.3</span>
       </span>
     </div>
 
@@ -102,14 +102,17 @@ each subgroup is added as a new stage in the flowchart.</p>
 
 
 <dt>...</dt>
-<dd><p>passed to <code>base::factor(subgroup values, ...)</code> to allow reordering of levels etc.</p></dd>
+<dd><p>passed to <code>base::factor(subgroup values, ...)</code> to allow reordering
+of levels etc.</p></dd>
 
 
 <dt>.messages</dt>
 <dd><p>a character vector of glue specifications. A glue
-specification can refer to anything from the calling environment and {.name}
-for the subgroup name, {.count} for the subgroup count, {.subtotal} for the
-current grouping count and {.total} for the whole count</p></dd>
+specification can refer to anything from the calling environment,
+.subgroup for the subgroup column name and {.name} for the subgroup
+column value, {.count} for the subgroup column count, {.subtotal} for
+the current stratification grouping count and {.total} for the whole
+dataset count</p></dd>
 
 
 <dt>.headline</dt>
@@ -128,14 +131,15 @@ flow (default = FALSE).</p></dd>
 
 
 <dt>.tag</dt>
-<dd><p>if you want to use the summary data from this step in the future then
-give it a name with .tag.</p></dd>
+<dd><p>if you want to use the summary data from this step in the future
+then give it a name with .tag.</p></dd>
 
 
 <dt>.maxsubgroups</dt>
-<dd><p>the maximum number of discrete values allowed in .subgroup is
-configurable with <code>options("dtrackr.max_supported_groupings"=XX)</code>. The
-default is 16. Large values produce unwieldy flow charts.</p></dd>
+<dd><p>the maximum number of discrete values allowed in
+.subgroup is configurable with
+<code>options("dtrackr.max_supported_groupings"=XX)</code>. The default is 16. Large
+values produce unwieldy flow charts.</p></dd>
 
 </dl></div>
     <div id="value">
