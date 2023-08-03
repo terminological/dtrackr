@@ -1,4 +1,4 @@
-library(tidyverse)
+library(dplyr)
 library(dtrackr)
 
 graphContains = function(g, .strata, .message) {

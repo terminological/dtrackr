@@ -57,6 +57,7 @@ reference:
   - rename_with.trackr_df
   - select.trackr_df
   - summarise.trackr_df
+  - reframe.trackr_df
   - transmute.trackr_df
   - ungroup.trackr_df
   - anti_join.trackr_df

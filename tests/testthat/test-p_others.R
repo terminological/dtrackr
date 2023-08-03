@@ -1,8 +1,8 @@
-library(tidyverse)
+library(dplyr)
 library(dtrackr)
 
 graphContains = function(g, .strata, .message) {
-  return(g$nodes %>% filter(.strata==.strata,.label %>% str_detect(paste0("(^|>)",fixed(.message),"<"))) %>% nrow() > 0)
+  return(g$nodes %>% filter(.strata==.strata,.label %>% stringr::str_detect(paste0("(^|>)",stringr::fixed(.message),"<"))) %>% nrow() > 0)
 }
 
 test_that("ungrouping works", {

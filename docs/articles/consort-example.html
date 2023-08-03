@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dtrackr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.4</span>
       </span>
     </div>
 
@@ -332,8 +332,8 @@ analysis.</p>
 <span>    sysDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>    <span class="co"># we could have included any number of other parameters here from the global environment</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">.label</span><span class="op">)</span></span>
-<span><span class="co">#&gt; treat:placebo: 36/74 (48.6%) patients on 2023-06-13, with a mean height of 145.58 ± 29.10</span></span>
-<span><span class="co">#&gt; treat:rIFN-g: 38/74 (51.4%) patients on 2023-06-13, with a mean height of 143.14 ± 25.12</span></span></code></pre></div>
+<span><span class="co">#&gt; treat:placebo: 36/74 (48.6%) patients on 2023-08-03, with a mean height of 145.58 ± 29.10</span></span>
+<span><span class="co">#&gt; treat:rIFN-g: 38/74 (51.4%) patients on 2023-08-03, with a mean height of 143.14 ± 25.12</span></span></code></pre></div>
 <p>Sometimes it will be necessary to operate on all tagged content at
 once. This is possible but be aware that the content available depends
 somewhat on where the tag was set in the pipeline so not all fields will
@@ -373,10 +373,11 @@ pipeline using tags the following example may be useful:</p>
 </h2>
 <p>Composing <code>dtrackr</code> inclusion and exclusion criteria into
 functions lets you reuse them across different studies, but to be useful
-these functions need to be parameterised. As <code>dtrackr</code>
-already uses formulae as part of the input to construct the formulae for
-<code>dtrackr</code> from a helper function requires injection support,
-using <code><a href="https://rlang.r-lib.org/reference/inject.html" class="external-link">rlang::inject()</a></code>. This is an advanced R topic but the
+these functions need to be parameterised. As <code>dtrackr</code> uses
+formulae to specify the inclusion and exclusion criteria, to construct
+an appropriate formulae for <code>dtrackr</code> using values that are
+parameterised from a helper function requires injection support, using
+<code><a href="https://rlang.r-lib.org/reference/inject.html" class="external-link">rlang::inject()</a></code>. This is an advanced R topic but the
 following example gives a sense of what is possible.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -392,7 +393,7 @@ following example gives a sense of what is possible.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/cgd.html" class="external-link">cgd</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># the `age` column is in </span></span>
+<span>  <span class="co"># the `age` column is in the cgd dataset: </span></span>
 <span>  <span class="fu">age_restrict</span><span class="op">(</span><span class="va">age</span>, max_age <span class="op">=</span> <span class="fl">30</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># demonstrating that this works in 2 stages</span></span>
 <span>  <span class="fu">age_restrict</span><span class="op">(</span><span class="va">age</span>, min_age <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>

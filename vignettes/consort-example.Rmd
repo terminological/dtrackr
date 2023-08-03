@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 here::i_am("vignettes/consort-example.Rmd")
 
-library(tidyverse)
+library(dplyr)
 library(dtrackr)
 ```
 
@@ -211,10 +211,11 @@ demo_data %>%
 
 Composing `dtrackr` inclusion and exclusion criteria into functions lets you
 reuse them across different studies, but to be useful these functions need to be
-parameterised. As `dtrackr` already uses formulae as part of the input to
-construct the formulae for `dtrackr` from a helper function requires injection
-support, using `rlang::inject()`. This is an advanced R topic but the following
-example gives a sense of what is possible.
+parameterised. As `dtrackr` uses formulae to specify the inclusion and exclusion
+criteria, to construct an appropriate formulae for `dtrackr` using values that
+are parameterised from a helper function requires injection support, using
+`rlang::inject()`. This is an advanced R topic but the following example gives a
+sense of what is possible.
 
 ```{r}
 
@@ -230,7 +231,7 @@ age_restrict = function(df, age_col, min_age = 18, max_age = 65) {
 }
 
 survival::cgd %>% 
-  # the `age` column is in 
+  # the `age` column is in the cgd dataset: 
   age_restrict(age, max_age = 30) %>%
   # demonstrating that this works in 2 stages
   age_restrict(age, min_age = 20) %>% 

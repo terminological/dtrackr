@@ -48,7 +48,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 # devtools::load_all()
-library(tidyverse)
+library(dplyr)
 library(dtrackr)
 
 ```
@@ -137,7 +137,7 @@ modified formatted output is also possible as in this example, where the
 subgroup percentages are calculated to 1 decimal place.
 
 ```{r}
-diamonds %>%
+ggplot2::diamonds %>%
   track() %>%
   group_by(cut) %>%
   count_subgroup(

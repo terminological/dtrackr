@@ -9,6 +9,38 @@
   return(length(unique(.data)) <= .cutoff | is.factor(.data))
 }
 
+# backend for comment
+# data is unsummarised raw data from the pipeline
+# this executes a
+.comment = function(.data, .messages, .headline,  .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL, .envir = rlang::caller_env()) {
+  if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
+
+  .envir$.total = nrow(.data)
+
+  g = .createSummaryDf(.data)
+
+  #
+  # .headline is a single glue spec
+  tmpHead = .summaryToNodesDf(g,.headline,.isHeader=TRUE, .type = .type, .envir=.envir)
+
+  # .messages is a load of glue specs
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(g,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
+
+  .data = .data %>%
+    .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot) %>%
+    .writeTag(.tag = .tag)
+
+  return(.data)
+}
+
+# creates a groupwise count of the data in the
+.createSummaryDf = function(.data) {
+  .data %>%
+    .untrack() %>%
+    dplyr::summarise(.count=dplyr::n(), .groups="keep")
+}
+
+# TODO: check for multiple uses of this in a function and replace with .createSummaryDf and ,summaryToNodesDf
 # function to process glue text in context of grouped input dataframe to produce a dataframe of messages.
 .dataToNodesDf = function(.data, .glue, .isHeader, .type, .envir) {
   .data = .data %>% .untrack()
@@ -33,6 +65,8 @@
   .data %>% p_set(current)
 }
 
+# combine formals from a function definition with dots and create a new enviroment
+# with the function defaults included
 .integrateDots = function(fn, ..., .envir) {
   tmp = rlang::enexprs(...)
   tmp = tmp[names(tmp) != ""]
@@ -78,7 +112,8 @@
   return(tmp)
 }
 
-# function to process glue text in context of a dplyr::summarised dataframe to produce a dataframe of messages.
+# function to process glue text in context of a dplyr::summarised dataframe to
+# produce a dataframe of messages.
 .summaryToNodesDf = function(.summary, .glue, .isHeader, .type, .envir) {
   .message = .strata = NULL
   grps = .summary %>% dplyr::groups()
@@ -880,20 +915,7 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
     .retrack()
 }
 
-# backend for comment
-.comment = function(.data, .messages, .headline,  .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL, .envir = rlang::caller_env()) {
-  if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
 
-  .envir$.total = nrow(.data)
-  # .headline is a single glue spec
-  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .envir=.envir)
-
-  # .messages is a load of glue specs
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
-  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot) %>% .writeTag(.tag = .tag)
-
-  return(.data)
-}
 
 #' Add a summary to the dtrackr history graph
 #'
@@ -1381,11 +1403,46 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
   return(out)
 }
 
+### Summarise operations ----
+
+.doSummarise = function(.summary_fn, .data, ..., .messages = "", .headline = "", .type, .tag=NULL) {
+  .envir = .integrateDots(.summary_fn, ..., .envir=rlang::caller_env())
+  .data = .data %>% .untrack()
+
+  grps = .data %>% dplyr::groups()
+  out = .data %>% .summary_fn(...)
+  newGrps = out %>% dplyr::groups()
+
+  # TODO: consider whether this is a good idea.
+  # If so it probably needs to be done globally.
+  # .envir$.data.out = out
+  .envir$.cols = paste0(colnames(out), collapse=", ")
+  .envir$.new_cols = paste0(setdiff(colnames(out),colnames(.data)), collapse=", ")
+  .envir$.dropped_cols = paste0(setdiff(colnames(.data),colnames(out)), collapse=", ")
+
+  # We group the output by the old groupings so we can generate appropriate messages
+  out = out %>% dplyr::group_by(!!!grps)
+
+  # .headline is a single glue spec
+  tmpHead = .summaryToNodesDf(out,.headline,.isHeader=TRUE, .type = "summarise", .envir=.envir)
+
+  # .messages is a load of glue specs
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = "summarise", .envir=.envir)))
+
+  out = out %>%
+    dplyr::group_by(!!!newGrps) %>%
+    p_copy(.data) %>%
+    .writeMessagesToNode(.df=dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>%
+    .writeTag(.tag, ...)
+
+  return(out %>% .retrack())
+}
+
 #' Summarise a data set
 #'
 #' Summarising a data set acts in the normal `dplyr` manner to collapse groups
 #' to individual rows. Any columns resulting from the summary can be added to
-#' the history graph In the history this also joins any stratified branches and
+#' the history graph. In the history this also joins any stratified branches and
 #' allows you to generate some summary statistics about the un-grouped data. See
 #' [dplyr::summarise()].
 #' @seealso dplyr::summarise()
@@ -1409,23 +1466,31 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' tmp = iris %>% group_by(Species)
+#' tmp = iris %>% group_by(Species) %>% track()
 #' tmp %>% summarise(avg = mean(Petal.Length), .messages="{avg} length") %>% history()
 p_summarise = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
-  .data = .data %>% .untrack()
-  .envir = rlang::caller_env()
-  grps = .data %>% dplyr::groups()
-  out = .data %>% dplyr::summarise(...)
-  newGrps = out %>% dplyr::groups()
-  out = out %>% dplyr::group_by(!!!grps)
-  # .headline is a single glue spec
-  tmpHead = .summaryToNodesDf(out,.headline,.isHeader=TRUE, .type = "summarise", .envir=.envir)
-
-  # .messages is a load of glue specs
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = "summarise", .envir=.envir)))
-  out = out %>% dplyr::group_by(!!!newGrps) %>% p_copy(.data) %>% .writeMessagesToNode(.df=dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag, ...)
-  return(out %>% .retrack())
+  .doSummarise(dplyr::summarise, .data, ..., .messages = .messages, .headline = .headline, .type="summarise", .tag=.tag)
 }
+
+
+#' @inherit p_summarise
+#' @seealso dplyr::reframe()
+#' @inheritParams dplyr::reframe
+#' @inheritDotParams dplyr::reframe
+#' @export
+#' @examples
+#' library(dplyr)
+#' library(dtrackr)
+#'
+#' tmp = iris %>% group_by(Species) %>% track()
+#' tmp %>% reframe(tibble(
+#'   param = c("mean","min","max"),
+#'   value = c(mean(Petal.Length), min(Petal.Length), max(Petal.Length))
+#'   ), .messages="length {param}: {value}") %>% history()
+p_reframe = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
+  .doSummarise(dplyr::reframe, .data, ..., .messages = .messages, .headline = .headline, .type="summarise", .tag=.tag)
+}
+
 
 ### Mutate operations ----
 
@@ -1440,7 +1505,8 @@ p_summarise = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
   .envir$.cols = paste0(colnames(out), collapse=", ")
   .envir$.new_cols = paste0(setdiff(colnames(out),colnames(.data)), collapse=", ")
   .envir$.dropped_cols = paste0(setdiff(colnames(.data),colnames(out)), collapse=", ")
-  out = out %>% p_copy(.data) %>% .comment(.messages=.messages, .headline = .headline, .type=.type, .tag=.tag, .envir=.envir)
+  out = out %>% p_copy(.data) %>%
+    .comment(.messages=.messages, .headline = .headline, .type=.type, .tag=.tag, .envir=.envir)
   return(out %>% .retrack())
 }
 
@@ -2650,6 +2716,7 @@ comment <- p_comment
 
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr summarise
+#' @importFrom dplyr reframe
 #' @importFrom dplyr transmute
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
@@ -2689,6 +2756,10 @@ ungroup.trackr_df <- p_ungroup
 #' @inherit p_summarise
 #' @export
 summarise.trackr_df <- p_summarise
+
+#' @inherit p_reframe
+#' @export
+reframe.trackr_df <- p_reframe
 
 #' @inherit p_mutate
 #' @export

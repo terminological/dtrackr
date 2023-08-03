@@ -1,4 +1,4 @@
-library(tidyverse)
+library(dplyr)
 library(dtrackr)
 
 # test_that("examples run to completion", {
