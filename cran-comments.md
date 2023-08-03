@@ -11,26 +11,21 @@ Github actions environments
 
 ## R CMD check results
 There were no ERRORs or WARNINGs or NOTEs. 
-(see https://github.com/terminological/dtrackr/actions/ for 
-details)
+(see https://github.com/terminological/dtrackr/actions/ for details)
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package in CRAN.
 
 ## Other info
-This version 0.4.0 updates previous CRAN release 0.2.4
+This version 0.4.4 updates previous CRAN release 0.4.0
 
-Version 0.4.0 includes updates to 
-* respond to dplyr 1.1.0 version release at end of Jan.
-* work around anomalous behaviour of upstream bug in rsvg
-* Updates following JOSS code review, primarily in documentation although some 
-API updates
+Version 0.4.4 includes updates to 
+* fix regression bugs from migration to dplyr 1.1.0
+* improve error messages, remove annoying messages and resume tracking from
+paused dataframes automatically.
+* support additional function from dplyr 1.1.0 (reframe)
 
 detailed changes described in NEWS.md
-
-Version 0.2.5 got rejected as my maintainer email has changed. I have sent an
-email on 10:20 on 19th Decemeber to CRAN-submissions@R-project.org from the old
-maintainer address (rc538@exeter.ac.uk) explaining the change.
 
 Many thanks.
