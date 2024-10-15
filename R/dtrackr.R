@@ -992,7 +992,7 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #'   of levels etc.
 #' @param .messages a character vector of glue specifications. A glue
 #'   specification can refer to anything from the calling environment,
-#'   {.subgroup} for the subgroup column name and \{.name\} for the subgroup
+#'   \{.subgroup\} for the subgroup column name and \{.name\} for the subgroup
 #'   column value, \{.count\} for the subgroup column count, \{.subtotal\} for
 #'   the current stratification grouping count and \{.total\} for the whole
 #'   dataset count
@@ -1361,7 +1361,7 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #' @seealso dplyr::ungroup()
 #'
 #' @inheritParams dplyr::ungroup
-#' @inheritDotParams dplyr::ungroup
+#' @param ... variables to remove from the grouping.
 #' @param .messages a set of glue specs. The glue code can use any any global
 #'   variable, or \{.count\}. the default is "total \{.count\} items"
 #' @param .headline a headline glue spec. The glue code can use \{.count\} and
@@ -1512,14 +1512,15 @@ p_reframe = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
 
 #' dplyr modifying operations
 #'
-#' Equivalent `dplyr` functions for mutating, selecting and renaming a data set
-#' act in the normal way. mutates / selects / rename generally don't add
-#' anything in documentation so the default behaviour is to miss these out of
-#' the history. This can be overridden with the .messages, or .headline values
-#' in which case they behave just like a `comment()` See [dplyr::mutate()],
-#' [dplyr::add_count()], [dplyr::add_tally()], [dplyr::transmute()],
-#' [dplyr::select()], [dplyr::relocate()], [dplyr::rename()]
-#' [dplyr::rename_with()], [dplyr::arrange()] for more details.
+#' See [dplyr::mutate()], [dplyr::add_count()], [dplyr::add_tally()],
+#' [dplyr::transmute()], [dplyr::select()], [dplyr::relocate()],
+#' [dplyr::rename()] [dplyr::rename_with()], [dplyr::arrange()] for more details
+#' on underlying functions. `dtrackr` provides equivalent functions for
+#' mutating, selecting and renaming a data set which act in the same way as
+#' `dplyr`. `mutate` / `select` / `rename` generally don't add anything in terms
+#' of provenance of data so the default behaviour is to miss these out of the
+#' `dtrackr` history. This can be overridden with the `.messages`, or
+#' `.headline` values in which case they behave just like a `comment()`.
 #'
 #' @param .messages a set of glue specs. The glue code can use any global
 #'   variable, grouping variable, \{.new_cols\} or \{.dropped_cols\} for changes to
@@ -1536,27 +1537,27 @@ p_reframe = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
 #'
 #' @seealso dplyr::mutate()
 #' @inheritParams dplyr::mutate
-#' @inheritDotParams dplyr::mutate
 #' @export
 #' @example inst/examples/mutate-examples.R
 p_mutate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
   .doMutate(dplyr::mutate, .data, ..., .messages = .messages, .headline = .headline, .type="mutate", .tag=.tag)
 }
 
-#' @inherit p_mutate
+
 #' @seealso dplyr::add_count()
 #' @inheritParams dplyr::add_count
 #' @inheritDotParams dplyr::add_count
+#' @inherit p_mutate
 #' @export
 #' @example inst/examples/add-count-tally-examples.R
 p_add_count = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
   .doMutate(dplyr::add_count, x, ..., .messages=.messages, .headline = .headline, .type="add_count", .tag=.tag)
 }
 
-#' @inherit p_mutate
+
 #' @seealso dplyr::add_tally()
 #' @inheritParams dplyr::add_tally
-#' @inheritDotParams dplyr::add_tally
+#' @inherit p_mutate
 #' @export
 #' @example inst/examples/add-count-tally-examples.R
 p_add_tally = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1567,7 +1568,6 @@ p_add_tally = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @seealso dplyr::transmute()
 #' @inheritParams dplyr::transmute
-#' @inheritDotParams dplyr::transmute
 #' @export
 #' @example inst/examples/transmute-examples.R
 p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1577,7 +1577,6 @@ p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @seealso dplyr::select()
 #' @inheritParams dplyr::select
-#' @inheritDotParams dplyr::select
 #' @export
 #' @example inst/examples/select-examples.R
 p_select = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1597,7 +1596,6 @@ p_relocate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @seealso dplyr::rename()
 #' @inheritParams dplyr::rename
-#' @inheritDotParams dplyr::rename
 #' @export
 #' @example inst/examples/rename-examples.R
 p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {

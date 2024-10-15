@@ -26,7 +26,7 @@ of levels etc.}
 
 \item{.messages}{a character vector of glue specifications. A glue
 specification can refer to anything from the calling environment,
-{.subgroup} for the subgroup column name and \{.name\} for the subgroup
+\{.subgroup\} for the subgroup column name and \{.name\} for the subgroup
 column value, \{.count\} for the subgroup column count, \{.subtotal\} for
 the current stratification grouping count and \{.total\} for the whole
 dataset count}

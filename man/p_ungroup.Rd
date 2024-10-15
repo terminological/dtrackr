@@ -15,11 +15,7 @@ p_ungroup(
 \arguments{
 \item{x}{A \code{\link[dplyr:tbl]{tbl()}}}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:group_by]{dplyr::ungroup}}
-  \describe{
-    \item{\code{}}{}
-  }}
+\item{...}{variables to remove from the grouping.}
 
 \item{.messages}{a set of glue specs. The glue code can use any any global
 variable, or \{.count\}. the default is "total \{.count\} items"}

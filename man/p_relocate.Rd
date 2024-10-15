@@ -36,14 +36,15 @@ function, but with the history graph updated with a new stage if the
 \code{.messages} or \code{.headline} parameter is not empty.
 }
 \description{
-Equivalent \code{dplyr} functions for mutating, selecting and renaming a data set
-act in the normal way. mutates / selects / rename generally don't add
-anything in documentation so the default behaviour is to miss these out of
-the history. This can be overridden with the .messages, or .headline values
-in which case they behave just like a \code{comment()} See \code{\link[dplyr:mutate]{dplyr::mutate()}},
-\code{\link[dplyr:count]{dplyr::add_count()}}, \code{\link[dplyr:count]{dplyr::add_tally()}}, \code{\link[dplyr:transmute]{dplyr::transmute()}},
-\code{\link[dplyr:select]{dplyr::select()}}, \code{\link[dplyr:relocate]{dplyr::relocate()}}, \code{\link[dplyr:rename]{dplyr::rename()}}
-\code{\link[dplyr:rename]{dplyr::rename_with()}}, \code{\link[dplyr:arrange]{dplyr::arrange()}} for more details.
+See \code{\link[dplyr:mutate]{dplyr::mutate()}}, \code{\link[dplyr:count]{dplyr::add_count()}}, \code{\link[dplyr:count]{dplyr::add_tally()}},
+\code{\link[dplyr:transmute]{dplyr::transmute()}}, \code{\link[dplyr:select]{dplyr::select()}}, \code{\link[dplyr:relocate]{dplyr::relocate()}},
+\code{\link[dplyr:rename]{dplyr::rename()}} \code{\link[dplyr:rename]{dplyr::rename_with()}}, \code{\link[dplyr:arrange]{dplyr::arrange()}} for more details
+on underlying functions. \code{dtrackr} provides equivalent functions for
+mutating, selecting and renaming a data set which act in the same way as
+\code{dplyr}. \code{mutate} / \code{select} / \code{rename} generally don't add anything in terms
+of provenance of data so the default behaviour is to miss these out of the
+\code{dtrackr} history. This can be overridden with the \code{.messages}, or
+\code{.headline} values in which case they behave just like a \code{comment()}.
 }
 \examples{
 library(dplyr)

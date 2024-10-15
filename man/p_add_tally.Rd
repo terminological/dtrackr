@@ -10,22 +10,8 @@ p_add_tally(x, ..., .messages = "", .headline = "", .tag = NULL)
 \item{x}{A data frame, data frame extension (e.g. a tibble), or a
 lazy data frame (e.g. from dbplyr or dtplyr).}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:count]{dplyr::add_tally}}
-  \describe{
-    \item{\code{wt}}{<\code{\link[rlang:args_data_masking]{data-masking}}> Frequency weights.
-Can be \code{NULL} or a variable:
-\itemize{
-\item If \code{NULL} (the default), counts the number of rows in each group.
-\item If a variable, computes \code{sum(wt)} for each group.
-}}
-    \item{\code{sort}}{If \code{TRUE}, will show the largest groups at the top.}
-    \item{\code{name}}{The name of the new column in the output.
-
-If omitted, it will default to \code{n}. If there's already a column called \code{n},
-it will use \code{nn}. If there's a column called \code{n} and \code{nn}, it'll use
-\code{nnn}, and so on, adding \code{n}s until it gets a new name.}
-  }}
+\item{...}{<\code{\link[rlang:args_data_masking]{data-masking}}> Variables to group
+by.}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, \{.new_cols\} or \{.dropped_cols\} for changes to
@@ -44,14 +30,15 @@ function, but with the history graph updated with a new stage if the
 \code{.messages} or \code{.headline} parameter is not empty.
 }
 \description{
-Equivalent \code{dplyr} functions for mutating, selecting and renaming a data set
-act in the normal way. mutates / selects / rename generally don't add
-anything in documentation so the default behaviour is to miss these out of
-the history. This can be overridden with the .messages, or .headline values
-in which case they behave just like a \code{comment()} See \code{\link[dplyr:mutate]{dplyr::mutate()}},
-\code{\link[dplyr:count]{dplyr::add_count()}}, \code{\link[dplyr:count]{dplyr::add_tally()}}, \code{\link[dplyr:transmute]{dplyr::transmute()}},
-\code{\link[dplyr:select]{dplyr::select()}}, \code{\link[dplyr:relocate]{dplyr::relocate()}}, \code{\link[dplyr:rename]{dplyr::rename()}}
-\code{\link[dplyr:rename]{dplyr::rename_with()}}, \code{\link[dplyr:arrange]{dplyr::arrange()}} for more details.
+See \code{\link[dplyr:mutate]{dplyr::mutate()}}, \code{\link[dplyr:count]{dplyr::add_count()}}, \code{\link[dplyr:count]{dplyr::add_tally()}},
+\code{\link[dplyr:transmute]{dplyr::transmute()}}, \code{\link[dplyr:select]{dplyr::select()}}, \code{\link[dplyr:relocate]{dplyr::relocate()}},
+\code{\link[dplyr:rename]{dplyr::rename()}} \code{\link[dplyr:rename]{dplyr::rename_with()}}, \code{\link[dplyr:arrange]{dplyr::arrange()}} for more details
+on underlying functions. \code{dtrackr} provides equivalent functions for
+mutating, selecting and renaming a data set which act in the same way as
+\code{dplyr}. \code{mutate} / \code{select} / \code{rename} generally don't add anything in terms
+of provenance of data so the default behaviour is to miss these out of the
+\code{dtrackr} history. This can be overridden with the \code{.messages}, or
+\code{.headline} values in which case they behave just like a \code{comment()}.
 }
 \examples{
 library(dplyr)

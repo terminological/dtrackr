@@ -1,5 +1,9 @@
 # NEWS
 
+# dtrackr 0.4.5
+
+* fixed unescaped braces in documentation for CRAN.
+
 # dtrackr 0.4.4
 
 * Support for `reframe` as alternative to `summarise` for `dplyr` 1.1.0
