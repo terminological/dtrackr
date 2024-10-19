@@ -1,4 +1,7 @@
 destination: docs
+url: https://terminological.github.io/dtrackr/index.html
+template:
+  bootstrap: 5
 reference:
 - title: "Controlling dtrackr"
   desc: >

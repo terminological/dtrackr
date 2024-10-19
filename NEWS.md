@@ -1,8 +1,9 @@
 # NEWS
 
-# dtrackr 0.4.5
+# dtrackr 0.4.6
 
 * fixed un-escaped braces in documentation for CRAN.
+* documentation fixes
 
 # dtrackr 0.4.4
 
