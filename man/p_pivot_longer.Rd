@@ -9,12 +9,11 @@ p_pivot_longer(data, ..., .messages = "", .headline = "", .tag = NULL)
 \arguments{
 \item{data}{A data frame to pivot.}
 
-\item{...}{
-  Arguments passed on to \code{\link[tidyr:pivot_longer]{tidyr::pivot_longer}}
-  \describe{
+\item{...}{Additional arguments passed on to methods.
+  Named arguments passed on to \code{\link[tidyr:pivot_longer]{tidyr::pivot_longer}}\describe{
     \item{\code{cols}}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> Columns to pivot into
 longer format.}
-    \item{\code{cols_vary}}{When pivoting \code{cols} into longer format, how should the
+\item{\code{cols_vary}}{When pivoting \code{cols} into longer format, how should the
 output rows be arranged relative to their original row number?
 \itemize{
 \item \code{"fastest"}, the default, keeps individual rows from \code{cols} close
@@ -25,7 +24,7 @@ the pivoting process.
 output. This often produces intuitively ordered output when you utilize
 all of the columns from \code{data} in the pivoting process.
 }}
-    \item{\code{names_to}}{A character vector specifying the new column or columns to
+\item{\code{names_to}}{A character vector specifying the new column or columns to
 create from the information stored in the column names of \code{data} specified
 by \code{cols}.
 \itemize{
@@ -43,9 +42,9 @@ name defines the name of the output column containing the cell values,
 overriding \code{values_to} entirely.
 }
 }}
-    \item{\code{names_prefix}}{A regular expression used to remove matching text
+\item{\code{names_prefix}}{A regular expression used to remove matching text
 from the start of each variable name.}
-    \item{\code{names_sep,names_pattern}}{If \code{names_to} contains multiple values,
+\item{\code{names_sep,names_pattern}}{If \code{names_to} contains multiple values,
 these arguments control how the column name is broken up.
 
 \code{names_sep} takes the same specification as \code{\link[tidyr:separate]{separate()}}, and can either
@@ -58,7 +57,7 @@ expression containing matching groups (\verb{()}).
 If these arguments do not give you enough control, use
 \code{pivot_longer_spec()} to create a spec object and process manually as
 needed.}
-    \item{\code{names_ptypes,values_ptypes}}{Optionally, a list of column name-prototype
+\item{\code{names_ptypes,values_ptypes}}{Optionally, a list of column name-prototype
 pairs. Alternatively, a single empty prototype can be supplied, which will
 be applied to all columns. A prototype (or ptype for short) is a
 zero-length vector (like \code{integer()} or \code{numeric()}) that defines the type,
@@ -66,7 +65,7 @@ class, and attributes of a vector. Use these arguments if you want to
 confirm that the created columns are the types that you expect. Note that
 if you want to change (instead of confirm) the types of specific columns,
 you should use \code{names_transform} or \code{values_transform} instead.}
-    \item{\code{names_transform,values_transform}}{Optionally, a list of column
+\item{\code{names_transform,values_transform}}{Optionally, a list of column
 name-function pairs. Alternatively, a single function can be supplied,
 which will be applied to all columns. Use these arguments if you need to
 change the types of specific columns. For example, \code{names_transform = list(week = as.integer)} would convert a character variable called \code{week}
@@ -75,21 +74,21 @@ to an integer.
 If not specified, the type of the columns generated from \code{names_to} will
 be character, and the type of the variables generated from \code{values_to}
 will be the common type of the input columns used to generate them.}
-    \item{\code{names_repair}}{What happens if the output has invalid column names?
+\item{\code{names_repair}}{What happens if the output has invalid column names?
 The default, \code{"check_unique"} is to error if the columns are duplicated.
 Use \code{"minimal"} to allow duplicates in the output, or \code{"unique"} to
 de-duplicated by adding numeric suffixes. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}
 for more options.}
-    \item{\code{values_to}}{A string specifying the name of the column to create
+\item{\code{values_to}}{A string specifying the name of the column to create
 from the data stored in cell values. If \code{names_to} is a character
 containing the special \code{.value} sentinel, this value will be ignored,
 and the name of the value column will be derived from part of the
 existing column names.}
-    \item{\code{values_drop_na}}{If \code{TRUE}, will drop rows that contain only \code{NA}s
+\item{\code{values_drop_na}}{If \code{TRUE}, will drop rows that contain only \code{NA}s
 in the \code{value_to} column. This effectively converts explicit missing values
 to implicit missing values, and should generally be used only when missing
 values in \code{data} were created by its structure.}
-  }}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, or \{.strata\}. Defaults to nothing.}

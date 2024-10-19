@@ -10,17 +10,22 @@ p_resume(.data, ...)
 \item{.data}{a tracked dataframe}
 
 \item{...}{
-  Arguments passed on to \code{\link[=p_group_by]{p_group_by}}
-  \describe{
+  Named arguments passed on to \code{\link[=p_group_by]{p_group_by}}\describe{
     \item{\code{.messages}}{a set of glue specs. The glue code can use any global
 variable, or \{.cols\} which is the columns that are being grouped by.}
-    \item{\code{.headline}}{a headline glue spec. The glue code can use any global
+\item{\code{.headline}}{a headline glue spec. The glue code can use any global
 variable, or \{.cols\}.}
-    \item{\code{.tag}}{if you want the summary data from this step in the future then
+\item{\code{.tag}}{if you want the summary data from this step in the future then
 give it a name with .tag.}
-    \item{\code{.maxgroups}}{the maximum number of subgroups allowed before the tracking
+\item{\code{.maxgroups}}{the maximum number of subgroups allowed before the tracking
 is paused.}
-  }}
+\item{\code{...}}{In \code{group_by()}, variables or computations to group by.
+Computations are always done on the ungrouped data frame.
+To perform computations on the grouped data, you need to use
+a separate \code{mutate()} step before the \code{group_by()}.
+Computations are not allowed in \code{nest_by()}.
+In \code{ungroup()}, variables to remove from the grouping.}
+}}
 }
 \value{
 the .data data frame with history graph tracking resumed

@@ -16,7 +16,23 @@
 \arguments{
 \item{.data}{A grouped tibble}
 
-\item{...}{Additional arguments passed on to \code{.f}}
+\item{...}{Additional arguments passed on to \code{.f}
+  Named arguments passed on to \code{\link[dplyr:group_map]{dplyr::group_modify}}\describe{
+    \item{\code{.f}}{A function or formula to apply to each group.
+
+If a \strong{function}, it is used as is. It should have at least 2 formal arguments.
+
+If a \strong{formula}, e.g. \code{~ head(.x)}, it is converted to a function.
+
+In the formula, you can use
+\itemize{
+\item \code{.} or \code{.x} to refer to the subset of rows of \code{.tbl}
+for the given group
+\item \code{.y} to refer to the key, a one row tibble with one column per grouping variable
+that identifies the group
+}}
+\item{\code{.keep}}{are the grouping variables kept in \code{.x}}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.strata\},\{.count.in\},and \{.count.out\}}

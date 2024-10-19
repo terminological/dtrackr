@@ -2,7 +2,7 @@
 
 # dtrackr 0.4.5
 
-* fixed unescaped braces in documentation for CRAN.
+* fixed un-escaped braces in documentation for CRAN.
 
 # dtrackr 0.4.4
 
@@ -28,14 +28,14 @@
 
 # dtrackr 0.4.1
 
-* Regression bug fix in group by that results in multiple group by nodes.
+* Regression bug fix in `group_by` that results in multiple group by nodes.
 * improved testing of `group_by` functions
-* removal of extraneous ungroup node when rearranging grouping structure.
+* removal of extraneous `ungroup` node when rearranging grouping structure.
 
 # dtrackr 0.4.0
 
 * Updating release following `dplyr` version 1.1.0 an changes in new versions of `tidyr`
-* More use of @inheritDotParams to decouple from upstream APIs
+* More use of `@inheritDotParams` to decouple from upstream APIs
 * fix for #33
 * Fix for RSVG scaling inconsistency / rotation issues.
 
@@ -106,22 +106,22 @@ functions with new example code.
 
 * track excluded items with debugging info
 * allow across syntax in most situations (except group_by)
-* support pausing and unpausing of the dataframe tracking
+* support pausing and un-pausing of the dataframe tracking
 * preventing massive group_by groups if large numbers of very small groups are selected (e.g. part of a group_by() %>% mutate())
 * switch warnings to rlang::warn etc.
 
 # dtrackr 0.1.0.9000 - pre-release github version
 
 * Initial package features complete
-* Dplyr like for like functionality supporting - 
-add_count, add_tally, anti_join, arrange, bind_rows, comment, 
-distinct, exclude_all, filter, full_join, group_by, group_modify,
-inner_join, left_join, mutate, pivot_longer, pivot_wider, relocate,
-rename, rename_with, right_join, select, semi_join, summarise, 
-transmute, ungroup
+* `dplyr` like for like functionality supporting - 
+`add_count`, `add_tally`, `anti_join`, `arrange`, `bind_rows`, `comment`, 
+`distinct`, `exclude_all`, `filter`, `full_join`, `group_by`, `group_modify`,
+`inner_join`, `left_join`, `mutate`, `pivot_longer`, `pivot_wider`, `relocate`,
+`rename`, `rename_with`, `right_join`, `select`, `semi_join`, `summarise`, 
+`transmute`, `ungroup`
 * add a comment into the history (stratified by grouping),
 * add a status into the history (stratified by grouping),
 * apply exclusion and inclusion filters including stratified commentary
 * merge histories of joining data frames
-* export history as dot graphviz graph
+* export history as dot `graphviz` graph
 * render history graph to SVG, PNG, PDF, DOT or PS formats

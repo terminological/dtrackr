@@ -198,7 +198,7 @@ items generated if a particular grouping variable has a lot of possible values.
 This can cause performance issues and legibility issues for the resulting graph
 and is usually a result of an interim stage of the data pipeline where grouping
 is used to do fine scale summarisation operation (e.g. a 
-`dataset %>% group_by(nearly_unique_id) %>% filter(row_number()==1)` or a timeseries where
+`dataset %>% group_by(nearly_unique_id) %>% filter(row_number()==1)` or a time-series where
 things need to be aggregated by date, and the data is quickly ungrouped (e.g.
 `timeseries %>% group_by(date) %>% summarise(count = n())`). The most number of
 groups that `dtrackr` will attempt to keep track of is configurable but defaults

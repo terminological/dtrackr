@@ -10,17 +10,35 @@ resume(.data, ...)
 \item{.data}{a tracked dataframe}
 
 \item{...}{
-  Arguments passed on to \code{\link[=p_group_by]{p_group_by}}
-  \describe{
+  Named arguments passed on to \code{\link[=p_group_by]{p_group_by}}\describe{
     \item{\code{.messages}}{a set of glue specs. The glue code can use any global
 variable, or \{.cols\} which is the columns that are being grouped by.}
-    \item{\code{.headline}}{a headline glue spec. The glue code can use any global
+\item{\code{.headline}}{a headline glue spec. The glue code can use any global
 variable, or \{.cols\}.}
-    \item{\code{.tag}}{if you want the summary data from this step in the future then
+\item{\code{.tag}}{if you want the summary data from this step in the future then
 give it a name with .tag.}
-    \item{\code{.maxgroups}}{the maximum number of subgroups allowed before the tracking
+\item{\code{.maxgroups}}{the maximum number of subgroups allowed before the tracking
 is paused.}
-  }}
+\item{\code{...}}{In \code{group_by()}, variables or computations to group by.
+Computations are always done on the ungrouped data frame.
+To perform computations on the grouped data, you need to use
+a separate \code{mutate()} step before the \code{group_by()}.
+Computations are not allowed in \code{nest_by()}.
+In \code{ungroup()}, variables to remove from the grouping.
+  Named arguments passed on to \code{\link[dplyr:group_by]{dplyr::group_by}}\describe{
+    \item{\code{.add}}{When \code{FALSE}, the default, \code{group_by()} will
+override existing groups. To add to the existing groups, use
+\code{.add = TRUE}.
+
+This argument was previously called \code{add}, but that prevented
+creating a new grouping variable called \code{add}, and conflicts with
+our naming conventions.}
+\item{\code{.drop}}{Drop groups formed by factor levels that don't appear in the
+data? The default is \code{TRUE} except when \code{.data} has been previously
+grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{group_by_drop_default()}} for details.}
+\item{\code{x}}{A \code{\link[dplyr:tbl]{tbl()}}}
+}}
+}}
 }
 \value{
 the .data data frame with history graph tracking resumed

@@ -18,12 +18,8 @@ p_semi_join(
 lazy data frames (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:filter-joins]{dplyr::semi_join}}
-  \describe{
-    \item{\code{x,y}}{A pair of data frames, data frame extensions (e.g. a tibble), or
-lazy data frames (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
-more details.}
+\item{...}{Other parameters passed onto methods.
+  Named arguments passed on to \code{\link[dplyr:filter-joins]{dplyr::semi_join}}\describe{
     \item{\code{by}}{A join specification created with \code{\link[dplyr:join_by]{join_by()}}, or a character
 vector of variables to join by.
 
@@ -52,11 +48,19 @@ use a named character vector like \code{by = c("x_a" = "y_a", "x_b" = "y_b")}.
 
 To perform a cross-join, generating all combinations of \code{x} and \code{y}, see
 \code{\link[dplyr:cross_join]{cross_join()}}.}
-    \item{\code{copy}}{If \code{x} and \code{y} are not from the same data source,
+\item{\code{copy}}{If \code{x} and \code{y} are not from the same data source,
 and \code{copy} is \code{TRUE}, then \code{y} will be copied into the
 same src as \code{x}.  This allows you to join tables across srcs, but
 it is a potentially expensive operation so you must opt into it.}
-  }}
+\item{\code{na_matches}}{Should two \code{NA} or two \code{NaN} values match?
+\itemize{
+\item \code{"na"}, the default, treats two \code{NA} or two \code{NaN} values as equal, like
+\code{\%in\%}, \code{\link[=match]{match()}}, and \code{\link[=merge]{merge()}}.
+\item \code{"never"} treats two \code{NA} or two \code{NaN} values as different, and will
+never match them together or to any other values. This is similar to joins
+for database sources and to \code{base::merge(incomparables = NA)}.
+}}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, \{.keys\} for the joining columns, \{.count.lhs\},

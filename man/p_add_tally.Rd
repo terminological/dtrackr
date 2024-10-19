@@ -25,7 +25,7 @@ Defaults to nothing.}
 give it a name with .tag.}
 }
 \value{
-the .data dataframe after being modified by the \code{dplyr} equivalent
+the \code{.data} dataframe after being modified by the \code{dplyr} equivalent
 function, but with the history graph updated with a new stage if the
 \code{.messages} or \code{.headline} parameter is not empty.
 }

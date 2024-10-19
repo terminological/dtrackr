@@ -7,7 +7,12 @@
 bind_rows(..., .messages = "{.count.out} in union", .headline = "Union")
 }
 \arguments{
-\item{...}{a collection of tracked data frames to combine}
+\item{...}{a collection of tracked data frames to combine
+  Named arguments passed on to \code{\link[dplyr:bind_rows]{dplyr::bind_rows}}\describe{
+    \item{\code{.id}}{The name of an optional identifier column. Provide a string to
+create an output column that identifies each input. The column will use
+names if available, otherwise it will use positions.}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.count.out\}}

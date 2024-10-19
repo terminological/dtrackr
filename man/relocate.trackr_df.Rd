@@ -21,6 +21,11 @@ The value can be:
 if ungrouped).
 \item \code{NULL}, to remove the column.
 \item A data frame or tibble, to create multiple columns in the output.
+}
+  Named arguments passed on to \code{\link[dplyr:relocate]{dplyr::relocate}}\describe{
+    \item{\code{.before,.after}}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Destination of
+columns selected by \code{...}. Supplying neither will move columns to the
+left-hand side; specifying both is an error.}
 }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
@@ -35,7 +40,7 @@ Defaults to nothing.}
 give it a name with .tag.}
 }
 \value{
-the .data dataframe after being modified by the \code{dplyr} equivalent
+the \code{.data} dataframe after being modified by the \code{dplyr} equivalent
 function, but with the history graph updated with a new stage if the
 \code{.messages} or \code{.headline} parameter is not empty.
 }

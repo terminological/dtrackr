@@ -11,14 +11,23 @@ p_rename_with(.data, ..., .messages = "", .headline = "", .tag = NULL)
 lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:rename]{dplyr::rename_with}}
-  \describe{
+\item{...}{<\code{\link[rlang:args_data_masking]{data-masking}}> Name-value pairs.
+The name gives the name of the column in the output.
+
+The value can be:
+\itemize{
+\item A vector of length 1, which will be recycled to the correct length.
+\item A vector the same length as the current group (or the whole data frame
+if ungrouped).
+\item \code{NULL}, to remove the column.
+\item A data frame or tibble, to create multiple columns in the output.
+}
+  Named arguments passed on to \code{\link[dplyr:rename]{dplyr::rename_with}}\describe{
     \item{\code{.fn}}{A function used to transform the selected \code{.cols}. Should
 return a character vector the same length as the input.}
-    \item{\code{.cols}}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns to rename;
+\item{\code{.cols}}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Columns to rename;
 defaults to all columns.}
-  }}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, \{.new_cols\} or \{.dropped_cols\} for changes to
@@ -32,7 +41,7 @@ Defaults to nothing.}
 give it a name with .tag.}
 }
 \value{
-the .data dataframe after being modified by the \code{dplyr} equivalent
+the \code{.data} dataframe after being modified by the \code{dplyr} equivalent
 function, but with the history graph updated with a new stage if the
 \code{.messages} or \code{.headline} parameter is not empty.
 }

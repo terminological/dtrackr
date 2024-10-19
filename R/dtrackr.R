@@ -1531,12 +1531,13 @@ p_reframe = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
 #' @param .tag if you want the summary data from this step in the future then
 #'   give it a name with .tag.
 #'
-#' @return the .data dataframe after being modified by the `dplyr` equivalent
+#' @return the `.data` dataframe after being modified by the `dplyr` equivalent
 #'   function, but with the history graph updated with a new stage if the
 #'   `.messages` or `.headline` parameter is not empty.
 #'
 #' @seealso dplyr::mutate()
 #' @inheritParams dplyr::mutate
+#' @inheritDotParams dplyr::mutate
 #' @export
 #' @example inst/examples/mutate-examples.R
 p_mutate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1568,6 +1569,7 @@ p_add_tally = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @seealso dplyr::transmute()
 #' @inheritParams dplyr::transmute
+#' @inheritDotParams dplyr::transmute
 #' @export
 #' @example inst/examples/transmute-examples.R
 p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1577,6 +1579,7 @@ p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @seealso dplyr::select()
 #' @inheritParams dplyr::select
+#' @inheritDotParams dplyr::select
 #' @export
 #' @example inst/examples/select-examples.R
 p_select = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1596,6 +1599,7 @@ p_relocate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @seealso dplyr::rename()
 #' @inheritParams dplyr::rename
+#' @inheritDotParams dplyr::rename
 #' @export
 #' @example inst/examples/rename-examples.R
 p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1615,7 +1619,7 @@ p_rename_with = function(.data, ..., .messages = "", .headline = "", .tag=NULL) 
 #' @inherit p_mutate
 #' @seealso dplyr::arrange()
 #' @inheritParams dplyr::arrange
-#' @inheritParams dplyr::arrange
+#' @inheritDotParams dplyr::arrange
 #' @export
 #' @example inst/examples/arrange-examples.R
 p_arrange = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
@@ -1682,7 +1686,7 @@ p_pivot_longer = function(data, ..., .messages = "", .headline = "", .tag=NULL) 
 #' Grouping a data set acts in the normal way. When tracking a dataframe
 #' sometimes a `group_by()` operation will create a lot of groups. This happens
 #' for example if you are doing a `group_by()`, `summarise()` step that is
-#' aggregating data on a fine scale, e.g. by day in a timeseries. This is
+#' aggregating data on a fine scale, e.g. by day in a time-series. This is
 #' generally a terrible idea when tracking a dataframe as the resulting
 #' flowchart will have many many branches and be illegible. `dtrackr` will detect this issue and
 #' pause tracking the dataframe with a warning. It is up to the user to the
@@ -1789,8 +1793,13 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
   grps = .in %>% dplyr::groups()
   countIn = .in %>% dplyr::group_by(!!!grps) %>% dplyr::summarise(.count.in=dplyr::n()) %>% dplyr::ungroup()
   countOut = .out %>% dplyr::group_by(!!!grps) %>% dplyr::summarise(.count.out = dplyr::n()) %>% dplyr::ungroup()
-
-  tmp = countIn %>% dplyr::full_join(countOut, by=(grps %>% sapply(rlang::as_label) %>% as.character())) %>%
+  jn = grps %>% sapply(rlang::as_label) %>% as.character()
+  if (length(jn) > 0) {
+    tmp = countIn %>% dplyr::full_join(countOut, by=jn)
+  } else {
+    tmp = countIn %>% dplyr::cross_join(countOut)
+  }
+  tmp = tmp %>%
     dplyr::mutate(
       .count.out = ifelse(is.na(.count.out),0,.count.out),
       .count.in = ifelse(is.na(.count.in),0,.count.in)
@@ -1864,7 +1873,7 @@ p_distinct = function(.data, ..., .messages="removing {.count.in-.count.out} dup
 #' @param .tag if you want the summary data from this step in the future then
 #'   give it a name with `.tag`.
 #'
-#' @return the filtered .data dataframe with history graph updated
+#' @return the filtered `.data` dataframe with history graph updated
 #' @export
 #'
 #' @examples
@@ -2710,7 +2719,7 @@ count_subgroup <- p_count_subgroup
 #' @export
 comment <- p_comment
 
-## Dplyr bindings ----
+## dplyr bindings ----
 
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr summarise
@@ -2760,77 +2769,94 @@ summarise.trackr_df <- p_summarise
 reframe.trackr_df <- p_reframe
 
 #' @inherit p_mutate
+#' @inheritDotParams dplyr::mutate
 #' @export
 mutate.trackr_df <- p_mutate
 
 #' @inherit p_transmute
+#' @inheritDotParams dplyr::transmute
 #' @export
 transmute.trackr_df <- p_transmute
 
 #' @inherit p_select
+#' @inheritDotParams dplyr::select
 #' @export
 select.trackr_df <- p_select
 
 #' @inherit p_relocate
+#' @inheritDotParams dplyr::relocate
 #' @export
 relocate.trackr_df <- p_relocate
 
 #' @inherit p_rename
+#' @inheritDotParams dplyr::rename
 #' @export
 rename.trackr_df <- p_rename
 
 #' @inherit p_rename_with
+#' @inheritDotParams dplyr::rename_with
 #' @export
 rename_with.trackr_df <- p_rename_with
 
 #' @inherit p_arrange
+#' @inheritDotParams dplyr::arrange
 #' @export
 arrange.trackr_df <- p_arrange
 
 #' @inherit p_pivot_wider
+#' @inheritDotParams tidyr::pivot_wider
 #' @export
 pivot_wider.trackr_df <- p_pivot_wider
 
 #' @inherit p_pivot_longer
+#' @inheritDotParams tidyr::pivot_longer
 #' @export
 pivot_longer.trackr_df <- p_pivot_longer
 
 #' @inherit p_group_by
+#' @inheritDotParams dplyr::group_by
 #' @export
 group_by.trackr_df <- p_group_by
 
 #' @inherit p_distinct
+#' @inheritDotParams dplyr::distinct
 #' @export
 #' @importFrom dplyr distinct
 distinct.trackr_df <- p_distinct
 
 #' @inherit p_filter
+#' @inheritDotParams dplyr::filter
 #' @export
 #' @importFrom dplyr filter
 filter.trackr_df <- p_filter
 
 #' @inherit p_group_modify
+#' @inheritDotParams dplyr::group_modify
 #' @export
 group_modify.trackr_df <- p_group_modify
 
 #' @inherit p_inner_join
+#' @inheritDotParams dplyr::inner_join
 #' @export
 inner_join.trackr_df <- p_inner_join
 
 #' @inherit p_left_join
+#' @inheritDotParams dplyr::left_join
 #' @export
 left_join.trackr_df <- p_left_join
 
 #' @inherit p_right_join
+#' @inheritDotParams dplyr::right_join
 #' @export
 right_join.trackr_df <- p_right_join
 
 #' @inherit p_full_join
+#' @inheritDotParams dplyr::full_join
 #' @export
-
 full_join.trackr_df <- p_full_join
 
 #' @inherit p_semi_join
+#' @inheritDotParams dplyr::semi_join
 #' @export
 semi_join.trackr_df <- p_semi_join
 
@@ -2839,50 +2865,62 @@ semi_join.trackr_df <- p_semi_join
 anti_join.trackr_df <- p_anti_join
 
 #' @inherit p_nest_join
+#' @inheritDotParams dplyr::nest_join
 #' @export
 nest_join.trackr_df <- p_nest_join
 
 #' @inherit p_slice
+#' @inheritDotParams dplyr::slice
 #' @export
 slice.trackr_df <- p_slice
 
 #' @inherit p_slice_head
+#' @inheritDotParams dplyr::slice_head
 #' @export
 slice_head.trackr_df <- p_slice_head
 
 #' @inherit p_slice_tail
+#' @inheritDotParams dplyr::slice_tail
 #' @export
 slice_tail.trackr_df <- p_slice_tail
 
 #' @inherit p_slice_min
+#' @inheritDotParams dplyr::slice_min
 #' @export
 slice_min.trackr_df <- p_slice_min
 
 #' @inherit p_slice_max
+#' @inheritDotParams dplyr::slice_max
 #' @export
 slice_max.trackr_df <- p_slice_max
 
 #' @inherit p_slice_sample
+#' @inheritDotParams dplyr::slice_sample
 #' @export
 slice_sample.trackr_df <- p_slice_sample
 
 #' @inherit p_intersect
+#' @inheritDotParams dplyr::intersect
 #' @export
 intersect.trackr_df <- p_intersect
 
 #' @inherit p_union
+#' @inheritDotParams dplyr::union
 #' @export
 union.trackr_df <- p_union
 
 #' @inherit p_union_all
+#' @inheritDotParams dplyr::union_all
 #' @export
 union_all.trackr_df <- p_union_all
 
 #' @inherit p_setdiff
+#' @inheritDotParams dplyr::setdiff
 #' @export
 setdiff.trackr_df <- p_setdiff
 
 #' @inherit p_add_count
+#' @inheritDotParams dplyr::add_count
 #' @export
 add_count.trackr_df <- p_add_count
 
@@ -2897,13 +2935,16 @@ dplyr::filter
 # complete override. These are not S3 methods:
 
 #' @inherit p_bind_rows
+#' @inheritDotParams dplyr::bind_rows
 #' @export
 bind_rows <- p_bind_rows
 
 #' @inherit p_bind_cols
+#' @inheritDotParams dplyr::bind_cols
 #' @export
 bind_cols <- p_bind_cols
 
 #' @inherit p_add_tally
+#' @inheritDotParams dplyr::add_tally
 #' @export
 add_tally <- p_add_tally

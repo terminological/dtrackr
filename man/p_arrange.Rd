@@ -21,6 +21,27 @@ The value can be:
 if ungrouped).
 \item \code{NULL}, to remove the column.
 \item A data frame or tibble, to create multiple columns in the output.
+}
+  Named arguments passed on to \code{\link[dplyr:arrange]{dplyr::arrange}}\describe{
+    \item{\code{.by_group}}{If \code{TRUE}, will sort first by grouping variable. Applies to
+grouped data frames only.}
+\item{\code{.locale}}{The locale to sort character vectors in.
+\itemize{
+\item If \code{NULL}, the default, uses the \code{"C"} locale unless the
+\code{dplyr.legacy_locale} global option escape hatch is active. See the
+\link[dplyr]{dplyr-locale} help page for more details.
+\item If a single string from \code{\link[stringi:stri_locale_list]{stringi::stri_locale_list()}} is supplied, then
+this will be used as the locale to sort with. For example, \code{"en"} will
+sort with the American English locale. This requires the stringi package.
+\item If \code{"C"} is supplied, then character vectors will always be sorted in the
+C locale. This does not require stringi and is often much faster than
+supplying a locale identifier.
+}
+
+The C locale is not the same as English locales, such as \code{"en"},
+particularly when it comes to data containing a mix of upper and lower case
+letters. This is explained in more detail on the \link[dplyr:dplyr-locale]{locale}
+help page under the \verb{Default locale} section.}
 }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
@@ -35,7 +56,7 @@ Defaults to nothing.}
 give it a name with .tag.}
 }
 \value{
-the .data dataframe after being modified by the \code{dplyr} equivalent
+the \code{.data} dataframe after being modified by the \code{dplyr} equivalent
 function, but with the history graph updated with a new stage if the
 \code{.messages} or \code{.headline} parameter is not empty.
 }

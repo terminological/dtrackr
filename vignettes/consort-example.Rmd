@@ -211,9 +211,9 @@ demo_data %>%
 
 Composing `dtrackr` inclusion and exclusion criteria into functions lets you
 reuse them across different studies, but to be useful these functions need to be
-parameterised. As `dtrackr` uses formulae to specify the inclusion and exclusion
+parametrised. As `dtrackr` uses formulae to specify the inclusion and exclusion
 criteria, to construct an appropriate formulae for `dtrackr` using values that
-are parameterised from a helper function requires injection support, using
+are parametrised from a helper function requires injection support, using
 `rlang::inject()`. This is an advanced R topic but the following example gives a
 sense of what is possible.
 

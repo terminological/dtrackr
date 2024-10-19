@@ -17,13 +17,15 @@ p_distinct(
 lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:distinct]{dplyr::distinct}}
-  \describe{
+\item{...}{<\code{\link[rlang:args_data_masking]{data-masking}}> Optional variables to
+use when determining uniqueness. If there are multiple rows for a given
+combination of inputs, only the first row will be preserved. If omitted,
+will use all variables in the data frame.
+  Named arguments passed on to \code{\link[dplyr:distinct]{dplyr::distinct}}\describe{
     \item{\code{.keep_all}}{If \code{TRUE}, keep all variables in \code{.data}.
 If a combination of \code{...} is not distinct, this keeps the
 first row of values.}
-  }}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.strata\},\{.count.in\},and \{.count.out\}}

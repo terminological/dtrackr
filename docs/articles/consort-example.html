@@ -18,15 +18,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="dtrackr - Consort statement example">
-<meta property="og:description" content="dtrackr">
-<meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -55,7 +53,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -78,7 +76,7 @@
 <li>
   <a href="https://github.com/terminological/dtrackr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -89,7 +87,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -332,8 +330,8 @@ analysis.</p>
 <span>    sysDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>    <span class="co"># we could have included any number of other parameters here from the global environment</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">.label</span><span class="op">)</span></span>
-<span><span class="co">#&gt; treat:placebo: 36/74 (48.6%) patients on 2024-10-15, with a mean height of 145.58 ± 29.10</span></span>
-<span><span class="co">#&gt; treat:rIFN-g: 38/74 (51.4%) patients on 2024-10-15, with a mean height of 143.14 ± 25.12</span></span></code></pre></div>
+<span><span class="co">#&gt; treat:placebo: 36/74 (48.6%) patients on 2024-10-18, with a mean height of 145.58 ± 29.10</span></span>
+<span><span class="co">#&gt; treat:rIFN-g: 38/74 (51.4%) patients on 2024-10-18, with a mean height of 143.14 ± 25.12</span></span></code></pre></div>
 <p>Sometimes it will be necessary to operate on all tagged content at
 once. This is possible but be aware that the content available depends
 somewhat on where the tag was set in the pipeline so not all fields will
@@ -373,10 +371,10 @@ pipeline using tags the following example may be useful:</p>
 </h2>
 <p>Composing <code>dtrackr</code> inclusion and exclusion criteria into
 functions lets you reuse them across different studies, but to be useful
-these functions need to be parameterised. As <code>dtrackr</code> uses
+these functions need to be parametrised. As <code>dtrackr</code> uses
 formulae to specify the inclusion and exclusion criteria, to construct
 an appropriate formulae for <code>dtrackr</code> using values that are
-parameterised from a helper function requires injection support, using
+parametrised from a helper function requires injection support, using
 <code><a href="https://rlang.r-lib.org/reference/inject.html" class="external-link">rlang::inject()</a></code>. This is an advanced R topic but the
 following example gives a sense of what is possible.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -445,9 +443,7 @@ Therneau, Terry M. 2022. <em>A Package for Survival Analysis in r</em>.
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -460,16 +456,16 @@ Therneau, Terry M. 2022. <em>A Package for Survival Analysis in r</em>.
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

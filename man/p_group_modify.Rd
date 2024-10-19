@@ -16,9 +16,8 @@ p_group_modify(
 \arguments{
 \item{.data}{A grouped tibble}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:group_map]{dplyr::group_modify}}
-  \describe{
+\item{...}{Additional arguments passed on to \code{.f}
+  Named arguments passed on to \code{\link[dplyr:group_map]{dplyr::group_modify}}\describe{
     \item{\code{.f}}{A function or formula to apply to each group.
 
 If a \strong{function}, it is used as is. It should have at least 2 formal arguments.
@@ -32,8 +31,8 @@ for the given group
 \item \code{.y} to refer to the key, a one row tibble with one column per grouping variable
 that identifies the group
 }}
-    \item{\code{.keep}}{are the grouping variables kept in \code{.x}}
-  }}
+\item{\code{.keep}}{are the grouping variables kept in \code{.x}}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.strata\},\{.count.in\},and \{.count.out\}}

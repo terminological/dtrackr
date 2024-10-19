@@ -11,7 +11,12 @@ bind_cols(
 )
 }
 \arguments{
-\item{...}{a collection of tracked data frames to combine}
+\item{...}{a collection of tracked data frames to combine
+  Named arguments passed on to \code{\link[dplyr:bind_cols]{dplyr::bind_cols}}\describe{
+    \item{\code{.name_repair}}{One of \code{"unique"}, \code{"universal"}, or
+\code{"check_unique"}. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for the meaning of these
+options.}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.count.out\}}

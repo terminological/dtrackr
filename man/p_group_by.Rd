@@ -18,9 +18,13 @@ p_group_by(
 lazy data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for
 more details.}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:group_by]{dplyr::group_by}}
-  \describe{
+\item{...}{In \code{group_by()}, variables or computations to group by.
+Computations are always done on the ungrouped data frame.
+To perform computations on the grouped data, you need to use
+a separate \code{mutate()} step before the \code{group_by()}.
+Computations are not allowed in \code{nest_by()}.
+In \code{ungroup()}, variables to remove from the grouping.
+  Named arguments passed on to \code{\link[dplyr:group_by]{dplyr::group_by}}\describe{
     \item{\code{.add}}{When \code{FALSE}, the default, \code{group_by()} will
 override existing groups. To add to the existing groups, use
 \code{.add = TRUE}.
@@ -28,10 +32,11 @@ override existing groups. To add to the existing groups, use
 This argument was previously called \code{add}, but that prevented
 creating a new grouping variable called \code{add}, and conflicts with
 our naming conventions.}
-    \item{\code{.drop}}{Drop groups formed by factor levels that don't appear in the
+\item{\code{.drop}}{Drop groups formed by factor levels that don't appear in the
 data? The default is \code{TRUE} except when \code{.data} has been previously
 grouped with \code{.drop = FALSE}. See \code{\link[dplyr:group_by_drop_default]{group_by_drop_default()}} for details.}
-  }}
+\item{\code{x}}{A \code{\link[dplyr:tbl]{tbl()}}}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.cols\} which is the columns that are being grouped by.}
@@ -52,7 +57,7 @@ the .data but grouped.
 Grouping a data set acts in the normal way. When tracking a dataframe
 sometimes a \code{group_by()} operation will create a lot of groups. This happens
 for example if you are doing a \code{group_by()}, \code{summarise()} step that is
-aggregating data on a fine scale, e.g. by day in a timeseries. This is
+aggregating data on a fine scale, e.g. by day in a time-series. This is
 generally a terrible idea when tracking a dataframe as the resulting
 flowchart will have many many branches and be illegible. \code{dtrackr} will detect this issue and
 pause tracking the dataframe with a warning. It is up to the user to the

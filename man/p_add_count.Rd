@@ -10,22 +10,22 @@ p_add_count(x, ..., .messages = "", .headline = "", .tag = NULL)
 \item{x}{A data frame, data frame extension (e.g. a tibble), or a
 lazy data frame (e.g. from dbplyr or dtplyr).}
 
-\item{...}{
-  Arguments passed on to \code{\link[dplyr:count]{dplyr::add_count}}
-  \describe{
+\item{...}{<\code{\link[rlang:args_data_masking]{data-masking}}> Variables to group
+by.
+  Named arguments passed on to \code{\link[dplyr:count]{dplyr::add_count}}\describe{
     \item{\code{wt}}{<\code{\link[rlang:args_data_masking]{data-masking}}> Frequency weights.
 Can be \code{NULL} or a variable:
 \itemize{
 \item If \code{NULL} (the default), counts the number of rows in each group.
 \item If a variable, computes \code{sum(wt)} for each group.
 }}
-    \item{\code{sort}}{If \code{TRUE}, will show the largest groups at the top.}
-    \item{\code{name}}{The name of the new column in the output.
+\item{\code{sort}}{If \code{TRUE}, will show the largest groups at the top.}
+\item{\code{name}}{The name of the new column in the output.
 
 If omitted, it will default to \code{n}. If there's already a column called \code{n},
 it will use \code{nn}. If there's a column called \code{n} and \code{nn}, it'll use
 \code{nnn}, and so on, adding \code{n}s until it gets a new name.}
-    \item{\code{.drop}}{Handling of factor levels that don't appear in the data, passed
+\item{\code{.drop}}{Handling of factor levels that don't appear in the data, passed
 on to \code{\link[dplyr:group_by]{group_by()}}.
 
 For \code{count()}: if \code{FALSE} will include counts for empty groups (i.e. for
@@ -33,7 +33,7 @@ levels of factors that don't exist in the data).
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} For \code{add_count()}: deprecated since it
 can't actually affect the output.}
-  }}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, \{.new_cols\} or \{.dropped_cols\} for changes to
@@ -47,7 +47,7 @@ Defaults to nothing.}
 give it a name with .tag.}
 }
 \value{
-the .data dataframe after being modified by the \code{dplyr} equivalent
+the \code{.data} dataframe after being modified by the \code{dplyr} equivalent
 function, but with the history graph updated with a new stage if the
 \code{.messages} or \code{.headline} parameter is not empty.
 }
