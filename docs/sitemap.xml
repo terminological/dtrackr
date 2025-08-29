@@ -6,6 +6,7 @@
 <url><loc>https://terminological.github.io/dtrackr/index.html/articles/consort-example.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/articles/dtrackr-options.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/articles/dtrackr.html</loc></url>
+<url><loc>https://terminological.github.io/dtrackr/index.html/articles/grouping-and-nesting.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/articles/index.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/articles/joining-pipelines.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/articles/tracking-provenance.html</loc></url>
@@ -41,6 +42,7 @@
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/landscape.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/left_join.trackr_df.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/mutate.trackr_df.html</loc></url>
+<url><loc>https://terminological.github.io/dtrackr/index.html/reference/nest.trackr_df.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/nest_join.trackr_df.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_add_count.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_add_tally.html</loc></url>
@@ -70,6 +72,7 @@
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_intersect.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_left_join.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_mutate.html</loc></url>
+<url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_nest.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_nest_join.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_pause.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_pivot_longer.html</loc></url>
@@ -98,6 +101,7 @@
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_ungroup.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_union.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_union_all.html</loc></url>
+<url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_unnest.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/p_untrack.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/pause.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/pipe.html</loc></url>
@@ -131,6 +135,7 @@
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/ungroup.trackr_df.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/union.trackr_df.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/union_all.trackr_df.html</loc></url>
+<url><loc>https://terminological.github.io/dtrackr/index.html/reference/unnest.trackr_df.html</loc></url>
 <url><loc>https://terminological.github.io/dtrackr/index.html/reference/untrack.html</loc></url>
 </urlset>
 

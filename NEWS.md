@@ -1,5 +1,15 @@
 # NEWS
 
+# dtrackr 0.5.0
+
+* support for `tidyr::nest` and `tidyr::unnest` to handle long format data
+* improvements in support for `tidyr::pivot_wider` and `tidyr::pivot_longer`
+* issue raised with `tidyr` in their implementation of `unnest` and workaround
+  described in the examples for `dtrackr::unnest.trackr_df`
+* added support for configuring fonts, colours and orientation of dot graph.
+* updated vignettes to demonstrate new options, and approaches to working with
+  long format data.
+
 # dtrackr 0.4.6
 
 * fixed un-escaped braces in documentation for CRAN.

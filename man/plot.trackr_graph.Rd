@@ -4,18 +4,23 @@
 \alias{plot.trackr_graph}
 \title{Plots a history graph as html}
 \usage{
-\method{plot}{trackr_graph}(x, fill = "lightgrey", fontsize = "8", colour = "black", ...)
+\method{plot}{trackr_graph}(x, ...)
 }
 \arguments{
 \item{x}{a dtrackr history graph (e.g. output from \code{\link[=history]{history()}})}
 
-\item{fill}{the default node fill colour}
-
-\item{fontsize}{the default font size}
-
-\item{colour}{the default font colour}
-
-\item{...}{not used}
+\item{...}{
+  Named arguments passed on to \code{\link[=p_get_as_dot]{p_get_as_dot}}\describe{
+    \item{\code{.data}}{the tracked dataframe}
+\item{\code{fill}}{the default node fill colour, any R colour or hex value}
+\item{\code{fontsize}}{the default font size in points}
+\item{\code{colour}}{the default font colour, any R colour or hex value}
+\item{\code{rankdir}}{the dot rank direction (one of \code{TB},\code{LR},\code{BT},\code{RL})}
+\item{\code{rounded}}{should the node corners be rounded?}
+\item{\code{fontname}}{the font to use. Must exist on the system.}
+\item{\code{bgcolour}}{the background, may be "transparent", any R colour or hex value}
+\item{\code{...}}{not used}
+}}
 }
 \value{
 HTML displayed

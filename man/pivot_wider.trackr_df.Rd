@@ -4,14 +4,33 @@
 \alias{pivot_wider.trackr_df}
 \title{Reshaping data using \code{tidyr::pivot_wider}}
 \usage{
-\method{pivot_wider}{trackr_df}(data, ..., .messages = "", .headline = "", .tag = NULL)
+\method{pivot_wider}{trackr_df}(
+  data,
+  ...,
+  id_cols = NULL,
+  id_expand = FALSE,
+  names_from = name,
+  names_prefix = "",
+  names_sep = "_",
+  names_glue = NULL,
+  names_sort = FALSE,
+  names_vary = "fastest",
+  names_expand = FALSE,
+  names_repair = "check_unique",
+  values_from = value,
+  values_fill = NULL,
+  values_fn = NULL,
+  unused_fn = NULL,
+  .messages = c("wide format", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+)
 }
 \arguments{
 \item{data}{A data frame to pivot.}
 
-\item{...}{Additional arguments passed on to methods.
-  Named arguments passed on to \code{\link[tidyr:pivot_wider]{tidyr::pivot_wider}}\describe{
-    \item{\code{id_cols}}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A set of columns that
+\item{...}{Additional arguments passed on to methods.}
+
+\item{id_cols}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A set of columns that
 uniquely identify each observation. Typically used when you have
 redundant variables, i.e. variables whose values are perfectly correlated
 with existing variables.
@@ -20,31 +39,38 @@ Defaults to all columns in \code{data} except for the columns specified through
 \code{names_from} and \code{values_from}. If a tidyselect expression is supplied, it
 will be evaluated on \code{data} after removing the columns specified through
 \code{names_from} and \code{values_from}.}
-\item{\code{id_expand}}{Should the values in the \code{id_cols} columns be expanded by
+
+\item{id_expand}{Should the values in the \code{id_cols} columns be expanded by
 \code{\link[tidyr:expand]{expand()}} before pivoting? This results in more rows, the output will
 contain a complete expansion of all possible values in \code{id_cols}. Implicit
 factor levels that aren't represented in the data will become explicit.
 Additionally, the row values corresponding to the expanded \code{id_cols} will
 be sorted.}
-\item{\code{names_from,values_from}}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A pair of
+
+\item{names_from, values_from}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> A pair of
 arguments describing which column (or columns) to get the name of the
 output column (\code{names_from}), and which column (or columns) to get the
 cell values from (\code{values_from}).
 
 If \code{values_from} contains multiple values, the value will be added to the
 front of the output column.}
-\item{\code{names_prefix}}{String added to the start of every variable name. This is
+
+\item{names_prefix}{String added to the start of every variable name. This is
 particularly useful if \code{names_from} is a numeric vector and you want to
 create syntactic variable names.}
-\item{\code{names_sep}}{If \code{names_from} or \code{values_from} contains multiple
+
+\item{names_sep}{If \code{names_from} or \code{values_from} contains multiple
 variables, this will be used to join their values together into a single
 string to use as a column name.}
-\item{\code{names_glue}}{Instead of \code{names_sep} and \code{names_prefix}, you can supply
+
+\item{names_glue}{Instead of \code{names_sep} and \code{names_prefix}, you can supply
 a glue specification that uses the \code{names_from} columns (and special
 \code{.value}) to create custom column names.}
-\item{\code{names_sort}}{Should the column names be sorted? If \code{FALSE}, the default,
+
+\item{names_sort}{Should the column names be sorted? If \code{FALSE}, the default,
 column names are ordered by first appearance.}
-\item{\code{names_vary}}{When \code{names_from} identifies a column (or columns) with
+
+\item{names_vary}{When \code{names_from} identifies a column (or columns) with
 multiple unique values, and multiple \code{values_from} columns are provided,
 in what order should the resulting column names be combined?
 \itemize{
@@ -53,30 +79,35 @@ naming scheme of the form: \verb{value1_name1, value1_name2, value2_name1, value
 \item \code{"slowest"} varies \code{names_from} values slowest, resulting in a column
 naming scheme of the form: \verb{value1_name1, value2_name1, value1_name2, value2_name2}.
 }}
-\item{\code{names_expand}}{Should the values in the \code{names_from} columns be expanded
+
+\item{names_expand}{Should the values in the \code{names_from} columns be expanded
 by \code{\link[tidyr:expand]{expand()}} before pivoting? This results in more columns, the output
 will contain column names corresponding to a complete expansion of all
 possible values in \code{names_from}. Implicit factor levels that aren't
 represented in the data will become explicit. Additionally, the column
 names will be sorted, identical to what \code{names_sort} would produce.}
-\item{\code{names_repair}}{What happens if the output has invalid column names?
+
+\item{names_repair}{What happens if the output has invalid column names?
 The default, \code{"check_unique"} is to error if the columns are duplicated.
 Use \code{"minimal"} to allow duplicates in the output, or \code{"unique"} to
 de-duplicated by adding numeric suffixes. See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}}
 for more options.}
-\item{\code{values_fill}}{Optionally, a (scalar) value that specifies what each
+
+\item{values_fill}{Optionally, a (scalar) value that specifies what each
 \code{value} should be filled in with when missing.
 
 This can be a named list if you want to apply different fill values to
 different value columns.}
-\item{\code{values_fn}}{Optionally, a function applied to the value in each cell
+
+\item{values_fn}{Optionally, a function applied to the value in each cell
 in the output. You will typically use this when the combination of
 \code{id_cols} and \code{names_from} columns does not uniquely identify an
 observation.
 
 This can be a named list if you want to apply different aggregations
 to different \code{values_from} columns.}
-\item{\code{unused_fn}}{Optionally, a function applied to summarize the values from
+
+\item{unused_fn}{Optionally, a function applied to summarize the values from
 the unused columns (i.e. columns not identified by \code{id_cols},
 \code{names_from}, or \code{values_from}).
 
@@ -90,24 +121,77 @@ all unspecified columns will be considered \code{id_cols}.
 
 This is similar to grouping by the \code{id_cols} then summarizing the
 unused columns using \code{unused_fn}.}
-}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 
 \item{.headline}{a headline glue spec. The glue code can use any global
 variable, grouping variable, or \{.strata\}. Defaults to nothing.}
-
-\item{.tag}{if you want the summary data from this step in the future then
-give it a name with .tag.}
 }
 \value{
 the data dataframe result of the \code{tidyr::pivot_wider} function but with
-a history graph updated with a \code{.message} if requested.
+a history graph updated.
 }
 \description{
 A drop in replacement for \code{\link[tidyr:pivot_wider]{tidyr::pivot_wider()}} which optionally takes a
 message and headline to store in the history graph.
+}
+\examples{
+library(dplyr)
+library(dtrackr)
+
+starwars \%>\%
+  track() \%>\%
+  tidyr::unnest(starships, keep_empty = TRUE) \%>\%
+  tidyr::nest(world_data = c(-homeworld)) \%>\%
+  history()
+
+# There is a problem with `tidyr::unnest` that means if you want to override the
+# `.messages` option at the moment it will most likely fail. Forcing the use of
+# the specific `dtrackr::p_unnest` version solves this problem, until hopefully it is
+# resolved in `tidyr`:
+starwars \%>\%
+  track() \%>\%
+  p_unnest(
+    films,
+    .messages = c("{.count.in} characters", "{.count.out} appearances")
+  ) \%>\%
+  dplyr::group_by(gender) \%>\%
+  tidyr::nest(
+    people = c(-gender, -species, -homeworld),
+    .messages = c("{.count.in} appearances", "{.count.out} planets")
+  ) \%>\%
+  status() \%>\%
+  history()
+
+# This example includes pivoting and nesting. The CMS patient care data
+# has multiple tests per institution in a long format, and observed /
+# denominator types. Firstly we pivot the data to allow us to easily calculate
+# a total percentage for each institution. This is duplicated for every test
+# so we nest the tests to get to one row per institution. Those institutions
+# with invalid scores are excluded.
+cms_history = tidyr::cms_patient_care \%>\%
+  track() \%>\%
+  tidyr::pivot_wider(names_from = type, values_from = score) \%>\%
+  dplyr::mutate(
+    percentage = sum(observed) / sum(denominator) * 100,
+    .by = c(ccn, facility_name)
+  ) \%>\%
+  tidyr::nest(
+    results = c(measure_abbr, observed, denominator),
+    .messages = c("{.count.in} test results", "{.count.out} facilities")
+  ) \%>\%
+  exclude_all(
+    percentage > 100 ~ "{.excluded} facilities with anomalous percentages",
+    na.rm = TRUE
+  )
+
+print(cms_history \%>\% dtrackr::history())
+
+# not run in examples:
+if (interactive()) {
+  cms_history \%>\% flowchart()
+}
 }
 \seealso{
 tidyr::pivot_wider()

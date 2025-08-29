@@ -1,12 +1,13 @@
-pandoc: 3.1.13
-pkgdown: 2.1.1
+pandoc: '3.4'
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   consort-example: consort-example.html
   dtrackr-options: dtrackr-options.html
   dtrackr: dtrackr.html
+  grouping-and-nesting: grouping-and-nesting.html
   joining-pipelines: joining-pipelines.html
-last_built: 2024-10-19T15:48Z
+last_built: 2025-08-29T22:52Z
 urls:
   reference: https://terminological.github.io/dtrackr/index.html/reference
   article: https://terminological.github.io/dtrackr/index.html/articles

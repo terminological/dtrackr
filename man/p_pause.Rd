@@ -10,7 +10,7 @@ p_pause(.data, auto = FALSE)
 \item{.data}{a tracked dataframe}
 
 \item{auto}{if \code{TRUE} the tracking will resume automatically when the
-number of groups has fallen to a sensible level (default is \code{FALSE})?}
+number of groups has fallen to a sensible level (default is \code{FALSE})}
 }
 \value{
 the .data dataframe with history graph tracking paused

@@ -88,15 +88,16 @@ reference:
     `dtrackr` support for functions from other tidyverse packages is evolving.
     The focus is on functions that take a dataframe as input and produce a
     dataframe as output, and naturally fit within a data pipeline. `pivot_longer()`
-    and `pivot_wider()` are good examples which are already implemented. Tracking
-    of `nest()` and `unnest()` is not yet implemented (but this does not stop you
-    from using these functions in a pipeline), and `purrr` functions such as `map_df()`,
-    `map_dfc()`, `map_dfr()`, `pmap()`, `pmap_dfr()`, `pmap_dfc()` are potential
-    candidates for future implementation, as are functions that acquire data
-    such as those from the `readr` package.
+    and `pivot_wider()` are good examples which are already implemented. `purrr`
+    functions such as `map_df()`, `map_dfc()`, `map_dfr()`, `pmap()`,
+    `pmap_dfr()`, `pmap_dfc()` are potential candidates for future
+    implementation, as are functions that acquire data such as those from the
+    `readr` package.
   contents:
   - pivot_longer.trackr_df
   - pivot_wider.trackr_df
+  - nest.trackr_df
+  - unnest.trackr_df
 
 - title: "Dot graph rendering."
   desc: >

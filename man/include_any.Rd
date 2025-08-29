@@ -58,7 +58,7 @@ include i.e. the results include anything that match any of the criteria. If
 library(dplyr)
 library(dtrackr)
 
-iris \%>\% track() \%>\% group_by(Species) \%>\% include_any(
+iris \%>\% track() \%>\% dplyr::group_by(Species) \%>\% include_any(
       Petal.Length > 5 ~ "{.included} long ones",
       Petal.Length < 2 ~ "{.included} short ones"
 ) \%>\% history()

@@ -11,11 +11,38 @@
   .messages = "{.count.out} items in difference",
   .headline = "Difference"
 )
+
+\method{setdiff}{trackr_df}(
+  x,
+  y,
+  ...,
+  .messages = "{.count.out} items in difference",
+  .headline = "Difference"
+)
 }
 \arguments{
 \item{x, y}{Vectors to combine.}
 
-\item{...}{a collection of tracked data frames to combine}
+\item{...}{a collection of tracked data frames to combine
+  Named arguments passed on to \code{\link[tidyr:nest]{tidyr::nest}}\describe{
+    \item{\code{.data}}{A data frame.}
+\item{\code{.by}}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> Columns to nest \emph{by}; these
+will remain in the outer data frame.
+
+\code{.by} can be used in place of or in conjunction with columns supplied
+through \code{...}.
+
+If not supplied, then \code{.by} is derived as all columns \emph{not} selected by
+\code{...}.}
+\item{\code{.key}}{The name of the resulting nested column. Only applicable when
+\code{...} isn't specified, i.e. in the case of \code{df \%>\% nest(.by = x)}.
+
+If \code{NULL}, then \code{"data"} will be used by default.}
+\item{\code{.names_sep}}{If \code{NULL}, the default, the inner names will come from
+the former outer names. If a string, the  new inner names will use the
+outer names with \code{names_sep} automatically stripped. This makes
+\code{names_sep} roughly symmetric between nesting and unnesting.}
+}}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
 variable, or \{.count.out\}}

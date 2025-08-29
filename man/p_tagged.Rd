@@ -42,6 +42,6 @@ has some examples of use.
 library(dplyr)
 library(dtrackr)
 tmp = iris \%>\% track() \%>\% comment(.tag = "step1")
-tmp = tmp \%>\% filter(Species!="versicolor") \%>\% group_by(Species)
+tmp = tmp \%>\% filter(Species!="versicolor") \%>\% dplyr::group_by(Species)
 tmp \%>\% comment(.tag="step2") \%>\% tagged(.glue = "{.count}/{.total}")
 }

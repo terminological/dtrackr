@@ -49,8 +49,8 @@ allows you to generate some summary statistics about the un-grouped data. See
 library(dplyr)
 library(dtrackr)
 
-tmp = iris \%>\% group_by(Species) \%>\% track()
-tmp \%>\% reframe(tibble(
+tmp = iris \%>\% dplyr::group_by(Species) \%>\% track()
+tmp \%>\% dplyr::reframe(dplyr::tibble(
   param = c("mean","min","max"),
   value = c(mean(Petal.Length), min(Petal.Length), max(Petal.Length))
   ), .messages="length {param}: {value}") \%>\% history()

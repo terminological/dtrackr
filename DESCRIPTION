@@ -1,6 +1,6 @@
 Package: dtrackr
 Title: Track your Data Pipelines
-Version: 0.4.6
+Version: 0.5.0
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -30,7 +30,8 @@ Imports:
     base64enc,
     pdftools,
     png,
-    lifecycle
+    lifecycle,
+    scales
 Suggests:
     spelling, 
     here,
@@ -48,7 +49,7 @@ VignetteBuilder:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2.9003
+RoxygenNote: 7.3.2.9004
 Depends: 
     R (>= 2.10)
 URL: https://terminological.github.io/dtrackr/index.html,

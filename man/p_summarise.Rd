@@ -78,8 +78,8 @@ allows you to generate some summary statistics about the un-grouped data. See
 library(dplyr)
 library(dtrackr)
 
-tmp = iris \%>\% group_by(Species) \%>\% track()
-tmp \%>\% summarise(avg = mean(Petal.Length), .messages="{avg} length") \%>\% history()
+tmp = iris \%>\% dplyr::group_by(Species) \%>\% track()
+tmp \%>\% dplyr::summarise(avg = mean(Petal.Length), .messages="{avg} length") \%>\% history()
 }
 \seealso{
 dplyr::summarise()

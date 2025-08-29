@@ -18,5 +18,6 @@ the .data dataframe with the history graph of "from"
 Copy the dtrackr history graph from one dataframe to another
 }
 \examples{
+
 mtcars \%>\% p_copy(iris \%>\% comment("A comment")) \%>\% history()
 }

@@ -1,0 +1,204 @@
+---
+title: "dtrackr - Grouping, Nesting and Long format data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{dtrackr - Grouping, Nesting and Long format data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(dtrackr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+`dtrackr` assumes a tidy data paradigm where one row of data is relevant to one
+logical entity, whether it be cars, irises, diamonds, or anything else. 
+This is not always the case, if for example the data you are processing comes 
+from a join of data sets. Here we simulate a set of patients, test samples, and 
+test results in a hypothetical trial:
+
+```{r}
+
+age_cats = factor(sprintf("%02d-%02d",seq(0,80,5),seq(4,84,5)))
+
+# A set of synthetic patients:
+patients = tibble::tibble(
+  patient_id = 1:100,
+  age_category = sample(age_cats,100, replace=TRUE),
+  ethnicity = sample(1:6, 100, replace = TRUE),
+  gender = sample(0:1, 100, replace=TRUE),
+  group = sample(c("Cases","Controls"), 100, replace=TRUE)
+) 
+
+# each patient is going to have a random selection of tests
+tests = tibble::tibble(
+  test_id = 1:1000,
+  patient_id = sample(1:100,1000, replace = TRUE),
+  test_type = sample(c("FBC","LFT","Electrolytes"), 1000, replace=TRUE),
+  test_date = as.Date("2025-01-01")+sample.int(50, 1000, replace=TRUE)
+)
+
+# and each test a random selection of results consisting of components and
+# values:
+tests = tests %>% mutate(
+  result = purrr::map(test_type, ~ case_when(
+    .x == "FBC" ~ list(tibble::tibble(
+      component = c("HB","platelets","WCC"),
+      value = c( runif(1,13.5,15), runif(1,100,1000), runif(1,0,30))
+    )),
+    .x == "LFT" ~ list(tibble::tibble(
+      component = c("AST","GGT"),
+      value = c( runif(1,0,100), runif(1,0,100))
+    )),
+    .x == "Electrolytes" ~ list(tibble::tibble(
+      component = c("NA","K","Glucose"),
+      value = c( runif(1,130,150), runif(1,3.3,5.2), runif(1,50,150))
+    ))
+  ))
+)
+
+data = patients %>% inner_join(
+  tests %>% unnest(result) %>% unnest(result),
+  by="patient_id"
+)
+
+data %>% glimpse()
+```
+
+We might have an objective to prepare this data set for analysis but have 
+inclusion or exclusion criteria that apply at different levels. We might have
+patients who need to be excluded as too young or old, or specific test results
+that were taken at the wrong time, or patients who have evidence of diabetes,
+or exclude specific test results that are out of range. All of this we need 
+to do while stratified by the control group status.
+
+To achieve this we use nesting to collapse the data frame into one row per
+patient, one row per test or one row per test result, depending on what we are
+trying to exclude. This allows `dtrackr` to dynamically change what it regards
+as a single countable thing, depending on the context of the pipeline.
+
+```{r}
+
+processed = data %>%
+  
+  # the data is originally long format with one row per test result:
+  track("{.count} test results") %>%
+  mutate(maybe_diabetic = any(component == "Glucose" & value>130), .by = patient_id) %>%
+  nest(test_panel = c(component,value), .messages="") %>%
+  
+  # Now the data is long format with one row per test:
+  comment("{.count} tests") %>%
+  nest(tests = starts_with("test_"), .messages="") %>%
+  
+  # and now long format with one row per patient:
+  comment("{.count} patients") %>%
+  group_by(group) %>%
+  comment("{.count} patients") %>%
+  
+  # these exclusions are at the patient level
+  exclude_all(
+    .headline = "people",
+    maybe_diabetic ~ "{.excluded} diabetics",
+    age_category %in% age_cats[1:4] ~ "{.excluded} under 20"
+  ) %>%
+  
+  # these are now back at the test level
+  unnest(tests) %>%
+  comment("{.count} tests",.headline = "") %>%
+  exclude_all(
+    .headline = "tests",
+    test_date < "2025-01-07" ~ "{.excluded} with invalid dates"
+  ) %>%
+  count_subgroup(test_type, .headline = "") %>%
+  
+  # and finally at the granular test result level
+  unnest(test_panel) %>%
+  exclude_all(
+    .headline = "results",
+    component == "HB" & value < 14 ~ "{.excluded} invalid Hb results",
+    component == "K" & value < 3.5 ~ "{.excluded} haemolysed K+"
+  ) %>%
+  group_by(test_type, .add=TRUE, .messages="By tests") %>%
+  count_subgroup(component, .headline = "{test_type}") %>%
+  ungroup(.messages = "{.count} eligible results") %>%
+  nest(test_panel = c(component,value), .messages="") %>%
+  comment("{.count} eligible tests") %>%
+  nest(tests = starts_with("test_"), .messages="") %>%
+  comment("{.count} eligible patients")
+  
+
+processed %>%
+  flowchart()
+  
+
+```
+
+## Maximum groupings
+
+Going back to the original example data, in a slightly contrived example let's 
+assume we want to exclude age categories that don't have a close gender match 
+between cases and controls. We have to create a lot of small groups to count.
+
+```{r}
+
+data %>% 
+  group_by(age_category, gender, group) %>%
+  summarise(
+    n = n_distinct(patient_id)
+  ) %>%
+  pivot_wider(values_from = n, names_from = group) %>%
+  filter(abs(Cases-Controls) <= 1) %>%
+  glimpse()
+
+```
+
+If we were to try and monitor this data frame through the pipeline there would
+be a problem with the flowchart because too many groups are generated. This 
+causes performance and legibility issues for the resulting graph
+and is a result of an interim stage of the data pipeline where grouping
+is used to do fine scale summarisation operation. The most number of
+groups that `dtrackr` will attempt to keep track of is configurable but defaults
+to 16, and if the number of groups exceeds that it will pause tracking, until 
+the number of groups is restored to a lower number, at which point it will
+start following again. A "< hidden steps >" message is inserted into the graph when 
+this happens but this can be changed, or disabled altogether with 
+`options(dtrackr.hidden_steps = "")`. `dtrackr` does not by default warn the 
+user of this unless the `options(dtrackr.verbose=TRUE)` is set.
+
+```{r}
+
+old = options(dtrackr.verbose=TRUE)
+
+data %>% 
+  track() %>%
+  group_by(gender) %>%
+  # the tracking is paused here as the number of groups is >16
+  comment() %>%
+  group_by(age_category, group, .add=TRUE) %>%
+  summarise(
+    n = n_distinct(patient_id)
+  ) %>%
+  pivot_wider(values_from = n, names_from = group) %>%
+  filter(abs(Cases-Controls) <= 1) %>%
+  # the tracking is automatically resumed at this point as the grouping has
+  # returned to manageable levels.
+  group_by(gender) %>%
+  comment() %>%
+  flowchart()
+
+options(old)
+```
+
+By default this behaviour is triggered if we get to 16 subgroups. This can be 
+changed by setting the option:
+
+```R
+options(dtrackr.max_supported_groupings = 16)
+```
+
+Pausing and unpausing the tracking can also be done manually by calling 
+`dtrackr::pause()` and `dtrackr::resume()`. This is a fairly experimental 
+feature, and I don't expect it to be heavily used.

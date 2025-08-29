@@ -18,9 +18,37 @@ knitr::opts_chunk$set(echo = TRUE)
 # Global configuration
 
 Most of the behaviour of `dtrackr` can be specified at the individual call level
-using the `.headline` and `.messages` glue specifications to define a format.
-Sometimes however this is annoying to do for all the stages in a flow chart and
-a global configuration of behaviour is desirable.
+using the `.headline` and `.messages` glue specifications to define a format, or
+as an option for `flowchart()` to define formatting. Sometimes however this is
+annoying to do for all the stages in a flow chart and a global configuration of
+behaviour is desirable.
+
+# Formatting options
+
+Setting the following global options will override the defaults for all 
+future flowcharts. These settings are applied when the data is rendered so 
+can be changed after the pipeline has executed.
+
+```R
+options(
+  dtrackr.fontname = "Calibri",
+  dtrackr.fontsize = 12,
+  dtrackr.colour = "white",
+  dtrackr.fill = "blue",
+  dtrackr.rounded = TRUE,
+  dtrackr.direction = "LR",
+  dtrackr.bgcolour = "black"
+)
+}
+```
+
+Any normal R colours can be used including `transparent` or the colours can 
+be specified in hex.
+
+# Recording options
+
+These options are applied as the data is being processed through a pipeline. 
+They can't be changed retrospectively without re-running the pipeline.
 
 ## Naming conventions for groups
 
@@ -150,7 +178,7 @@ old = options(
   dtrackr.default_count_subgroup = "{tolower(.name)}: {.count}/{.subtotal}"
 )
 
-survival::cgd %>%
+surv_ex = survival::cgd %>%
   track() %>%
   group_by(
     treat,
@@ -160,7 +188,9 @@ survival::cgd %>%
   count_subgroup(
     sex
   ) %>%
-  ungroup() %>%
+  ungroup() 
+
+surv_ex %>%
   flowchart()
 
 
@@ -206,7 +236,30 @@ to 16:
 
 ```R
 options(dtrackr.max_supported_groupings = 16)
+options(dtrackr.hidden_steps = "< hidden steps >")
 ```
+
+<!-- N.B. the need to do grouping for fine scale filtering is somewhat mitigated by -->
+<!-- the `dplyr` functions `.by` parameter. If this is used rather than a `group_by` -->
+<!-- then the behaviour is not tracked by group. This results in a more natural  -->
+<!-- history graph and flowchart. In this case `group_by` is reserved for major  -->
+<!-- groupings only. -->
+
+<!-- ```{r} -->
+
+<!-- ggplot2::diamonds %>%  -->
+<!--   track() %>% -->
+<!--   group_by(cut) %>% -->
+<!--   # count_subgroup(.subgroup = color) %>% -->
+<!--   status(av = mean(price), color=first(color), .by=color, .messages = "{sprintf('%1.0f',av)}: {color}") %>% -->
+<!--   flowchart() -->
+<!--   # exclude_all( -->
+<!--   #   mean(price) <  -->
+<!--   #   .by = color -->
+<!--   # ) -->
+<!--   # glimpse() -->
+
+<!-- ``` -->
 
 ## Verbose output
 
@@ -216,3 +269,5 @@ default. They can be enabled with the following flag.
 ```R
 options(dtrackr.verbose=TRUE)
 ```
+
+

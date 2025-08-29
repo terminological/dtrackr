@@ -312,6 +312,34 @@ tmp %>% excluded()
 
 ```
 
+# Formatting options
+
+The format of the flowchart (as opposed to the content) is configurable in 
+options to `flowchart()`, and we can change fonts, colours, sizes or orientation.
+For example:
+
+```{r}
+tmp %>% flowchart(
+  fill = "blue", rounded=TRUE, fontname="Calibri", 
+  rankdir = "LR", fontsize = 10, colour = "white", bgcolour="grey10")
+```
+
+Font size options are a bit arbitrary as the flowchart is generally scaled to
+fit paper size and this will affect the apparent font size. These options can
+also be set globally as detailed in `vignette("dtrackr-options"`.
+
+The `GraphViz` language provides many other options for formatting the
+flowchart. Rather than try and provide an interface for everything, we have gone
+for sane defaults, with the most obvious changes. If you want to change this or
+use a different layout engine the `GraphViz` output can be retrieved and edited
+directly. Alternatively if the output you need is different, rendered SVG output
+can be edited by hand.
+
+```{r}
+# Grab the dot source, for manual editing:
+cat(tmp %>% p_get_as_dot())
+```
+
 # Advanced handling of the history graph.
 
 The history graph is a stored as an attribute on a tracked dataframe. The
@@ -330,20 +358,10 @@ tmp2$nodes %>% glimpse()
 tmp2$edges %>% glimpse()
 ```
 
-The `GraphViz` language provides many options for formatting the flowchart.
-Rather than try and provide an interface for them, we have gone for sane
-defaults. If you want to change this or use a different layout engine the
-`GraphViz` output can be retrieved and edited directly. Alternatively if the 
-output you need is different, rendered SVG output can be edited by hand.
-
-```{r}
-cat(tmp %>% p_get_as_dot())
-```
-
 # Combined data flows
 
 Data sets that undergo different processing may be joined into a single dataset. 
-This is supported in `dtrackr` and demonstrated in the "joining-pipelines" vignette.
+This is supported in `dtrackr` and demonstrated in `vignette("joining-pipelines")`
 
 
 

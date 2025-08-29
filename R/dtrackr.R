@@ -4,7 +4,7 @@
 
 # determine whether a continuous variable is in fact discrete and can be treated
 # as such
-.is.discrete = function(.data, .cutoff=10) {
+.is.discrete = function(.data, .cutoff = 10) {
   .data <- stats::na.omit(.data)
   return(length(unique(.data)) <= .cutoff | is.factor(.data))
 }
@@ -12,8 +12,18 @@
 # backend for comment
 # data is unsummarised raw data from the pipeline
 # this executes a
-.comment = function(.data, .messages, .headline,  .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL, .envir = rlang::caller_env()) {
-  if (identical(.messages,NULL) & identical(.headline,NULL)) return(.data)
+.comment = function(
+  .data,
+  .messages,
+  .headline,
+  .type = "info",
+  .asOffshoot = (.type == "exclusion"),
+  .tag = NULL,
+  .envir = rlang::caller_env()
+) {
+  if (identical(.messages, NULL) & identical(.headline, NULL)) {
+    return(.data)
+  }
 
   .envir$.total = nrow(.data)
 
@@ -21,13 +31,21 @@
 
   #
   # .headline is a single glue spec
-  tmpHead = .summaryToNodesDf(g,.headline,.isHeader=TRUE, .type = .type, .envir=.envir)
+  tmpHead = .summaryToNodesDf(
+    g,
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
 
   # .messages is a load of glue specs
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(g,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(g, m, .isHeader = FALSE, .type = .type, .envir = .envir)
+  }))
 
   .data = .data %>%
-    .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot) %>%
+    .writeMessagesToNode(dplyr::bind_rows(tmpHead, tmpBody), .asOffshoot) %>%
     .writeTag(.tag = .tag)
 
   return(.data)
@@ -37,14 +55,14 @@
 .createSummaryDf = function(.data) {
   .data %>%
     .untrack() %>%
-    dplyr::summarise(.count=dplyr::n(), .groups="keep")
+    dplyr::summarise(.count = dplyr::n(), .groups = "keep")
 }
 
 # TODO: check for multiple uses of this in a function and replace with .createSummaryDf and ,summaryToNodesDf
 # function to process glue text in context of grouped input dataframe to produce a dataframe of messages.
 .dataToNodesDf = function(.data, .glue, .isHeader, .type, .envir) {
   .data = .data %>% .untrack()
-  g = .data %>% dplyr::summarise(.count=dplyr::n(), .groups="keep") #dplyr::group_data() %>% dplyr::select(-.rows) %>% dplyr::group_by_all()
+  g = .data %>% dplyr::summarise(.count = dplyr::n(), .groups = "keep") #dplyr::group_data() %>% dplyr::select(-.rows) %>% dplyr::group_by_all()
   return(.summaryToNodesDf(g, .glue, .isHeader, .type, .envir))
 }
 
@@ -52,15 +70,20 @@
 .taggedData = function(.data, ...) {
   .data = .data %>% .untrack()
   total = nrow(.data %>% dplyr::ungroup())
-  .data %>% dplyr::summarise(..., .count=dplyr::n(), .groups="keep") %>% mutate(.total = total) %>% .createStrataCol()
+  .data %>%
+    dplyr::summarise(..., .count = dplyr::n(), .groups = "keep") %>%
+    dplyr::mutate(.total = total) %>%
+    .createStrataCol()
 }
 
 # write  arbitrary content into the tags list. If the content is not specified then it is calculated from .data as a summarisation step by .taggedData().
 .writeTag = function(.data, .tag, ..., .content = .taggedData(.data, ...)) {
-  if (is.null(.tag)) return(.data)
+  if (is.null(.tag)) {
+    return(.data)
+  }
   tmp = tibble::tibble(.tag = .tag, .content = list(.content))
   current = .data %>% p_get()
-  current$tags = bind_rows(current$tags,tmp)
+  current$tags = bind_rows(current$tags, tmp)
 
   .data %>% p_set(current)
 }
@@ -74,7 +97,7 @@
   tmp2 = formals(fn)
   tmp2 = tmp2[names(tmp2) != ""]
 
-  env2 = list2env( c(tmp,tmp2[!sapply(tmp2, is.symbol)]), .envir)
+  env2 = list2env(c(tmp, tmp2[!sapply(tmp2, is.symbol)]), .envir)
   return(env2)
 }
 
@@ -82,29 +105,68 @@
 # executes the glue function and returns the glue output as a vector. This
 # checks for a few commonly occuring situations such as incorrect length resulting
 # from the glue spec acting in a vectorised way.
-.doGlue = function(g,.glue,.envir) {
+.doGlue = function(g, .glue, .envir) {
   tmp = tryCatch(
-    glue::glue_data(g,.glue,.envir=.envir),
+    glue::glue_data(g, .glue, .envir = .envir),
     error = function(e) {
       # pframe = parent.frame()
       glueEnv = .envir # pframe$parentenv
-      definedVars = setdiff(ls(glueEnv,all.names = TRUE), c("g",utils::lsf.str(glueEnv,all.names = TRUE)))
-      definedVars = c(paste0(colnames(g),"*"),definedVars)
-      definedVars = definedVars[!(definedVars %in% c(".glue",".envir",".Generic", ".GenericCallEnv", ".GenericDefEnv", ".Group",".Class","...",".Method",".headline", ".messages"))]
-      stop("Error: ",e$message,", variables available for use in .messages are: ", paste0(definedVars, collapse = ", "))
-    })
-  if (length(tmp) != nrow(g)) {
-    if (length(tmp)==0) stop("The message specification, (",.glue,") gave no results.")
-    if (length(tmp)==1) return(rep(tmp,nrow(g)))
-    glue_int = (.glue %>% stringr::str_match("^\\{(.*)\\}$"))[,2]
-    if (nrow(g) == 1) {
-      tmp = paste0(tmp,collapse=", ")
-      message("The message specification, ",.glue," gave the wrong number of results which have been concatenated.")
-      message("Probably you wanted `{paste0( <something> , collapse = ', ')}` or similar.")
-    } else {
-
+      definedVars = setdiff(
+        ls(glueEnv, all.names = TRUE),
+        c("g", utils::lsf.str(glueEnv, all.names = TRUE))
+      )
+      definedVars = c(paste0(colnames(g), "*"), definedVars)
+      definedVars = definedVars[
+        !(definedVars %in%
+          c(
+            ".glue",
+            ".envir",
+            ".Generic",
+            ".GenericCallEnv",
+            ".GenericDefEnv",
+            ".Group",
+            ".Class",
+            "...",
+            ".Method",
+            ".headline",
+            ".messages"
+          ))
+      ]
       stop(
-        "The message specification in (",.glue,") must give a single result per group (this gave ",length(tmp)," items for ",nrow(g)," groups).\n",
+        "Error: ",
+        e$message,
+        ", variables available for use in .messages are: ",
+        paste0(definedVars, collapse = ", ")
+      )
+    }
+  )
+  if (length(tmp) != nrow(g)) {
+    if (length(tmp) == 0) {
+      stop("The message specification, (", .glue, ") gave no results.")
+    }
+    if (length(tmp) == 1) {
+      return(rep(tmp, nrow(g)))
+    }
+    glue_int = (.glue %>% stringr::str_match("^\\{(.*)\\}$"))[, 2]
+    if (nrow(g) == 1) {
+      tmp = paste0(tmp, collapse = ", ")
+      message(
+        "The message specification, ",
+        .glue,
+        " gave the wrong number of results which have been concatenated."
+      )
+      message(
+        "Probably you wanted `{paste0( <something> , collapse = ', ')}` or similar."
+      )
+    } else {
+      stop(
+        "The message specification in (",
+        .glue,
+        ") must give a single result per group (this gave ",
+        length(tmp),
+        " items for ",
+        nrow(g),
+        " groups).\n",
         "Probably you wanted to `{paste0( <something> , collapse = ', ')}` or similar."
       )
     }
@@ -117,13 +179,28 @@
 .summaryToNodesDf = function(.summary, .glue, .isHeader, .type, .envir) {
   .message = .strata = NULL
   grps = .summary %>% dplyr::groups()
-  if (identical(.glue,NULL)) return(.summary %>% dplyr::select(!!!grps) %>% utils::head(0) %>% dplyr::mutate(.message = character(),.isHeader = logical(),.type = character()))
+  if (identical(.glue, NULL)) {
+    return(
+      .summary %>%
+        dplyr::select(!!!grps) %>%
+        utils::head(0) %>%
+        dplyr::mutate(
+          .message = character(),
+          .isHeader = logical(),
+          .type = character()
+        )
+    )
+  }
   g = .summary %>% .createStrataCol()
   # catch errors and report environment contents at this stage.
-  g$.message = .doGlue(g,.glue,.envir)
+  g$.message = .doGlue(g, .glue, .envir)
   g$.isHeader = .isHeader
   g$.type = .type
-  return(g %>% dplyr::ungroup() %>% dplyr::select(!!!grps,.message,.strata,.isHeader,.type))
+  return(
+    g %>%
+      dplyr::ungroup() %>%
+      dplyr::select(!!!grps, .message, .strata, .isHeader, .type)
+  )
 }
 
 # .data might be a full data set or a dplyr::summarised data set but this takes the grouping and makes it into a single column with the names and values of the group
@@ -131,12 +208,23 @@
 .createStrataCol = function(.data) {
   .glue = .defaultStrataGlue()
   .sep = .defaultStrataSep()
-  if (".strata" %in% colnames(.data)) return(.data)
+  if (".strata" %in% colnames(.data)) {
+    return(.data)
+  }
   strataCols = .data %>% dplyr::group_vars()
-  if (length(strataCols)==0) return(.data %>% dplyr::mutate(.strata = ""))
-  .data = .data %>% tibble::as_tibble() %>%
-    dplyr::mutate(dplyr::across(.cols = dplyr::all_of(strataCols),.fns=function(x) glue::glue(.glue,.group=dplyr::cur_column(),.value=x), .names=".strata.{.col}")) %>%
-    tidyr::unite(col = ".strata",dplyr::starts_with(".strata."),sep=.sep)
+  if (length(strataCols) == 0) {
+    return(.data %>% dplyr::mutate(.strata = ""))
+  }
+  .data = .data %>%
+    tibble::as_tibble() %>%
+    dplyr::mutate(dplyr::across(
+      .cols = dplyr::all_of(strataCols),
+      .fns = function(x) {
+        glue::glue(.glue, .group = dplyr::cur_column(), .value = x)
+      },
+      .names = ".strata.{.col}"
+    )) %>%
+    tidyr::unite(col = ".strata", dplyr::starts_with(".strata."), sep = .sep)
   return(.data)
 }
 
@@ -147,52 +235,87 @@
 # .start_overlaps(vec_x, vec_c)
 # expect T,T,T,F,T
 .start_overlaps = function(vec_x, vec_c) {
-  lengths = pmin(stringr::str_length(vec_x),stringr::str_length(vec_c))
-  v1 = stringr::str_sub(tolower(vec_x),start = 0,end=lengths)
-  v2 = stringr::str_sub(tolower(vec_c),start = 0,end=lengths)
-  return(v1==v2)
+  lengths = pmin(stringr::str_length(vec_x), stringr::str_length(vec_c))
+  v1 = stringr::str_sub(tolower(vec_x), start = 0, end = lengths)
+  v2 = stringr::str_sub(tolower(vec_c), start = 0, end = lengths)
+  return(v1 == v2)
+}
+
+
+.dot_escape = function(.message) {
+  htmltools::htmlEscape(.message) %>%
+    stringr::str_replace_all("'", "&#39;") %>%
+    stringr::str_replace_all("\n", "<BR ALIGN='LEFT'/>")
 }
 
 # assumes a properly constructed node df and puts it into the graph this function does not need to check .data versus .df. .df will have a .message and a .strata column
 # .stage lets us give a stage a name: TODO, expose this in the API.
-.writeMessagesToNode = function(.data, .df, .asOffshoot, .excluded = NULL, .stage="") {
-
-  if (.isPaused(.data)) return(.data)
+.writeMessagesToNode = function(
+  .data,
+  .df,
+  .asOffshoot,
+  .excluded = NULL,
+  .stage = ""
+) {
+  if (.isPaused(.data)) {
+    return(.data)
+  }
   # this must be to prevent some kind of scoping issue
   .message = .strata = .isHeader = .type = .id = .strata.prev = .rank = .from = NULL
-  stage=.stage
+  stage = .stage
   # now we need to assemble the messages into a single formatted label per strata.
   # THIS IS WHERE THE LABEL FORMATTING OCCURS
-  tmp = .df %>% dplyr::ungroup() %>% dplyr::select(.strata,.message,.isHeader,.type)
+  tmp = .df %>%
+    dplyr::ungroup() %>%
+    dplyr::select(.strata, .message, .isHeader, .type)
   tmp = tmp %>%
     dplyr::filter(!is.na(.message) & .message != "" & .message != "NA") #exclude empty or NA messages
-  if(nrow(tmp)==0) return(.data)
+  if (nrow(tmp) == 0) {
+    return(.data)
+  }
 
   tmp = tmp %>%
-    dplyr::mutate(.message = htmltools::htmlEscape(.message) %>% stringr::str_replace_all("\n","<BR ALIGN='LEFT'/>")) %>%
-    dplyr::mutate(.message = ifelse(.isHeader,
-                             paste0("<B>",.message,"</B><BR ALIGN='LEFT'/>"),
-                             paste0(.message,"<BR ALIGN='LEFT'/>"))) %>%
-    dplyr::group_by(.strata,.type) %>%
-    dplyr::summarise(.label = paste0(.message, collapse = ""), .groups="drop") %>%
+    dplyr::mutate(
+      .message = .dot_escape(.message)
+    ) %>%
+    dplyr::mutate(
+      .message = ifelse(
+        .isHeader,
+        paste0("<B>", .message, "</B><BR ALIGN='LEFT'/>"),
+        paste0(.message, "<BR ALIGN='LEFT'/>")
+      )
+    ) %>%
+    dplyr::group_by(.strata, .type) %>%
+    dplyr::summarise(
+      .label = paste0(.message, collapse = ""),
+      .groups = "drop"
+    ) %>%
     dplyr::mutate(.stage = stage) %>%
     dplyr::ungroup()
 
   # add the message to the .data@prov attribute which is a graph structure of nodes, edges and a head
   current = .data %>% p_get()
 
-  currentRank = max(current$nodes$.rank,0)
-  currentMaxId = max(current$nodes$.id,0)
-  if(.asOffshoot) {
+  currentRank = max(current$nodes$.rank, 0)
+  currentMaxId = max(current$nodes$.id, 0)
+  if (.asOffshoot) {
     # TODO: an invisible node to woudl be required to make this consistent
     # this needs a bit of rearchitecting to allow more control of head port and
     # this feels like the wrong place to do this. This logic should be in graphToDot and this
     # shoudl be a more abstract representation.
     # nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
-    nodes=tmp %>% dplyr::mutate(.rank=currentRank, .id=dplyr::row_number()+currentMaxId)
+    nodes = tmp %>%
+      dplyr::mutate(
+        .rank = currentRank,
+        .id = dplyr::row_number() + currentMaxId
+      )
   } else {
     #nodes=tmp %>% dplyr::mutate(.rank=currentRank+2, .id=dplyr::row_number()+currentMaxId)
-    nodes=tmp %>% dplyr::mutate(.rank=currentRank+1, .id=dplyr::row_number()+currentMaxId)
+    nodes = tmp %>%
+      dplyr::mutate(
+        .rank = currentRank + 1,
+        .id = dplyr::row_number() + currentMaxId
+      )
   }
   new = list(
     excluded = current$excluded,
@@ -225,16 +348,18 @@
 
   leading = nodes %>% dplyr::select(.from = .id, .strata)
 
-  if(!is.null(.excluded)) {
-    towrite = .excluded %>% p_clear() %>% .untrack() %>% dplyr::left_join(leading, by=".strata") #columns will be .from, .strata, .message, .filter, .data
-    new$excluded = dplyr::bind_rows(current$excluded,towrite)
+  if (!is.null(.excluded)) {
+    towrite = .excluded %>%
+      p_clear() %>%
+      .untrack() %>%
+      dplyr::left_join(leading, by = ".strata") #columns will be .from, .strata, .message, .filter, .data
+    new$excluded = dplyr::bind_rows(current$excluded, towrite)
   }
 
   if (!.asOffshoot) {
     # TODO this is where we would need to try and identify .strata that do not have messages on this rank and
     # persist them into the new$head
     new$head = leading
-
   } else {
     # this rank is a terminal part of the flowchart (i.e. an exclusion)
     new$head = current$head
@@ -245,68 +370,79 @@
 }
 
 
-
-
 # takes two data history graphs and merges them
 .mergeGraphs = function(.graph1, .graph2) {
-
-  if (.isGraphPaused(.graph1)) return(.graph1) # save the effort of calculating if this is paused but this should
+  if (.isGraphPaused(.graph1)) {
+    return(.graph1)
+  } # save the effort of calculating if this is paused but this should
   .id = .from = .to = .rank = NULL
   # first remove overlapping nodes:
   # these might happen if the pipeline started the same and then split, and is now being rejoined.
-  sharedNodes = .graph1$nodes %>% dplyr::semi_join(.graph2$nodes, by=c(".id",".strata",".rank",".label",".type"))
-  .graph2$nodes = .graph2$nodes %>% dplyr::anti_join(.graph1$nodes, by=c(".id",".strata",".rank",".label",".type"))
+  sharedNodes = .graph1$nodes %>%
+    dplyr::semi_join(
+      .graph2$nodes,
+      by = c(".id", ".strata", ".rank", ".label", ".type")
+    )
+  .graph2$nodes = .graph2$nodes %>%
+    dplyr::anti_join(
+      .graph1$nodes,
+      by = c(".id", ".strata", ".rank", ".label", ".type")
+    )
   idsToChange = .graph2$nodes %>% dplyr::pull(.id)
   if (length(idsToChange) > 0) {
-
     # exclude edges between the nodes we are removing (but not ones spanning gap)
-    .graph2$edges = .graph2$edges %>% dplyr::filter(.from %in% idsToChange | .to %in% idsToChange)
+    .graph2$edges = .graph2$edges %>%
+      dplyr::filter(.from %in% idsToChange | .to %in% idsToChange)
     # now modify node ids
-    graph1MaxId = max(.graph1$nodes$.id,0)
-    idOffset = graph1MaxId+1-min(idsToChange)
-    .graph2$nodes = .graph2$nodes %>% dplyr::mutate(.id = .id+idOffset)
+    graph1MaxId = max(.graph1$nodes$.id, 0)
+    idOffset = graph1MaxId + 1 - min(idsToChange)
+    .graph2$nodes = .graph2$nodes %>% dplyr::mutate(.id = .id + idOffset)
     # change ids of edge ends, but only where they have changed
-    .graph2$edges = .graph2$edges %>% dplyr::mutate(
-      .from = ifelse(.from %in% idsToChange, .from+idOffset, .from),
-      .to = ifelse(.to %in% idsToChange, .to+idOffset, .to)
-    )
-    # change ids of head nodes, but only where they have changed
-    .graph2$head = .graph2$head %>% dplyr::mutate(
-      .from = ifelse(.from %in% idsToChange, .from+idOffset, .from)
-    )
-    # change id of any exclusions
-    if(!is.null(.graph2$excluded)) {
-      .graph2$excluded = .graph2$excluded %>% dplyr::mutate(
-        .from = ifelse(.from %in% idsToChange, .from+idOffset, .from)
+    .graph2$edges = .graph2$edges %>%
+      dplyr::mutate(
+        .from = ifelse(.from %in% idsToChange, .from + idOffset, .from),
+        .to = ifelse(.to %in% idsToChange, .to + idOffset, .to)
       )
+    # change ids of head nodes, but only where they have changed
+    .graph2$head = .graph2$head %>%
+      dplyr::mutate(
+        .from = ifelse(.from %in% idsToChange, .from + idOffset, .from)
+      )
+    # change id of any exclusions
+    if (!is.null(.graph2$excluded)) {
+      .graph2$excluded = .graph2$excluded %>%
+        dplyr::mutate(
+          .from = ifelse(.from %in% idsToChange, .from + idOffset, .from)
+        )
     }
-
   }
   # ranks.
   # potentially complex. If two graphs are different streams of same process then we want to preserve rank
   # if two processes are totally separate trying to rank them together is potentially bad.
-  graph1Rank = max(c(.graph1$nodes$.rank,0))
-  rankOffset = graph1Rank - max(c(.graph2$nodes$.rank,0))
+  graph1Rank = max(c(.graph1$nodes$.rank, 0))
+  rankOffset = graph1Rank - max(c(.graph2$nodes$.rank, 0))
   if (rankOffset < 0) {
     # second graph longer than first - best to ignore this as otherwise ranking is a mess
     # As this is a negative quantity graph2 is longer so we are increasing rank of graph1 to fit
     # update nodes that are not part of shared graph
-    .graph1$nodes = .graph1$nodes %>% dplyr::mutate(.rank = ifelse(.id %in% sharedNodes$.id ,.rank, .rank-rankOffset))
+    .graph1$nodes = .graph1$nodes %>%
+      dplyr::mutate(
+        .rank = ifelse(.id %in% sharedNodes$.id, .rank, .rank - rankOffset)
+      )
   } else {
-    .graph2$nodes = .graph2$nodes %>% dplyr::mutate(.rank = .rank-rankOffset)
+    .graph2$nodes = .graph2$nodes %>% dplyr::mutate(.rank = .rank - rankOffset)
   }
   # we can merge the data now.
   out = list(
-    nodes = dplyr::bind_rows(.graph1$nodes,.graph2$nodes),
-    edges = dplyr::bind_rows(.graph1$edges,.graph2$edges),
-    head = dplyr::bind_rows(.graph1$head,.graph2$head),
+    nodes = dplyr::bind_rows(.graph1$nodes, .graph2$nodes),
+    edges = dplyr::bind_rows(.graph1$edges, .graph2$edges),
+    head = dplyr::bind_rows(.graph1$head, .graph2$head),
     capture = isTRUE(.graph1$capture) | isTRUE(.graph2$capture),
-    tags = dplyr::bind_rows(.graph1$tags,.graph2$tags)
+    tags = dplyr::bind_rows(.graph1$tags, .graph2$tags)
   )
   # merge exclusions if any exist
-  if(!is.null(.graph1$excluded) | !is.null(.graph2$excluded)) {
-    out$excluded = dplyr::bind_rows(.graph1$excluded,.graph2$excluded)
-
+  if (!is.null(.graph1$excluded) | !is.null(.graph2$excluded)) {
+    out$excluded = dplyr::bind_rows(.graph1$excluded, .graph2$excluded)
   }
   return(out)
 }
@@ -327,26 +463,40 @@ print.trackr_graph = function(x, ...) {
   .label = .strata = NULL
   graph = x
   ranks = length(unique(graph$nodes$.rank))
-  tags = paste0(unique(graph$tags$.tag),collapse="; ")
+  tags = paste0(unique(graph$tags$.tag), collapse = "; ")
   last = graph$head %>%
-    dplyr::inner_join(graph$nodes, by=c(".from"=".id", ".strata")) %>%
+    dplyr::inner_join(graph$nodes, by = c(".from" = ".id", ".strata")) %>%
     dplyr::mutate(tmp = stringr::str_remove_all(.label, "<BR[^>]+>$")) %>%
-    dplyr::mutate(tmp = stringr::str_replace_all(tmp, "<BR[^>]+>", "\", \"")) %>%
+    dplyr::mutate(
+      tmp = stringr::str_replace_all(tmp, "<BR[^>]+>", "\", \"")
+    ) %>%
     dplyr::mutate(tmp = stringr::str_remove_all(tmp, "<[^>]+>")) %>%
-    dplyr::mutate(tmp = ifelse(.strata=="",sprintf("\"%s\"",tmp),sprintf("[%s]: \"%s\"",.strata,tmp))) %>%
+    dplyr::mutate(
+      tmp = ifelse(
+        .strata == "",
+        sprintf("\"%s\"", tmp),
+        sprintf("[%s]: \"%s\"", .strata, tmp)
+      )
+    ) %>%
     dplyr::pull(tmp)
-  if (length(last)>0) {
+  if (length(last) > 0) {
     for (i in 1:length(last)) {
-      last[[i]] = if(i==length(last)) sprintf("\u2514 %s",last[[i]]) else sprintf("\u251C %s",last[[i]])
+      last[[i]] = if (i == length(last)) {
+        sprintf("\u2514 %s", last[[i]])
+      } else {
+        sprintf("\u251C %s", last[[i]])
+      }
     }
   } else {
     last[[1]] = "\u2514 <empty history>"
   }
-  if (tags=="") tags="<none>"
+  if (tags == "") {
+    tags = "<none>"
+  }
   if (is.null(graph$excluded)) {
     excluded = "<not capturing exclusions>"
   } else {
-    excluded = sum(sapply(graph$excluded$.excluded, nrow ), na.rm = TRUE)
+    excluded = sum(sapply(graph$excluded$.excluded, nrow), na.rm = TRUE)
   }
 
   tmp = c(
@@ -358,18 +508,15 @@ print.trackr_graph = function(x, ...) {
     last
   )
   if (!is.null(graph$paused)) {
-   tmp = c(tmp,sprintf("TRACKING IS PAUSED (%s)",graph$paused))
+    tmp = c(tmp, sprintf("TRACKING IS PAUSED (%s)", graph$paused))
   }
-  cat(tmp,sep = "\n")
+  cat(tmp, sep = "\n")
 }
 
 #' Plots a history graph as html
 #'
 #' @param x a dtrackr history graph (e.g. output from [history()])
-#' @param fill the default node fill colour
-#' @param fontsize the default font size
-#' @param colour the default font colour
-#' @param ... not used
+#' @inheritDotParams p_get_as_dot
 #'
 #' @return HTML displayed
 #' @export
@@ -378,43 +525,59 @@ print.trackr_graph = function(x, ...) {
 #' library(dplyr)
 #' library(dtrackr)
 #' iris %>% comment("hello {.total} rows") %>% history() %>% plot()
-plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", ...) {
+plot.trackr_graph = function(
+  x,
+  ...
+) {
   graph = x
-  outgraph = .graph2dot(graph, fill, fontsize, colour, ...)
+  outgraph = .graph2dot(graph, ...)
   htmltools::HTML(dot2svg(outgraph)) %>% htmltools::html_print()
 }
 
 ## Basic operations ----
 
-.emptyGraph = function(exclusions = FALSE,...) {
-  nodes=tibble::tibble(.id=integer(),.rank=integer(),.strata=character(),.label=character(),.type=character())
-  edges=tibble::tibble(.to=integer(),.from=integer(),.rel=character(), .strata=character()) # empty edges
-  head=tibble::tibble(.from=integer(), .strata=character())
-  tmp = list(
-      nodes=nodes,
-      edges=edges,
-      head=head,
-      capture=FALSE,
-      paused=FALSE,
-      tags=tibble::tibble(.tag=character(), .content=list())
-      # excluded is set in p_capture_exclusions and will not be present all the time
+.emptyGraph = function(exclusions = FALSE, ...) {
+  nodes = tibble::tibble(
+    .id = integer(),
+    .rank = integer(),
+    .strata = character(),
+    .label = character(),
+    .type = character()
   )
-  class(tmp) = unique(c("trackr_graph",class(tmp)))
+  edges = tibble::tibble(
+    .to = integer(),
+    .from = integer(),
+    .rel = character(),
+    .strata = character()
+  ) # empty edges
+  head = tibble::tibble(.from = integer(), .strata = character())
+  tmp = list(
+    nodes = nodes,
+    edges = edges,
+    head = head,
+    capture = FALSE,
+    paused = FALSE,
+    tags = tibble::tibble(.tag = character(), .content = list())
+    # excluded is set in p_capture_exclusions and will not be present all the time
+  )
+  class(tmp) = unique(c("trackr_graph", class(tmp)))
   return(tmp)
 }
 
 # there is a big difference between this function which just removes the class
 # label and p_untrack which also deletes the history graph.
 .untrack = function(.data) {
-  if (is.null(.data)) return(.data)
+  if (is.null(.data)) {
+    return(.data)
+  }
   tmp = class(.data)
-  tmp = tmp[tmp!="trackr_df"]
+  tmp = tmp[tmp != "trackr_df"]
   class(.data) = tmp
   return(.data)
 }
 
 .retrack = function(.data) {
-  tmp = unique(c("trackr_df",class(.data)))
+  tmp = unique(c("trackr_df", class(.data)))
   class(.data) = tmp
   return(.data)
 }
@@ -423,17 +586,24 @@ plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", 
   return("trackr_df" %in% class(.data))
 }
 
-.isPaused = function(.data, auto=FALSE) {
-  .isGraphPaused(p_get(.data),auto)
+.isPaused = function(.data, auto = FALSE) {
+  .isGraphPaused(p_get(.data), auto)
 }
 
 .isGraphPaused = function(.graph, auto = FALSE) {
   tmp = .graph[["paused"]]
-  if (is.null(tmp)) return(FALSE) # not paused
-  if (is.logical(tmp)) return(tmp) # support legacy
+  if (is.null(tmp)) {
+    return(FALSE)
+  } # not paused
+  if (is.logical(tmp)) {
+    return(tmp)
+  } # support legacy
   if (auto) {
-    if (tmp == "auto") return(TRUE)
-    else return(FALSE)
+    if (tmp == "auto") {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
   }
   return(TRUE)
 }
@@ -452,50 +622,86 @@ plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", 
   )
 }
 
-.isExclusionsEmpty  = function(.data) {
+.isExclusionsEmpty = function(.data) {
   return(
-    nrow((.data %>% p_get())$exclusions)==0
+    nrow((.data %>% p_get())$exclusions) == 0
   )
 }
 
 .isHistoryEmpty = function(.data) {
   return(
-    nrow((.data %>% p_get())$nodes)==0
+    nrow((.data %>% p_get())$nodes) == 0
   )
 }
 
 ## Defaults ----
 
 .defaultExclusions = function() {
-  getOption("dtrackr.exclusions",default = FALSE)
+  getOption("dtrackr.exclusions", default = FALSE)
 }
 
 .defaultMessage = function() {
-  getOption("dtrackr.default_message",default = "{.count} items")
+  getOption("dtrackr.default_message", default = "{.count} items")
 }
 
 .defaultCountSubgroup = function() {
-  getOption("dtrackr.default_count_subgroup",default = "{.name}: {.count} items")
+  getOption(
+    "dtrackr.default_count_subgroup",
+    default = "{.name}: {.count} items"
+  )
 }
 
 .defaultHeadline = function() {
-  getOption("dtrackr.default_headline",default = "{.strata}")
+  getOption("dtrackr.default_headline", default = "{.strata}")
 }
 
 .defaultStrataGlue = function() {
-  getOption("dtrackr.strata_glue", default = "{.group}:{.value}")
+  # getOption("dtrackr.strata_glue", default = "{.group}:{.value}")
+  getOption("dtrackr.strata_glue", default = "{.value}")
 }
 
 .defaultStrataSep = function() {
-  getOption("dtrackr.strata_sep",default = "; ")
+  getOption("dtrackr.strata_sep", default = ",")
 }
 
 .defaultShowZeroExclusions = function() {
-  getOption("dtrackr.show_zero_exclusions",default = TRUE)
+  getOption("dtrackr.show_zero_exclusions", default = TRUE)
 }
 
 .defaultMaxSupportedGroupings = function() {
-  getOption("dtrackr.max_supported_groupings",default = 16)
+  getOption("dtrackr.max_supported_groupings", default = 16)
+}
+
+.defaultHiddenSteps = function() {
+  getOption("dtrackr.hidden_steps", default = "< hidden steps >")
+}
+
+.defaultFontName = function() {
+  getOption("dtrackr.fontname", default = "Helvetica")
+}
+
+.defaultFontSize = function() {
+  getOption("dtrackr.fontsize", default = 8)
+}
+
+.defaultColour = function() {
+  getOption("dtrackr.colour", default = "black")
+}
+
+.defaultFill = function() {
+  getOption("dtrackr.fill", default = "white")
+}
+
+.defaultRounded = function() {
+  getOption("dtrackr.rounded", default = FALSE)
+}
+
+.defaultDirection = function() {
+  getOption("dtrackr.direction", default = "TB")
+}
+
+.defaultBgColour = function() {
+  getOption("dtrackr.bgcolour", default = "white")
 }
 
 ## Tracking ----
@@ -524,21 +730,46 @@ plot.trackr_graph = function(x, fill="lightgrey", fontsize="8", colour="black", 
 #' library(dplyr)
 #' library(dtrackr)
 #' iris %>% track() %>% history()
-p_track = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
-  if (.isTracked(.data)) return(.data)
-  if (!"data.frame" %in% class(.data)) stop("dtrackr can only track data frames. Sorry.")
+p_track = function(
+  .data,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline(),
+  .tag = NULL
+) {
+  if (.isTracked(.data)) {
+    return(.data)
+  }
+  if (!"data.frame" %in% class(.data)) {
+    stop("dtrackr can only track data frames. Sorry.")
+  }
   old = .data %>% p_get()
   .data = .data %>% p_set(old)
   .envir = rlang::caller_env()
   .envir$.total = nrow(.data)
   # .headline is a single glue spec
-  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = "info", .envir=.envir)
+  tmpHead = .dataToNodesDf(
+    .data,
+    .headline,
+    .isHeader = TRUE,
+    .type = "info",
+    .envir = .envir
+  )
   # .messages is a load of glue specs
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = "info", .envir=.envir)))
-  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag = .tag)
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .dataToNodesDf(.data, m, .isHeader = FALSE, .type = "info", .envir = .envir)
+  }))
+  .data = .data %>%
+    .writeMessagesToNode(
+      dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = FALSE
+    ) %>%
+    .writeTag(.tag = .tag)
   .data = .retrack(.data)
-  if(.defaultExclusions() & getOption("dtrackr.verbose",FALSE)) {
-    rlang::inform("dtrackr is capturing exclusions [getOption('dtrackr.exclusions') is TRUE]",.frequency = "always")
+  if (.defaultExclusions() & getOption("dtrackr.verbose", FALSE)) {
+    rlang::inform(
+      "dtrackr is capturing exclusions [getOption('dtrackr.exclusions') is TRUE]",
+      .frequency = "always"
+    )
     .data = .data %>% p_capture_exclusions()
   }
   return(.data)
@@ -570,15 +801,15 @@ p_untrack = function(.data) {
 #'
 #' @param .data a tracked dataframe
 #' @param auto if `TRUE` the tracking will resume automatically when the
-#' number of groups has fallen to a sensible level (default is `FALSE`)?
+#' number of groups has fallen to a sensible level (default is `FALSE`)
 #'
 #' @return the .data dataframe with history graph tracking paused
 #' @export
 #' @examples
 #' iris %>% track() %>% pause() %>% history()
-p_pause = function(.data, auto=FALSE) {
+p_pause = function(.data, auto = FALSE) {
   old = .data %>% p_get()
-  old$paused = if(auto) "auto" else "manual"
+  old$paused = if (auto) "auto" else "manual"
   .data = .data %>% p_set(old)
   return(.data)
 }
@@ -608,7 +839,8 @@ p_resume = function(.data, ...) {
   tmp = .createStrataCol(.data) %>% dplyr::pull(.strata) %>% unique()
   if (!all(tmp %in% old$head$.strata)) {
     grps = .data %>% dplyr::groups()
-    .data = .data %>% p_ungroup() %>% p_group_by(!!!grps, ...)
+    old$paused = NULL
+    .data = .data %>% p_set(old) %>% p_ungroup() %>% p_group_by(!!!grps, ...)
     old = .data %>% p_get()
   }
 
@@ -634,13 +866,23 @@ p_resume = function(.data, ...) {
 #' library(dtrackr)
 #' tmp = iris %>% track() %>% capture_exclusions()
 #' tmp %>% filter(Species!="versicolor") %>% history()
-p_capture_exclusions = function(.data, .capture=TRUE) {
-  if (!.isTracked(.data)) stop("dtrackr can only capture exclusions in tracked data frames. Did you forget to do a data %>% dtrackr::track()")
+p_capture_exclusions = function(.data, .capture = TRUE) {
+  if (!.isTracked(.data)) {
+    stop(
+      "dtrackr can only capture exclusions in tracked data frames. Did you forget to do a data %>% dtrackr::track()"
+    )
+  }
   old = .data %>% p_get() # N.B. this allow the exclusions flag to be set in the tracker graph. It can never be reset though
   old$capture = .capture
   # if there is no exclusions table in the tracking graph initialise it now.
   if (.capture & is.null(old$excluded)) {
-    old$excluded = tibble::tibble(.strata=character(), .message = character(), .excluded=list(), .filter=character(), .from = integer())
+    old$excluded = tibble::tibble(
+      .strata = character(),
+      .message = character(),
+      .excluded = list(),
+      .filter = character(),
+      .from = integer()
+    )
   }
   .data = .data %>% p_set(old)
   return(.data)
@@ -671,10 +913,12 @@ p_capture_exclusions = function(.data, .capture=TRUE) {
 #' graph = iris %>% track() %>% comment("A comment") %>% history()
 #' print(graph)
 p_get = function(.data) {
-  out = attr(.data,"prov")
-  if (identical(out,NULL)) out = .emptyGraph()
+  out = attr(.data, "prov")
+  if (identical(out, NULL)) {
+    out = .emptyGraph()
+  }
   # make sure has the correct class
-  class(out) = unique(c("trackr_graph",class(out)))
+  class(out) = unique(c("trackr_graph", class(out)))
   return(out)
 }
 
@@ -697,18 +941,35 @@ p_get = function(.data) {
 #' ) %>% excluded()
 p_excluded = function(.data, simplify = TRUE) {
   .id = .rank = .stage = .from = .strata = .message = .excluded = .filter = NULL
-  if (!.anyExclusionsTracked(.data)) stop("Exclusions were not tracked for this data frame. Did you forget to call '.data %>% capture_exclusions()'?")
+  if (!.anyExclusionsTracked(.data)) {
+    stop(
+      "Exclusions were not tracked for this data frame. Did you forget to call '.data %>% capture_exclusions()'?"
+    )
+  }
   out = .data %>% p_get()
   tmp = out$excluded %>%
-      dplyr::left_join(out$nodes %>% select(.id,.rank,.stage), by=c(".from"=".id")) %>%
-      dplyr::mutate(.rank = dplyr::dense_rank(.rank)) %>%
-      dplyr::mutate(.stage = ifelse(.stage=="",paste0("stage ",.rank), .stage)) %>%
-      dplyr::select(-.from) %>%
-      dplyr::select(.stage, .strata, .message, .excluded, .filter, .rank)
+    dplyr::left_join(
+      out$nodes %>% dplyr::select(.id, .rank, .stage),
+      by = c(".from" = ".id")
+    ) %>%
+    dplyr::mutate(.rank = dplyr::dense_rank(.rank)) %>%
+    dplyr::mutate(
+      .stage = ifelse(.stage == "", paste0("stage ", .rank), .stage)
+    ) %>%
+    dplyr::select(-.from) %>%
+    dplyr::select(.stage, .strata, .message, .excluded, .filter, .rank)
   if (simplify) {
     return(
       tmp %>%
-        dplyr::mutate(.excluded = purrr::map(.excluded, ~ dplyr::mutate(.x, dplyr::across(.cols = dplyr::everything(), .fns = as.character)))) %>%
+        dplyr::mutate(
+          .excluded = purrr::map(
+            .excluded,
+            ~ dplyr::mutate(
+              .x,
+              dplyr::across(.cols = dplyr::everything(), .fns = as.character)
+            )
+          )
+        ) %>%
         tidyr::unnest(.excluded) %>%
         dplyr::select(-.rank)
     )
@@ -749,21 +1010,23 @@ p_excluded = function(.data, simplify = TRUE) {
 #' library(dplyr)
 #' library(dtrackr)
 #' tmp = iris %>% track() %>% comment(.tag = "step1")
-#' tmp = tmp %>% filter(Species!="versicolor") %>% group_by(Species)
+#' tmp = tmp %>% filter(Species!="versicolor") %>% dplyr::group_by(Species)
 #' tmp %>% comment(.tag="step2") %>% tagged(.glue = "{.count}/{.total}")
-p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
+p_tagged = function(.data, .tag = NULL, .strata = NULL, .glue = NULL, ...) {
   .content = .label = .content_rows = NULL
   out = .data %>% p_get()
-  tag=.tag
+  tag = .tag
   strata = .strata
   tmp = out$tags
   if (!is.null(.tag)) {
     # just getting one tag's values
     tmp = tmp %>% dplyr::filter(.tag == tag) %>% tidyr::unnest(.content)
-    if (!is.null(.strata)) tmp = tmp %>% dplyr::filter(.strata == strata)
+    if (!is.null(.strata)) {
+      tmp = tmp %>% dplyr::filter(.strata == strata)
+    }
     if (!is.null(.glue)) {
       # calculate a .label column
-      tmp = tmp %>% dplyr::mutate(.label = glue::glue(.glue,...))
+      tmp = tmp %>% dplyr::mutate(.label = glue::glue(.glue, ...))
       if (nrow(tmp) == 1) return(tmp %>% dplyr::pull(.label))
     }
     return(tmp)
@@ -771,16 +1034,24 @@ p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
     # we are getting all tags values
     if (!is.null(.strata)) {
       # filter strata on all tags and exclude any that result in no content
-      tmp = tmp %>% dplyr::mutate(
-        .content = purrr::map(.content, ~ .x %>% filter(.strata == strata)),
-        .content_rows = purrr::map(.content, ~ nrow(.x))
-      )
-      tmp = tmp %>% dplyr::filter(.content_rows>0) %>% dplyr::select(-.content_rows)
+      tmp = tmp %>%
+        dplyr::mutate(
+          .content = purrr::map(.content, ~ .x %>% filter(.strata == strata)),
+          .content_rows = purrr::map(.content, ~ nrow(.x))
+        )
+      tmp = tmp %>%
+        dplyr::filter(.content_rows > 0) %>%
+        dplyr::select(-.content_rows)
     }
     # apply glue spec to all remaining content.
     if (!is.null(.glue)) {
       # calculate the glue, and pull out the label and group strata and unnest it.
-      tmp$.content = lapply(tmp$.content, function(.x) .x %>% dplyr::mutate(.label = glue::glue(.glue,...)) %>% dplyr::ungroup() %>% dplyr::select(.strata,.label) )
+      tmp$.content = lapply(tmp$.content, function(.x) {
+        .x %>%
+          dplyr::mutate(.label = glue::glue(.glue, ...)) %>%
+          dplyr::ungroup() %>%
+          dplyr::select(.strata, .label)
+      })
       tmp = tmp %>%
         # dplyr::mutate(
         # .content = purrr::map(.content, ~ .x %>%
@@ -792,7 +1063,7 @@ p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
       # if (nrow(tmp) == 1) return(tmp %>% pull(.label))
       return(tmp)
     }
-    if (nrow(tmp)==1) {
+    if (nrow(tmp) == 1) {
       tmp = tmp %>% tidyr::unnest(.content)
     }
     return(tmp)
@@ -815,8 +1086,8 @@ p_tagged = function(.data, .tag=NULL, .strata=NULL, .glue=NULL, ...) {
 #' library(dtrackr)
 #' mtcars %>% p_set(iris %>% comment("A comment") %>% p_get()) %>% history()
 p_set = function(.data, .graph) {
-  attr(.data,"prov") = .graph
-  if (identical(.graph,NULL)) {
+  attr(.data, "prov") = .graph
+  if (identical(.graph, NULL)) {
     .untrack(.data)
   } else {
     .retrack(.data)
@@ -850,15 +1121,13 @@ p_clear = function(.data) {
 #' @export
 #'
 #' @examples
-
-
+#'
 #' mtcars %>% p_copy(iris %>% comment("A comment")) %>% history()
 p_copy = function(.data, from) {
   return(.data %>% p_set(from %>% p_get()))
 }
 
 ## User operations ----
-
 
 #' Simple count_if dplyr summary function
 #'
@@ -874,7 +1143,7 @@ p_copy = function(.data, from) {
 #' tmp = iris %>% dplyr::group_by(Species)
 #' tmp %>% dplyr::summarise(long_ones = p_count_if(Petal.Length > 4))
 p_count_if = function(..., na.rm = TRUE) {
-  return(sum(ifelse(...,1,0), na.rm = na.rm))
+  return(sum(ifelse(..., 1, 0), na.rm = na.rm))
 }
 
 #' Add a generic comment to the dtrackr history graph
@@ -908,13 +1177,19 @@ p_count_if = function(..., na.rm = TRUE) {
 #' library(dplyr)
 #' library(dtrackr)
 #' iris %>% track() %>% comment("hello {.total} rows") %>% history()
-p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = (.type=="exclusion"), .tag=NULL) {
+p_comment = function(
+  .data,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline(),
+  .type = "info",
+  .asOffshoot = (.type == "exclusion"),
+  .tag = NULL
+) {
   .envir = rlang::caller_env()
   .data %>%
     .comment(.messages, .headline, .type, .asOffshoot, .tag, .envir) %>%
     .retrack()
 }
-
 
 
 #' Add a summary to the dtrackr history graph
@@ -949,33 +1224,61 @@ p_comment = function(.data, .messages=.defaultMessage(), .headline=.defaultHeadl
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
-#' tmp = iris %>% track() %>% group_by(Species)
+#' tmp = iris %>% track() %>% dplyr::group_by(Species)
 #' tmp %>% status(
 #'       long = p_count_if(Petal.Length>5),
 #'       short = p_count_if(Petal.Length<2),
 #'       .messages="{Species}: {long} long ones & {short} short ones"
 #' ) %>% history()
-p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL) {
-  if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
+p_status = function(
+  .data,
+  ...,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline(),
+  .type = "info",
+  .asOffshoot = FALSE,
+  .tag = NULL
+) {
+  if (.isPaused(.data)) {
+    return(.data)
+  } # save the effort of calculating if this is paused but this should
   # TODO: is this needed?
   dots = rlang::enquos(...)
   .data = .data %>% .untrack()
-  if(identical(.messages,NULL) & identical(.headline,NULL)) {
-    rlang::warn("p_status is missing both .messages and .headline specification. Did you forget to explicitly name them?",.frequency = "always")
+  if (identical(.messages, NULL) & identical(.headline, NULL)) {
+    rlang::warn(
+      "p_status is missing both .messages and .headline specification. Did you forget to explicitly name them?",
+      .frequency = "always"
+    )
     return(.data %>% .retrack())
   }
 
   .envir = rlang::caller_env()
   .envir$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
-  out = .data %>% dplyr::summarise(!!!dots, .count=dplyr::n(), .groups="keep") %>% dplyr::group_by(!!!grps)
+  out = .data %>%
+    dplyr::reframe(..., .count = dplyr::n(), .groups = "keep") %>%
+    dplyr::group_by(!!!grps)
 
   # .headline is a single glue spec
-  tmpHead = .summaryToNodesDf(out,.headline,.isHeader=TRUE, .type = .type, .envir=.envir)
+  tmpHead = .summaryToNodesDf(
+    out,
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
 
   # .messages is a load of glue specs
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
-  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot) %>% .writeTag(.tag = .tag, ...)
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(out, m, .isHeader = FALSE, .type = .type, .envir = .envir)
+  }))
+  .data = .data %>%
+    .writeMessagesToNode(
+      dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = .asOffshoot
+    ) %>%
+    .writeTag(.tag = .tag, ...)
   return(.data %>% .retrack())
 }
 
@@ -1015,41 +1318,79 @@ p_status = function(.data, ..., .messages=.defaultMessage(), .headline=.defaultH
 #' @examples
 #' library(dplyr)
 #' library(dtrackr)
-#' survival::cgd %>% track() %>% group_by(treat) %>%
+#' survival::cgd %>% track() %>% dplyr::group_by(treat) %>%
 #'   count_subgroup(center) %>% history()
-p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgroup(), .headline=.defaultHeadline(), .type="info", .asOffshoot = FALSE, .tag=NULL, .maxsubgroups=.defaultMaxSupportedGroupings()) {
-
+p_count_subgroup = function(
+  .data,
+  .subgroup,
+  ...,
+  .messages = .defaultCountSubgroup(),
+  .headline = .defaultHeadline(),
+  .type = "info",
+  .asOffshoot = FALSE,
+  .tag = NULL,
+  .maxsubgroups = .defaultMaxSupportedGroupings()
+) {
   .count = .name = NULL
   .subgroup = rlang::ensym(.subgroup)
-  if (.isPaused(.data)) return(.data) # save the effort of calculating if this is paused but this should
-  if (length(.messages) > 1) stop("count_subgroup() only supports a single message format (i.e. .messages must be of length 1). This is repeated for each subgroup level.")
+  if (.isPaused(.data)) {
+    return(.data)
+  } # save the effort of calculating if this is paused but this should
+  if (length(.messages) > 1) {
+    stop(
+      "count_subgroup() only supports a single message format (i.e. .messages must be of length 1). This is repeated for each subgroup level."
+    )
+  }
   type = .data %>% dplyr::pull(!!.subgroup)
-  if ( ! .is.discrete(type, .maxsubgroups) ) stop("the subgroup column must be discrete with fewer than ",.maxsubgroups," values. You will need to cut the data in an appropriate way, or increase the .maxsubgroups parameter.")
+  if (!.is.discrete(type, .maxsubgroups)) {
+    stop(
+      "the subgroup column must be discrete with fewer than ",
+      .maxsubgroups,
+      " values. You will need to cut the data in an appropriate way, or increase the .maxsubgroups parameter."
+    )
+  }
 
   .data = .data %>% .untrack()
-  if(identical(.messages,NULL) & identical(.headline,NULL)) {
-    rlang::warn("p_count_subgroup is missing both .messages and .headline specification. Did you forget to explicitly name them?",.frequency = "always")
+  if (identical(.messages, NULL) & identical(.headline, NULL)) {
+    rlang::warn(
+      "p_count_subgroup is missing both .messages and .headline specification. Did you forget to explicitly name them?",
+      .frequency = "always"
+    )
     return(.data %>% .retrack())
   }
 
   .envir = rlang::caller_env()
   .envir$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
-  tmp = .data %>% mutate(.name = factor(!!.subgroup, ...)) %>%
+  tmp = .data %>%
+    dplyr::mutate(.name = factor(!!.subgroup, ...)) %>%
     dplyr::group_by(!!!grps, .name, !!.subgroup) %>%
-    dplyr::summarise(.count=dplyr::n(), .groups="keep") %>%
+    dplyr::summarise(.count = dplyr::n(), .groups = "keep") %>%
     dplyr::group_by(!!!grps) %>%
-    dplyr::mutate(.subtotal=sum(.count))
+    dplyr::mutate(.subtotal = sum(.count))
 
   # .headline is a single glue spec
   tmpHead = .summaryToNodesDf(
     # we need to make tmp unique here (on a per group basis)
-    tmp %>% dplyr::select(-c(.name, .count, tidyselect::all_of(.subgroup))) %>% dplyr::distinct(),
-    .headline,.isHeader=TRUE, .type = .type, .envir=.envir)
+    tmp %>%
+      dplyr::select(-c(.name, .count, tidyselect::all_of(.subgroup))) %>%
+      dplyr::distinct(),
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
 
   # .messages is a load of glue specs
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
-  .data = .data %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot) %>% .writeTag(.tag = .tag, ...)
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(tmp, m, .isHeader = FALSE, .type = .type, .envir = .envir)
+  }))
+  .data = .data %>%
+    .writeMessagesToNode(
+      dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = .asOffshoot
+    ) %>%
+    .writeTag(.tag = .tag, ...)
   return(.data %>% .retrack())
 }
 
@@ -1130,84 +1471,146 @@ p_count_subgroup = function(.data, .subgroup, ..., .messages=.defaultCountSubgro
 #'   dplyr::filter(a != max(a)) %>%
 #'   nrow()
 #'
-p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, .type="exclusion", .asOffshoot = TRUE, .stage=(if(is.null(.tag)) "" else .tag), .tag=NULL) {
+p_exclude_all = function(
+  .data,
+  ...,
+  .headline = .defaultHeadline(),
+  na.rm = FALSE,
+  .type = "exclusion",
+  .asOffshoot = TRUE,
+  .stage = (if (is.null(.tag)) "" else .tag),
+  .tag = NULL
+) {
   .excl = .excl.na = .retain = .strata = .message = .excluded = .filter = NULL
   .data = .data %>% .untrack()
   .envir = rlang::caller_env()
   filters = rlang::list2(...)
-  if (length(filters)==0) {
-    rlang::warn("No exclusions defined on p_exclude_all.",.frequency = "always")
+  if (length(filters) == 0) {
+    rlang::warn(
+      "No exclusions defined on p_exclude_all.",
+      .frequency = "always"
+    )
     return(.data %>% .retrack())
   }
-  if (any(!is.na(names(filters)))) stop("exclusion criteria contains a named variable. You have probably used a `=` when you meant a `==`")
+  if (any(!is.na(names(filters)))) {
+    stop(
+      "exclusion criteria contains a named variable. You have probably used a `=` when you meant a `==`"
+    )
+  }
   .envir$.total = nrow(.data)
-  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type=.type, .envir=.envir)
+  tmpHead = .dataToNodesDf(
+    .data,
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
   #TODO: can we get rid of this?:
-  messages = .dataToNodesDf(.data,.glue = "no exclusions",.isHeader=FALSE,.type=.type,.envir = .envir) %>% mutate(.excluded = -1)
+  messages = .dataToNodesDf(
+    .data,
+    .glue = "no exclusions",
+    .isHeader = FALSE,
+    .type = .type,
+    .envir = .envir
+  ) %>%
+    dplyr::mutate(.excluded = -1)
   grps = .data %>% dplyr::groups()
   grpLabels = grps %>% lapply(rlang::as_label) %>% unlist() %>% as.character()
   out = .data %>% dplyr::mutate(.retain = TRUE)
   excluded = NULL
 
-  for(filter in filters) {
+  for (filter in filters) {
     glueSpec = rlang::f_rhs(filter)
     filt = rlang::f_lhs(filter)
-    filtStr = paste0(sapply(deparse(filt),trimws),collapse=" ")
+    filtStr = paste0(sapply(deparse(filt), trimws), collapse = " ")
     out = out %>% #dplyr::group_modify(function(d,g,...) {
       #d %>%
       # dplyr::mutate(.excl = rlang::eval_tidy(filt,data = d, env=.envir)) %>%
       # dplyr::mutate(.excl = rlang::eval_tidy(filt, data = dplyr::cur_data_all(), env=.envir)) %>%
-        dplyr::mutate(.excl = rlang::eval_tidy(filt, data=dplyr::cur_group() %>% dplyr::cross_join(dplyr::pick(dplyr::everything())), env=.envir))
+      dplyr::mutate(
+        .excl = rlang::eval_tidy(
+          filt,
+          data = dplyr::cur_group() %>%
+            dplyr::cross_join(dplyr::pick(dplyr::everything())),
+          env = .envir
+        )
+      )
     if (!is.logical(out$.excl)) {
-      rlang::warn(paste0("exclusion criteria does not result in a logical value: ", rlang::as_label(filt)),.frequency = "once",.frequency_id = rlang::as_label(filt))
-      out = out %>% mutate(.excl = as.logical(.excl))
+      rlang::warn(
+        paste0(
+          "exclusion criteria does not result in a logical value: ",
+          rlang::as_label(filt)
+        ),
+        .frequency = "once",
+        .frequency_id = rlang::as_label(filt)
+      )
+      out = out %>% dplyr::mutate(.excl = as.logical(.excl))
     }
     out = out %>%
-        dplyr::mutate(.excl.na = ifelse(is.na(.excl),na.rm,.excl)) %>%
-        dplyr::mutate(.retain = .retain & !.excl.na)
+      dplyr::mutate(.excl.na = ifelse(is.na(.excl), na.rm, .excl)) %>%
+      dplyr::mutate(.retain = .retain & !.excl.na)
     #})
     tmp = out %>%
       dplyr::summarise(
         .count = dplyr::n(),
         .excluded = p_count_if(.excl.na), #sum(ifelse(.excl.na,1,0)),
-        .missing = p_count_if(is.na(.excl)&.excl.na), #sum(ifelse(is.na(.excl)&.excl.na,1,0)),
-        .matched = p_count_if(!is.na(.excl)&.excl.na), #sum(ifelse(!is.na(.excl)&.excl.na,1,0))
-        .groups="keep"
+        .missing = p_count_if(is.na(.excl) & .excl.na), #sum(ifelse(is.na(.excl)&.excl.na,1,0)),
+        .matched = p_count_if(!is.na(.excl) & .excl.na), #sum(ifelse(!is.na(.excl)&.excl.na,1,0))
+        .groups = "keep"
       ) %>%
       dplyr::ungroup() %>%
-      tidyr::complete(tidyr::nesting(!!!grps),fill=list(.count=0,.missing=0)) %>%
+      tidyr::complete(
+        tidyr::nesting(!!!grps),
+        fill = list(.count = 0, .missing = 0)
+      ) %>%
       dplyr::group_by(!!!grps) %>%
       .createStrataCol()
-    tmp$.message = rlang::eval_tidy(.doGlue(tmp,glueSpec,.envir), data=tmp, env = .envir)
+    tmp$.message = rlang::eval_tidy(
+      .doGlue(tmp, glueSpec, .envir),
+      data = tmp,
+      env = .envir
+    )
 
-    if(.trackingExclusions(.data)) {
+    if (.trackingExclusions(.data)) {
       # browser()
       exclusions = out %>%
         dplyr::filter(.excl.na) %>%
-        dplyr::select(-.retain,-.excl.na,-.excl) %>%
+        dplyr::select(-.retain, -.excl.na, -.excl) %>%
         dplyr::group_by(!!!grps) %>%
         .createStrataCol() %>%
         dplyr::inner_join(
-          tmp %>% dplyr::select(.strata, .message), by=".strata"
+          tmp %>% dplyr::select(.strata, .message),
+          by = ".strata"
         ) %>%
         dplyr::group_by() %>% # ?is this supposed to be here
-        tidyr::nest(.excluded = !c(.strata,.message)) %>%
+        tidyr::nest(.excluded = !c(.strata, .message)) %>%
         dplyr::mutate(.filter = filtStr) %>%
-        dplyr::select(.strata,.message,.excluded,.filter)
-      excluded = dplyr::bind_rows(excluded,exclusions)
-
+        dplyr::select(.strata, .message, .excluded, .filter)
+      excluded = dplyr::bind_rows(excluded, exclusions)
     }
-    messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
+    messages = messages %>%
+      dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader = FALSE, .type = .type))
   }
-  if(!.defaultShowZeroExclusions()) messages = messages %>% filter(.excluded != 0)
+  if (!.defaultShowZeroExclusions()) {
+    messages = messages %>% filter(.excluded != 0)
+  }
 
-  messages = messages %>% group_by(!!!grps) %>% filter(!(.message=="no exclusions" & dplyr::n() > 1))
-  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.excl, -.excl.na) %>% p_copy(.data) %>%
-    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot, .excluded=excluded, .stage = .stage)  %>%
+  messages = messages %>%
+    dplyr::group_by(!!!grps) %>%
+    filter(!(.message == "no exclusions" & dplyr::n() > 1))
+  out = out %>%
+    dplyr::filter(.retain) %>%
+    dplyr::select(-.retain, -.excl, -.excl.na) %>%
+    p_copy(.data) %>%
+    .writeMessagesToNode(
+      .df = dplyr::bind_rows(tmpHead, messages),
+      .asOffshoot = .asOffshoot,
+      .excluded = excluded,
+      .stage = .stage
+    ) %>%
     .writeTag(.tag = .tag)
   return(out %>% .retrack())
 }
-
 
 
 #' Include any items matching a criteria
@@ -1248,7 +1651,7 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' iris %>% track() %>% group_by(Species) %>% include_any(
+#' iris %>% track() %>% dplyr::group_by(Species) %>% include_any(
 #'       Petal.Length > 5 ~ "{.included} long ones",
 #'       Petal.Length < 2 ~ "{.included} short ones"
 #' ) %>% history()
@@ -1286,22 +1689,49 @@ p_exclude_all = function(.data, ..., .headline=.defaultHeadline(), na.rm=FALSE, 
 #'   dplyr::filter(a != min(a)) %>%
 #'   nrow()
 #'
-p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .type="inclusion", .asOffshoot = FALSE, .tag=NULL) {
+p_include_any = function(
+  .data,
+  ...,
+  .headline = .defaultHeadline(),
+  na.rm = TRUE,
+  .type = "inclusion",
+  .asOffshoot = FALSE,
+  .tag = NULL
+) {
   .incl = .incl.na = .retain = NULL
   .data = .data %>% .untrack()
   .envir = rlang::caller_env()
   filters = rlang::list2(...)
-  if (length(filters)==0) {
-    rlang::warn("No inclusions defined on p_include_any.",.frequency = "always")
+  if (length(filters) == 0) {
+    rlang::warn(
+      "No inclusions defined on p_include_any.",
+      .frequency = "always"
+    )
     return(.data %>% .retrack())
   }
-  if (any(!is.na(names(filters)))) stop("inclusion criteria contains a named variable. You have probably used a `=` when you meant a `==`")
+  if (any(!is.na(names(filters)))) {
+    stop(
+      "inclusion criteria contains a named variable. You have probably used a `=` when you meant a `==`"
+    )
+  }
   .envir$.total = nrow(.data)
-  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type=.type, .envir=.envir)
-  messages = .dataToNodesDf(.data,.glue = "inclusions:",.isHeader=FALSE,.type=.type,.envir = .envir)
+  tmpHead = .dataToNodesDf(
+    .data,
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
+  messages = .dataToNodesDf(
+    .data,
+    .glue = "inclusions:",
+    .isHeader = FALSE,
+    .type = .type,
+    .envir = .envir
+  )
   grps = .data %>% dplyr::groups()
   out = .data %>% dplyr::mutate(.retain = FALSE)
-  for(filter in filters) {
+  for (filter in filters) {
     glueSpec = rlang::f_rhs(filter)
     filt = rlang::f_lhs(filter)
     # out = out %>% dplyr::group_modify(function(d,g,...) {
@@ -1322,33 +1752,60 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
     #     dplyr::mutate(.retain = .retain | .incl.na)
     # and then they deprecated cur_data_all with no replacement
     out = out %>%
-      dplyr::mutate(.incl = rlang::eval_tidy(filt, data=dplyr::cur_group() %>% dplyr::cross_join(dplyr::pick(dplyr::everything())), env=.envir))
+      dplyr::mutate(
+        .incl = rlang::eval_tidy(
+          filt,
+          data = dplyr::cur_group() %>%
+            dplyr::cross_join(dplyr::pick(dplyr::everything())),
+          env = .envir
+        )
+      )
 
     if (!is.logical(out$.incl)) {
-      rlang::warn(paste0("inclusion criteria does not result in a logical value: ", rlang::as_label(filt)),.frequency = "once",.frequency_id = rlang::as_label(filt))
-      out = out %>% mutate(.incl = as.logical(.incl))
+      rlang::warn(
+        paste0(
+          "inclusion criteria does not result in a logical value: ",
+          rlang::as_label(filt)
+        ),
+        .frequency = "once",
+        .frequency_id = rlang::as_label(filt)
+      )
+      out = out %>% dplyr::mutate(.incl = as.logical(.incl))
     }
     out = out %>%
-      dplyr::mutate(.incl.na = ifelse(is.na(.incl),!na.rm,.incl)) %>%
+      dplyr::mutate(.incl.na = ifelse(is.na(.incl), !na.rm, .incl)) %>%
       dplyr::mutate(.retain = .retain | .incl.na)
 
     tmp = out %>%
       dplyr::summarise(
         .count = dplyr::n(),
         .included = p_count_if(.incl.na), #sum(ifelse(.incl.na,1,0)),
-        .missing = p_count_if(is.na(.incl)&.incl.na), #sum(ifelse(is.na(.incl)&.incl.na,1,0)),
-        .matched = p_count_if(!is.na(.incl)&.incl.na), #sum(ifelse(!is.na(.incl)&.incl.na,1,0))
-        .groups="keep"
+        .missing = p_count_if(is.na(.incl) & .incl.na), #sum(ifelse(is.na(.incl)&.incl.na,1,0)),
+        .matched = p_count_if(!is.na(.incl) & .incl.na), #sum(ifelse(!is.na(.incl)&.incl.na,1,0))
+        .groups = "keep"
       ) %>%
       dplyr::ungroup() %>%
-      tidyr::complete(tidyr::nesting(!!!grps),fill=list(.count=0)) %>%
-      dplyr::group_by(!!!grps) %>% .createStrataCol()
+      tidyr::complete(tidyr::nesting(!!!grps), fill = list(.count = 0)) %>%
+      dplyr::group_by(!!!grps) %>%
+      .createStrataCol()
     # tmp$.message = rlang::eval_tidy(glue::glue_data(tmp,glueSpec,.envir = .envir), data=tmp, env = .envir)
-    tmp$.message = rlang::eval_tidy(.doGlue(tmp,glueSpec,.envir), data=tmp, env = .envir)
-    messages = messages %>% dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader=FALSE,.type=.type))
+    tmp$.message = rlang::eval_tidy(
+      .doGlue(tmp, glueSpec, .envir),
+      data = tmp,
+      env = .envir
+    )
+    messages = messages %>%
+      dplyr::bind_rows(tmp %>% dplyr::mutate(.isHeader = FALSE, .type = .type))
   }
-  out = out %>% dplyr::filter(.retain) %>% dplyr::select(-.retain,-.incl, -.incl.na) %>% p_copy(.data) %>%
-    .writeMessagesToNode(.df = dplyr::bind_rows(tmpHead,messages), .asOffshoot = .asOffshoot) %>% .writeTag(.tag = .tag)
+  out = out %>%
+    dplyr::filter(.retain) %>%
+    dplyr::select(-.retain, -.incl, -.incl.na) %>%
+    p_copy(.data) %>%
+    .writeMessagesToNode(
+      .df = dplyr::bind_rows(tmpHead, messages),
+      .asOffshoot = .asOffshoot
+    ) %>%
+    .writeTag(.tag = .tag)
   return(out %>% .retrack())
 }
 
@@ -1377,36 +1834,70 @@ p_include_any = function(.data, ..., .headline=.defaultHeadline(), na.rm=TRUE, .
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' tmp = iris %>% group_by(Species) %>% comment("A test")
-#' tmp %>% ungroup(.messages="{.count} items in combined") %>% history()
-p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHeadline(), .tag=NULL) {
+#' tmp = iris %>% dplyr::group_by(Species) %>% comment("A test")
+#' tmp %>% dplyr::ungroup(.messages="{.count} items in combined") %>% history()
+p_ungroup = function(
+  x,
+  ...,
+  .messages = .defaultMessage(),
+  .headline = .defaultHeadline(),
+  .tag = NULL
+) {
   .data = x %>% .untrack()
   # dots = dplyr::enexprs(...)
   # if(length(dots)==0) dots = list(.count=rlang::expr(dplyr::n()))
   # out = .data %>% dplyr::ungroup() %>% p_copy(.data) %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise", .tag=.tag)
 
-  dots = list(.count=rlang::expr(dplyr::n()))
+  dots = list(.count = rlang::expr(dplyr::n()))
   out = .data %>%
     dplyr::ungroup(...) %>%
     p_copy(.data) %>%
     .retrack()
 
-  if (.isPaused(x,auto = TRUE)) {
-    if (getOption("dtrackr.verbose",FALSE)) {
-      rlang::inform("Automatically resuming tracking.",.frequency = "always")
+  if (.isPaused(x, auto = TRUE)) {
+    if (getOption("dtrackr.verbose", FALSE)) {
+      rlang::inform(
+        c("*" = "Automatically resuming tracking."),
+        .frequency = "always"
+      )
     }
     out = out %>% p_resume()
+    if (.defaultHiddenSteps() != "") {
+      out = out %>%
+        .comment(
+          .messages = .defaultHiddenSteps(),
+          .headline = NULL,
+          .type = "summary"
+        )
+    }
   }
 
-  out = suppressWarnings(out %>% p_status(!!!dots, .messages=.messages, .headline = .headline, .type="summarise", .tag=.tag))
+  out = suppressWarnings(
+    out %>%
+      p_status(
+        !!!dots,
+        .messages = .messages,
+        .headline = .headline,
+        .type = "summarise",
+        .tag = .tag
+      )
+  )
 
   return(out)
 }
 
 ### Summarise operations ----
 
-.doSummarise = function(.summary_fn, .data, ..., .messages = "", .headline = "", .type, .tag=NULL) {
-  .envir = .integrateDots(.summary_fn, ..., .envir=rlang::caller_env())
+.doSummarise = function(
+  .summary_fn,
+  .data,
+  ...,
+  .messages = "",
+  .headline = "",
+  .type,
+  .tag = NULL
+) {
+  .envir = .integrateDots(.summary_fn, ..., .envir = rlang::caller_env())
   .data = .data %>% .untrack()
 
   grps = .data %>% dplyr::groups()
@@ -1416,23 +1907,46 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
   # TODO: consider whether this is a good idea.
   # If so it probably needs to be done globally.
   # .envir$.data.out = out
-  .envir$.cols = paste0(colnames(out), collapse=", ")
-  .envir$.new_cols = paste0(setdiff(colnames(out),colnames(.data)), collapse=", ")
-  .envir$.dropped_cols = paste0(setdiff(colnames(.data),colnames(out)), collapse=", ")
+  .envir$.cols = paste0(colnames(out), collapse = ", ")
+  .envir$.new_cols = paste0(
+    setdiff(colnames(out), colnames(.data)),
+    collapse = ", "
+  )
+  .envir$.dropped_cols = paste0(
+    setdiff(colnames(.data), colnames(out)),
+    collapse = ", "
+  )
 
   # We group the output by the old groupings so we can generate appropriate messages
   out = out %>% dplyr::group_by(!!!grps)
 
   # .headline is a single glue spec
-  tmpHead = .summaryToNodesDf(out,.headline,.isHeader=TRUE, .type = "summarise", .envir=.envir)
+  tmpHead = .summaryToNodesDf(
+    out,
+    .headline,
+    .isHeader = TRUE,
+    .type = "summarise",
+    .envir = .envir
+  )
 
   # .messages is a load of glue specs
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(out,m,.isHeader=FALSE, .type = "summarise", .envir=.envir)))
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(
+      out,
+      m,
+      .isHeader = FALSE,
+      .type = "summarise",
+      .envir = .envir
+    )
+  }))
 
   out = out %>%
     dplyr::group_by(!!!newGrps) %>%
     p_copy(.data) %>%
-    .writeMessagesToNode(.df=dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>%
+    .writeMessagesToNode(
+      .df = dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = FALSE
+    ) %>%
     .writeTag(.tag, ...)
 
   return(out %>% .retrack())
@@ -1466,10 +1980,24 @@ p_ungroup = function(x, ..., .messages=.defaultMessage(), .headline=.defaultHead
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' tmp = iris %>% group_by(Species) %>% track()
-#' tmp %>% summarise(avg = mean(Petal.Length), .messages="{avg} length") %>% history()
-p_summarise = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
-  .doSummarise(dplyr::summarise, .data, ..., .messages = .messages, .headline = .headline, .type="summarise", .tag=.tag)
+#' tmp = iris %>% dplyr::group_by(Species) %>% track()
+#' tmp %>% dplyr::summarise(avg = mean(Petal.Length), .messages="{avg} length") %>% history()
+p_summarise = function(
+  .data,
+  ...,
+  .messages = "",
+  .headline = "",
+  .tag = NULL
+) {
+  .doSummarise(
+    dplyr::summarise,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "summarise",
+    .tag = .tag
+  )
 }
 
 
@@ -1482,31 +2010,59 @@ p_summarise = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' tmp = iris %>% group_by(Species) %>% track()
-#' tmp %>% reframe(tibble(
+#' tmp = iris %>% dplyr::group_by(Species) %>% track()
+#' tmp %>% dplyr::reframe(dplyr::tibble(
 #'   param = c("mean","min","max"),
 #'   value = c(mean(Petal.Length), min(Petal.Length), max(Petal.Length))
 #'   ), .messages="length {param}: {value}") %>% history()
-p_reframe = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
-  .doSummarise(dplyr::reframe, .data, ..., .messages = .messages, .headline = .headline, .type="summarise", .tag=.tag)
+p_reframe = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
+  .doSummarise(
+    dplyr::reframe,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "summarise",
+    .tag = .tag
+  )
 }
 
 
 ### Mutate operations ----
 
-
-.doMutate = function(.mutate_fn, .data, ..., .messages = "", .headline = "", .type, .tag=NULL) {
-  .envir = .integrateDots(.mutate_fn, ..., .envir=rlang::caller_env())
+.doMutate = function(
+  .mutate_fn,
+  .data,
+  ...,
+  .messages = "",
+  .headline = "",
+  .type,
+  .tag = NULL
+) {
+  .envir = .integrateDots(.mutate_fn, ..., .envir = rlang::caller_env())
   .data = .data %>% .untrack()
   out = .data %>% .mutate_fn(...)
   # TODO: consider whether this is a good idea.
   # If so it probably needs to be done globally.
   # .envir$.data.out = out
-  .envir$.cols = paste0(colnames(out), collapse=", ")
-  .envir$.new_cols = paste0(setdiff(colnames(out),colnames(.data)), collapse=", ")
-  .envir$.dropped_cols = paste0(setdiff(colnames(.data),colnames(out)), collapse=", ")
-  out = out %>% p_copy(.data) %>%
-    .comment(.messages=.messages, .headline = .headline, .type=.type, .tag=.tag, .envir=.envir)
+  .envir$.cols = paste0(colnames(out), collapse = ", ")
+  .envir$.new_cols = paste0(
+    setdiff(colnames(out), colnames(.data)),
+    collapse = ", "
+  )
+  .envir$.dropped_cols = paste0(
+    setdiff(colnames(.data), colnames(out)),
+    collapse = ", "
+  )
+  out = out %>%
+    p_copy(.data) %>%
+    .comment(
+      .messages = .messages,
+      .headline = .headline,
+      .type = .type,
+      .tag = .tag,
+      .envir = .envir
+    )
   return(out %>% .retrack())
 }
 
@@ -1540,8 +2096,16 @@ p_reframe = function(.data, ..., .messages = "", .headline="", .tag=NULL) {
 #' @inheritDotParams dplyr::mutate
 #' @export
 #' @example inst/examples/mutate-examples.R
-p_mutate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::mutate, .data, ..., .messages = .messages, .headline = .headline, .type="mutate", .tag=.tag)
+p_mutate = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
+  .doMutate(
+    dplyr::mutate,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "mutate",
+    .tag = .tag
+  )
 }
 
 
@@ -1551,8 +2115,16 @@ p_mutate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @export
 #' @example inst/examples/add-count-tally-examples.R
-p_add_count = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::add_count, x, ..., .messages=.messages, .headline = .headline, .type="add_count", .tag=.tag)
+p_add_count = function(x, ..., .messages = "", .headline = "", .tag = NULL) {
+  .doMutate(
+    dplyr::add_count,
+    x,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "add_count",
+    .tag = .tag
+  )
 }
 
 
@@ -1561,9 +2133,19 @@ p_add_count = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inherit p_mutate
 #' @export
 #' @example inst/examples/add-count-tally-examples.R
-p_add_tally = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
-  if (!.isTracked(x)) return(dplyr::add_tally(x,...))
-  .doMutate(dplyr::add_tally, x, ..., .messages=.messages, .headline = .headline, .type="add_tally", .tag=.tag)
+p_add_tally = function(x, ..., .messages = "", .headline = "", .tag = NULL) {
+  if (!.isTracked(x)) {
+    return(dplyr::add_tally(x, ...))
+  }
+  .doMutate(
+    dplyr::add_tally,
+    x,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "add_tally",
+    .tag = .tag
+  )
 }
 
 #' @inherit p_mutate
@@ -1572,8 +2154,22 @@ p_add_tally = function(x, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inheritDotParams dplyr::transmute
 #' @export
 #' @example inst/examples/transmute-examples.R
-p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::transmute, .data, ..., .messages=.messages, .headline = .headline, .type="transmute", .tag=.tag)
+p_transmute = function(
+  .data,
+  ...,
+  .messages = "",
+  .headline = "",
+  .tag = NULL
+) {
+  .doMutate(
+    dplyr::transmute,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "transmute",
+    .tag = .tag
+  )
 }
 
 #' @inherit p_mutate
@@ -1582,8 +2178,16 @@ p_transmute = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inheritDotParams dplyr::select
 #' @export
 #' @example inst/examples/select-examples.R
-p_select = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::select, .data, ..., .messages=.messages, .headline = .headline, .type="transmute", .tag=.tag)
+p_select = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
+  .doMutate(
+    dplyr::select,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "transmute",
+    .tag = .tag
+  )
 }
 
 #' @inherit p_mutate
@@ -1592,8 +2196,16 @@ p_select = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inheritDotParams dplyr::relocate
 #' @export
 #' @example inst/examples/relocate-examples.R
-p_relocate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::relocate, .data, ..., .messages=.messages, .headline = .headline, .type="relocate", .tag=.tag)
+p_relocate = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
+  .doMutate(
+    dplyr::relocate,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "relocate",
+    .tag = .tag
+  )
 }
 
 #' @inherit p_mutate
@@ -1602,8 +2214,16 @@ p_relocate = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inheritDotParams dplyr::rename
 #' @export
 #' @example inst/examples/rename-examples.R
-p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::rename, .data, ..., .messages=.messages, .headline = .headline, .type="rename", .tag=.tag)
+p_rename = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
+  .doMutate(
+    dplyr::rename,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "rename",
+    .tag = .tag
+  )
 }
 
 #' @inherit p_mutate
@@ -1612,8 +2232,22 @@ p_rename = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #' @inheritDotParams dplyr::rename_with
 #' @export
 #' @example inst/examples/rename-examples.R
-p_rename_with = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::rename_with, .data, ..., .messages=.messages, .headline = .headline, .type="rename_with", .tag=.tag)
+p_rename_with = function(
+  .data,
+  ...,
+  .messages = "",
+  .headline = "",
+  .tag = NULL
+) {
+  .doMutate(
+    dplyr::rename_with,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "rename_with",
+    .tag = .tag
+  )
 }
 
 #' @inherit p_mutate
@@ -1622,8 +2256,16 @@ p_rename_with = function(.data, ..., .messages = "", .headline = "", .tag=NULL) 
 #' @inheritDotParams dplyr::arrange
 #' @export
 #' @example inst/examples/arrange-examples.R
-p_arrange = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .doMutate(dplyr::arrange, .data, ..., .messages=.messages, .headline = .headline, .type="arrange", .tag=.tag)
+p_arrange = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
+  .doMutate(
+    dplyr::arrange,
+    .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline,
+    .type = "arrange",
+    .tag = .tag
+  )
 }
 
 
@@ -1639,20 +2281,58 @@ p_arrange = function(.data, ..., .messages = "", .headline = "", .tag=NULL) {
 #'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline a headline glue spec. The glue code can use any global
 #'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
-#' @param .tag if you want the summary data from this step in the future then
-#'   give it a name with .tag.
 #'
 #' @return the data dataframe result of the `tidyr::pivot_wider` function but with
-#'   a history graph updated with a `.message` if requested.
+#'   a history graph updated.
 #' @export
+#' @example inst/examples/tidyr-examples.R
 p_pivot_wider = function(
-    data, ..., .messages = "", .headline = "", .tag=NULL
+  data,
+  ...,
+  id_cols = NULL,
+  id_expand = FALSE,
+  names_from = name,
+  names_prefix = "",
+  names_sep = "_",
+  names_glue = NULL,
+  names_sort = FALSE,
+  names_vary = "fastest",
+  names_expand = FALSE,
+  names_repair = "check_unique",
+  values_from = value,
+  values_fill = NULL,
+  values_fn = NULL,
+  unused_fn = NULL,
+  .messages = c("wide format", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
 ) {
-  .data = data %>% .untrack()
-  out = .data %>% tidyr::pivot_wider(...)
-  # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
-  out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="pivot_wider", .tag=.tag)
-  return(out %>% .retrack())
+  name = value = NULL
+  .doSlice(
+    tidyr::pivot_wider,
+    .data = data,
+    ...,
+    id_cols = {{ id_cols }},
+    id_expand = id_expand,
+    names_from = {{ names_from }},
+    names_prefix = names_prefix,
+    names_sep = names_sep,
+    names_glue = names_glue,
+    names_sort = names_sort,
+    names_vary = names_vary,
+    names_expand = names_expand,
+    names_repair = names_repair,
+    values_from = {{ values_from }},
+    values_fill = values_fill,
+    values_fn = values_fn,
+    unused_fn = unused_fn,
+    .messages = .messages,
+    .headline = .headline
+  )
+  # .data = data %>% .untrack()
+  # out = .data %>% tidyr::pivot_wider(...)
+  # # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
+  # out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="pivot_wider", .tag=.tag)
+  # return(out %>% .retrack())
 }
 
 #' Reshaping data using `tidyr::pivot_longer`
@@ -1667,19 +2347,153 @@ p_pivot_wider = function(
 #'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #' @param .headline a headline glue spec. The glue code can use any global
 #'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
-#' @param .tag if you want the summary data from this step in the future then
-#'   give it a name with .tag.
 #'
 #' @return the result of the `tidyr::pivot_longer` but with a history graph
 #'   updated.
 #' @export
-p_pivot_longer = function(data, ..., .messages = "", .headline = "", .tag=NULL) {
-  .data = data %>% .untrack()
-  out = .data %>% tidyr::pivot_longer(...)
-  out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="pivot_longer", .tag=.tag)
-  return(out %>% .retrack())
+#' @example inst/examples/tidyr-examples.R
+p_pivot_longer = function(
+  data,
+  cols,
+  ...,
+  cols_vary = "fastest",
+  names_to = "name",
+  names_prefix = NULL,
+  names_sep = NULL,
+  names_pattern = NULL,
+  names_ptypes = NULL,
+  names_transform = NULL,
+  names_repair = "check_unique",
+  values_to = "value",
+  values_drop_na = FALSE,
+  values_ptypes = NULL,
+  values_transform = NULL,
+  .messages = c("long format", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .doSlice(
+    tidyr::pivot_longer,
+    .data = data,
+    cols = {{ cols }},
+    ...,
+    cols_vary = cols_vary,
+    names_to = names_to,
+    names_prefix = names_prefix,
+    names_sep = names_sep,
+    names_pattern = names_pattern,
+    names_ptypes = names_ptypes,
+    names_transform = names_transform,
+    names_repair = names_repair,
+    values_to = values_to,
+    values_drop_na = values_drop_na,
+    values_ptypes = values_ptypes,
+    values_transform = values_transform,
+    .messages = .messages,
+    .headline = .headline
+  )
+  # .data = data %>% .untrack()
+  # out = .data %>% tidyr::pivot_longer(...)
+  # out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="pivot_longer", .tag=.tag)
+  # return(out %>% .retrack())
 }
 
+#' Reshaping data using `tidyr::nest`
+#'
+#' A drop in replacement for [tidyr::nest()] which optionally takes a
+#' message and headline to store in the history graph.
+#' @seealso tidyr::nest()
+#'
+#' @inheritParams tidyr::nest
+#' @inheritDotParams tidyr::nest
+#' @param .messages a set of glue specs. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .headline a headline glue spec. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#'
+#' @return the data dataframe result of the `tidyr::nest` function but with
+#'   a history graph updated.
+#' @export
+#' @example inst/examples/tidyr-examples.R
+p_nest = function(
+  .data,
+  ...,
+  .by = NULL,
+  .key = NULL,
+  .names_sep = NULL,
+  .messages = c("{.count.out} items"),
+  .headline = "" #.defaultHeadline()
+) {
+  .doSlice(
+    tidyr::nest,
+    .data = .data,
+    ...,
+    .by = {{ .by }},
+    .key = .key,
+    .names_sep = .names_sep,
+    .messages = .messages,
+    .headline = .headline
+  )
+  # .data = data %>% .untrack()
+  # out = .data %>% tidyr::nest(...)
+  # # TODO: shold this be a .beforeAfterGroupwiseCount operation as it goes from narrow to long
+  # out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="nest", .tag=.tag)
+  # return(out %>% .retrack())
+}
+
+#' Reshaping data using `tidyr::unnest`
+#'
+#' A drop in replacement for [tidyr::unnest()] which optionally takes a
+#' message and headline to store in the history graph.
+#' @seealso tidyr::unnest()
+#'
+#' @inheritParams  tidyr::unnest
+#' @inheritDotParams  tidyr::unnest
+#' @param .messages a set of glue specs. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#' @param .headline a headline glue spec. The glue code can use any global
+#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#'
+#' @return the result of the `tidyr::unnest` but with a history graph
+#'   updated.
+#' @export
+#' @importFrom lifecycle deprecated
+#' @example inst/examples/tidyr-examples.R
+p_unnest = function(
+  data,
+  cols,
+  ...,
+  keep_empty = FALSE,
+  ptype = NULL,
+  names_sep = NULL,
+  names_repair = "check_unique",
+  .drop = deprecated(),
+  .id = deprecated(),
+  .sep = deprecated(),
+  .preserve = deprecated(),
+  .messages = "", #"{.count.out} items",
+  .headline = "" #.defaultHeadline()
+) {
+  .doSlice(
+    tidyr::unnest,
+    .data = data,
+    cols = {{ cols }},
+    ...,
+    keep_empty = keep_empty,
+    ptype = ptype,
+    names_sep = names_sep,
+    names_repair = names_repair,
+    # .drop = {{ .drop }},
+    # .id = {{ .id }},
+    # .sep = {{ .sep }},
+    # .preserve = {{ .preserve }},
+    .messages = .messages,
+    .headline = .headline
+  )
+  # .data = data %>% .untrack()
+  # out = .data %>% tidyr::unnest(...)
+  # out = out %>% p_copy(.data) %>% .comment(.messages, .headline = .headline, .type="unnest", .tag=.tag)
+  # return(out %>% .retrack())
+}
 
 #' Stratifying your analysis
 #'
@@ -1688,11 +2502,11 @@ p_pivot_longer = function(data, ..., .messages = "", .headline = "", .tag=NULL) 
 #' for example if you are doing a `group_by()`, `summarise()` step that is
 #' aggregating data on a fine scale, e.g. by day in a time-series. This is
 #' generally a terrible idea when tracking a dataframe as the resulting
-#' flowchart will have many many branches and be illegible. `dtrackr` will detect this issue and
-#' pause tracking the dataframe with a warning. It is up to the user to the
-#' `resume()` tracking when the large number of groups have been resolved e.g.
-#' using a `dplyr::ungroup()`. This limit is configurable with
-#' `options("dtrackr.max_supported_groupings"=XX)`. The default is 16. See
+#' flowchart will have many many branches and be illegible. `dtrackr` will
+#' detect this issue and pause tracking the dataframe with a warning. It is up
+#' to the user to the `resume()` tracking when the large number of groups have
+#' been resolved e.g. using a `dplyr::ungroup()`. This limit is configurable
+#' with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16. See
 #' [dplyr::group_by()].
 #' @seealso dplyr::group_by()
 #'
@@ -1714,9 +2528,16 @@ p_pivot_longer = function(data, ..., .messages = "", .headline = "", .tag=NULL) 
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' tmp = iris %>% track() %>% group_by(Species, .messages="stratify by {.cols}")
+#' tmp = iris %>% track() %>% dplyr::group_by(Species, .messages="stratify by {.cols}")
 #' tmp %>% comment("{.strata}") %>% history()
-p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=NULL, .tag=NULL, .maxgroups = .defaultMaxSupportedGroupings()) {
+p_group_by = function(
+  .data,
+  ...,
+  .messages = "stratify by {.cols}",
+  .headline = NULL,
+  .tag = NULL,
+  .maxgroups = .defaultMaxSupportedGroupings()
+) {
   # explicitly dtrackr::ungroup if .add is false to generate an un-grouped node
   # in the graph. otherwise we get an n x m crossover point which the
   # flowchart can't handle.
@@ -1725,54 +2546,105 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
   dots = rlang::enexprs(...)
   .add = isTRUE(dots$.add)
 
-  if(!.add & dplyr::is.grouped_df(.data) & !.isPaused(.data)) {
-    # If the data is tracking then in order to regroup the data we need to
-    # create a node without a grouping otherwise the graph will be confusing.
-    # TODO: putting in a special hidden node type
-    # TODO: in theory detecting a result of a superset of columns could also work
-    .data = .data %>% ungroup(.messages=NULL,.headline=NULL)
+  if (is.null(.messages) & is.null(.headline)) {
+    stop(
+      "In a dtrackr pipeline group_by `.messages` cannot be NULL, or else there is no flowchart step to continue."
+    )
   }
-
-  if(is.null(.messages) & is.null(.headline)) stop("In a dtrackr pipeline group_by `.messages` cannot be NULL, or else there is no flowchart step to continue.")
 
   old = .data %>% p_get()
   .data = .data %>% .untrack()
 
   tmp = .data %>% dplyr::group_by(...)
   # figure out what final grouping will be and get future groups
-  col =  tmp %>% dplyr::groups()
-  .cols = col %>% sapply(rlang::as_label) %>% as.character() %>% paste(collapse=", ")
+  col = tmp %>% dplyr::groups()
+  .cols = col %>%
+    sapply(rlang::as_label) %>%
+    as.character() %>%
+    paste(collapse = ", ")
 
   # check the size of the future grouping
   final_groups = tmp %>% dplyr::n_groups()
 
-  if (final_groups <= .maxgroups ) {
+  if (final_groups <= .maxgroups) {
+    # paused or not paused.
+    if (!.add && dplyr::is.grouped_df(.data)) {
+      # If the data is already grouped then in order to regroup the data we need to
+      # create a node without a grouping otherwise the graph will be confusing
+      # nxm cross.
+      # TODO: putting in a special hidden node type
+      # TODO: in theory detecting a result of a superset of columns could also work
+      .data = .data %>%
+        dplyr::ungroup() %>%
+        p_set(old)
+    }
+
     # A small grouping.
     # We proceed with the original ungrouped data frame
     # check to see if we should auto resume
-    if (.isPaused(.data,auto = TRUE)) {
-      if (getOption("dtrackr.verbose",FALSE)) {
-        rlang::inform("Automatically resuming tracking.", .frequency = "always")
+    # browser()
+    if (.isGraphPaused(old, auto = TRUE)) {
+      if (getOption("dtrackr.verbose", FALSE)) {
+        rlang::inform(
+          c("*" = "Automatically resuming tracking."),
+          .frequency = "always"
+        )
       }
       old$paused = NULL
-      .data = .data %>% p_set(old)
+      if (.defaultHiddenSteps() != "") {
+        .data = .data %>%
+          p_set(old) %>%
+          .comment(
+            .messages = .defaultHiddenSteps(),
+            .headline = NULL,
+            .type = "summary"
+          )
+      }
     }
 
-    #
+    # this is the regrouping
     tmp2 = .data %>%
-      .comment(.messages, .headline = .headline, .type="stratify", .tag=.tag) %>%
+      .comment(
+        .messages,
+        .headline = .headline,
+        .type = "stratify",
+        .tag = .tag
+      ) %>%
       dplyr::group_by(...)
-
   } else {
-
     # This group by has resulted in lots of groups
     if (!.isPaused(.data)) {
       # if the input is not already paused we pause it with a flag to allow auto
       # resume.
-      if (getOption("dtrackr.verbose",FALSE)) {
-        rlang::inform(paste0("This group_by() has created more than the maximum number of supported groupings (",.defaultMaxSupportedGroupings(),") which will likely impact performance. We have paused tracking the dataframe."),.frequency = "always")
-        rlang::inform("To change this limit set the option 'dtrackr.max_supported_groupings'.",.frequency = "once",.frequency_id = "maxgrp")
-        rlang::inform(paste0("Tracking will resume once the number of groups has gone back below ",.defaultMaxSupportedGroupings(),"."),.frequency = "once",.frequency_id = "maxgrp")
+      if (getOption("dtrackr.verbose", FALSE)) {
+        rlang::inform(
+          c(
+            "*" = paste0(
+              "This group_by() has created more than the maximum number of supported groupings (",
+              .defaultMaxSupportedGroupings(),
+              ") which will likely impact performance. We have paused tracking the dataframe."
+            )
+          ),
+          .frequency = "always"
+        )
+        rlang::inform(
+          c(
+            "*" = "To change this limit set the option 'dtrackr.max_supported_groupings'."
+          ),
+          .frequency = "once",
+          .frequency_id = "maxgrp"
+        )
+        rlang::inform(
+          c(
+            "*" = paste0(
+              "Tracking will resume once the number of groups has gone back below ",
+              .defaultMaxSupportedGroupings(),
+              "."
+            )
+          ),
+          .frequency = "once",
+          .frequency_id = "maxgrp"
+        )
       }
       old$paused = "auto"
       tmp2 = .data %>% dplyr::group_by(...) %>% p_set(old)
@@ -1780,30 +2652,35 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
       # As it was originally paused just do the grouping without updating the graph.
       tmp2 = .data %>% dplyr::group_by(...)
     }
-
   }
 
   return(tmp2 %>% .retrack())
-
 }
 
 
-.beforeAfterGroupwiseCounts = function(.in,.out) {
+.beforeAfterGroupwiseCounts = function(.in, .out) {
   .count.in = .count.out = NULL
   grps = .in %>% dplyr::groups()
-  countIn = .in %>% dplyr::group_by(!!!grps) %>% dplyr::summarise(.count.in=dplyr::n()) %>% dplyr::ungroup()
-  countOut = .out %>% dplyr::group_by(!!!grps) %>% dplyr::summarise(.count.out = dplyr::n()) %>% dplyr::ungroup()
+  countIn = .in %>%
+    dplyr::group_by(!!!grps) %>%
+    dplyr::summarise(.count.in = dplyr::n()) %>%
+    dplyr::ungroup()
+  countOut = .out %>%
+    dplyr::group_by(!!!grps) %>%
+    dplyr::summarise(.count.out = dplyr::n()) %>%
+    dplyr::ungroup()
   jn = grps %>% sapply(rlang::as_label) %>% as.character()
   if (length(jn) > 0) {
-    tmp = countIn %>% dplyr::full_join(countOut, by=jn)
+    tmp = countIn %>% dplyr::full_join(countOut, by = jn)
   } else {
     tmp = countIn %>% dplyr::cross_join(countOut)
   }
   tmp = tmp %>%
     dplyr::mutate(
-      .count.out = ifelse(is.na(.count.out),0,.count.out),
-      .count.in = ifelse(is.na(.count.in),0,.count.in)
-    ) %>% dplyr::group_by(!!!grps)
+      .count.out = ifelse(is.na(.count.out), 0, .count.out),
+      .count.in = ifelse(is.na(.count.in), 0, .count.in)
+    ) %>%
+    dplyr::group_by(!!!grps)
   return(tmp)
 }
 
@@ -1832,8 +2709,14 @@ p_group_by = function(.data, ..., .messages = "stratify by {.cols}",  .headline=
 #' library(dtrackr)
 #'
 #' tmp = bind_rows(iris %>% track(), iris %>% track() %>% filter(Petal.Length > 5))
-#' tmp %>% group_by(Species) %>% distinct() %>% history()
-p_distinct = function(.data, ..., .messages="removing {.count.in-.count.out} duplicates", .headline=.defaultHeadline(), .tag=NULL) {
+#' tmp %>% dplyr::group_by(Species) %>% dplyr::distinct() %>% history()
+p_distinct = function(
+  .data,
+  ...,
+  .messages = "removing {.count.in-.count.out} duplicates",
+  .headline = .defaultHeadline(),
+  .tag = NULL
+) {
   .data = .data %>% .untrack()
   .envir = rlang::caller_env()
   .envir$.total = nrow(.data)
@@ -1841,11 +2724,31 @@ p_distinct = function(.data, ..., .messages="removing {.count.in-.count.out} dup
 
   out = .data %>% dplyr::distinct(...)
 
-  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = "modify", .envir=.envir)
-  tmp = .beforeAfterGroupwiseCounts(.data,out)
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = "modify", .envir=.envir)))
+  tmpHead = .dataToNodesDf(
+    .data,
+    .headline,
+    .isHeader = TRUE,
+    .type = "modify",
+    .envir = .envir
+  )
+  tmp = .beforeAfterGroupwiseCounts(.data, out)
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(
+      tmp,
+      m,
+      .isHeader = FALSE,
+      .type = "modify",
+      .envir = .envir
+    )
+  }))
 
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag, .content = tmp)
+  out = out %>%
+    p_copy(.data) %>%
+    .writeMessagesToNode(
+      dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = FALSE
+    ) %>%
+    .writeTag(.tag, .content = tmp)
   return(out %>% .retrack())
 }
 
@@ -1880,16 +2783,18 @@ p_distinct = function(.data, ..., .messages="removing {.count.in-.count.out} dup
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' tmp = iris %>% track() %>% group_by(Species)
+#' tmp = iris %>% track() %>% dplyr::group_by(Species)
 #' tmp %>% filter(Petal.Length > 5) %>% history()
-p_filter = function(.data,
-                    ...,
-                    .messages="excluded {.excluded} items",
-                    .headline=.defaultHeadline(),
-                    .type = "exclusion",
-                    .asOffshoot=(.type=="exclusion"),
-                    .stage=(if(is.null(.tag)) "" else .tag),
-                    .tag=NULL) {
+p_filter = function(
+  .data,
+  ...,
+  .messages = "excluded {.excluded} items",
+  .headline = .defaultHeadline(),
+  .type = "exclusion",
+  .asOffshoot = (.type == "exclusion"),
+  .stage = (if (is.null(.tag)) "" else .tag),
+  .tag = NULL
+) {
   .count.in = .count.out = .strata = .message = NULL
   .data = .data %>% .untrack()
   .envir = rlang::caller_env()
@@ -1905,47 +2810,83 @@ p_filter = function(.data,
 
   out = .data %>% dplyr::filter(...)
 
-  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .envir=.envir)
-  tmp = .beforeAfterGroupwiseCounts(.data,out)
-  tmp = tmp %>% dplyr::mutate(.excluded = .count.in-.count.out)
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
+  tmpHead = .dataToNodesDf(
+    .data,
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
+  tmp = .beforeAfterGroupwiseCounts(.data, out)
+  tmp = tmp %>% dplyr::mutate(.excluded = .count.in - .count.out)
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(tmp, m, .isHeader = FALSE, .type = .type, .envir = .envir)
+  }))
 
   excluded = NULL
-  if(.trackingExclusions(.data)) {
+  if (.trackingExclusions(.data)) {
     excluded = .data %>%
-      dplyr::anti_join(out, by=colnames(.data)) %>%
+      dplyr::anti_join(out, by = colnames(.data)) %>%
       dplyr::group_by(!!!grps) %>%
       .createStrataCol() %>%
-      dplyr::inner_join(tmpBody %>% select(.strata,.message), by=".strata") %>%
+      dplyr::inner_join(
+        tmpBody %>% dplyr::select(.strata, .message),
+        by = ".strata"
+      ) %>%
       dplyr::ungroup() %>%
-      tidyr::nest(.excluded = !c(.strata,.message)) %>%
-      dplyr::mutate(.filter = paste0(sapply(sapply(filterExprs,deparse),trimws), collapse=", "))
+      tidyr::nest(.excluded = !c(.strata, .message)) %>%
+      dplyr::mutate(
+        .filter = paste0(
+          sapply(sapply(filterExprs, deparse), trimws),
+          collapse = ", "
+        )
+      )
   }
 
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot, .excluded=excluded, .stage = .stage) %>% .writeTag(.tag, .content = tmp)
+  out = out %>%
+    p_copy(.data) %>%
+    .writeMessagesToNode(
+      dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = .asOffshoot,
+      .excluded = excluded,
+      .stage = .stage
+    ) %>%
+    .writeTag(.tag, .content = tmp)
   return(out %>% .retrack())
-
 }
 
 ### Slice support ----
 
-
-.doSlice = function(.slice_fn, .data, ..., .messages=c("{.count.in} before","{.count.out} after"), .headline=.defaultHeadline()) {
-  .type="inclusion"
+.doSlice = function(
+  .slice_fn,
+  .data,
+  ...,
+  .messages = c("{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .type = "inclusion"
   .asOffshoot = FALSE
   # tagging slice operations?, .stage="", .tag=NULL
   .count.in = .count.out = .strata = .message = NULL
   .data = .data %>% .untrack()
-  .envir = .integrateDots(.slice_fn, ..., .envir=rlang::caller_env())
+  .envir = .integrateDots(.slice_fn, ..., .envir = rlang::caller_env())
   # .envir$.total = nrow(.data)
   grps = .data %>% dplyr::groups()
 
-  out = .data %>% .slice_fn(...)
+  out = .slice_fn(.data, ...)
   .envir$.data.out = out
-  tmpHead = .dataToNodesDf(.data, .headline,.isHeader=TRUE, .type = .type, .envir=.envir)
-  tmp = .beforeAfterGroupwiseCounts(.data,out)
-  tmp = tmp %>% dplyr::mutate(.excluded = .count.in-.count.out)
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
+  tmpHead = .dataToNodesDf(
+    .data,
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
+  tmp = .beforeAfterGroupwiseCounts(.data, out)
+  tmp = tmp %>% dplyr::mutate(.excluded = .count.in - .count.out)
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(tmp, m, .isHeader = FALSE, .type = .type, .envir = .envir)
+  }))
 
   # Not defined what tracking exclusions looks like for slice operations
   # excluded = NULL
@@ -1960,9 +2901,13 @@ p_filter = function(.data,
   #     dplyr::mutate(.filter = paste0(sapply(sapply(filterExprs,deparse),trimws), collapse=", "))
   # }
   #
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=.asOffshoot) #, .excluded=excluded) #, .stage = .stage) # %>% .writeTag(.tag, .content = tmp)
+  out = out %>%
+    p_copy(.data) %>%
+    .writeMessagesToNode(
+      dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = .asOffshoot
+    ) #, .excluded=excluded) #, .stage = .stage) # %>% .writeTag(.tag, .content = tmp)
   return(out %>% .retrack())
-
 }
 
 #' Slice operations
@@ -1986,8 +2931,19 @@ p_filter = function(.data,
 #' @inheritDotParams dplyr::slice
 #' @export
 #' @example inst/examples/slice-examples.R
-p_slice = function(.data, ..., .messages = c("{.count.in} before","{.count.out} after"), .headline="slice data") {
-  .doSlice(dplyr::slice, .data = .data, ..., .messages = .messages, .headline = .headline)
+p_slice = function(
+  .data,
+  ...,
+  .messages = c("subset data", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .doSlice(
+    dplyr::slice,
+    .data = .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_slice
@@ -1995,8 +2951,19 @@ p_slice = function(.data, ..., .messages = c("{.count.in} before","{.count.out} 
 #' @inheritDotParams dplyr::slice_head
 #' @export
 #' @example inst/examples/slice-head-tail-examples.R
-p_slice_head = function(.data, ..., .messages = c("{.count.in} before","{.count.out} after"), .headline="slice data") {
-  .doSlice(dplyr::slice_head, .data = .data, ..., .messages = .messages, .headline = .headline)
+p_slice_head = function(
+  .data,
+  ...,
+  .messages = c("subset data", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .doSlice(
+    dplyr::slice_head,
+    .data = .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_slice
@@ -2004,8 +2971,19 @@ p_slice_head = function(.data, ..., .messages = c("{.count.in} before","{.count.
 #' @inheritDotParams dplyr::slice_tail
 #' @export
 #' @example inst/examples/slice-head-tail-examples.R
-p_slice_tail = function(.data, ..., .messages = c("{.count.in} before","{.count.out} after"), .headline="slice data") {
-  .doSlice(dplyr::slice_tail, .data = .data, ..., .messages = .messages, .headline = .headline)
+p_slice_tail = function(
+  .data,
+  ...,
+  .messages = c("subset data", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .doSlice(
+    dplyr::slice_tail,
+    .data = .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_slice
@@ -2013,8 +2991,19 @@ p_slice_tail = function(.data, ..., .messages = c("{.count.in} before","{.count.
 #' @inheritDotParams dplyr::slice_min
 #' @export
 #' @example inst/examples/slice-max-min-examples.R
-p_slice_min = function(.data, ..., .messages = c("{.count.in} before","{.count.out} after"), .headline="slice data") {
-  .doSlice(dplyr::slice_min, .data = .data, ..., .messages = .messages, .headline = .headline)
+p_slice_min = function(
+  .data,
+  ...,
+  .messages = c("subset data", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .doSlice(
+    dplyr::slice_min,
+    .data = .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_slice
@@ -2022,8 +3011,19 @@ p_slice_min = function(.data, ..., .messages = c("{.count.in} before","{.count.o
 #' @inheritDotParams dplyr::slice_max
 #' @export
 #' @example inst/examples/slice-max-min-examples.R
-p_slice_max = function(.data, ..., .messages = c("{.count.in} before","{.count.out} after"), .headline="slice data") {
-  .doSlice(dplyr::slice_max, .data = .data, ..., .messages = .messages, .headline = .headline)
+p_slice_max = function(
+  .data,
+  ...,
+  .messages = c("subset data", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .doSlice(
+    dplyr::slice_max,
+    .data = .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_slice
@@ -2031,8 +3031,19 @@ p_slice_max = function(.data, ..., .messages = c("{.count.in} before","{.count.o
 #' @inheritDotParams dplyr::slice_sample
 #' @export
 #' @example inst/examples/slice-sample-examples.R
-p_slice_sample = function(.data, ..., .messages = c("{.count.in} before","{.count.out} after"), .headline="slice data") {
-  .doSlice(dplyr::slice_sample, .data = .data, ..., .messages = .messages, .headline = .headline)
+p_slice_sample = function(
+  .data,
+  ...,
+  .messages = c("subset data", "{.count.in} before", "{.count.out} after"),
+  .headline = .defaultHeadline()
+) {
+  .doSlice(
+    dplyr::slice_sample,
+    .data = .data,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' Group-wise modification of data and complex operations
@@ -2064,24 +3075,45 @@ p_slice_sample = function(.data, ..., .messages = c("{.count.in} before","{.coun
 #' library(dplyr)
 #' library(dtrackr)
 #'
-#' tmp = iris %>% track() %>% group_by(Species)
-#' tmp %>% group_modify(
-#'       function(d,g,...) { return(tibble::tibble(x=runif(10))) },
+#' tmp = iris %>% track() %>% dplyr::group_by(Species)
+#' tmp %>% dplyr::group_modify(
+#'       function(d,g,...) { return(tibble::tibble(x=stats::runif(10))) },
 #'       .messages="{.count.in} in, {.count.out} out"
 #' ) %>% history()
-p_group_modify = function(.data, ..., .messages=NULL, .headline=.defaultHeadline(), .type = "modify", .tag=NULL) {
+p_group_modify = function(
+  .data,
+  ...,
+  .messages = NULL,
+  .headline = .defaultHeadline(),
+  .type = "modify",
+  .tag = NULL
+) {
   .data = .data %>% .untrack()
   .envir = rlang::caller_env()
   .envir$.total = nrow(.data)
 
-  tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .envir=.envir)
+  tmpHead = .dataToNodesDf(
+    .data,
+    .headline,
+    .isHeader = TRUE,
+    .type = .type,
+    .envir = .envir
+  )
 
   grps = .data %>% dplyr::groups()
   out = .data %>% dplyr::group_modify(...)
-  tmp = .beforeAfterGroupwiseCounts(.data,out)
-  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .summaryToNodesDf(tmp,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
+  tmp = .beforeAfterGroupwiseCounts(.data, out)
+  tmpBody = dplyr::bind_rows(lapply(.messages, function(m) {
+    .summaryToNodesDf(tmp, m, .isHeader = FALSE, .type = .type, .envir = .envir)
+  }))
 
-  out = out %>% p_copy(.data) %>% .writeMessagesToNode(dplyr::bind_rows(tmpHead,tmpBody), .asOffshoot=FALSE) %>% .writeTag(.tag, .content = tmp)
+  out = out %>%
+    p_copy(.data) %>%
+    .writeMessagesToNode(
+      dplyr::bind_rows(tmpHead, tmpBody),
+      .asOffshoot = FALSE
+    ) %>%
+    .writeTag(.tag, .content = tmp)
   return(out %>% .retrack())
 }
 
@@ -2089,19 +3121,29 @@ p_group_modify = function(.data, ..., .messages=NULL, .headline=.defaultHeadline
 
 ### Set ops ----
 
-
 .doSetOperation = function(.set_fn, ..., .messages, .headline) {
   dots = rlang::list2(...)
-  if(!any(sapply(dots,.isTracked))) return(.set_fn(...))
-  .envir = .integrateDots(.set_fn, ..., .envir=rlang::caller_env())
-  mergedGraph=.emptyGraph()
-  for(item in  dots) {
-    if (.isTracked(item)) mergedGraph = .mergeGraphs(mergedGraph, item %>% p_get())
+  if (!any(sapply(dots, .isTracked))) {
+    return(.set_fn(...))
+  }
+  .envir = .integrateDots(.set_fn, ..., .envir = rlang::caller_env())
+  mergedGraph = .emptyGraph()
+  for (item in dots) {
+    if (.isTracked(item)) {
+      mergedGraph = .mergeGraphs(mergedGraph, item %>% p_get())
+    }
   }
   dots = lapply(dots, .untrack)
   out = rlang::exec(.set_fn, !!!dots)
   .envir$.count.out = nrow(out)
-  out = out %>% p_set(mergedGraph) %>% .comment(.messages, .headline = .headline, .type="combine",.envir = .envir)
+  out = out %>%
+    p_set(mergedGraph) %>%
+    .comment(
+      .messages,
+      .headline = .headline,
+      .type = "combine",
+      .envir = .envir
+    )
   return(out %>% .retrack())
 }
 
@@ -2126,54 +3168,122 @@ p_group_modify = function(.data, ..., .messages=NULL, .headline=.defaultHeadline
 #'
 #' @export
 #' @example inst/examples/set-operation-examples.R
-p_bind_rows = function(..., .messages="{.count.out} in union", .headline="Union") {
-  .doSetOperation(dplyr::bind_rows, ..., .messages=.messages, .headline = .headline)
+p_bind_rows = function(
+  ...,
+  .messages = "{.count.out} in union",
+  .headline = "Union"
+) {
+  .doSetOperation(
+    dplyr::bind_rows,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_bind_rows
 #' @seealso dplyr::bind_cols()
 #' @export
-p_bind_cols = function(...,
-       .messages="{.count.out} in combined set", .headline="Bind columns") {
-  .doSetOperation(dplyr::bind_cols, ..., .messages=.messages, .headline = .headline)
+p_bind_cols = function(
+  ...,
+  .messages = "{.count.out} in combined set",
+  .headline = "Bind columns"
+) {
+  .doSetOperation(
+    dplyr::bind_cols,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_bind_rows
 #' @seealso generics::intersect()
 #' @inheritParams generics::setops
 #' @export
-p_intersect = function(x, y, ..., .messages="{.count.out} in intersection", .headline="Intersection") {
-  .doSetOperation(dplyr::intersect, x, y, ..., .messages=.messages, .headline = .headline)
+p_intersect = function(
+  x,
+  y,
+  ...,
+  .messages = "{.count.out} in intersection",
+  .headline = "Intersection"
+) {
+  .doSetOperation(
+    dplyr::intersect,
+    x,
+    y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_bind_rows
 #' @seealso generics::union()
 #' @inheritParams  generics::setops
 #' @export
-p_union = function(x, y, ..., .messages="{.count.out} unique items in union", .headline="Distinct union") {
-  .doSetOperation(dplyr::union, x, y, ..., .messages=.messages, .headline = .headline)
+p_union = function(
+  x,
+  y,
+  ...,
+  .messages = "{.count.out} unique items in union",
+  .headline = "Distinct union"
+) {
+  .doSetOperation(
+    dplyr::union,
+    x,
+    y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_bind_rows
 #' @seealso dplyr::union_all()
 #' @inheritParams dplyr::setops
 #' @export
-p_union_all = function(x, y, ..., .messages="{.count.out} items in union", .headline="Union") {
-  .doSetOperation(dplyr::union_all, x, y, ..., .messages=.messages, .headline = .headline)
+p_union_all = function(
+  x,
+  y,
+  ...,
+  .messages = "{.count.out} items in union",
+  .headline = "Union"
+) {
+  .doSetOperation(
+    dplyr::union_all,
+    x,
+    y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' @inherit p_bind_rows
 #' @seealso dplyr::setdiff()
 #' @inheritParams generics::setops
 #' @export
-p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .headline="Difference") {
-  .doSetOperation(dplyr::setdiff, x, y, ..., .messages=.messages, .headline = .headline)
+p_setdiff = function(
+  x,
+  y,
+  ...,
+  .messages = "{.count.out} items in difference",
+  .headline = "Difference"
+) {
+  .doSetOperation(
+    dplyr::setdiff,
+    x,
+    y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 ### Joins ----
 
-.doJoin = function(joinFunction, x, y, by=NULL, ..., .messages, .headline) {
-
+.doJoin = function(joinFunction, x, y, by = NULL, ..., .messages, .headline) {
   mergedGraph = .mergeGraphs(x %>% p_get(), y %>% p_get())
   x = x %>% .untrack()
   y = y %>% .untrack()
@@ -2183,20 +3293,22 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 
   if (is.null(by)) {
     # Fix of #25 - the natural join when columns are not specified
-    .keys = paste0(intersect(colnames(x),colnames(y)), collapse = ", ")
+    .keys = paste0(intersect(colnames(x), colnames(y)), collapse = ", ")
   } else if (is.null(names(by))) {
     .keys = paste0(by, collapse = ", ")
   } else {
     .keys = paste0(
-      ifelse(names(by) != "", paste(names(by),by,sep="="),by),
-      collapse=", "
+      ifelse(names(by) != "", paste(names(by), by, sep = "="), by),
+      collapse = ", "
     )
   }
   .count.lhs = nrow(x)
   .count.rhs = nrow(y)
-  out = joinFunction(x, y, by=by, ...)
+  out = joinFunction(x, y, by = by, ...)
   .count.out = nrow(out)
-  out = out %>% p_set(mergedGraph) %>% .comment(.messages, .headline = .headline, .type="combine")
+  out = out %>%
+    p_set(mergedGraph) %>%
+    .comment(.messages, .headline = .headline, .type = "combine")
   return(out %>% .retrack())
   # tmpHead = .dataToNodesDf(.data,.headline,.isHeader=TRUE, .type = .type, .envir=.envir)
   # tmpBody = dplyr::bind_rows(lapply(.messages, function(m) .dataToNodesDf(.data,m,.isHeader=FALSE, .type = .type, .envir=.envir)))
@@ -2213,7 +3325,6 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 # to get excluded on lhs it is a lhs %>% anti_join(rhs, by=by) unless the operation is an anti_join itself when it is lhs %>% semi_join(rhs, by=by)
 # to get excluded on rhs it is rhs %>% anti_join(lhs, by = inversion_of_by).
 # where inversion_of_by is a named vector with names and values swapped round.
-
 
 #' Inner joins
 #'
@@ -2237,8 +3348,25 @@ p_setdiff = function(x, y, ..., .messages="{.count.out} items in difference", .h
 #'
 #' @export
 #' @example inst/examples/inner-join-examples.R
-p_inner_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Inner join by {.keys}") {
-  .doJoin(dplyr::inner_join, x=x, y=y, ..., .messages = .messages, .headline = .headline)
+p_inner_join = function(
+  x,
+  y,
+  ...,
+  .messages = c(
+    "{.count.lhs} on LHS",
+    "{.count.rhs} on RHS",
+    "{.count.out} in linked set"
+  ),
+  .headline = "Inner join by {.keys}"
+) {
+  .doJoin(
+    dplyr::inner_join,
+    x = x,
+    y = y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' Left join
@@ -2262,8 +3390,25 @@ p_inner_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.
 #'
 #' @export
 #' @example inst/examples/left-join-examples.R
-p_left_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Left join by {.keys}") {
-  .doJoin(dplyr::left_join, x=x, y=y, ..., .messages = .messages, .headline = .headline)
+p_left_join = function(
+  x,
+  y,
+  ...,
+  .messages = c(
+    "{.count.lhs} on LHS",
+    "{.count.rhs} on RHS",
+    "{.count.out} in linked set"
+  ),
+  .headline = "Left join by {.keys}"
+) {
+  .doJoin(
+    dplyr::left_join,
+    x = x,
+    y = y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' Right join
@@ -2287,8 +3432,25 @@ p_left_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.r
 #'
 #' @export
 #' @example inst/examples/full-join-examples.R
-p_right_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Right join by {.keys}") {
-  .doJoin(dplyr::right_join, x=x, y=y, ..., .messages = .messages, .headline = .headline)
+p_right_join = function(
+  x,
+  y,
+  ...,
+  .messages = c(
+    "{.count.lhs} on LHS",
+    "{.count.rhs} on RHS",
+    "{.count.out} in linked set"
+  ),
+  .headline = "Right join by {.keys}"
+) {
+  .doJoin(
+    dplyr::right_join,
+    x = x,
+    y = y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' Full join
@@ -2312,8 +3474,25 @@ p_right_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.
 #'
 #' @export
 #' @example inst/examples/full-join-examples.R
-p_full_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in linked set"), .headline="Full join by {.keys}") {
-  .doJoin(dplyr::full_join, x=x, y=y, ..., .messages = .messages, .headline = .headline)
+p_full_join = function(
+  x,
+  y,
+  ...,
+  .messages = c(
+    "{.count.lhs} on LHS",
+    "{.count.rhs} on RHS",
+    "{.count.out} in linked set"
+  ),
+  .headline = "Full join by {.keys}"
+) {
+  .doJoin(
+    dplyr::full_join,
+    x = x,
+    y = y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' Semi join
@@ -2337,8 +3516,25 @@ p_full_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.r
 #'
 #' @export
 #' @example inst/examples/semi-join-examples.R
-p_semi_join = function(x, y,  ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} in intersection"), .headline="Semi join by {.keys}") {
-  .doJoin(dplyr::semi_join, x=x, y=y, ..., .messages = .messages, .headline = .headline)
+p_semi_join = function(
+  x,
+  y,
+  ...,
+  .messages = c(
+    "{.count.lhs} on LHS",
+    "{.count.rhs} on RHS",
+    "{.count.out} in intersection"
+  ),
+  .headline = "Semi join by {.keys}"
+) {
+  .doJoin(
+    dplyr::semi_join,
+    x = x,
+    y = y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' Anti join
@@ -2362,8 +3558,25 @@ p_semi_join = function(x, y,  ..., .messages = c("{.count.lhs} on LHS","{.count.
 #'
 #' @export
 #' @example inst/examples/anti-join-examples.R
-p_anti_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} not matched"), .headline="Semi join by {.keys}") {
-  .doJoin(dplyr::anti_join, x=x, y=y, ..., .messages = .messages, .headline = .headline)
+p_anti_join = function(
+  x,
+  y,
+  ...,
+  .messages = c(
+    "{.count.lhs} on LHS",
+    "{.count.rhs} on RHS",
+    "{.count.out} not matched"
+  ),
+  .headline = "Semi join by {.keys}"
+) {
+  .doJoin(
+    dplyr::anti_join,
+    x = x,
+    y = y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 #' Nest join
@@ -2387,8 +3600,25 @@ p_anti_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.r
 #'
 #' @export
 #' @example inst/examples/nest-join-examples.R
-p_nest_join = function(x, y, ..., .messages = c("{.count.lhs} on LHS","{.count.rhs} on RHS","{.count.out} matched"), .headline="Nest join by {.keys}") {
-  .doJoin(dplyr::nest_join, x=x, y=y, ..., .messages = .messages, .headline = .headline)
+p_nest_join = function(
+  x,
+  y,
+  ...,
+  .messages = c(
+    "{.count.lhs} on LHS",
+    "{.count.rhs} on RHS",
+    "{.count.out} matched"
+  ),
+  .headline = "Nest join by {.keys}"
+) {
+  .doJoin(
+    dplyr::nest_join,
+    x = x,
+    y = y,
+    ...,
+    .messages = .messages,
+    .headline = .headline
+  )
 }
 
 ## Output operations ====
@@ -2405,10 +3635,14 @@ is_running_in_chunk = function() {
   # check for installation as dependency is optional
   if (rlang::is_installed("rstudioapi")) {
     is_knitting() ||
-    isTRUE(try({
-      rstudioapi::getActiveDocumentContext()$id != "#console" &
-      rstudioapi::getActiveDocumentContext()$path %>% stringr::str_ends("Rmd")
-    },silent = TRUE))
+      isTRUE(try(
+        {
+          rstudioapi::getActiveDocumentContext()$id != "#console" &
+            rstudioapi::getActiveDocumentContext()$path %>%
+              stringr::str_ends("Rmd")
+        },
+        silent = TRUE
+      ))
   } else {
     return(is_knitting())
   }
@@ -2423,9 +3657,7 @@ is_running_in_chunk = function() {
 #'
 #' @param .data the tracked dataframe(s) either as a single dataframe or as a
 #'   list of dataframes.
-#' @param ... other parameters passed onto either `p_get_as_dot()`, notable ones are
-#'   `fill` (background colour e.g. `lightgrey`), `fontsize` (in points),
-#'   `colour` (font colour)
+#' @inheritDotParams p_get_as_dot
 #' @param filename a file name which will be where the formatted flowcharts are
 #'   saved. If no extension is specified the output formats are determined by
 #'   the `formats` parameter.
@@ -2444,17 +3676,37 @@ is_running_in_chunk = function() {
 #' library(dtrackr)
 #'
 #' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
-#' tmp %>% group_by(Species) %>% comment(.tag="step2") %>% flowchart()
-p_flowchart = function(.data, filename = NULL, size = std_size$full, maxWidth = size$width, maxHeight = size$height, formats=c("dot","png","pdf","svg"), defaultToHTML = TRUE, landscape = size$rot!=0, ...) {
-
+#' tmp %>% dplyr::group_by(Species) %>% comment(.tag="step2") %>% flowchart()
+p_flowchart = function(
+  .data,
+  filename = NULL,
+  size = std_size$full,
+  maxWidth = size$width,
+  maxHeight = size$height,
+  formats = c("dot", "png", "pdf", "svg"),
+  defaultToHTML = TRUE,
+  landscape = size$rot != 0,
+  ...
+) {
   # make sure .data is a list of dataframes
-  if(is.data.frame(.data)) .data = list(.data)
-  mergedGraph=.emptyGraph()
+  if (is.data.frame(.data)) {
+    .data = list(.data)
+  }
+  mergedGraph = .emptyGraph()
 
-  if(!any(sapply(.data, .isTracked))) stop("None of the inputs is a tracked data frame. Did you forget to call dtrackr::track()")
-  if(!all(sapply(.data, .isTracked))) rlang::warn("Some of the inputs are not tracked data frames. These will be ignored.", .frequency = "always")
+  if (!any(sapply(.data, .isTracked))) {
+    stop(
+      "None of the inputs is a tracked data frame. Did you forget to call dtrackr::track()"
+    )
+  }
+  if (!all(sapply(.data, .isTracked))) {
+    rlang::warn(
+      "Some of the inputs are not tracked data frames. These will be ignored.",
+      .frequency = "always"
+    )
+  }
 
-  for(item in .data) {
+  for (item in .data) {
     if ("trackr_df" %in% class(item)) {
       mergedGraph = .mergeGraphs(mergedGraph, item %>% p_get())
     }
@@ -2463,82 +3715,85 @@ p_flowchart = function(.data, filename = NULL, size = std_size$full, maxWidth = 
   # if we are knitting and the output is not HTML we will need the image
   # saved somewhere as a png and pdf. Also if output if github markdown
   # Also if we are viewing the image in the console and the user requested the png
-  if(
-    (is_knitting() && !(knitr::is_html_output()))
-    ||
-    (!is_knitting() && !is_running_in_chunk() && !defaultToHTML)
-
+  if (
+    (is_knitting() && !(knitr::is_html_output())) ||
+      (!is_knitting() && !is_running_in_chunk() && !defaultToHTML)
   ) {
     if (is.null(filename)) {
       # no file was given but for latex we need to convert to PDF anyway
       filename = tempfile(pattern = "flowchart_")
-      formats = c("png","pdf")
+      formats = c("png", "pdf")
     } else {
-      formats = unique(c("png","pdf",formats))
+      formats = unique(c("png", "pdf", formats))
     }
   }
 
   outgraph = mergedGraph %>% .graph2dot(...)
 
-  if (!identical(filename,NULL)) {
-    tmp = outgraph %>% save_dot(filename = filename, size=size,maxWidth=maxWidth, maxHeight=maxHeight, formats = formats, landscape = landscape, ...)
+  if (!identical(filename, NULL)) {
+    tmp = outgraph %>%
+      save_dot(
+        filename = filename,
+        size = size,
+        maxWidth = maxWidth,
+        maxHeight = maxHeight,
+        formats = formats,
+        landscape = landscape,
+        ...
+      )
     svg = tmp$svg
   } else {
-    svg = dot2svg(outgraph) %>% .scale_svg(maxWidth=maxWidth, maxHeight=maxHeight, landscape = landscape)
+    svg = dot2svg(outgraph) %>%
+      .scale_svg(
+        maxWidth = maxWidth,
+        maxHeight = maxHeight,
+        landscape = landscape
+      )
   }
 
   # Decide on the output format
 
   if (is_knitting()) {
-
     # warning(knitr::pandoc_to())
 
     # fmt <- rmarkdown::default_output_format(knitr::current_input())$name
     if (knitr::is_html_output(excludes = c("markdown"))) {
       return(htmltools::HTML(svg))
-
     } else if (knitr::is_latex_output()) {
       return(knitr::include_graphics(tmp$paths$png, auto_pdf = TRUE))
-
-    } else if (knitr::pandoc_to(fmt = c("docx","odt"))) {
+    } else if (knitr::pandoc_to(fmt = c("docx", "odt"))) {
       return(knitr::include_graphics(tmp$paths$png))
-
     } else if (knitr::pandoc_to(fmt = c("markdown"))) {
-      return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(data = charToRaw(svg), mime = "image/svg+xml"))))
+      return(knitr::asis_output(sprintf(
+        "<img src='%s'></img>",
+        base64enc::dataURI(data = charToRaw(svg), mime = "image/svg+xml")
+      )))
 
-    # } else if (knitr::pandoc_to(fmt = c("gfm"))) {
-    #   # https://github.com/YourUserAccount/YourProject/blob/master/DirectoryPath/ReadMe.md
-    #   # https://stackoverflow.com/questions/14494747/how-to-add-images-to-readme-md-on-github/48723190#48723190
-    #   # There is no easy option here as README.Rmd file will create a github
-    #   # README that is in one place, but when picked up by pkgdown it is moved
-    #   # to another. For an image to appear in Github readme it must be hosted
-    #   # and this is an issue for everything else.
-    #   # https://github.com/r-lib/pkgdown/issues/280
-    #   # suggests a location under man/figures should work for both but this is
-    #   # too much trouble to set up for one readme file
-    #   return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = tmp$paths$png, mime = "image/png"))))
-
+      # } else if (knitr::pandoc_to(fmt = c("gfm"))) {
+      #   # https://github.com/YourUserAccount/YourProject/blob/master/DirectoryPath/ReadMe.md
+      #   # https://stackoverflow.com/questions/14494747/how-to-add-images-to-readme-md-on-github/48723190#48723190
+      #   # There is no easy option here as README.Rmd file will create a github
+      #   # README that is in one place, but when picked up by pkgdown it is moved
+      #   # to another. For an image to appear in Github readme it must be hosted
+      #   # and this is an issue for everything else.
+      #   # https://github.com/r-lib/pkgdown/issues/280
+      #   # suggests a location under man/figures should work for both but this is
+      #   # too much trouble to set up for one readme file
+      #   return(knitr::asis_output(sprintf("<img src='%s'></img>", base64enc::dataURI(file = tmp$paths$png, mime = "image/png"))))
     } else {
       # the user specified type.
       if (!defaultToHTML) {
-        return(knitr::include_graphics(tmp$paths$png,auto_pdf = TRUE))
+        return(knitr::include_graphics(tmp$paths$png, auto_pdf = TRUE))
       } else {
         return(htmltools::HTML(svg))
       }
-
     }
-
-
-
   } else {
-
     # We are not kitting
-    if(is_running_in_chunk()) {
-
+    if (is_running_in_chunk()) {
       # We are in an RStudio chunk
       return(htmltools::HTML(svg))
     } else {
-
       # We are at the console probably
       if (defaultToHTML) {
         # print the html
@@ -2549,7 +3804,6 @@ p_flowchart = function(.data, filename = NULL, size = std_size$full, maxWidth = 
       }
     }
   }
-
 }
 
 #' DOT output
@@ -2557,9 +3811,13 @@ p_flowchart = function(.data, filename = NULL, size = std_size$full, maxWidth = 
 #' (advance usage) outputs a `dtrackr` history graph as a DOT string for rendering with `Graphviz`
 #'
 #' @param .data the tracked dataframe
-#' @param fill the default node fill colour
-#' @param fontsize the default font size
-#' @param colour the default font colour
+#' @param fill the default node fill colour, any R colour or hex value
+#' @param fontsize the default font size in points
+#' @param colour the default font colour, any R colour or hex value
+#' @param rankdir the dot rank direction (one of `TB`,`LR`,`BT`,`RL`)
+#' @param rounded should the node corners be rounded?
+#' @param fontname the font to use. Must exist on the system.
+#' @param bgcolour the background, may be "transparent", any R colour or hex value
 #' @param ... not used
 #'
 #' @return a representation of the history graph in `Graphviz` dot format.
@@ -2569,92 +3827,171 @@ p_flowchart = function(.data, filename = NULL, size = std_size$full, maxWidth = 
 #' library(dtrackr)
 #'
 #' tmp = iris %>% track() %>% comment(.tag = "step1") %>% filter(Species!="versicolor")
-#' dot = tmp %>% group_by(Species) %>% comment(.tag="step2") %>% p_get_as_dot()
+#' dot = tmp %>% dplyr::group_by(Species) %>% comment(.tag="step2") %>% p_get_as_dot()
 #' cat(dot)
-p_get_as_dot = function(.data, fill="lightgrey", fontsize="8", colour="black", ...) {
+p_get_as_dot = function(
+  .data,
+  fill = .defaultFill(),
+  fontsize = .defaultFontSize(),
+  colour = .defaultColour(),
+  rankdir = .defaultDirection(),
+  rounded = .defaultRounded(),
+  fontname = .defaultFontName(),
+  bgcolour = .defaultBgColour(),
+  ...
+) {
   graph = .data %>% p_get()
-  return(.graph2dot(graph))
+  return(.graph2dot(
+    graph,
+    fill,
+    fontsize,
+    colour,
+    rankdir,
+    rounded,
+    fontname,
+    bgcolour
+  ))
 }
 
-.graph2dot = function(graph, fill="lightgrey", fontsize="8", colour="black", ...) {
+
+.graph2dot = function(
+  graph,
+  fill = "white",
+  fontsize = 8,
+  colour = "black",
+  rankdir = c("TB", "LR", "BT", "RL"),
+  rounded = FALSE,
+  fontname = "Helvetica",
+  bgcolour = "white",
+  ...
+) {
+  rankdir = match.arg(rankdir)
   .rel = .id = .rank = .from = .hasOffshoot = nodeSpec = rankSpec = edgeSpec = NULL
   # THIS IS WHERE FORMATTING IS DEFINED
-  nodesDf = graph$nodes %>% dplyr::mutate(
-    .fillcolor= dplyr::case_when(.type=="summary"~"grey90",.type=="exclusion"~"grey80",TRUE~"white")
-  ) %>% mutate(
-    .hasOffshoot = .id %in% (graph$edges %>% dplyr::filter(.rel=="exclusion") %>% dplyr::pull(.from))
-  )
-  edgesDf = graph$edges %>% dplyr::mutate(
-    .headport=ifelse(.rel=="exclusion","w","n"), #"n",
-    .weight=ifelse(.rel=="exclusion","1","100"),
-    .tailport= ifelse(.rel=="exclusion","e","s"), #"s",
-    .colour="black",
-    .id = dplyr::row_number()
-  )
+  nodesDf = graph$nodes %>%
+    dplyr::mutate(
+      .fillcolor = dplyr::case_when(
+        .type == "summary" ~ scales::col_darker(fill, 10),
+        .type == "exclusion" ~ scales::col_darker(fill, 20),
+        TRUE ~ scales::col_darker(fill, 0)
+      )
+    ) %>%
+    dplyr::mutate(
+      .hasOffshoot = .id %in%
+        (graph$edges %>%
+          dplyr::filter(.rel == "exclusion") %>%
+          dplyr::pull(.from))
+    )
 
-  outNode = nodesDf %>% dplyr::group_by(dplyr::desc(.id)) %>% dplyr::mutate(
-    # TODO: this maybe not going to work completely
-    # nodeSpec = glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
-    nodeSpec = # ifelse(.hasOffshoot,
+  # have to rotate these positions for different orientations
+  west = c("w", "s", "e", "n")[match(rankdir, c("TB", "LR", "BT", "RL"))]
+  north = c("n", "w", "s", "e")[match(rankdir, c("TB", "LR", "BT", "RL"))]
+  east = c("e", "n", "w", "s")[match(rankdir, c("TB", "LR", "BT", "RL"))]
+  south = c("s", "e", "n", "w")[match(rankdir, c("TB", "LR", "BT", "RL"))]
+
+  edgesDf = graph$edges %>%
+    dplyr::mutate(
+      .headport = ifelse(.rel == "exclusion", west, north), #"n",
+      .weight = ifelse(.rel == "exclusion", "1", "100"),
+      .tailport = ifelse(.rel == "exclusion", east, south), #"s",
+      .colour = "black",
+      .id = dplyr::row_number()
+    )
+
+  outNode = nodesDf %>%
+    dplyr::group_by(dplyr::desc(.id)) %>%
+    dplyr::mutate(
+      # TODO: this maybe not going to work completely
+      # nodeSpec = glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
+      # ifelse(.hasOffshoot,
       # glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];\n'{.id}_e' [width='0', shape='point', style='invis'];"),
-      glue::glue("'{.id}' [label=<{.label}>,group='{.strata}',fillcolor='{.fillcolor}'];")
-    #)
-  ) %>%
+      nodeSpec = glue::glue(
+        "'{.id}' [label=<{.label}>,group='{.dot_escape(.strata)}',fillcolor='{.fillcolor}'];"
+      )
+      #)
+    ) %>%
     dplyr::group_by(.rank) %>%
-    dplyr::summarise(rankSpec = paste0(nodeSpec,collapse = "\n"), .groups="drop") %>%
-    dplyr::mutate(rankSpec = paste(
-      "{ rank='same';",
-      rankSpec,
-      "}",sep="\n")
+    dplyr::summarise(
+      rankSpec = paste0(nodeSpec, collapse = "\n"),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      rankSpec = paste(
+        "{ rank='same';",
+        rankSpec,
+        "}",
+        sep = "\n"
+      )
     ) %>%
     dplyr::arrange(dplyr::desc(.rank)) %>%
     dplyr::pull(rankSpec) %>%
-    paste0(collapse="\n")
+    paste0(collapse = "\n")
 
   outEdge = edgesDf %>%
     dplyr::arrange(dplyr::desc(.id)) %>%
     # TODO: there is a problem with Ortho layout and ports.
     # https://stackoverflow.com/questions/27504703/in-graphviz-how-do-i-align-an-edge-to-the-top-center-of-a-node
-    dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']")) %>%
-    dplyr::mutate(edgeSpec = # ifelse(.rel=="exclusion",
-        # add in another invisible node on the same rank
-        # glue::glue("'{.from}' -> '{.from}_e' [weight='{.weight}', dir='none']\n'{.from}_e' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']",),
-        glue::glue("'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']") #)
+    dplyr::mutate(
+      edgeSpec = glue::glue(
+        "'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']"
+      )
+    ) %>%
+    dplyr::mutate(
+      # ifelse(.rel=="exclusion",
+      # add in another invisible node on the same rank
+      # glue::glue("'{.from}' -> '{.from}_e' [weight='{.weight}', dir='none']\n'{.from}_e' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']",),
+      edgeSpec = glue::glue(
+        "'{.from}' -> '{.to}' [tailport='{.tailport}',weight='{.weight}']"
+      ) #)
     ) %>%
     # dplyr::mutate(edgeSpec = glue::glue("'{.from}' -> '{.to}' [headport='{.headport}', tailport='{.tailport}',weight='{.weight}']")) %>% # Loses heads of arrows
     # dplyr::mutate(edgeSpec = glue::glue("'{.from}':'{.tailport}' -> '{.to}':'{.headport}' [weight='{.weight}']")) %>% # Loses heads of arrows
     dplyr::pull(edgeSpec) %>%
-    paste0(collapse="\n")
+    paste0(collapse = "\n")
 
   outGraph = paste(
-    "digraph {
+    sprintf(
+      "digraph {
      graph [layout = 'dot',
         splines='ortho',
-        rankdir = 'TB',
+        rankdir = '%1$s',
         outputorder = 'edgesfirst',
-        bgcolor = 'white',
+        bgcolor = '%6$s',
         ranksep = '0.25',
         nodesep = '0.2',
         newrank='true']
 
-    node [fontname = 'Helvetica',
-        fontsize = '8',
+    node [fontname = '%5$s',
+        fontsize = '%2$d',
         shape='box',
         fixedsize = 'false',
         margin = '0.1,0.1',
         width = '0',
         height = '0',
-        style = 'filled',
-        color = 'black',
-        fontcolor = 'black',
+        style = '%4$sfilled',
+        color = '%3$s',
+        fontcolor = '%3$s',
         labeljust='l']
 
-    edge [fontname = 'Helvetica',
-        fontsize = '8',
+    edge [fontname = '%5$s',
+        fontsize = '%2$d',
         len = '0.5',
-        color = 'black',
+        color = '%3$s',
         arrowsize = '0.5']
-    ",outNode,"\n",outEdge,sep="\n","}")
+    ",
+      rankdir,
+      fontsize,
+      scales::col_darker(colour, 0), #force into hex. prb a better way to do this
+      if (rounded) "rounded," else "",
+      fontname,
+      scales::col_darker(bgcolour, 0)
+    ),
+    outNode,
+    "\n",
+    outEdge,
+    sep = "\n",
+    "}"
+  )
 
   return(outGraph)
 }
@@ -2704,6 +4041,7 @@ exclude_all <- p_exclude_all
 include_any <- p_include_any
 
 #' @inherit p_flowchart
+#' @inheritDotParams p_get_as_dot
 #' @export
 flowchart <- p_flowchart
 
@@ -2733,6 +4071,8 @@ comment <- p_comment
 #' @importFrom dplyr arrange
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr pivot_longer
+#' @importFrom tidyr nest
+#' @importFrom tidyr unnest
 #' @importFrom dplyr group_by
 #' @importFrom dplyr group_modify
 #' @importFrom dplyr inner_join
@@ -2812,6 +4152,16 @@ pivot_wider.trackr_df <- p_pivot_wider
 #' @inheritDotParams tidyr::pivot_longer
 #' @export
 pivot_longer.trackr_df <- p_pivot_longer
+
+#' @inherit p_nest
+#' @inheritDotParams tidyr::nest
+#' @export
+nest.trackr_df <- p_nest
+
+#' @inherit p_unnest
+#' @inheritDotParams tidyr::unnest
+#' @export
+unnest.trackr_df <- p_unnest
 
 #' @inherit p_group_by
 #' @inheritDotParams dplyr::group_by
@@ -2921,6 +4271,16 @@ setdiff.trackr_df <- p_setdiff
 
 #' @inherit p_add_count
 #' @inheritDotParams dplyr::add_count
+#' @export
+add_count.trackr_df <- p_add_count
+
+#' @inherit p_nest
+#' @inheritDotParams tidyr::nest
+#' @export
+setdiff.trackr_df <- p_setdiff
+
+#' @inherit p_unnest
+#' @inheritDotParams tidyr::unnest
 #' @export
 add_count.trackr_df <- p_add_count
 

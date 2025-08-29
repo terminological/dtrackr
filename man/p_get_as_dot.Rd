@@ -4,16 +4,34 @@
 \alias{p_get_as_dot}
 \title{DOT output}
 \usage{
-p_get_as_dot(.data, fill = "lightgrey", fontsize = "8", colour = "black", ...)
+p_get_as_dot(
+  .data,
+  fill = .defaultFill(),
+  fontsize = .defaultFontSize(),
+  colour = .defaultColour(),
+  rankdir = .defaultDirection(),
+  rounded = .defaultRounded(),
+  fontname = .defaultFontName(),
+  bgcolour = .defaultBgColour(),
+  ...
+)
 }
 \arguments{
 \item{.data}{the tracked dataframe}
 
-\item{fill}{the default node fill colour}
+\item{fill}{the default node fill colour, any R colour or hex value}
 
-\item{fontsize}{the default font size}
+\item{fontsize}{the default font size in points}
 
-\item{colour}{the default font colour}
+\item{colour}{the default font colour, any R colour or hex value}
+
+\item{rankdir}{the dot rank direction (one of \code{TB},\code{LR},\code{BT},\code{RL})}
+
+\item{rounded}{should the node corners be rounded?}
+
+\item{fontname}{the font to use. Must exist on the system.}
+
+\item{bgcolour}{the background, may be "transparent", any R colour or hex value}
 
 \item{...}{not used}
 }
@@ -28,6 +46,6 @@ library(dplyr)
 library(dtrackr)
 
 tmp = iris \%>\% track() \%>\% comment(.tag = "step1") \%>\% filter(Species!="versicolor")
-dot = tmp \%>\% group_by(Species) \%>\% comment(.tag="step2") \%>\% p_get_as_dot()
+dot = tmp \%>\% dplyr::group_by(Species) \%>\% comment(.tag="step2") \%>\% p_get_as_dot()
 cat(dot)
 }

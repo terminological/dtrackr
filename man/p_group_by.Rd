@@ -59,18 +59,18 @@ sometimes a \code{group_by()} operation will create a lot of groups. This happen
 for example if you are doing a \code{group_by()}, \code{summarise()} step that is
 aggregating data on a fine scale, e.g. by day in a time-series. This is
 generally a terrible idea when tracking a dataframe as the resulting
-flowchart will have many many branches and be illegible. \code{dtrackr} will detect this issue and
-pause tracking the dataframe with a warning. It is up to the user to the
-\code{resume()} tracking when the large number of groups have been resolved e.g.
-using a \code{dplyr::ungroup()}. This limit is configurable with
-\code{options("dtrackr.max_supported_groupings"=XX)}. The default is 16. See
+flowchart will have many many branches and be illegible. \code{dtrackr} will
+detect this issue and pause tracking the dataframe with a warning. It is up
+to the user to the \code{resume()} tracking when the large number of groups have
+been resolved e.g. using a \code{dplyr::ungroup()}. This limit is configurable
+with \code{options("dtrackr.max_supported_groupings"=XX)}. The default is 16. See
 \code{\link[dplyr:group_by]{dplyr::group_by()}}.
 }
 \examples{
 library(dplyr)
 library(dtrackr)
 
-tmp = iris \%>\% track() \%>\% group_by(Species, .messages="stratify by {.cols}")
+tmp = iris \%>\% track() \%>\% dplyr::group_by(Species, .messages="stratify by {.cols}")
 tmp \%>\% comment("{.strata}") \%>\% history()
 }
 \seealso{

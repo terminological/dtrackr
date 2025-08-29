@@ -6,6 +6,8 @@
 \alias{dtrackr-package}
 \title{dtrackr: Track your Data Pipelines}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Track and document 'dplyr' data pipelines. As you filter, mutate, and join your way through a data set, 'dtrackr' seamlessly keeps track of your data flow and makes publication ready documentation of a data pipeline simple.
 }
 \seealso{

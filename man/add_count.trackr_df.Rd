@@ -5,6 +5,8 @@
 \title{dplyr modifying operations}
 \usage{
 \method{add_count}{trackr_df}(x, ..., .messages = "", .headline = "", .tag = NULL)
+
+\method{add_count}{trackr_df}(x, ..., .messages = "", .headline = "", .tag = NULL)
 }
 \arguments{
 \item{x}{A data frame, data frame extension (e.g. a tibble), or a
@@ -33,6 +35,48 @@ levels of factors that don't exist in the data).
 
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} For \code{add_count()}: deprecated since it
 can't actually affect the output.}
+}
+  Named arguments passed on to \code{\link[tidyr:unnest]{tidyr::unnest}}\describe{
+    \item{\code{data}}{A data frame.}
+\item{\code{cols}}{<\code{\link[tidyr:tidyr_tidy_select]{tidy-select}}> List-columns to unnest.
+
+When selecting multiple columns, values from the same row will be recycled
+to their common size.}
+\item{\code{keep_empty}}{By default, you get one row of output for each element
+of the list that you are unchopping/unnesting. This means that if there's a
+size-0 element (like \code{NULL} or an empty data frame or vector), then that
+entire row will be dropped from the output. If you want to preserve all
+rows, use \code{keep_empty = TRUE} to replace size-0 elements with a single row
+of missing values.}
+\item{\code{ptype}}{Optionally, a named list of column name-prototype pairs to
+coerce \code{cols} to, overriding the default that will be guessed from
+combining the individual values. Alternatively, a single empty ptype
+can be supplied, which will be applied to all \code{cols}.}
+\item{\code{names_sep}}{If \code{NULL}, the default, the outer names will come from the
+inner names. If a string, the outer names will be formed by pasting
+together the outer and the inner column names, separated by \code{names_sep}.}
+\item{\code{names_repair}}{Used to check that output data frame has valid
+names. Must be one of the following options:
+\itemize{
+\item \verb{"minimal}": no name repair or checks, beyond basic existence,
+\item \verb{"unique}": make sure names are unique and not empty,
+\item \verb{"check_unique}": (the default), no name repair, but check they are unique,
+\item \verb{"universal}": make the names unique and syntactic
+\item a function: apply custom name repair.
+\item \link[tidyr]{tidyr_legacy}: use the name repair from tidyr 0.8.
+\item a formula: a purrr-style anonymous function (see \code{\link[rlang:as_function]{rlang::as_function()}})
+}
+
+See \code{\link[vctrs:vec_as_names]{vctrs::vec_as_names()}} for more details on these terms and the
+strategies used to enforce them.}
+\item{\code{.drop,.preserve}}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}:
+all list-columns are now preserved; If there are any that you
+don't want in the output use \code{select()} to remove them prior to
+unnesting.}
+\item{\code{.id}}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}:
+convert \code{df \%>\% unnest(x, .id = "id")} to \verb{df \%>\% mutate(id = names(x)) \%>\% unnest(x))}.}
+\item{\code{.sep}}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}:
+use \code{names_sep} instead.}
 }}
 
 \item{.messages}{a set of glue specs. The glue code can use any global

@@ -61,6 +61,6 @@ each subgroup is added as a new stage in the flowchart.
 \examples{
 library(dplyr)
 library(dtrackr)
-survival::cgd \%>\% track() \%>\% group_by(treat) \%>\%
+survival::cgd \%>\% track() \%>\% dplyr::group_by(treat) \%>\%
   count_subgroup(center) \%>\% history()
 }

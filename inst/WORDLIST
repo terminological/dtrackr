@@ -2,6 +2,7 @@ CMD
 CoV
 EPSRC
 MRC
+ORCID
 REPL
 RMarkdown
 RSVG
@@ -10,6 +11,7 @@ TJ
 Un
 Zenodo
 autoref
+behavior
 codecov
 dbplyr
 dplyr
@@ -21,12 +23,17 @@ magrittr
 md
 metacran
 ptype
+purrr
 rlang
 rowwise
 setdiff
-src
 srcs
+stringi
 tibble
 tidyr
 tidyselect
 un
+unchopping
+unnest
+unnesting
+unpausing

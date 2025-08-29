@@ -41,9 +41,16 @@ from the context, default providing \code{HTML} (TRUE) or to embedding the \code
 \code{maxWidth} and \code{maxHeight} still apply and refer to the paper width to fit
 the flowchart into after rotation. (you might need to flip width and height)}
 
-\item{...}{other parameters passed onto either \code{p_get_as_dot()}, notable ones are
-\code{fill} (background colour e.g. \code{lightgrey}), \code{fontsize} (in points),
-\code{colour} (font colour)}
+\item{...}{ignored
+  Named arguments passed on to \code{\link[=p_get_as_dot]{p_get_as_dot}}\describe{
+    \item{\code{fill}}{the default node fill colour, any R colour or hex value}
+\item{\code{fontsize}}{the default font size in points}
+\item{\code{colour}}{the default font colour, any R colour or hex value}
+\item{\code{rankdir}}{the dot rank direction (one of \code{TB},\code{LR},\code{BT},\code{RL})}
+\item{\code{rounded}}{should the node corners be rounded?}
+\item{\code{fontname}}{the font to use. Must exist on the system.}
+\item{\code{bgcolour}}{the background, may be "transparent", any R colour or hex value}
+}}
 }
 \value{
 the nature of the flowchart output depends on the context in which
@@ -63,5 +70,5 @@ library(dplyr)
 library(dtrackr)
 
 tmp = iris \%>\% track() \%>\% comment(.tag = "step1") \%>\% filter(Species!="versicolor")
-tmp \%>\% group_by(Species) \%>\% comment(.tag="step2") \%>\% flowchart()
+tmp \%>\% dplyr::group_by(Species) \%>\% comment(.tag="step2") \%>\% flowchart()
 }

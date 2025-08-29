@@ -53,7 +53,7 @@ Because of the ... summary specification parameters MUST BE NAMED.
 \examples{
 library(dplyr)
 library(dtrackr)
-tmp = iris \%>\% track() \%>\% group_by(Species)
+tmp = iris \%>\% track() \%>\% dplyr::group_by(Species)
 tmp \%>\% status(
       long = p_count_if(Petal.Length>5),
       short = p_count_if(Petal.Length<2),
