@@ -326,7 +326,7 @@ tmp %>% flowchart(
 
 Font size options are a bit arbitrary as the flowchart is generally scaled to
 fit paper size and this will affect the apparent font size. These options can
-also be set globally as detailed in `vignette("dtrackr-options"`.
+also be set globally as detailed in `vignette("dtrackr-options")`.
 
 The `GraphViz` language provides many other options for formatting the
 flowchart. Rather than try and provide an interface for everything, we have gone
