@@ -74,5 +74,5 @@ tmp = iris \%>\% track() \%>\% dplyr::group_by(Species, .messages="stratify by {
 tmp \%>\% comment("{.strata}") \%>\% history()
 }
 \seealso{
-dplyr::group_by()
+\code{\link[dplyr:group_by]{dplyr::group_by()}}
 }

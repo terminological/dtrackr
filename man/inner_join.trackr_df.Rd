@@ -175,5 +175,5 @@ nrow(join)
 # join \%>\% flowchart()
 }
 \seealso{
-dplyr::inner_join()
+\code{\link[dplyr:mutate-joins]{dplyr::inner_join()}}
 }

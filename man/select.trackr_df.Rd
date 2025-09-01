@@ -71,5 +71,5 @@ iris \%>\%
   history()
 }
 \seealso{
-dplyr::select()
+\code{\link[dplyr:select]{dplyr::select()}}
 }

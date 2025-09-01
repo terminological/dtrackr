@@ -78,7 +78,10 @@ convert \code{df \%>\% unnest(x, .id = "id")} to \verb{df \%>\% mutate(id = name
 use \code{names_sep} instead.}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
-variable, grouping variable, or \{.strata\}. Defaults to nothing.}
+variable, grouping variable, \{.count.in\}, \{.count.out\} or \{.strata\}.
+Defaults to nothing. Older versions of \code{tidyr::unnest} can throw an error
+if this is more than 1 item long and and in that case use the \code{dtrackr}
+specific \code{p_nest} will work instead.}
 
 \item{.headline}{a headline glue spec. The glue code can use any global
 variable, grouping variable, or \{.strata\}. Defaults to nothing.}
@@ -88,8 +91,10 @@ the result of the \code{tidyr::unnest} but with a history graph
 updated.
 }
 \description{
-A drop in replacement for \code{\link[tidyr:unnest]{tidyr::unnest()}} which optionally takes a
-message and headline to store in the history graph.
+A drop in replacement for \code{\link[tidyr:unnest]{tidyr::unnest()}} which optionally takes a message
+and headline to store in the history graph. Older versions of \code{tidyr::unnest}
+can throw an error if \code{.messages} is more than 1 item long and in that case
+use the \code{dtrackr} specific \code{p_unnest} will work instead.
 }
 \examples{
 library(dplyr)
@@ -149,5 +154,5 @@ if (interactive()) {
 }
 }
 \seealso{
-tidyr::unnest()
+\code{\link[tidyr:unnest]{tidyr::unnest()}}
 }

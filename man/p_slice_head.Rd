@@ -95,5 +95,5 @@ iris \%>\% track() \%>\% group_by(Species) \%>\%
   history()
 }
 \seealso{
-dplyr::slice_head()
+\code{\link[dplyr:slice]{dplyr::slice_head()}}
 }

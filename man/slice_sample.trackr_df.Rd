@@ -93,5 +93,5 @@ iris \%>\%
   history()
 }
 \seealso{
-dplyr::slice_sample()
+\code{\link[dplyr:slice]{dplyr::slice_sample()}}
 }

@@ -104,5 +104,5 @@ iris \%>\%
 
 }
 \seealso{
-dplyr::slice_min()
+\code{\link[dplyr:slice]{dplyr::slice_min()}}
 }

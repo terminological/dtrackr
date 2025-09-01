@@ -63,5 +63,5 @@ tmp \%>\% dplyr::reframe(dplyr::tibble(
   ), .messages="length {param}: {value}") \%>\% history()
 }
 \seealso{
-dplyr::reframe()
+\code{\link[dplyr:reframe]{dplyr::reframe()}}
 }

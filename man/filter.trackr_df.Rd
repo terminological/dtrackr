@@ -71,5 +71,5 @@ tmp = iris \%>\% track() \%>\% dplyr::group_by(Species)
 tmp \%>\% filter(Petal.Length > 5) \%>\% history()
 }
 \seealso{
-dplyr::filter()
+\code{\link[dplyr:filter]{dplyr::filter()}}
 }

@@ -59,5 +59,5 @@ nrow(join)
 # join \%>\% flowchart()
 }
 \seealso{
-dplyr::anti_join()
+\code{\link[dplyr:filter-joins]{dplyr::anti_join()}}
 }

@@ -75,5 +75,5 @@ iris \%>\%
   history()
 }
 \seealso{
-dplyr::relocate()
+\code{\link[dplyr:relocate]{dplyr::relocate()}}
 }

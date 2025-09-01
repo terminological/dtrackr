@@ -67,5 +67,5 @@ tmp \%>\% dplyr::group_modify(
 ) \%>\% history()
 }
 \seealso{
-dplyr::group_modify()
+\code{\link[dplyr:group_map]{dplyr::group_modify()}}
 }

@@ -74,5 +74,5 @@ iris \%>\%
 
 }
 \seealso{
-dplyr::transmute()
+\code{\link[dplyr:transmute]{dplyr::transmute()}}
 }

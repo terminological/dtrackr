@@ -77,5 +77,5 @@ iris \%>\%
   history()
 }
 \seealso{
-dplyr::rename()
+\code{\link[dplyr:rename]{dplyr::rename()}}
 }

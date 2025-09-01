@@ -93,5 +93,5 @@ iris \%>\%
 
 }
 \seealso{
-dplyr::add_count()
+\code{\link[dplyr:count]{dplyr::add_count()}}
 }

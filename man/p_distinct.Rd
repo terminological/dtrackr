@@ -53,5 +53,5 @@ tmp = bind_rows(iris \%>\% track(), iris \%>\% track() \%>\% filter(Petal.Length
 tmp \%>\% dplyr::group_by(Species) \%>\% dplyr::distinct() \%>\% history()
 }
 \seealso{
-dplyr::distinct()
+\code{\link[dplyr:distinct]{dplyr::distinct()}}
 }

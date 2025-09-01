@@ -51,18 +51,19 @@ outer names with \code{names_sep} automatically stripped. This makes
 \code{names_sep} roughly symmetric between nesting and unnesting.}
 
 \item{.messages}{a set of glue specs. The glue code can use any global
-variable, grouping variable, or \{.strata\}. Defaults to nothing.}
+variable, grouping variable, \{.count.in\}, \{.count.out\} or \{.strata\}.
+Defaults to \code{"{.count.out} items"}.}
 
 \item{.headline}{a headline glue spec. The glue code can use any global
 variable, grouping variable, or \{.strata\}. Defaults to nothing.}
 }
 \value{
-the data dataframe result of the \code{tidyr::nest} function but with
-a history graph updated.
+the data dataframe result of the \code{tidyr::nest} function but with a
+history graph updated.
 }
 \description{
-A drop in replacement for \code{\link[tidyr:nest]{tidyr::nest()}} which optionally takes a
-message and headline to store in the history graph.
+A drop in replacement for \code{\link[tidyr:nest]{tidyr::nest()}} which optionally takes a message
+and headline to store in the history graph.
 }
 \examples{
 library(dplyr)
@@ -122,5 +123,5 @@ if (interactive()) {
 }
 }
 \seealso{
-tidyr::nest()
+\code{\link[tidyr:nest]{tidyr::nest()}}
 }

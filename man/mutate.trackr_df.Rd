@@ -94,5 +94,5 @@ iris \%>\%
 
 }
 \seealso{
-dplyr::mutate()
+\code{\link[dplyr:mutate]{dplyr::mutate()}}
 }

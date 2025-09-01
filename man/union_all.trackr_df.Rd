@@ -96,5 +96,5 @@ nrow(set)
 # set \%>\% flowchart()
 }
 \seealso{
-dplyr::union_all()
+\code{\link[dplyr:setops]{dplyr::union_all()}}
 }

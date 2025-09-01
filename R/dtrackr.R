@@ -1815,7 +1815,7 @@ p_include_any = function(
 #' this joins any stratified branches and acts as a specific type of [dtrackr::status()],
 #' allowing you to generate some summary statistics about the un-grouped data.
 #' See [dplyr::ungroup()].
-#' @seealso dplyr::ungroup()
+#' @seealso [dplyr::ungroup()]
 #'
 #' @inheritParams dplyr::ungroup
 #' @param ... variables to remove from the grouping.
@@ -1959,7 +1959,7 @@ p_ungroup = function(
 #' the history graph. In the history this also joins any stratified branches and
 #' allows you to generate some summary statistics about the un-grouped data. See
 #' [dplyr::summarise()].
-#' @seealso dplyr::summarise()
+#' @seealso [dplyr::summarise()]
 #'
 #' @inheritParams dplyr::summarise
 #' @inheritDotParams dplyr::summarise
@@ -2002,7 +2002,7 @@ p_summarise = function(
 
 
 #' @inherit p_summarise
-#' @seealso dplyr::reframe()
+#' @seealso [dplyr::reframe()]
 #' @inheritParams dplyr::reframe
 #' @inheritDotParams dplyr::reframe
 #' @export
@@ -2091,7 +2091,7 @@ p_reframe = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
 #'   function, but with the history graph updated with a new stage if the
 #'   `.messages` or `.headline` parameter is not empty.
 #'
-#' @seealso dplyr::mutate()
+#' @seealso [dplyr::mutate()]
 #' @inheritParams dplyr::mutate
 #' @inheritDotParams dplyr::mutate
 #' @export
@@ -2109,7 +2109,7 @@ p_mutate = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
 }
 
 
-#' @seealso dplyr::add_count()
+#' @seealso [dplyr::add_count()]
 #' @inheritParams dplyr::add_count
 #' @inheritDotParams dplyr::add_count
 #' @inherit p_mutate
@@ -2128,7 +2128,7 @@ p_add_count = function(x, ..., .messages = "", .headline = "", .tag = NULL) {
 }
 
 
-#' @seealso dplyr::add_tally()
+#' @seealso [dplyr::add_tally()]
 #' @inheritParams dplyr::add_tally
 #' @inherit p_mutate
 #' @export
@@ -2149,7 +2149,7 @@ p_add_tally = function(x, ..., .messages = "", .headline = "", .tag = NULL) {
 }
 
 #' @inherit p_mutate
-#' @seealso dplyr::transmute()
+#' @seealso [dplyr::transmute()]
 #' @inheritParams dplyr::transmute
 #' @inheritDotParams dplyr::transmute
 #' @export
@@ -2173,7 +2173,7 @@ p_transmute = function(
 }
 
 #' @inherit p_mutate
-#' @seealso dplyr::select()
+#' @seealso [dplyr::select()]
 #' @inheritParams dplyr::select
 #' @inheritDotParams dplyr::select
 #' @export
@@ -2191,7 +2191,7 @@ p_select = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
 }
 
 #' @inherit p_mutate
-#' @seealso dplyr::relocate()
+#' @seealso [dplyr::relocate()]
 #' @inheritParams dplyr::relocate
 #' @inheritDotParams dplyr::relocate
 #' @export
@@ -2209,7 +2209,7 @@ p_relocate = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
 }
 
 #' @inherit p_mutate
-#' @seealso dplyr::rename()
+#' @seealso [dplyr::rename()]
 #' @inheritParams dplyr::rename
 #' @inheritDotParams dplyr::rename
 #' @export
@@ -2227,7 +2227,7 @@ p_rename = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
 }
 
 #' @inherit p_mutate
-#' @seealso dplyr::rename_with()
+#' @seealso [dplyr::rename_with()]
 #' @inheritParams dplyr::rename_with
 #' @inheritDotParams dplyr::rename_with
 #' @export
@@ -2251,7 +2251,7 @@ p_rename_with = function(
 }
 
 #' @inherit p_mutate
-#' @seealso dplyr::arrange()
+#' @seealso [dplyr::arrange()]
 #' @inheritParams dplyr::arrange
 #' @inheritDotParams dplyr::arrange
 #' @export
@@ -2273,7 +2273,7 @@ p_arrange = function(.data, ..., .messages = "", .headline = "", .tag = NULL) {
 #'
 #' A drop in replacement for [tidyr::pivot_wider()] which optionally takes a
 #' message and headline to store in the history graph.
-#' @seealso tidyr::pivot_wider()
+#' @seealso [tidyr::pivot_wider()]
 #'
 #' @inheritParams tidyr::pivot_wider
 #' @inheritDotParams tidyr::pivot_wider
@@ -2339,7 +2339,7 @@ p_pivot_wider = function(
 #'
 #' A drop in replacement for [tidyr::pivot_longer()] which optionally takes a
 #' message and headline to store in the history graph.
-#' @seealso tidyr::pivot_longer()
+#' @seealso [tidyr::pivot_longer()]
 #'
 #' @inheritParams  tidyr::pivot_longer
 #' @inheritDotParams  tidyr::pivot_longer
@@ -2399,19 +2399,21 @@ p_pivot_longer = function(
 
 #' Reshaping data using `tidyr::nest`
 #'
-#' A drop in replacement for [tidyr::nest()] which optionally takes a
-#' message and headline to store in the history graph.
-#' @seealso tidyr::nest()
+#' A drop in replacement for [tidyr::nest()] which optionally takes a message
+#' and headline to store in the history graph.
+#'
+#' @seealso [tidyr::nest()]
 #'
 #' @inheritParams tidyr::nest
 #' @inheritDotParams tidyr::nest
 #' @param .messages a set of glue specs. The glue code can use any global
-#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#'   variable, grouping variable, \{.count.in\}, \{.count.out\} or \{.strata\}.
+#'   Defaults to `"{.count.out} items"`.
 #' @param .headline a headline glue spec. The glue code can use any global
 #'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #'
-#' @return the data dataframe result of the `tidyr::nest` function but with
-#'   a history graph updated.
+#' @return the data dataframe result of the `tidyr::nest` function but with a
+#'   history graph updated.
 #' @export
 #' @example inst/examples/tidyr-examples.R
 p_nest = function(
@@ -2442,14 +2444,20 @@ p_nest = function(
 
 #' Reshaping data using `tidyr::unnest`
 #'
-#' A drop in replacement for [tidyr::unnest()] which optionally takes a
-#' message and headline to store in the history graph.
-#' @seealso tidyr::unnest()
+#' A drop in replacement for [tidyr::unnest()] which optionally takes a message
+#' and headline to store in the history graph. Older versions of `tidyr::unnest`
+#' can throw an error if `.messages` is more than 1 item long and in that case
+#' use the `dtrackr` specific `p_unnest` will work instead.
+#'
+#' @seealso [tidyr::unnest()]
 #'
 #' @inheritParams  tidyr::unnest
 #' @inheritDotParams  tidyr::unnest
 #' @param .messages a set of glue specs. The glue code can use any global
-#'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
+#'   variable, grouping variable, \{.count.in\}, \{.count.out\} or \{.strata\}.
+#'   Defaults to nothing. Older versions of `tidyr::unnest` can throw an error
+#'   if this is more than 1 item long and and in that case use the `dtrackr`
+#'   specific `p_nest` will work instead.
 #' @param .headline a headline glue spec. The glue code can use any global
 #'   variable, grouping variable, or \{.strata\}. Defaults to nothing.
 #'
@@ -2508,7 +2516,7 @@ p_unnest = function(
 #' been resolved e.g. using a `dplyr::ungroup()`. This limit is configurable
 #' with `options("dtrackr.max_supported_groupings"=XX)`. The default is 16. See
 #' [dplyr::group_by()].
-#' @seealso dplyr::group_by()
+#' @seealso [dplyr::group_by()]
 #'
 #' @inheritParams dplyr::group_by
 #' @inheritDotParams dplyr::group_by
@@ -2690,7 +2698,7 @@ p_group_by = function(
 #' the size of the group is calculated \{.count.in\} and after the operation the
 #' output size \{.count.out\} The group \{.strata\} is also available (if
 #' grouped) for reporting. See [dplyr::distinct()].
-#' @seealso dplyr::distinct()
+#' @seealso [dplyr::distinct()]
 #'
 #' @inheritParams dplyr::distinct
 #' @inheritDotParams dplyr::distinct
@@ -2762,7 +2770,7 @@ p_distinct = function(
 #' output size of each group \{.count.out\}. The grouping \{.strata\} is also
 #' available (if grouped) for reporting. See [dplyr::filter()].
 #'
-#' @seealso dplyr::filter()
+#' @seealso [dplyr::filter()]
 #' @inheritParams dplyr::filter
 #' @inheritDotParams dplyr::filter
 #' @param .messages a set of glue specs. The glue code can use any global
@@ -2926,7 +2934,7 @@ p_filter = function(
 #'   respectively.
 #' @return the sliced dataframe with the history graph updated.
 #'
-#' @seealso dplyr::slice()
+#' @seealso [dplyr::slice()]
 #' @inheritParams dplyr::slice
 #' @inheritDotParams dplyr::slice
 #' @export
@@ -2947,7 +2955,7 @@ p_slice = function(
 }
 
 #' @inherit p_slice
-#' @seealso dplyr::slice_head()
+#' @seealso [dplyr::slice_head()]
 #' @inheritDotParams dplyr::slice_head
 #' @export
 #' @example inst/examples/slice-head-tail-examples.R
@@ -2967,7 +2975,7 @@ p_slice_head = function(
 }
 
 #' @inherit p_slice
-#' @seealso dplyr::slice_tail()
+#' @seealso [dplyr::slice_tail()]
 #' @inheritDotParams dplyr::slice_tail
 #' @export
 #' @example inst/examples/slice-head-tail-examples.R
@@ -2987,7 +2995,7 @@ p_slice_tail = function(
 }
 
 #' @inherit p_slice
-#' @seealso dplyr::slice_min()
+#' @seealso [dplyr::slice_min()]
 #' @inheritDotParams dplyr::slice_min
 #' @export
 #' @example inst/examples/slice-max-min-examples.R
@@ -3007,7 +3015,7 @@ p_slice_min = function(
 }
 
 #' @inherit p_slice
-#' @seealso dplyr::slice_max()
+#' @seealso [dplyr::slice_max()]
 #' @inheritDotParams dplyr::slice_max
 #' @export
 #' @example inst/examples/slice-max-min-examples.R
@@ -3027,7 +3035,7 @@ p_slice_max = function(
 }
 
 #' @inherit p_slice
-#' @seealso dplyr::slice_sample()
+#' @seealso [dplyr::slice_sample()]
 #' @inheritDotParams dplyr::slice_sample
 #' @export
 #' @example inst/examples/slice-sample-examples.R
@@ -3056,7 +3064,7 @@ p_slice_sample = function(
 #' and after the operation the output size \{.count.out\} The group \{.strata\}
 #' is also available (if grouped) for reporting See [dplyr::group_modify()].
 #'
-#' @seealso dplyr::group_modify()
+#' @seealso [dplyr::group_modify()]
 #'
 #' @inheritParams dplyr::group_modify
 #' @inheritDotParams dplyr::group_modify
@@ -3164,7 +3172,7 @@ p_group_modify = function(
 #'   \{.count.out\}
 #' @return the dplyr output with the history graph updated.
 #'
-#' @seealso dplyr::bind_rows()
+#' @seealso [dplyr::bind_rows()]
 #'
 #' @export
 #' @example inst/examples/set-operation-examples.R
@@ -3182,7 +3190,7 @@ p_bind_rows = function(
 }
 
 #' @inherit p_bind_rows
-#' @seealso dplyr::bind_cols()
+#' @seealso [dplyr::bind_cols()]
 #' @export
 p_bind_cols = function(
   ...,
@@ -3198,7 +3206,7 @@ p_bind_cols = function(
 }
 
 #' @inherit p_bind_rows
-#' @seealso generics::intersect()
+#' @seealso [generics::intersect()]
 #' @inheritParams generics::setops
 #' @export
 p_intersect = function(
@@ -3219,7 +3227,7 @@ p_intersect = function(
 }
 
 #' @inherit p_bind_rows
-#' @seealso generics::union()
+#' @seealso [generics::union()]
 #' @inheritParams  generics::setops
 #' @export
 p_union = function(
@@ -3240,7 +3248,7 @@ p_union = function(
 }
 
 #' @inherit p_bind_rows
-#' @seealso dplyr::union_all()
+#' @seealso [dplyr::union_all()]
 #' @inheritParams dplyr::setops
 #' @export
 p_union_all = function(
@@ -3261,7 +3269,7 @@ p_union_all = function(
 }
 
 #' @inherit p_bind_rows
-#' @seealso dplyr::setdiff()
+#' @seealso [dplyr::setdiff()]
 #' @inheritParams generics::setops
 #' @export
 p_setdiff = function(
@@ -3333,7 +3341,7 @@ p_setdiff = function(
 #' history of both input dataframes. See [dplyr::inner_join()] for more details
 #' on the underlying functions.
 #'
-#' @seealso dplyr::inner_join()
+#' @seealso [dplyr::inner_join()]
 #'
 #' @inheritParams dplyr::inner_join
 #' @inheritDotParams dplyr::inner_join
@@ -3375,7 +3383,7 @@ p_inner_join = function(
 #' sides of the joins is merged resulting in a tracked dataframe with the
 #' history of both input dataframes. See [dplyr::left_join()] for more details
 #' on the underlying functions.
-#' @seealso dplyr::left_join()
+#' @seealso [dplyr::left_join()]
 #'
 #' @inheritParams dplyr::left_join
 #' @inheritDotParams dplyr::left_join
@@ -3417,7 +3425,7 @@ p_left_join = function(
 #' sides of the joins is merged resulting in a tracked dataframe with the
 #' history of both input dataframes. See [dplyr::right_join()] for more details
 #' on the underlying functions.
-#' @seealso dplyr::right_join()
+#' @seealso [dplyr::right_join()]
 #'
 #' @inheritParams dplyr::right_join
 #' @inheritDotParams dplyr::right_join
@@ -3459,7 +3467,7 @@ p_right_join = function(
 #' sides of the joins is merged resulting in a tracked dataframe with the
 #' history of both input dataframes. See [dplyr::full_join()] for more details
 #' on the underlying functions.
-#' @seealso dplyr::full_join()
+#' @seealso [dplyr::full_join()]
 #'
 #' @inheritParams dplyr::full_join
 #' @inheritDotParams dplyr::full_join
@@ -3501,7 +3509,7 @@ p_full_join = function(
 #' sides of the joins is merged resulting in a tracked dataframe with the
 #' history of both input dataframes. See [dplyr::semi_join()] for more details
 #' on the underlying functions.
-#' @seealso dplyr::semi_join()
+#' @seealso [dplyr::semi_join()]
 #'
 #' @inheritParams dplyr::semi_join
 #' @inheritDotParams dplyr::semi_join
@@ -3543,7 +3551,7 @@ p_semi_join = function(
 #' sides of the joins is merged resulting in a tracked dataframe with the
 #' history of both input dataframes. See [dplyr::anti_join()] for more details
 #' on the underlying functions.
-#' @seealso dplyr::anti_join()
+#' @seealso [dplyr::anti_join()]
 #'
 #' @inheritParams dplyr::anti_join
 #' @inheritDotParams dplyr::anti_join
@@ -3585,7 +3593,7 @@ p_anti_join = function(
 #' sides of the joins is merged resulting in a tracked dataframe with the
 #' history of both input dataframes. See [dplyr::nest_join()] for more details
 #' on the underlying functions.
-#' @seealso dplyr::nest_join()
+#' @seealso [dplyr::nest_join()]
 #'
 #' @inheritParams dplyr::nest_join
 #' @inheritDotParams dplyr::nest_join

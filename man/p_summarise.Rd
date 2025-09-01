@@ -82,5 +82,5 @@ tmp = iris \%>\% dplyr::group_by(Species) \%>\% track()
 tmp \%>\% dplyr::summarise(avg = mean(Petal.Length), .messages="{avg} length") \%>\% history()
 }
 \seealso{
-dplyr::summarise()
+\code{\link[dplyr:summarise]{dplyr::summarise()}}
 }

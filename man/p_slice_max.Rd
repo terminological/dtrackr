@@ -104,5 +104,5 @@ iris \%>\%
 
 }
 \seealso{
-dplyr::slice_max()
+\code{\link[dplyr:slice]{dplyr::slice_max()}}
 }

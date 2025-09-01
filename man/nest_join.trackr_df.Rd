@@ -122,5 +122,5 @@ nrow(join)
 # join \%>\% flowchart()
 }
 \seealso{
-dplyr::nest_join()
+\code{\link[dplyr:nest_join]{dplyr::nest_join()}}
 }

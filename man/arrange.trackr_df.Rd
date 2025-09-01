@@ -91,5 +91,5 @@ iris \%>\%
   history()
 }
 \seealso{
-dplyr::arrange()
+\code{\link[dplyr:arrange]{dplyr::arrange()}}
 }

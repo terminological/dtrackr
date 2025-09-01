@@ -88,5 +88,5 @@ iris \%>\% track() \%>\% slice(51:100) \%>\% history()
 
 }
 \seealso{
-dplyr::slice()
+\code{\link[dplyr:slice]{dplyr::slice()}}
 }

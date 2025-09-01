@@ -188,5 +188,5 @@ if (interactive()) {
 }
 }
 \seealso{
-tidyr::pivot_longer()
+\code{\link[tidyr:pivot_longer]{tidyr::pivot_longer()}}
 }

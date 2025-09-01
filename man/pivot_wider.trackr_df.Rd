@@ -194,5 +194,5 @@ if (interactive()) {
 }
 }
 \seealso{
-tidyr::pivot_wider()
+\code{\link[tidyr:pivot_wider]{tidyr::pivot_wider()}}
 }

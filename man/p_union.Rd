@@ -94,5 +94,5 @@ nrow(set)
 # set \%>\% flowchart()
 }
 \seealso{
-generics::union()
+\code{\link[generics:setops]{generics::union()}}
 }

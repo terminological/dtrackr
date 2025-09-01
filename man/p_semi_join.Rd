@@ -103,5 +103,5 @@ nrow(join)
 
 }
 \seealso{
-dplyr::semi_join()
+\code{\link[dplyr:filter-joins]{dplyr::semi_join()}}
 }

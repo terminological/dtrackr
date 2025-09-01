@@ -94,5 +94,5 @@ nrow(set)
 # set \%>\% flowchart()
 }
 \seealso{
-dplyr::setdiff()
+\code{\link[dplyr:setops]{dplyr::setdiff()}}
 }

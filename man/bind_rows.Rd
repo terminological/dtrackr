@@ -91,5 +91,5 @@ nrow(set)
 # set \%>\% flowchart()
 }
 \seealso{
-dplyr::bind_rows()
+\code{\link[dplyr:bind_rows]{dplyr::bind_rows()}}
 }

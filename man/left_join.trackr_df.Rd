@@ -176,5 +176,5 @@ nrow(join)
 
 }
 \seealso{
-dplyr::left_join()
+\code{\link[dplyr:mutate-joins]{dplyr::left_join()}}
 }

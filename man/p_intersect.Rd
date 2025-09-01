@@ -94,5 +94,5 @@ nrow(set)
 # set \%>\% flowchart()
 }
 \seealso{
-generics::intersect()
+\code{\link[generics:setops]{generics::intersect()}}
 }
