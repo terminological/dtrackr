@@ -12,6 +12,9 @@ downloads](https://cranlogs.r-pkg.org/badges/dtrackr)](https://cran.r-project.or
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/dtrackr)](https://cran.r-project.org/package=dtrackr)
 [![codecov](https://codecov.io/gh/terminological/dtrackr/branch/main/graph/badge.svg?token=FR1SBH82D3)](https://app.codecov.io/gh/terminological/dtrackr)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.04707/status.svg)](https://doi.org/10.21105/joss.04707)
+[![EPSRC
+badge](https://img.shields.io/badge/EPSRC%20grant-EP%2FY028392%2F1-05acb5)](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/Y028392/1)
+
 <!-- badges: end -->
 
 ## Overview
@@ -156,3 +159,10 @@ Check out the [main documentation for more
 details](https://terminological.github.io/dtrackr/), and in particular
 the [getting started
 vignette](https://terminological.github.io/dtrackr/articles/dtrackr.html).
+
+## Funding
+
+The authors gratefully acknowledge the support of the UK Research and
+Innovation AI programme of the Engineering and Physical Sciences
+Research Council [EPSRC grant
+EP/Y028392/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/Y028392/1).

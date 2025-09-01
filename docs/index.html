@@ -70,6 +70,7 @@
 </div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -134,7 +135,7 @@
 <span><span class="va">dataset</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="reference/track.html">track</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">Species</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span></span>
 <span>    short <span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&lt;</span><span class="va">cutOff</span><span class="op">)</span>, </span>
 <span>    long<span class="op">=</span> <span class="fu"><a href="reference/p_count_if.html">p_count_if</a></span><span class="op">(</span><span class="va">Sepal.Width</span><span class="op">&gt;=</span><span class="va">cutOff</span><span class="op">)</span>, </span>
@@ -146,7 +147,7 @@
 <span>  <span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/comment.html">comment</a></span><span class="op">(</span><span class="st">"test message"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} of type {Species}"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="reference/status.html">status</a></span><span class="op">(</span>.messages <span class="op">=</span> <span class="st">"{.count} together with cutOff {cutOff}"</span><span class="op">)</span> </span></code></pre></div>
 <p>Having prepared our dataset we conduct our analysis, and want to write it up and prepare it for submission. As a key part of documenting the data pipeline a visual summary is useful, and for bio-medical journals or clinical trials often a requirement.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -155,6 +156,11 @@
 <p>And your publication ready data pipeline, with any assumptions you care to document, is creates in a format of your choice (as long as that choice is one of <code>pdf</code>, <code>png</code>, <code>svg</code> or <code>ps</code>), ready for submission to Nature.</p>
 <p>This is a trivial example, but the more complex the pipeline, the bigger benefit you will get.</p>
 <p>Check out the <a href="https://terminological.github.io/dtrackr/" class="external-link">main documentation for more details</a>, and in particular the <a href="https://terminological.github.io/dtrackr/articles/dtrackr.html" class="external-link">getting started vignette</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="funding">Funding<a class="anchor" aria-label="anchor" href="#funding"></a>
+</h2>
+<p>The authors gratefully acknowledge the support of the UK Research and Innovation AI programme of the Engineering and Physical Sciences Research Council <a href="https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/Y028392/1" class="external-link">EPSRC grant EP/Y028392/1</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -205,6 +211,7 @@
 <li><a href="https://cran.r-project.org/package=dtrackr" class="external-link"><img src="https://www.r-pkg.org/badges/version/dtrackr" alt="CRAN_Status_Badge"></a></li>
 <li><a href="https://app.codecov.io/gh/terminological/dtrackr" class="external-link"><img src="https://codecov.io/gh/terminological/dtrackr/branch/main/graph/badge.svg?token=FR1SBH82D3" alt="codecov"></a></li>
 <li><a href="https://doi.org/10.21105/joss.04707" class="external-link"><img src="https://joss.theoj.org/papers/10.21105/joss.04707/status.svg" alt="DOI"></a></li>
+<li><a href="https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/Y028392/1" class="external-link"><img src="https://img.shields.io/badge/EPSRC%20grant-EP%2FY028392%2F1-05acb5" alt="EPSRC badge"></a></li>
 </ul>
 </div>
 
