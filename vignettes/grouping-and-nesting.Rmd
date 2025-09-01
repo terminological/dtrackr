@@ -14,6 +14,8 @@ library(dtrackr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Long format data
+
 `dtrackr` assumes a tidy data paradigm where one row of data is relevant to one
 logical entity, whether it be cars, irises, diamonds, or anything else. 
 This is not always the case, if for example the data you are processing comes 
@@ -29,7 +31,7 @@ patients = tibble::tibble(
   patient_id = 1:100,
   age_category = sample(age_cats,100, replace=TRUE),
   ethnicity = sample(1:6, 100, replace = TRUE),
-  gender = sample(0:1, 100, replace=TRUE),
+  gender = sample(c("Male","Female"), 100, replace=TRUE),
   group = sample(c("Cases","Controls"), 100, replace=TRUE)
 ) 
 
@@ -175,18 +177,21 @@ old = options(dtrackr.verbose=TRUE)
 data %>% 
   track() %>%
   group_by(gender) %>%
-  # the tracking is paused here as the number of groups is >16
-  comment() %>%
+  comment(c("{.count} items","before pause")) %>%
+  
+  # the tracking is paused on this next step as the number of groups becomes >16
   group_by(age_category, group, .add=TRUE) %>%
+  comment("This message is not tracked") %>%
   summarise(
     n = n_distinct(patient_id)
   ) %>%
   pivot_wider(values_from = n, names_from = group) %>%
   filter(abs(Cases-Controls) <= 1) %>%
+  
   # the tracking is automatically resumed at this point as the grouping has
   # returned to manageable levels.
   group_by(gender) %>%
-  comment() %>%
+  comment(c("{.count} summarised rows","after resume")) %>%
   flowchart()
 
 options(old)
