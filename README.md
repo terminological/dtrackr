@@ -13,7 +13,7 @@ downloads](https://cranlogs.r-pkg.org/badges/dtrackr)](https://cran.r-project.or
 [![codecov](https://codecov.io/gh/terminological/dtrackr/branch/main/graph/badge.svg?token=FR1SBH82D3)](https://app.codecov.io/gh/terminological/dtrackr)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.04707/status.svg)](https://doi.org/10.21105/joss.04707)
 [![EPSRC
-badge](https://img.shields.io/badge/EPSRC%20grant-EP%2FY028392%2F1-05acb5)](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/Y028392/1)
+badge](https://img.shields.io/badge/EPSRC%20grant-EP%2FY028392%2F1-05acb5)](https://gtr.ukri.org/projects?ref=EP%2FY028392%2F1)
 
 <!-- badges: end -->
 
@@ -165,4 +165,4 @@ vignette](https://terminological.github.io/dtrackr/articles/dtrackr.html).
 The authors gratefully acknowledge the support of the UK Research and
 Innovation AI programme of the Engineering and Physical Sciences
 Research Council [EPSRC grant
-EP/Y028392/1](https://gow.epsrc.ukri.org/NGBOViewGrant.aspx?GrantRef=EP/Y028392/1).
+EP/Y028392/1](https://gtr.ukri.org/projects?ref=EP%2FY028392%2F1).

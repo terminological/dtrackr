@@ -19,6 +19,8 @@ There are currently no downstream dependencies for this package in CRAN.
 
 ## Other info
 
+This is a resubmission of 0.5.0 due to broken URL.
+
 This version adds 2 new functions that provide S3 methods for `tidyr::nest` and
 `tidyr::unnest` for tracked data frames. These allow better handling of long
 format data within a tracked data pipeline (see
